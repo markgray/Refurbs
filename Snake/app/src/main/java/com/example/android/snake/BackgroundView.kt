@@ -1,0 +1,132 @@
+/*
+ * Copyright (C) 2012 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.example.android.snake
+
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.util.AttributeSet
+import android.view.View
+import java.util.Arrays
+
+/**
+ * Background View: Draw 4 full-screen RGBY triangles TODO: where is this drawn?
+ */
+class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
+    /**
+     * The four colors defined by the attributes BackgroundView_colorSegmentOne, BackgroundView_colorSegmentTwo,
+     * BackgroundView_colorSegmentThree, and BackgroundView_colorSegmentFour
+     */
+    private val mColors = IntArray(4)
+
+    /**
+     * The `Paint` we use to draw our triangles.
+     */
+    private val mPaint = Paint()
+
+    /**
+     * Colors for each vertex
+     */
+    private lateinit var mFillColors: IntArray
+
+    /**
+     * Corner points for triangles (with offset = 2)
+     */
+    private val mIndices = shortArrayOf(0, 1, 2, 0, 3, 4, 0, 1, 4
+    )
+
+    /**
+     * Vertex array for our three triangles.
+     */
+    private var mVertexPoints: FloatArray? = null
+
+    init {
+        isFocusable = true
+
+        // retrieve colors for 4 segments from styleable properties
+        val a = context.obtainStyledAttributes(attrs, R.styleable.BackgroundView)
+        mColors[0] = a.getColor(R.styleable.BackgroundView_colorSegmentOne, Color.RED)
+        mColors[1] = a.getColor(R.styleable.BackgroundView_colorSegmentTwo, Color.YELLOW)
+        mColors[2] = a.getColor(R.styleable.BackgroundView_colorSegmentThree, Color.BLUE)
+        mColors[3] = a.getColor(R.styleable.BackgroundView_colorSegmentFour, Color.GREEN)
+        a.recycle()
+    }
+
+    /**
+     * We implement this to do our drawing. After asserting that `mVertexPoints` has been initialized
+     * by our `onSizeChanged` override, we loop over `int triangle` for all the colors in the
+     * array `int[] mColors`:
+     *
+     *  *
+     * We set the color in `mFillColors` for all vertex points to current triangle color
+     *
+     *  *
+     * We then call the `drawVertices` method of our parameter `Canvas canvas` to
+     * draw the current triangle and loop around for the next one.
+     *
+     *
+     *
+     * @param canvas the canvas on which the background will be drawn
+     */
+    override fun onDraw(canvas: Canvas) {
+        assert(mVertexPoints != null)
+        for (triangle in mColors.indices) {
+            // Set color for all vertex points to current triangle color
+            Arrays.fill(mFillColors, mColors[triangle])
+
+            // Draw one triangle
+            canvas.drawVertices(
+                    Canvas.VertexMode.TRIANGLES,  // How to interpret the array of vertices: as TRIANGLES
+                    (mVertexPoints ?: return).size,  // The number of values in the vertices and colors arrays
+                    mVertexPoints ?: return,  // Array of vertices for the mesh
+                    0,  // Number of values in the verts to skip before drawing.
+                    null,  // No Textures
+                    0,  // No Textures
+                    mFillColors,  // color for each vertex
+                    0,  // Number of values in colors to skip before drawing.
+                    mIndices,  // array of indices to reference into the vertex and color arrays
+                    triangle * 2,  // number of entries in the indices array to skip
+                    3,  // Use 3 vertices via Index Array with offset 2
+                    mPaint // Paint to use to draw
+            )
+        }
+    }
+
+    /**
+     * This is called during layout when the size of this view has changed. First we call our super's
+     * implementation of `onSizeChanged`. Then we initialize our field `float[] mVertexPoints`
+     * with five points defining the location of the center of our view, and the four corners of the
+     * view based on the values of width (`int w`), and height `int h` passed us. Finally
+     * we initialize our field `int[] mFillColors` with a new array that is the same length as
+     * `mVertexPoints`.
+     *
+     * @param w Current width of this view.
+     * @param h Current height of this view.
+     * @param oldw Old width of this view.
+     * @param oldh Old height of this view.
+     */
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+
+        // Construct our center and four corners
+        mVertexPoints = floatArrayOf(
+                w.toFloat() / 2f, h.toFloat() / 2f,
+                0f, 0f, w.toFloat(), 0f, w.toFloat(), h.toFloat(),
+                0f, h.toFloat())
+        mFillColors = IntArray((mVertexPoints ?: return).size)
+    }
+}
