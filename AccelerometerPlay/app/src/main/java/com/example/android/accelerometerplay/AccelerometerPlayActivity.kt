@@ -52,7 +52,7 @@ import kotlin.math.sqrt
  */
 class AccelerometerPlayActivity : Activity() {
     /**
-     * The `SimulationView` instance which is used as our content view.
+     * The [SimulationView] instance which is used as our content view.
      */
     private var mSimulationView: SimulationView? = null
 
@@ -99,35 +99,27 @@ class AccelerometerPlayActivity : Activity() {
      * `WakeLock mWakeLock`. We initialize our field `SimulationView mSimulationView` with a
      * new instance and set it as our content view. Finally we retrieve the current [android.view.Window]
      * for this activity and add the following flags to it:
+     *  * FLAG_SHOW_WHEN_LOCKED: special flag to let windows be shown when the screen is locked.
+     *  This will let application windows take precedence over key guard or any other lock screens
      *
-     *  *
-     * FLAG_SHOW_WHEN_LOCKED: special flag to let windows be shown when the screen is locked.
-     * This will let application windows take precedence over key guard or any other lock screens
+     *  * FLAG_DISMISS_KEYGUARD: when set the window will cause the keyguard to be dismissed,
+     *  only if it is not a secure lock keyguard. Because such a keyguard is not needed for
+     *  security, it will never re-appear if the user navigates to another window (in contrast
+     *  to FLAG_SHOW_WHEN_LOCKED, which will only temporarily hide both secure and non-secure
+     *  keyguards but ensure they reappear when the user moves to another UI that doesn't hide
+     *  them). If the keyguard is currently active and is secure (requires an unlock credential)
+     *  than the user will still need to confirm it before seeing this window, unless
+     *  FLAG_SHOW_WHEN_LOCKED has also been set.
      *
-     *  *
-     * FLAG_DISMISS_KEYGUARD: when set the window will cause the keyguard to be dismissed,
-     * only if it is not a secure lock keyguard. Because such a keyguard is not needed for
-     * security, it will never re-appear if the user navigates to another window (in contrast
-     * to FLAG_SHOW_WHEN_LOCKED, which will only temporarily hide both secure and non-secure
-     * keyguards but ensure they reappear when the user moves to another UI that doesn't hide
-     * them). If the keyguard is currently active and is secure (requires an unlock credential)
-     * than the user will still need to confirm it before seeing this window, unless
-     * FLAG_SHOW_WHEN_LOCKED has also been set.
+     *  * FLAG_KEEP_SCREEN_ON: as long as this window is visible to the user, keep the device's
+     *  screen turned on and bright.
      *
-     *  *
-     * FLAG_KEEP_SCREEN_ON: as long as this window is visible to the user, keep the device's
-     * screen turned on and bright.
+     *  * FLAG_TURN_SCREEN_ON: when set as a window is being added or made visible, once the
+     *  window has been shown then the system will poke the power manager's user activity
+     *  (as if the user had woken up the device) to turn the screen on.
      *
-     *  *
-     * FLAG_TURN_SCREEN_ON: when set as a window is being added or made visible, once the
-     * window has been shown then the system will poke the power manager's user activity
-     * (as if the user had woken up the device) to turn the screen on.
-     *
-     *  *
-     * FLAG_ALLOW_LOCK_WHILE_SCREEN_ON: as long as this window is visible to the user, allow
-     * the lock screen to activate while the screen is on.
-     *
-     *
+     *  * FLAG_ALLOW_LOCK_WHILE_SCREEN_ON: as long as this window is visible to the user, allow
+     *  the lock screen to activate while the screen is on.
      *
      * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
      */
@@ -176,7 +168,8 @@ class AccelerometerPlayActivity : Activity() {
          * when the activity is resumed, we acquire a wake-lock so that the
          * screen stays on, since the user will likely not be fiddling with the
          * screen or buttons.
-         */mWakeLock!!.acquire(WAKE_LOCK_TIMEOUT)
+         */
+        mWakeLock!!.acquire(WAKE_LOCK_TIMEOUT)
 
         // Start the simulation
         mSimulationView!!.startSimulation()
@@ -196,7 +189,6 @@ class AccelerometerPlayActivity : Activity() {
          * When the activity is paused, we make sure to stop the simulation,
          * release our sensor resources and wake locks
          */
-
         // Stop the simulation
         mSimulationView!!.stopSimulation()
 
@@ -362,7 +354,6 @@ class AccelerometerPlayActivity : Activity() {
              * `float invm` to 1.0 over `m`, then initialize `float ax` to `gx`
              * times `invm` and `float ay` to `gy` times `invm`.
              *
-             *
              * Now we calculate the time-corrected Verlet integration to calculate the new position
              * of the `Particle` `float x` and `float y`, set `mLastPosX` to
              * `mPosX` and `mLastPosY` to `mPosY` then update `mPosX` and
@@ -507,37 +498,27 @@ class AccelerometerPlayActivity : Activity() {
              * balls in the system). We then initialize `int count` with the length of our
              * array `Particle mBalls[]`.
              *
-             *
              * We now loop while `more` is true (a collision was detected the last time) and
              * while we have not looped for more the NUM_MAX_ITERATIONS:
+             *  * We set `more` to false.
              *
-             *  *
-             * We set `more` to false.
+             *  * We loop over `i` for all the `mBalls[i]` setting `Particle curr`
+             *  to `mBalls[i]` then loop over `j` from `i+1` to `count`:
              *
-             *  *
-             * We loop over `i` for all the `mBalls[i]` setting `Particle curr`
-             * to `mBalls[i]` then loop over `j` from `i+1` to `count`:
+             *  * Setting `Particle ball` to `mBalls[j]` then calculating the
+             *  distance in the X coordinate between `ball` and `curr` (the
+             *  difference of their two `mPosX` fields) to be `float dx` and
+             *  the distance in the Y coordinate between `ball` and `curr` to
+             *  be `float dy`. The square of the distance between them (the sum of
+             *  `dx` times `dx` and `dy` times `dy`) is calculated
+             *  to set `float dd`. If `dd` is less than or equal to `sBallDiameter2`
+             *  (a collision has occurred), we update the `mPosX` and `mPosY`
+             *  fields of both `curr` and `ball` to simulate a springy bounce
+             *  with a bit randomness to it, and set `more` to true.
              *
-             *  *
-             * Setting `Particle ball` to `mBalls[j]` then calculating the
-             * distance in the X coordinate between `ball` and `curr` (the
-             * difference of their two `mPosX` fields) to be `float dx` and
-             * the distance in the Y coordinate between `ball` and `curr` to
-             * be `float dy`. The square of the distance between them (the sum of
-             * `dx` times `dx` and `dy` times `dy`) is calculated
-             * to set `float dd`. If `dd` is less than or equal to `sBallDiameter2`
-             * (a collision has occurred), we update the `mPosX` and `mPosY`
-             * fields of both `curr` and `ball` to simulate a springy bounce
-             * with a bit randomness to it, and set `more` to true.
-             *
-             *  *
-             * We call the `resolveCollisionWithBounds` method of `curr` to
-             * make sure any position changes made to it leave it inside the bounds of
-             * the simulation.
-             *
-             *
-             *
-             *
+             *  * We call the `resolveCollisionWithBounds` method of `curr` to
+             *  make sure any position changes made to it leave it inside the bounds of
+             *  the simulation.
              *
              * @param sx X component of the current accelerometer reading.
              * @param sy Y component of the current accelerometer reading.
@@ -737,27 +718,21 @@ class AccelerometerPlayActivity : Activity() {
          * `SensorEvent event` is not TYPE_ACCELEROMETER (constant describing an accelerometer
          * sensor type) we return having done nothing. Otherwise we switch on the rotation of the
          * screen from its "natural" orientation:
+         *  * ROTATION_0 (0 degree rotation (natural orientation)) we set `mSensorX` to the
+         *  `values[0]` field of our parameter `SensorEvent event`, and `mSensorY`
+         *  to the `values[1]` field and break.
          *
-         *  *
-         * ROTATION_0 (0 degree rotation (natural orientation)) we set `mSensorX` to the
-         * `values[0]` field of our parameter `SensorEvent event`, and `mSensorY`
-         * to the `values[1]` field and break.
+         *  * ROTATION_90 (90 degree rotation) we set `mSensorX` to minus the `values[1]`
+         *  field of our parameter `SensorEvent event`, and `mSensorY` to the
+         *  `values[0]` field and break.
          *
-         *  *
-         * ROTATION_90 (90 degree rotation) we set `mSensorX` to minus the `values[1]`
-         * field of our parameter `SensorEvent event`, and `mSensorY` to the
-         * `values[0]` field and break.
+         *  * ROTATION_180 (180 degree rotation) we set `mSensorX` to minus the `values[0]`
+         *  field of our parameter `SensorEvent event`, and `mSensorY` to minus the
+         *  `values[1]` field and break.
          *
-         *  *
-         * ROTATION_180 (180 degree rotation) we set `mSensorX` to minus the `values[0]`
-         * field of our parameter `SensorEvent event`, and `mSensorY` to minus the
-         * `values[1]` field and break.
-         *
-         *  *
-         * ROTATION_270 (270 degree rotation) we set `mSensorX` to the `values[1]`
-         * field of our parameter `SensorEvent event`, and `mSensorY` to minus the
-         * `values[0]` field and break.
-         *
+         *  * ROTATION_270 (270 degree rotation) we set `mSensorX` to the `values[1]`
+         *  field of our parameter `SensorEvent event`, and `mSensorY` to minus the
+         *  `values[0]` field and break.
          *
          * Finally we set `mSensorTimeStamp` (time in nanoseconds at which the current event
          * happened) to the `timestamp` field of `event` and `mCpuTimeStamp` (the
@@ -804,47 +779,34 @@ class AccelerometerPlayActivity : Activity() {
          * account the rotation of the screen with respect to the sensors) to it, and `sy` by
          * copying the value of `mSensorY` (Y component of the current SensorEvent, after taking
          * into account the rotation of the screen with respect to the sensors) to it. We then call
-         * the `update` method of `particleSystem` with  `sx`, `sy`, and `now`
-         * to have it update all of the positions of the particles in it given the current sensor event.
-         *
+         * the `update` method of `particleSystem` with  `sx`, `sy`, and `now` to have it update
+         * all of the positions of the particles in it given the current sensor event.
          *
          * We now create copies of our fields as follows:
+         *  * `float xc` gets `mXOrigin` (X coordinate of the origin of the screen
+         *  relative to the origin of the bitmap
          *
-         *  *
-         * `float xc` gets `mXOrigin` (X coordinate of the origin of the screen
-         * relative to the origin of the bitmap
+         *  * `float yc` gets `mYOrigin` (Y coordinate of the origin of the screen
+         *  relative to the origin of the bitmap
          *
-         *  *
-         * `float yc` gets `mYOrigin` (Y coordinate of the origin of the screen
-         * relative to the origin of the bitmap
+         *  * `float xs` gets `mMetersToPixelsX` (exact physical pixels per meters
+         *  of the screen in the X dimension)
          *
-         *  *
-         * `float xs` gets `mMetersToPixelsX` (exact physical pixels per meters
-         * of the screen in the X dimension)
+         *  * `float ys` gets `mMetersToPixelsY` (exact physical pixels per meters
+         *  of the screen in the Y dimension)
          *
-         *  *
-         * `float ys` gets `mMetersToPixelsY` (exact physical pixels per meters
-         * of the screen in the Y dimension)
-         *
-         *  *
-         * `Bitmap bitmap` gets `mBitmap` (scaled Bitmap containing our ball)
-         *
+         *  * `Bitmap bitmap` gets `mBitmap` (scaled Bitmap containing our ball)
          *
          * We then initialize `int count` with the number of balls in `particleSystem` in
          * order to use it as the limit in a for loop over `int i`, where we:
+         *  * Initialize `float x` by adding `xc` to `xs` times the X position
+         *  of the `Particle` in `particleSystem` at position `i`
          *
-         *  *
-         * Initialize `float x` by adding `xc` to `xs` times the X position
-         * of the `Particle` in `particleSystem` at position `i`
+         *  * Initialize `float y` by adding `yc` to `xs` times the Y position of the `Particle`
+         *  in `particleSystem` at position `i`
          *
-         *  *
-         * Initialize `float y` by adding `yc` to `xs` times the Y position
-         * of the `Particle` in `particleSystem` at position `i`
-         *
-         *  *
-         * We then have our parameter `canvas` draw `bitmap` at `(x,y)` with
-         * a null paint.
-         *
+         *  * We then have our parameter `canvas` draw `bitmap` at `(x,y)` with
+         *  a null paint.
          *
          * Having drawn all the balls we call the `invalidate` method to ensure that we will be
          * called again at some point in the future.
@@ -895,8 +857,6 @@ class AccelerometerPlayActivity : Activity() {
          * @param accuracy The new accuracy of this sensor, one of `SensorManager.SENSOR_STATUS_*`
          */
         override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
-
-
     }
 }
 
