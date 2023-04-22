@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("KDocUnresolvedReference")
+@file:Suppress("KDocUnresolvedReference", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment")
 
 package com.example.android.accelerometerplay
 
@@ -26,6 +26,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
@@ -34,6 +35,7 @@ import android.view.Display
 import android.view.Surface
 import android.view.View
 import android.view.WindowManager
+import kotlin.math.sqrt
 
 /**
  * This is an example of using the accelerometer to integrate the device's
@@ -140,7 +142,12 @@ class AccelerometerPlayActivity : Activity() {
 
         // Get an instance of the WindowManager
         mWindowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        mDisplay = mWindowManager!!.defaultDisplay
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            mDisplay = display
+        } else {
+            @Suppress("DEPRECATION") // Needed for versions less than Build.VERSION_CODES.R
+            mDisplay = mWindowManager!!.defaultDisplay
+        }
 
         // Create a partial wake lock
         mWakeLock = mPowerManager!!.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, javaClass.name)
@@ -148,6 +155,7 @@ class AccelerometerPlayActivity : Activity() {
         // instantiate our simulation view and set it as the activity's content
         mSimulationView = SimulationView(this)
         setContentView(mSimulationView)
+        @Suppress("DEPRECATION") // TODO: Fix WindowManager.LayoutParams deprecations
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
             or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
             or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
@@ -156,7 +164,7 @@ class AccelerometerPlayActivity : Activity() {
     }
 
     /**
-     * Called after [.onRestoreInstanceState], [.onRestart], or [.onPause], for
+     * Called after [onRestoreInstanceState], [onRestart], or [onPause], for
      * our activity to start interacting with the user. First we call our super's implementation of
      * `onResume`, then we use our field `WakeLock mWakeLock` to acquire a wake lock
      * with a timeout value of WAKE_LOCK_TIMEOUT (1_000_000L), and then we call the `startSimulation`
@@ -540,6 +548,7 @@ class AccelerometerPlayActivity : Activity() {
                 updatePositions(sx, sy, now)
 
                 // We do no more than a limited number of iterations
+                @Suppress("LocalVariableName") // A rose is a rose is a rose.
                 val NUM_MAX_ITERATIONS = 10
 
                 /*
@@ -570,7 +579,7 @@ class AccelerometerPlayActivity : Activity() {
                                 dy += (Math.random().toFloat() - 0.5f) * 0.0001f
                                 dd = dx * dx + dy * dy
                                 // simulate the spring
-                                val d = Math.sqrt(dd.toDouble()).toFloat()
+                                val d = sqrt(dd.toDouble()).toFloat()
                                 val c = 0.5f * (sBallDiameter - d) / d
                                 curr.mPosX -= dx * c
                                 curr.mPosY -= dy * c
@@ -672,6 +681,7 @@ class AccelerometerPlayActivity : Activity() {
         init {
             mAccelerometer = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
             val metrics = DisplayMetrics()
+            @Suppress("DEPRECATION") // TODO: Fix getMetrics deprecation
             windowManager.defaultDisplay.getMetrics(metrics)
             mXDpi = metrics.xdpi
             mYDpi = metrics.ydpi
@@ -684,6 +694,7 @@ class AccelerometerPlayActivity : Activity() {
             val dstHeight = (sBallDiameter * mMetersToPixelsY + 0.5f).toInt()
             mBitmap = Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true)
             val opts = BitmapFactory.Options()
+            @Suppress("DEPRECATION") // TODO: As of Build.VERSION_CODES.N, this is ignored
             opts.inDither = true
             opts.inPreferredConfig = Bitmap.Config.RGB_565
             mWood = BitmapFactory.decodeResource(resources, R.drawable.wood, opts)
@@ -910,4 +921,4 @@ private const val sFriction = 0.1f
 /**
  * Number of balls in our particle system.
  */
-const val NUM_PARTICLES = 15
+const val NUM_PARTICLES: Int = 15
