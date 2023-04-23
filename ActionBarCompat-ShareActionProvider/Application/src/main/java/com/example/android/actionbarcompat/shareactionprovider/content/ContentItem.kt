@@ -24,7 +24,7 @@ import android.text.TextUtils
 
 /**
  * This class encapsulates a content item. Referencing the content's type, and the differing way
- * to reference the content (asset URI or resource id).
+ * to reference the content (asset [Uri] or resource id).
  */
 class ContentItem {
     /**
@@ -43,11 +43,11 @@ class ContentItem {
     val contentAssetFilePath: String?
 
     /**
-     * Creates a ContentItem with the specified type, referencing a resource id. We save our parameters
-     * in our fields `contentType` and `contentResourceId` respectively, and set our field
-     * `contentAssetFilePath` to null.
+     * Creates a [ContentItem] with the specified type, referencing a resource id. We save our
+     * parameters in our fields [contentType] and [contentResourceId] respectively, and set our
+     * field [contentAssetFilePath] to null.
      *
-     * @param type       - One of [.CONTENT_TYPE_IMAGE] or [.CONTENT_TYPE_TEXT]
+     * @param type       - One of [CONTENT_TYPE_IMAGE] or [CONTENT_TYPE_TEXT]
      * @param resourceId - Resource ID to use for this item's content
      */
     constructor(type: Int, resourceId: Int) {
@@ -57,24 +57,24 @@ class ContentItem {
     }
 
     /**
-     * Creates a ContentItem with the specified type, referencing an asset file path. We save our
-     * parameters in `contentType` and `contentAssetFilePath` respectively and set our
-     * field `contentResourceId` to 0.
+     * Creates a [ContentItem] with the specified type, referencing an asset file path. We save our
+     * parameters in our fields [contentType] and [contentAssetFilePath] respectively and set our
+     * field [contentResourceId] to 0.
      *
-     * @param type          - One of [.CONTENT_TYPE_IMAGE] or [.CONTENT_TYPE_TEXT]
+     * @param type          - One of [CONTENT_TYPE_IMAGE] or [CONTENT_TYPE_TEXT]
      * @param assetFilePath - File path from the application's asset for this item's content
      */
     constructor(type: Int, assetFilePath: String?) {
         contentType = type
         contentAssetFilePath = assetFilePath
         contentResourceId = 0
-    }// If this content has an asset, then return a AssetProvider Uri
+    }
 
     /**
-     * Creates a content Uri from our field `contentAssetFilePath` if it is not the empty string
+     * Creates a content [Uri] from our field [contentAssetFilePath] if it is not the empty string
      * which we return to our caller, otherwise we return null.
      *
-     * @return Uri to the content
+     * @return [Uri] to the content
      */
     val contentUri: Uri?
         get() = if (!TextUtils.isEmpty(contentAssetFilePath)) {
@@ -85,24 +85,20 @@ class ContentItem {
         }
 
     /**
-     * Returns an [android.content.Intent] which can be used to share this item's content with other
-     * applications. First we initialize `Intent intent` with a new instance with action ACTION_SEND.
-     * Then we switch on our field `contentType`:
+     * Returns an [Intent] which can be used to share this item's content with other applications.
+     * First we initialize our [Intent] variable `val intent` with a new instance with action
+     * ACTION_SEND. Then we switch on our field [contentType]:
+     *  * [CONTENT_TYPE_IMAGE] - we set the type of `intent` to "image/jpg", and add the content
+     *  [Uri] returned from our property [contentUri] as an extra under the key EXTRA_STREAM.
      *
-     *  *
-     * CONTENT_TYPE_IMAGE - we set the type of `intent` to "image/jpg", and add the content
-     * Uri returned from our method `getContentUri` as an extra under the key EXTRA_STREAM.
-     *
-     *  *
-     * CONTENT_TYPE_TEXT - we set the type of `intent` to "text/plain", and add the string
-     * returned from the method `getString` for the resource ID `contentResourceId`
-     * as an extra under the key EXTRA_TEXT.
-     *
+     *  * [CONTENT_TYPE_TEXT] - we set the type of `intent` to "text/plain", and add the string
+     *  returned from the method `getString` for the resource ID [contentResourceId]
+     *  as an extra under the key EXTRA_TEXT.
      *
      * Finally we return `intent` to the caller.
      *
-     * @param context - Context to be used for fetching resources if needed
-     * @return Intent to be given to a ShareActionProvider.
+     * @param context the [Context] to be used for fetching resources if needed
+     * @return [Intent] to be given to a `ShareActionProvider`.
      */
     fun getShareIntent(context: Context): Intent {
         val intent = Intent(Intent.ACTION_SEND)

@@ -1,9 +1,9 @@
 
-Android ActionBarCompat-ShareActionProvider Sample
+Android ActionBarCompat-ShareActionProvider Sample (obsoleted by Compose except for SDK < 21.)
 ===================================
 
 This sample shows you how a provide a context-sensitive ShareActionProvider with
-ActionBarCompat, backwards compatible to API v7.
+ActionBarCompat, backwards compatible to SDK 16.
 
 Introduction
 ------------
@@ -22,7 +22,7 @@ necessary to display a compatible Action Bar on devices running Android v2.1+.
 Pre-requisites
 --------------
 
-- Android SDK 24
+- Android SDK 33
 - Android Build Tools v24.0.1
 - Android Support Repository
 
