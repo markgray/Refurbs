@@ -19,10 +19,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
+import android.widget.TextView
 
 /**
  * Snake: a simple game that everyone can enjoy.
- *
  *
  * This is an implementation of the classic Game "Snake", in which you control a serpent roaming
  * around the garden looking for apples. Be careful, though, because when you catch one, not only
@@ -31,32 +33,32 @@ import android.view.KeyEvent
  */
 class Snake : Activity() {
     /**
-     * Reference to the `SnakeView` in our layout file.
+     * Reference to the [SnakeView] in our layout file.
      */
     private lateinit var mSnakeView: SnakeView
 
     /**
      * Called when Activity is first created. Turns off the title bar, sets up the content views,
-     * and fires up the SnakeView. First we call our super's implementation of `onCreate`, then
-     * we set our content view to our layout file R.layout.snake_layout. We initialize our field
-     * `SnakeView mSnakeView` by finding the view with id R.id.snake, then call its method
-     * `setDependentViews` to have it set its field `TextView mStatusText` to the view
-     * with id R.id.text, its field `View mArrowsView` to the view with id R.id.arrowContainer,
-     * and its field `View mBackgroundView` to the view with id R.id.background. If our parameter
-     * `Bundle savedInstanceState` is null we were just launched so we call the `setMode`
-     * method of our field `SnakeView mSnakeView` to have it set its mode to READY. If it is not
-     * null we are being restored so we initialize `Bundle map` with the bundle stored in
-     * `savedInstanceState` under the key ICICLE_KEY, and if that is not null we call the
-     * `restoreState` method of `mSnakeView` to have it restore its state from `map`,
-     * and if it is null we call the `setMode` method of `mSnakeView` to have it set its
-     * mode to PAUSE. Finally we set the `OnTouchListener` of `mSnakeView` to an anonymous
-     * class whose `onTouch` override changes the direction the snake is moving based on the
-     * location of the touch if the game state of `mSnakeView` is RUNNING, or starts the game
-     * running if it was not running by having it move the snake in the MOVE_UP direction.
+     * and fires up the [SnakeView]. First we call our super's implementation of `onCreate`, then
+     * we set our content view to our layout file [R.layout.snake_layout]. We initialize our
+     * [SnakeView] field  [mSnakeView] by finding the view with id [R.id.snake], then call its
+     * method [SnakeView.setDependentViews] to have it set its [TextView] field [SnakeView.mStatusText]
+     * to the view with id [R.id.text], its [View] field [SnakeView.mArrowsView] to the view with id
+     * [R.id.arrowContainer], and its [View] field [SnakeView.mBackgroundView] to the view with id
+     * [R.id.background]. If our [Bundle] parameter [savedInstanceState] is `null` we were just
+     * launched so we call the [SnakeView.setMode] method of our field [mSnakeView] to have it set
+     * its mode to `READY`. If it is not `null` we are being restored so we initialize [Bundle]
+     * variable `val map` with the bundle stored in [savedInstanceState] under the key [ICICLE_KEY],
+     * and if that is not `null` we call the [SnakeView.restoreState] method of [mSnakeView] to have
+     * it restore its state from `map`, and if it is `null` we call the [SnakeView.setMode] method
+     * of [mSnakeView] to have it set its mode to `PAUSE`. Finally we set the [View.OnTouchListener]
+     * of [mSnakeView] to an anonymous class whose `onTouch` override changes the direction the snake
+     * is moving based on the location of the touch if the game state of [mSnakeView] is `RUNNING`,
+     * or starts the game running if it was not running by having it move the snake in the `MOVE_UP`
+     * direction.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
-     * down then this Bundle contains the data it most recently supplied
-     * in [.onSaveInstanceState].
+     * down then this Bundle contains the data it most recently supplied in [onSaveInstanceState].
      */
     @SuppressLint("ClickableViewAccessibility") // I doubt the blind can play this game (but I may be wrong).
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,25 +82,25 @@ class Snake : Activity() {
                 mSnakeView.setMode(SnakeView.PAUSE)
             }
         }
-        mSnakeView.setOnTouchListener { v, event ->
+        mSnakeView.setOnTouchListener { v: View, event: MotionEvent ->
 
             /**
-             * Called when a touch event is dispatched to a view. If the game state of our field
-             * `SnakeView mSnakeView` is RUNNING, we initialize `float x` to the X location
-             * of the `MotionEvent event` parameter divided by the width of the `View v`
-             * parameter and `float y` to the Y location of the `MotionEvent event` parameter
-             * divided by the height of the `View v`. Then we declare `int direction` and
-             * set it to the quadrant of the touch from [0,1,2,3] by setting the lower bit if `x`
-             * is greater than `y` and setting the upper bit if `x` is greater than 1 minus
-             * `y`. We then call the `moveSnake` method of `mSnakeView` to set the
-             * direction it is moving in to `direction` (ie. the direction is same as the quadrant
-             * which was touched). If the game state of `mSnakeView` was not already RUNNING,
-             * we start it running by calling its `moveSnake` method to have it start moving
-             * in the MOVE_UP direction.
+             * Called when a touch event is dispatched to a view. If the game state of our [SnakeView]
+             * field [mSnakeView] is `RUNNING`, we initialize our [Float] variable `val x` to the X
+             * location of the [MotionEvent] parameter `event` divided by the width of the [View]
+             * parameter `v` and [Float] variable `val y` to the Y location of the of the [MotionEvent]
+             * parameter `event` divided by the height of the [View] parameter `v`. Then we declare
+             * [Int] variable `var direction` and set it to the quadrant of the touch from [0,1,2,3]
+             * by setting the lower bit if `x` is greater than `y` and setting the upper bit if `x`
+             * is greater than 1 minus `y`. We then call the [SnakeView.moveSnake] method of [mSnakeView]
+             * to set the direction it is moving in to `direction` (ie. the direction is same as the
+             * quadrant which was touched). If the game state of [mSnakeView] was not already `RUNNING`,
+             * we start it running by calling its [SnakeView.moveSnake] method to have it start moving
+             * in the `MOVE_UP` direction.
              *
-             * @param v The view the touch event has been dispatched to.
-             * @param event The MotionEvent object containing full information about the event.
-             * @return True if the listener has consumed the event, false otherwise.
+             * @param v The [View] the touch event has been dispatched to.
+             * @param event The [MotionEvent] object containing full information about the event.
+             * @return `true` if the listener has consumed the event, `false` otherwise.
              */
             if (mSnakeView.gameState == SnakeView.RUNNING) {
                 // Normalize x,y between 0 and 1
@@ -123,8 +125,8 @@ class Snake : Activity() {
     /**
      * Called as part of the activity lifecycle when an activity is going into the background, but
      * has not (yet) been killed. First we call our super's implementation of `onPause`, then
-     * we call the `setMode` method of our field `SnakeView mSnakeView` to have it set
-     * its game mode to PAUSE.
+     * we call the [SnakeView.setMode] method of our field [mSnakeView] to have it set its game mode
+     * to `PAUSE`.
      */
     override fun onPause() {
         super.onPause()
@@ -134,12 +136,11 @@ class Snake : Activity() {
 
     /**
      * Called to retrieve per-instance state from an activity before being killed so that the state
-     * can be restored in [.onCreate] or [.onRestoreInstanceState] (the [Bundle]
-     * populated by this method will be passed to both). We just store the `Bundle` returned
-     * by the `saveState` method of our field `SnakeView mSnakeView` in our parameter
-     * `Bundle outState` under the key ICICLE_KEY.
+     * can be restored in [onCreate] or [onRestoreInstanceState] (the [Bundle] populated by this
+     * method will be passed to both). We just store the [Bundle] returned by the [SnakeView.saveState]
+     * method of our field [mSnakeView] in our [Bundle] parameter [outState] under the key [ICICLE_KEY].
      *
-     * @param outState Bundle in which to place your saved state.
+     * @param outState [Bundle] in which to place your saved state.
      */
     public override fun onSaveInstanceState(outState: Bundle) {
         // Store the game state
@@ -149,30 +150,24 @@ class Snake : Activity() {
     /**
      * Called when a key was pressed down and not handled by any of the views inside of the activity.
      * Handles key events in the game by updating the direction our snake is traveling based on the
-     * DPAD key pressed. We switch on the value of our parameter `int keyCode`:
+     * `DPAD` key pressed. We switch on the value of our [Int] parameter [keyCode]:
+     *  * [KeyEvent.KEYCODE_DPAD_UP]: we call the [SnakeView.moveSnake] method of our field
+     *  [mSnakeView] to have it start to move in the [MOVE_UP] direction then break.
      *
-     *  *
-     * KEYCODE_DPAD_UP: we call the `moveSnake` method of our field `SnakeView mSnakeView`
-     * to have it start to move in the MOVE_UP direction then break.
+     *  * [KeyEvent.KEYCODE_DPAD_RIGHT]: we call the [SnakeView.moveSnake] method of our field
+     *  [mSnakeView] to have it start to move in the [MOVE_RIGHT] direction then break.
      *
-     *  *
-     * KEYCODE_DPAD_RIGHT: we call the `moveSnake` method of our field `SnakeView mSnakeView`
-     * to have it start to move in the MOVE_RIGHT direction then break.
+     *  * [KeyEvent.KEYCODE_DPAD_DOWN]: we call the [SnakeView.moveSnake] method of our field
+     *  [mSnakeView] to have it start to move in the [MOVE_DOWN] direction then break.
      *
-     *  *
-     * KEYCODE_DPAD_DOWN: we call the `moveSnake` method of our field `SnakeView mSnakeView`
-     * to have it start to move in the MOVE_DOWN direction then break.
-     *
-     *  *
-     * KEYCODE_DPAD_LEFT: we call the `moveSnake` method of our field `SnakeView mSnakeView`
-     * to have it start to move in the MOVE_LEFT direction then break.
-     *
+     *  * [KeyEvent.KEYCODE_DPAD_LEFT]: we call the [SnakeView.moveSnake] method of our field
+     *  [mSnakeView] to have it start to move in the  [MOVE_LEFT] direction then break.
      *
      * Finally we return the value returned by our super's implementation of `onKeyDown` to the caller.
      *
      * @param keyCode The key code of the key event received.
-     * @param msg     The key event received.
-     * @return Return true to consume the event here, or false to let it propagate.
+     * @param msg     The [KeyEvent] received.
+     * @return Return `true` to consume the event here, or `false` to let it propagate.
      */
     override fun onKeyDown(keyCode: Int, msg: KeyEvent): Boolean {
         when (keyCode) {

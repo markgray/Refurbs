@@ -18,6 +18,7 @@
 package com.example.android.snake
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -26,12 +27,12 @@ import android.util.AttributeSet
 import android.view.View
 
 /**
- * TileView: a View-variant designed for handling arrays of "icons" or other drawables, it is used
- * as the base class of `SnakeView`.
+ * [TileView]: a [View]-variant designed for handling arrays of "icons" or other drawables, it is
+ * used as the base class of [SnakeView].
  */
 open class TileView : View {
     /**
-     * `Paint` we use to draw our tiles.
+     * [Paint] we use to draw our tiles.
      */
     private val mPaint = Paint()
 
@@ -49,52 +50,58 @@ open class TileView : View {
 
     /**
      * Constructor that is called when inflating a view from XML. First we call our super's constructor,
-     * then we initialize `TypedArray a` with the styled attribute information for the attribute
-     * with the id R.styleable.TileView as specified in the `AttributeSet attrs` attributes of
-     * the XML tag that is inflating the view. We then initialize our field `mTileSize` with the
-     * attribute for R.styleable.TileView_tileSize converting the 24dp value given in our layout file
-     * to pixels and defaulting to 12. We then recycle `TypedArray a`.
+     * then we initialize [TypedArray] variable `val a` with the styled attribute information for the
+     * attribute with the id [R.styleable.TileView] as specified in the [AttributeSet] parameter
+     * [attrs] attributes of the XML tag that is inflating the view. We then initialize our field
+     * [mTileSize] with the attribute for [R.styleable.TileView_tileSize] converting the 24dp value
+     * given in our layout file to pixels and defaulting to 12. We then recycle [TypedArray] `a`.
      *
      * @param context The Context the view is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.TileView)
+        val a: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.TileView)
         mTileSize = a.getDimensionPixelSize(R.styleable.TileView_tileSize, 12)
         a.recycle()
     }
 
     /**
      * Perform inflation from XML and apply a class-specific base style from a theme attribute. First
-     * we call our super's constructor, then we initialize `TypedArray a` with the styled attribute
-     * information for the attribute with the id R.styleable.TileView as specified in the `AttributeSet attrs`
-     * attributes of the XML tag that is inflating the view. We then initialize our field `mTileSize`
-     * with the attribute for R.styleable.TileView_tileSize converting the 24dp value given in our layout
-     * file to pixels and defaulting to 12. We then recycle `TypedArray a`.
+     * we call our super's constructor, then we initialize [TypedArray] variable `val a` with the
+     * styled attribute information for the attribute with the id [R.styleable.TileView] as specified
+     * in the [AttributeSet] parameter [attrs] attributes of the XML tag that is inflating the view.
+     * We then initialize our field [mTileSize] with the attribute for [R.styleable.TileView_tileSize]
+     * converting the 24dp value given in our layout file to pixels and defaulting to 12. We then
+     * recycle [TypedArray] `a`.
      *
-     * @param context  The Context the view is running in, through which it can
-     * access the current theme, resources, etc.
+     * @param context  The [Context] the view is running in, through which it can access the current
+     * theme, resources, etc.
      * @param attrs    The attributes of the XML tag that is inflating the view.
      * @param defStyle An attribute in the current theme that contains a reference to a style resource
      * that supplies default values for the view. Can be 0 to not look for defaults.
      * We ignore.
      */
-    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.TileView)
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyle: Int
+    ) : super(context, attrs, defStyle) {
+        val a: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.TileView)
         mTileSize = a.getDimensionPixelSize(R.styleable.TileView_tileSize, 12)
         a.recycle()
     }
 
     /**
-     * Resets all tiles to 0 (empty). We loop over `int x` for all the tiles in the X direction
-     * `mXTileCount`, and in an inner loop we loop over `int y` for all the tiles in the
-     * Y direction `mYTileCount` calling our method `setTile` to set the index for the
-     * `Bitmap` in `Bitmap[] mTileArray` used for the tile at `(x,y)` to 0.
+     * Resets all tiles to 0 (empty). We loop over [Int] variable `x` for all the tiles in the X
+     * direction specified by our field [mXTileCount], and in an inner loop we loop over [Int]
+     * variable `y` for all the tiles in the Y direction pecified by our field [mYTileCount] calling
+     * our method [setTile] to set the index for the [Bitmap] in our array of [Bitmap] field
+     * [mTileArray] used for the tile at `(x,y)` to 0.
      */
     fun clearTiles() {
-        for (x in 0 until mXTileCount) {
-            for (y in 0 until mYTileCount) {
+        for (x: Int in 0 until mXTileCount) {
+            for (y: Int in 0 until mYTileCount) {
                 setTile(0, x, y)
             }
         }

@@ -24,17 +24,19 @@ import android.view.View
 import java.util.Arrays
 
 /**
- * Background View: Draw 4 full-screen RGBY triangles TODO: where is this drawn?
+ * Background View: Draw 4 full-screen RGBY triangles. This is drawn when the layout file
+ * snake_layout.xml is inflated.
  */
 class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     /**
-     * The four colors defined by the attributes BackgroundView_colorSegmentOne, BackgroundView_colorSegmentTwo,
-     * BackgroundView_colorSegmentThree, and BackgroundView_colorSegmentFour
+     * The four colors defined by the attributes BackgroundView_colorSegmentOne,
+     * BackgroundView_colorSegmentTwo, BackgroundView_colorSegmentThree, and
+     * BackgroundView_colorSegmentFour
      */
     private val mColors = IntArray(4)
 
     /**
-     * The `Paint` we use to draw our triangles.
+     * The [Paint] we use to draw our triangles.
      */
     private val mPaint = Paint()
 
@@ -46,8 +48,7 @@ class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, att
     /**
      * Corner points for triangles (with offset = 2)
      */
-    private val mIndices = shortArrayOf(0, 1, 2, 0, 3, 4, 0, 1, 4
-    )
+    private val mIndices = shortArrayOf(0, 1, 2, 0, 3, 4, 0, 1, 4)
 
     /**
      * Vertex array for our three triangles.
@@ -67,20 +68,15 @@ class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, att
     }
 
     /**
-     * We implement this to do our drawing. After asserting that `mVertexPoints` has been initialized
-     * by our `onSizeChanged` override, we loop over `int triangle` for all the colors in the
-     * array `int[] mColors`:
+     * We implement this to do our drawing. After asserting that [mVertexPoints] has been initialized
+     * by our [onSizeChanged] override, we loop over our [Int] variable `var triangle` for all the
+     * colors in the [mColors] array of [Int]:
+     *  * We set the color in `mFillColors` for all vertex points to current triangle color
      *
-     *  *
-     * We set the color in `mFillColors` for all vertex points to current triangle color
+     *  * We then call the [Canvas.drawVertices] method of our parameter [canvas] to draw the
+     *  current triangle and loop around for the next one.
      *
-     *  *
-     * We then call the `drawVertices` method of our parameter `Canvas canvas` to
-     * draw the current triangle and loop around for the next one.
-     *
-     *
-     *
-     * @param canvas the canvas on which the background will be drawn
+     * @param canvas the [Canvas] on which the background will be drawn
      */
     override fun onDraw(canvas: Canvas) {
         assert(mVertexPoints != null)
@@ -108,11 +104,11 @@ class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, att
 
     /**
      * This is called during layout when the size of this view has changed. First we call our super's
-     * implementation of `onSizeChanged`. Then we initialize our field `float[] mVertexPoints`
+     * implementation of `onSizeChanged`. Then we initialize our array of [Float] field [mVertexPoints]
      * with five points defining the location of the center of our view, and the four corners of the
-     * view based on the values of width (`int w`), and height `int h` passed us. Finally
-     * we initialize our field `int[] mFillColors` with a new array that is the same length as
-     * `mVertexPoints`.
+     * view based on the [Int] values of width [w], and height [h] passed us. Finally we initialize
+     * our array of [Int] field [mFillColors] with a new array that is the same length as our field
+     * [mVertexPoints].
      *
      * @param w Current width of this view.
      * @param h Current height of this view.
@@ -124,9 +120,17 @@ class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, att
 
         // Construct our center and four corners
         mVertexPoints = floatArrayOf(
-                w.toFloat() / 2f, h.toFloat() / 2f,
-                0f, 0f, w.toFloat(), 0f, w.toFloat(), h.toFloat(),
-                0f, h.toFloat())
+            w.toFloat() / 2f,
+            h.toFloat() / 2f,
+            0f,
+            0f,
+            w.toFloat(),
+            0f,
+            w.toFloat()
+            , h.toFloat(),
+            0f,
+            h.toFloat()
+        )
         mFillColors = IntArray((mVertexPoints ?: return).size)
     }
 }
