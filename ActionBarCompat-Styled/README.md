@@ -1,11 +1,12 @@
 
 Android ActionBarCompat-Styled Sample
+It is completely obsoleted by Compose, unless your minSdkVersion is less than 21 of
+course in which case it is still relevant.
+
 ===================================
 
 This sample shows you how to use ActionBarCompat with a customized theme. It utilizes a
 split action bar when running on a device with a narrow display, and shows three tabs.
-It is completely obsoleted by Compose, unless your minSdkVersion is less than 21 of
-course in which case it is still relevant.
 
 Introduction
 ------------

@@ -24,17 +24,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 
 /**
- * This sample shows you how to use ActionBarCompat with a customized theme. It utilizes a split
+ * This sample shows you how to use `ActionBarCompat` with a customized theme. It utilizes a split
  * action bar when running on a device with a narrow display, and shows three tabs.
- *
  *
  * This Activity extends from [AppCompatActivity], which provides all of the function
  * necessary to display a compatible Action Bar on devices running Android v2.1+.
  *
- *
  * The interesting bits of this sample start in the theme files
  * ('res/values/styles.xml' and 'res/values-v14').
- *
  *
  * Many of the drawables used in this sample were generated with the
  * 'Android Action Bar Style Generator': [...](http://jgilfelt.github.io/android-actionbarstylegenerator)
@@ -42,19 +39,19 @@ import androidx.fragment.app.FragmentTransaction
 class MainActivity : AppCompatActivity(), ActionBar.TabListener {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.sample_main. We
-     * initialize `ActionBar ab` with a reference to this activity's ActionBar, set its
-     * navigation mode to NAVIGATION_MODE_TABS, then add three tabs to it with their `TabListener`
-     * set to this.
+     * `onCreate`, then we set our content view to our layout file [R.layout.sample_main]. We
+     * initialize our [ActionBar] variable `val ab` with a reference to this activity's [ActionBar],
+     * set its navigation mode to [ActionBar.NAVIGATION_MODE_TABS], then add three tabs to it with
+     * their [ActionBar.TabListener] set to this.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sample_main)
 
         // Set the Action Bar to use tabs for navigation
-        val ab = supportActionBar
+        val ab: ActionBar? = supportActionBar
         ab!!.navigationMode = ActionBar.NAVIGATION_MODE_TABS
 
         // Add three tabs to the Action Bar for display
@@ -65,10 +62,10 @@ class MainActivity : AppCompatActivity(), ActionBar.TabListener {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We inflate our menu layout
-     * file R.menu.main into our parameter `Menu menu` then return whatever our super's
+     * file [R.menu.main] into our [Menu] parameter [menu] then return whatever our super's
      * implementation of `onCreateOptionsMenu` returns to our caller.
      *
-     * @param menu The options menu in which you place your items.
+     * @param menu The options [Menu] in which you place your items.
      * @return You must return true for the menu to be displayed; we return whatever our super's
      * implementation of `onCreateOptionsMenu` returns.
      */
