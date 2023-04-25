@@ -108,15 +108,16 @@ open class TileView : View {
     }
 
     /**
-     * Function to set the specified Drawable as the tile for a particular integer key. We initialize
-     * `Bitmap bitmap` with an instance that is `mTileSize` by `mTileSize`, and then
-     * initialize `Canvas canvas` with an instance which will draw into `bitmap`. We set
-     * the bounding rectangle of our parameter `Drawable tile` to be `mTileSize` by
-     * `mTileSize` with the upper corner at (0,0) then have it draw itself into `canvas`.
-     * finally we set the contents of `mTileArray[key]` to `bitmap`.
+     * Function to set the specified [Drawable] as the tile for a particular integer key. We
+     * initialize our [Bitmap] variable `val bitmap` with an instance that is [mTileSize] by
+     * [mTileSize], and then initialize our [Canvas] variable `val canvas` with an instance which
+     * will draw into `bitmap`. We set the bounding rectangle of our [Drawable] parameter [tile]
+     * to be [mTileSize] by [mTileSize] with the upper corner at (0,0) then have it draw itself
+     * into `canvas`. Finally we set the contents of the [key] entry in [mTileArray] to `bitmap`.
      *
-     * @param key key of the tile in `Bitmap[] mTileArray` whose bitmap we are setting
-     * @param tile `Bitmap` to set the tile to.
+     * @param key key of the tile in the array of [Bitmap] field [mTileArray] whose bitmap we
+     * are setting.
+     * @param tile the [Drawable] to set the tile to.
      */
     fun loadTile(key: Int, tile: Drawable) {
         val bitmap = Bitmap.createBitmap(mTileSize, mTileSize, Bitmap.Config.ARGB_8888)
@@ -128,15 +129,15 @@ open class TileView : View {
 
     /**
      * We implement this to do our drawing. First we call our super's implementation of `onDraw`.
-     * Then we loop over `int x` for the `mXTileCount` tiles in the X direction and in an
-     * inner loop we loop over `int y` for the `mYTileCount` tiles in the Y direction, skipping
-     * all the `mTileGrid[x][y]` whose contents are not greater than 0, and for those whose contents
-     * are greater than 0 we draw the `Bitmap` contained in the `Bitmap[] mTileArray` whose
-     * index is given by the contents of `mTileGrid[x][y]` at the X coordinate of `mXOffset`
-     * plus `x` times `mTileSize`, whose Y coordinate is `mYOffset` plus `y`
-     * times `mTileSize`, using `mPaint` as the `Paint`.
+     * Then we loop over the [Int] variable `x` for the [mXTileCount] tiles in the X direction and
+     * in an inner loop we loop over the [Int] variable `y` for the [mYTileCount] tiles in the Y
+     * direction, skipping all the [mTileGrid]'s in location (`x`,`y`) whose contents are not greater
+     * than 0, and for those whose contents are greater than 0 we draw the [Bitmap] contained in the
+     * array of [Bitmap] field [mTileArray] whose index is specified by the contents of the (`x`,`y`)
+     * entry in [mTileGrid] at the X coordinate of [mXOffset] plus `x` times [mTileSize], and the
+     * Y coordinate of [mYOffset] plus `y` times [mTileSize], using [mPaint] as the [Paint].
      *
-     * @param canvas the canvas on which the background will be drawn
+     * @param canvas the [Canvas] on which the background will be drawn
      */
     public override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -146,10 +147,10 @@ open class TileView : View {
             while (y < mYTileCount) {
                 if (mTileGrid[x][y] > 0) {
                     canvas.drawBitmap(
-                            mTileArray[mTileGrid[x][y]]!!,
-                            (mXOffset + x * mTileSize).toFloat(),
-                            (mYOffset + y * mTileSize).toFloat(),
-                            mPaint
+                        mTileArray[mTileGrid[x][y]]!!,
+                        (mXOffset + x * mTileSize).toFloat(),
+                        (mYOffset + y * mTileSize).toFloat(),
+                        mPaint
                     )
                 }
                 y += 1
@@ -159,9 +160,9 @@ open class TileView : View {
     }
 
     /**
-     * Rests the internal array of Bitmaps used for drawing tiles, and sets the maximum index of
-     * tiles to be inserted. We just allocate `tileCount` entries for the array
-     * `Bitmap[] mTileArray`
+     * Rests the internal array of [Bitmap]'s used for drawing tiles, and sets the maximum index of
+     * tiles to be inserted. We just allocate our [Int] parameter [tileCount] entries for the array
+     * array of [Bitmap] field [mTileArray].
      *
      * @param tileCount number of tiles to use for our internal array of Bitmap
      */
@@ -170,11 +171,11 @@ open class TileView : View {
     }
 
     /**
-     * Used to indicate that a particular tile (set with loadTile and referenced by an integer)
+     * Used to indicate that a particular tile (set with [loadTile] and referenced by an integer)
      * should be drawn at the given x/y coordinates during the next invalidate/draw cycle. We just
-     * set the value of `mTileGrid[x][y]` to our parameter `tileIndex`.
+     * set the value of the (`x`,`y`) entry in our [mTileGrid] field to our parameter [tileIndex].
      *
-     * @param tileIndex index into `Bitmap[] mTileArray` of the `Bitmap` to use
+     * @param tileIndex index into the array of [Bitmap] field [mTileArray] of the [Bitmap] to use
      * @param x X coordinate of the tile
      * @param y Y coordinate of the tile
      */
@@ -184,20 +185,20 @@ open class TileView : View {
 
     /**
      * This is called during layout when the size of this view has changed. We set our field
-     * `mXTileCount` to our parameter `w` divided by `mTileSize` rounded down to
-     * the nearest int, and our field `mYTileCount` to our parameter `h` divided by
-     * `mTileSize` rounded down to the nearest int. We set our field `mXOffset` to our
-     * parameter `w` minus half of `mTileSize` times `mXTileCount` and our field
-     * `mYOffset` to our parameter `h` minus half of `mTileSize` times `mYTileCount`.
-     * We then initialize `int[][] mTileGrid` to an `mXTileCount` by `mYTileCount`
-     * array and call our method `clearTiles` to set all of its entries to 0.
+     * [mXTileCount] to our parameter [w] divided by [mTileSize] rounded down to the nearest [Int],
+     * and our field [mYTileCount] to our parameter [h] divided by [mTileSize] rounded down to the
+     * nearest [Int]. We set our field [mXOffset] to our parameter [w] minus half of [mTileSize]
+     * times [mXTileCount] and our field [mYOffset] to our parameter [h] minus half of [mTileSize]
+     * times [mYTileCount]. We then initialize our "array of array of [Int]" field [mTileGrid] to
+     * an [mXTileCount] by [mYTileCount] array and call our method [clearTiles] to set all of its
+     * entries to 0.
      *
      * @param w Current width of this view.
      * @param h Current height of this view.
      * @param oldw Old width of this view.
      * @param oldh Old height of this view.
      */
-    @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog") // Using kotlin methods here cause BUG
+    @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog") // Using kotlin methods here causes BUG
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         mXTileCount = Math.floor((w.toDouble() / mTileSize.toDouble())).toInt()
         mYTileCount = Math.floor((h.toDouble() / mTileSize.toDouble())).toInt()
@@ -208,13 +209,13 @@ open class TileView : View {
     }
 
     companion object {
-        /*
+    /*
      * Parameters controlling the size of the tiles and their range within view. Width/Height are in
      * pixels, and Drawables will be scaled to fit to these dimensions. X/Y Tile Counts are the
      * number of tiles that will be drawn.
      */
         /**
-         * Size of the square tile in pixels, controlled by the attribute R.styleable.TileView_tileSize
+         * Size of the square tile in pixels, controlled by the attribute [R.styleable.TileView_tileSize]
          * (defaulting to 12) set to 24dp in our layout file.
          */
         @JvmStatic
@@ -236,12 +237,12 @@ open class TileView : View {
          * Offset from the left side of the screen to begin drawing tiles in pixels.
          */
         @JvmStatic
-        private var mXOffset = 0
+        private var mXOffset: Int = 0
 
         /**
          * Offset from the top of the screen to begin drawing tiles in pixels.
          */
         @JvmStatic
-        private var mYOffset = 0
+        private var mYOffset: Int = 0
     }
 }
