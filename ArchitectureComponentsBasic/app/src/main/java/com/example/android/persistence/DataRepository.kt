@@ -1,0 +1,101 @@
+package com.example.android.persistence
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import com.example.android.persistence.db.AppDatabase
+import com.example.android.persistence.db.entity.CommentEntity
+import com.example.android.persistence.db.entity.ProductEntity
+
+/**
+ * Singleton Repository handling the work with products and comments.
+ * Our private constructor. First we save our parameter in our field `AppDatabase mDatabase`,
+ * then we create a new instance for our field `mObservableProducts`. Finally we add a
+ * lambda listener whose `onChanged` override will post the `LiveData` wrapped list
+ * of `ProductEntity` objects received from the `loadAllProducts` method of the
+ * `ProductDao` for the `AppDatabase mDatabase`.
+ *
+ * @param mDatabase the `AppDatabase` instance used for the application
+ */
+class DataRepository private constructor(
+    /**
+     * Our `AppDatabase` instance, which is a `RoomDatabase` with two tables "product"
+     * and "comments"
+     */
+    private val mDatabase: AppDatabase
+) {
+    /**
+     * The list of `ProductEntity` objects loaded from the database
+     */
+    private val mObservableProducts: MediatorLiveData<List<ProductEntity>> = MediatorLiveData()
+
+    /**
+     *
+     */
+    init {
+        mObservableProducts.addSource(mDatabase.productDao().loadAllProducts()
+        ) { productEntities: List<ProductEntity> ->
+            if (mDatabase.databaseCreated.value != null) {
+                mObservableProducts.postValue(productEntities)
+            }
+        }
+    }
+
+    /**
+     * Get the list of products from the database and get notified when the data changes. We simply
+     * return our field `MediatorLiveData<List<ProductEntity>> mObservableProducts`.
+     *
+     * @return our field `MediatorLiveData<List<ProductEntity>> mObservableProducts`.
+     */
+    val products: LiveData<List<ProductEntity>>
+        get() = mObservableProducts
+
+    /**
+     * Retrieves the `LiveData` wrapped `ProductEntity` whose product ID is given by our
+     * parameter `int productId` from the database.
+     *
+     * @param productId product ID of the `ProductEntity` we are to retrieve
+     * @return the `LiveData` wrapped `ProductEntity` requested
+     */
+    fun loadProduct(productId: Int): LiveData<ProductEntity> {
+        return mDatabase.productDao().loadProduct(productId)
+    }
+
+    /**
+     * Retrieves the `LiveData` wrapped list of `CommentEntity` objects whose product ID
+     * is given by our parameter `int productId` from the database.
+     *
+     * @param productId value of the `productId` column we are interested in
+     * @return a `LiveData` wrapped list of all `CommentEntity` whose `productId`
+     * column matches our parameter `productId`.
+     */
+    fun loadComments(productId: Int): LiveData<List<CommentEntity>> {
+        return mDatabase.commentDao().loadComments(productId)
+    }
+
+    companion object {
+        /**
+         * The cached instance of `DataRepository` that will be used by the application.
+         */
+        private var sInstance: DataRepository? = null
+
+        /**
+         * Accessor for our singleton instance of `DataRepository`. If our field `sInstance`
+         * is null, we synchronize on `DataRepository.class` and if it is still null we create a
+         * new instance of `DataRepository` using our parameter `AppDatabase database` to
+         * initialize it. Finally we return `sInstance` to the caller.
+         *
+         * @param database the `AppDatabase` instance used for the application
+         * @return our singleton instance of `DataRepository`
+         */
+        fun getInstance(database: AppDatabase): DataRepository? {
+            if (sInstance == null) {
+                synchronized(DataRepository::class.java) {
+                    if (sInstance == null) {
+                        sInstance = DataRepository(database)
+                    }
+                }
+            }
+            return sInstance
+        }
+    }
+}
