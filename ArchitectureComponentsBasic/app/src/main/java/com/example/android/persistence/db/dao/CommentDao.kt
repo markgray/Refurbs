@@ -49,7 +49,7 @@ interface CommentDao {
      * column matches our parameter `productId`.
      */
     @Query("SELECT * FROM comments where productId = :productId")
-    fun loadCommentsSync(productId: Int): List<CommentEntity?>?
+    fun loadCommentsSync(productId: Int): List<CommentEntity>
 
     /**
      * Inserts a list of `CommentEntity` objects into the database, with a conflict strategy
@@ -58,5 +58,5 @@ interface CommentDao {
      * @param comments `List` of `CommentEntity` objects to insert
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(comments: List<CommentEntity?>?)
+    fun insertAll(comments: List<CommentEntity>)
 }

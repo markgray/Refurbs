@@ -44,7 +44,7 @@ interface ProductDao {
      * @param products `List` of `ProductEntity` objects to insert
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(products: List<ProductEntity?>?)
+    fun insertAll(products: List<ProductEntity>)
 
     /**
      * Retrieves the `ProductEntity` in the "products" table of the data base with the
@@ -65,5 +65,5 @@ interface ProductDao {
      * @return `ProductEntity` requested.
      */
     @Query("select * from products where id = :productId")
-    fun loadProductSync(productId: Int): ProductEntity?
+    fun loadProductSync(productId: Int): ProductEntity
 }
