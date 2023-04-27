@@ -34,7 +34,7 @@ The app uses a Model-View-ViewModel (MVVM) architecture for the presentation lay
 
 * Views, including the fragments used in this sample, subscribe to corresponding `LiveData` objects. Because `LiveData` is lifecycle-aware, it doesn’t push changes to the underlying data if the observer is not in an active state, and this helps to avoid many common bugs. This is an example of a subscription:
 
-```java
+
         // Update the list of products when the underlying data changes.
         viewModel.getProducts().observe(this, new Observer<List<ProductEntity>>() {
             @Override
@@ -47,7 +47,7 @@ The app uses a Model-View-ViewModel (MVVM) architecture for the presentation lay
                 }
             }
         });
-```
+
 
 #### Data layer
 
@@ -59,10 +59,10 @@ Room populates the database asynchronously when it's created, via the `RoomDatab
 
 To access the data and execute queries, you use a [Data Access Object](https://developer.android.com/topic/libraries/architecture/room.html#daos) (DAO). For example, a product is loaded with the following query:
 
-```java
+
     @Query("select * from products where id = :productId")
     LiveData<ProductEntity> loadProduct(int productId);
-```
+
 
 Queries that return a `LiveData` object can be observed, so when  a change in one of the affected tables is detected, `LiveData` delivers a notification of that change to the registered observers.
 
