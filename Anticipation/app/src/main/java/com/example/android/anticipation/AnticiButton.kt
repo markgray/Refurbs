@@ -25,6 +25,7 @@ import android.graphics.Matrix
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
@@ -48,7 +49,7 @@ class AnticiButton : AppCompatButton {
     private var mSkewX = 0f
 
     /**
-     * `ObjectAnimator` for the animation of the "skewX" property when the button is pressed.
+     * [ObjectAnimator] for the animation of the "skewX" property when the button is pressed.
      */
     var downAnim: ObjectAnimator? = null
 
@@ -58,31 +59,31 @@ class AnticiButton : AppCompatButton {
     var mOnLeft: Boolean = true
 
     /**
-     * `RectF` which surrounds our view relative to our parent, used to invalidate the proper
-     * area of our parent for skewed bounds in our `invalidateSkewedBounds` method
+     * [RectF] which surrounds our view relative to our parent, used to invalidate the proper
+     * area of our parent for skewed bounds in our [invalidateSkewedBounds] method
      */
     var mTempRect: RectF = RectF()
 
     /**
      * Our one argument constructor. We call our super's constructor, then call our `init`
-     * method to set our `OnTouchListener` and our `OnClickListener`. UNUSED
+     * method to set our [View.OnTouchListener] and our [View.OnClickListener]. UNUSED
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
+     * access the current theme, resources, etc.
      */
     constructor(context: Context?) : super(context!!) {
         init()
     }
 
     /**
-     * This constructor allows a Button subclass to use its own class-specific base style from a
-     * theme attribute when inflating. The attributes defined by the current theme's
+     * This constructor allows a [AppCompatButton] subclass to use its own class-specific base
+     * style from a theme attribute when inflating. The attributes defined by the current theme's
      * `defStyleAttr` override base view attributes. We call our super's constructor, then call
-     * our `init` method to set our `OnTouchListener` and our `OnClickListener`.
-     * UNUSED
+     * our `init` method to set our [View.OnTouchListener] and our [View.OnClickListener]. UNUSED
      *
-     * @param context The Context the Button is running in, through which it can
+     * @param context The [Context] the Button is running in, through which it can
      * access the current theme, resources, etc.
-     * @param attrs The attributes of the XML Button tag that is inflating the view.
+     * @param attrs The attributes of the XML [AnticiButton] tag that is inflating the view.
      * @param defStyle The resource identifier of an attribute in the current theme
      * whose value is the the resource id of a style. The specified style’s
      * attribute values serve as default values for the button. Set this parameter
@@ -93,23 +94,23 @@ class AnticiButton : AppCompatButton {
     }
 
     /**
-     * `LayoutInflater` calls this constructor when inflating a Button from XML. We call our
-     * super's constructor, then call our `init` method to set our `OnTouchListener` and
-     * our `OnClickListener`. This is the constructor that is used.
+     * [LayoutInflater] calls this constructor when inflating a [AnticiButton] from XML. We call
+     * our super's constructor, then call our `init` method to set our [View.OnTouchListener] and
+     * our [View.OnClickListener]. This is the constructor that is used.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
-     * @param attrs The attributes of the XML Button tag being used to inflate the view.
+     * @param attrs The attributes of the XML [AnticiButton] tag being used to inflate the view.
      */
     constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {
         init()
     }
 
     /**
-     * Called by our constructors to set our `OnTouchListener` and our `OnClickListener`.
-     * We set our `OnTouchListener` to our field `OnTouchListener mTouchListener` and set
-     * our `OnClickListener` to an anonymous class whose `onClick` override calls our
-     * method `runClickAnim` to create and perform the animations we do when we are clicked.
+     * Called by our constructors to set our [View.OnTouchListener] and [View.OnClickListener].
+     * We set our `OnTouchListener` to our [OnTouchListener] field [mTouchListener] and set
+     * our [View.OnClickListener] to an anonymous class whose `onClick` override calls our
+     * method [runClickAnim] to create and perform the animations we do when we are clicked.
      */
     private fun init() {
         setOnTouchListener(mTouchListener)
@@ -117,17 +118,16 @@ class AnticiButton : AppCompatButton {
     }
 
     /**
-     * Manually render this view (and all of its children) to the given Canvas. The view must have
+     * Manually render this view (and all of its children) to the given [Canvas]. The view must have
      * already done a full layout before this function is called.
      *
-     *
      * The skew effect is handled by changing the transform of the Canvas and then calling the usual
-     * superclass draw() method. If our field `mSkewX` is not 0 we translate the canvas to the
-     * bottom left corner of our view, pre-concat the current matrix with a skew in X of `mSkewX`,
+     * superclass draw() method. If our field [mSkewX] is not 0 we translate the canvas to the
+     * bottom left corner of our view, pre-concat the current matrix with a skew in X of [mSkewX],
      * then translate the canvas back to its original position. Whether we skewed the canvas or not
      * we call our super's implementation of `draw`.
      *
-     * @param canvas The Canvas to which the View is rendered.
+     * @param canvas The [Canvas] to which the View is rendered.
      */
     override fun draw(canvas: Canvas) {
         if (mSkewX != 0f) {
@@ -140,10 +140,10 @@ class AnticiButton : AppCompatButton {
 
     /**
      * Anticipate the future animation by rearing back, away from the direction of travel, this is
-     * run when we receive an ACTION_DOWN event in our `OnTouchListener`. We initialize our
-     * field `ObjectAnimator downAnim` with an instance which will animate the "skewX" property
-     * of 'this' to .5f if our field `mOnLeft` is true or to -.5f if it is false, set its
-     * duration to 2500, set its `TimeInterpolator` to our field `DecelerateInterpolator sDecelerator`,
+     * run when we receive an ACTION_DOWN event in our [View.OnTouchListener]. We initialize our
+     * [ObjectAnimator] field [downAnim] with an instance which will animate the "skewX" property
+     * of 'this' to .5f if our field [mOnLeft] is true or to -.5f if it is false, set its duration
+     * to 2500, set its `TimeInterpolator` to our [DecelerateInterpolator] field [sDecelerator],
      * and start it running.
      */
     private fun runPressAnim() {
@@ -157,31 +157,29 @@ class AnticiButton : AppCompatButton {
     /**
      * Finish the "anticipation" animation (skew the button back from the direction of travel),
      * animate it to the other side of the screen, then un-skew the button with an Overshoot effect.
-     * We initialize `ObjectAnimator finishDownAnim` to null. If our field `ObjectAnimator downAnim`
-     * is not null, and is currently running, we call its `cancel` method to cancel it, set
-     * `finishDownAnim` to an instance which animates the "skewX" property of 'this' to .5f if
-     * `mOnLeft` is true (our button is on the left of the screen) or to -.5f if it is on the
-     * right side, set its duration to 150, and set its `TimeInterpolator` to our field
-     * `DecelerateInterpolator sQuickDecelerator`.
+     * We initialize [ObjectAnimator] variable `var finishDownAnim` to null. If our [ObjectAnimator]
+     * field [downAnim] is not null, and is currently running, we call its `cancel` method to cancel
+     * it, set `finishDownAnim` to an instance which animates the "skewX" property of 'this' to .5f
+     * if [mOnLeft] is true (our button is on the left of the screen) or to -.5f if it is on the
+     * right side, set its duration to 150, and set its `TimeInterpolator` to our [DecelerateInterpolator]
+     * field [sQuickDecelerator].
      *
+     * Having taken care of any [downAnim] that may have been running (or not running) we initialize
+     * [ObjectAnimator] variable `val moveAnim` with an instance which will animate the TRANSLATION_X
+     * property of 'this' to 400 if [mOnLeft] is `true`, or to 0 if it is `false`, set its
+     * `TimeInterpolator` to our [LinearInterpolator] field [sLinearInterpolator], and set its duration
+     * to 150. We initialize [ObjectAnimator] variable `val skewAnim` with an instance which will
+     * animate the "skewX" property of 'this' to -.5f if [mOnLeft] is `true`, or to .5f if it is
+     * `false`, set its `TimeInterpolator` to [DecelerateInterpolator] field [sQuickDecelerator],
+     * and set its duration to 100. We initialize [ObjectAnimator] variable `val wobbleAnim` to an
+     * instance which will animate the "skewX" property of 'this' to 0, set its `TimeInterpolator`
+     * to our [OvershootInterpolator] field [sOvershooter], and set its duration to 150.
      *
-     * Having taken care of any `downAnim` that may have been running (or not running) we
-     * initialize `ObjectAnimator moveAnim` with an instance which will animate the TRANSLATION_X
-     * property of 'this' to 400 if `mOnLeft` is true, or to 0 if it is false, set its
-     * `TimeInterpolator` to `LinearInterpolator sLinearInterpolator`, and set its duration
-     * to 150. We initialize `ObjectAnimator skewAnim` with an instance which will animate the
-     * "skewX" property of 'this' to -.5f if `mOnLeft` is true, or to .5f if it is false, set
-     * its `TimeInterpolator` to `DecelerateInterpolator sQuickDecelerator`, and set its
-     * duration to 100. We initialize `ObjectAnimator wobbleAnim` to an instance which will
-     * animate the "skewX" property of 'this' to 0, set its `TimeInterpolator` to our field
-     * `OvershootInterpolator sOvershooter`, and set its duration to 150.
-     *
-     *
-     * We next initialize `AnimatorSet set` with a new instance, and set it up to play sequentially
-     * `moveAnim`, `skewAnim`, and `wobbleAnim`. If `finishDownAnim` is not null
+     * We next initialize [AnimatorSet] variable `val set` with a new instance, and set it up to
+     * play sequentially `moveAnim`, `skewAnim`, and `wobbleAnim`. If `finishDownAnim` is not null
      * we call the `finishDownAnim` to create a `Builder` which we use to introduce the
      * constraint to `set` that `finishDownAnim` should be played before `moveAnim`.
-     * In either case we start `set` running and toggle the value of our field `mOnLeft`.
+     * In either case we start `set` running and toggle the value of our field [mOnLeft].
      */
     private fun runClickAnim() {
         // Anticipation
@@ -358,7 +356,7 @@ class AnticiButton : AppCompatButton {
     /**
      * The amount of left/right skew on the button, which determines how far the button leans.
      */
-    @Suppress("unused")
+    @Suppress("unused") // It is used as the property that animates the value of `mSkewX`
     var skewX: Float
         /**
          * Getter for our `float mSkewX` field. We just return the current value of our
