@@ -38,7 +38,7 @@ interface CommentDao {
      * column matches our parameter `productId`.
      */
     @Query("SELECT * FROM comments where productId = :productId")
-    fun loadComments(productId: Int): LiveData<List<CommentEntity?>?>?
+    fun loadComments(productId: Int): LiveData<List<CommentEntity>>
 
     /**
      * Returns a list of all the `CommentEntity` objects in the table "comments" of the

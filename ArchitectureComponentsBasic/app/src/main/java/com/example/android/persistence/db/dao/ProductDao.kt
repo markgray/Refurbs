@@ -35,7 +35,7 @@ interface ProductDao {
      * @return a `LiveData` wrapped list of all the `ProductEntity` objects in the data base
      */
     @Query("SELECT * FROM products")
-    fun loadAllProducts(): LiveData<List<ProductEntity?>?>?
+    fun loadAllProducts(): LiveData<List<ProductEntity>>
 
     /**
      * Inserts a list of `ProductEntity` objects into the database, with a conflict strategy
@@ -55,7 +55,7 @@ interface ProductDao {
      * @return `LiveData` wrapped `ProductEntity` requested.
      */
     @Query("select * from products where id = :productId")
-    fun loadProduct(productId: Int): LiveData<ProductEntity?>?
+    fun loadProduct(productId: Int): LiveData<ProductEntity>
 
     /**
      * Retrieves the `ProductEntity` in the "products" table of the data base with the
