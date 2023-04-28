@@ -220,12 +220,12 @@ class AnticiButton : AppCompatButton {
 
     /**
      * Restore the button to its un-pressed state, called when our `onTouch` override receives
-     * an ACTION_CANCEL event (or an ACTION_UP event without the button being pressed). If our field
-     * `ObjectAnimator downAnim` and it is running we call its `cancel` method to cancel
-     * the animation. We then initialize `ObjectAnimator reverser` with an instance which will
-     * animate the "skewX" property of 'this' to 0, set its duration to 200, set its `TimeInterpolator`
-     * to `AccelerateInterpolator sAccelerator`, and start it running. We then set our field
-     * `downAnim` to null.
+     * an ACTION_CANCEL event (or an ACTION_UP event without the button being pressed). If our
+     * [ObjectAnimator] field [downAnim] is not `null` and it is running we call its `cancel`
+     * method to cancel the animation. We then initialize [ObjectAnimator] variable `val reverser`
+     * with an instance which will animate the "skewX" property of 'this' to 0, set its duration
+     * to 200, set its `TimeInterpolator` to [AccelerateInterpolator] field [sAccelerator], and
+     * start it running. We then set our field [downAnim] to `null`.
      */
     private fun runCancelAnim() {
         if (downAnim != null && downAnim!!.isRunning) {
@@ -245,82 +245,34 @@ class AnticiButton : AppCompatButton {
     private val mTouchListener = OnTouchListener { v: View, event: MotionEvent ->
 
         /**
-         * Called when a touch event is dispatched to 'this' `View`. We switch on the action
-         * of our parameter `MotionEvent event`:
+         * Called when a touch event is dispatched to `this` `View`. We switch on the action
+         * of our [MotionEvent] parameter [event]:
+         *  * ACTION_UP: If the [isPressed] method returns `true` (indicating that the view
+         *  is currently in the pressed state) we call the [performClick] method to call
+         *  our [View.OnClickListener], call the [setPressed] method with `false` to clear the
+         *  pressed state of our view, then break. If the `isPressed` method returned false we
+         *  call our [runCancelAnim] method to run the cancel animation.
          *
-         *  *
-         * ACTION_UP: If the `isPressed` method returns true (indicating that the view
-         * is currently in the pressed state) we call the `performClick` method to call
-         * our `OnClickListener`, call `setPressed(false)` to clear the pressed
-         * state of our view, then break. If the `isPressed` method returned false we
-         * fall through to the ACTION_CANCEL case.
+         *  * ACTION_CANCEL: We call our [runCancelAnim] method to run the cancel animation.
          *
-         *  *
-         * ACTION_CANCEL: We call our `runCancelAnim` method to run the cancel animation
-         * and break.
+         *  * ACTION_MOVE: We initialize [Float] variable `val x` with the X coordinate of [event]
+         *  and [Float] variable `val y` with the Y coordinate of [event], then initialize
+         *  [Boolean] variable `val isInside` to `true` if the point (x,y) is within the width and
+         *  height of our view, or to `false` if it is outside our view. Then if the [isPressed]
+         *  method returns a value that is different than `isInside` we call the [setPressed]
+         *  method with `isInside` to set our pressed state to the value of `isInside`.
          *
-         *  *
-         * ACTION_MOVE: We initialize `float x` with the X coordinate of `event`
-         * and `float y` with the Y coordinate, then initialize `boolean isInside`
-         * to true if the point (x,y) is within the width and height of our view, or to false
-         * if it is outside our view. Then if the `isPressed` method returns a value
-         * that is different than `isInside` we call `setPressed(isInside)` to
-         * set our pressed state to the value of `isInside`. Inside or outside we then
-         * break.
+         *  * ACTION_DOWN: We call the [setPressed] method with `true` to set our pressed state,
+         *  and call our [runPressAnim] method to run the "rearing back, away from the direction
+         *  of travel animation".
          *
-         *  *
-         * ACTION_DOWN: We call the method `setPressed(true)` to set our pressed state,
-         * call our `runPressAnim` method to run the "rearing back, away from the direction
-         * of travel animation", and then break.
+         *  * default: We ignore.
          *
-         *  *
-         * default: We just break.
+         * We then return `true` to consume the event.
          *
-         *
-         * We then return true to consume the event.
-         *
-         * @param v The view the touch event has been dispatched to.
-         * @param event The MotionEvent object containing full information about the event.
-         * @return True if the listener has consumed the event, false otherwise.
-         */
-        /**
-         * Called when a touch event is dispatched to 'this' `View`. We switch on the action
-         * of our parameter `MotionEvent event`:
-         *
-         *  *
-         * ACTION_UP: If the `isPressed` method returns true (indicating that the view
-         * is currently in the pressed state) we call the `performClick` method to call
-         * our `OnClickListener`, call `setPressed(false)` to clear the pressed
-         * state of our view, then break. If the `isPressed` method returned false we
-         * fall through to the ACTION_CANCEL case.
-         *
-         *  *
-         * ACTION_CANCEL: We call our `runCancelAnim` method to run the cancel animation
-         * and break.
-         *
-         *  *
-         * ACTION_MOVE: We initialize `float x` with the X coordinate of `event`
-         * and `float y` with the Y coordinate, then initialize `boolean isInside`
-         * to true if the point (x,y) is within the width and height of our view, or to false
-         * if it is outside our view. Then if the `isPressed` method returns a value
-         * that is different than `isInside` we call `setPressed(isInside)` to
-         * set our pressed state to the value of `isInside`. Inside or outside we then
-         * break.
-         *
-         *  *
-         * ACTION_DOWN: We call the method `setPressed(true)` to set our pressed state,
-         * call our `runPressAnim` method to run the "rearing back, away from the direction
-         * of travel animation", and then break.
-         *
-         *  *
-         * default: We just break.
-         *
-         *
-         * We then return true to consume the event.
-         *
-         * @param v The view the touch event has been dispatched to.
-         * @param event The MotionEvent object containing full information about the event.
-         * @return True if the listener has consumed the event, false otherwise.
+         * @param v The [View] the touch event has been dispatched to.
+         * @param event The [MotionEvent] object containing full information about the event.
+         * @return `true` if the listener has consumed the event, `false` otherwise.
          */
         when (event.action) {
             MotionEvent.ACTION_UP -> {
@@ -334,10 +286,11 @@ class AnticiButton : AppCompatButton {
             }
 
             MotionEvent.ACTION_CANCEL -> runCancelAnim()
+
             MotionEvent.ACTION_MOVE -> {
-                val x = event.x
-                val y = event.y
-                val isInside = x > 0 && x < width && y > 0 && y < height
+                val x: Float = event.x
+                val y: Float = event.y
+                val isInside: Boolean = x > 0 && x < width && y > 0 && y < height
                 if (isPressed != isInside) {
                     isPressed = isInside
                 }
@@ -359,21 +312,21 @@ class AnticiButton : AppCompatButton {
     @Suppress("unused") // It is used as the property that animates the value of `mSkewX`
     var skewX: Float
         /**
-         * Getter for our `float mSkewX` field. We just return the current value of our
-         * `float mSkewX` field.
+         * Getter for our [Float] property [mSkewX]. We just return the current value of our
+         * [Float] property [mSkewX].
          *
-         * @return the current value of our `float mSkewX` field
+         * @return the current value of our [Float] property [mSkewX].
          */
         get() = mSkewX
         /**
-         * Sets the amount of left/right skew on the button, which determines how far the button leans.
-         * If our parameter `float value` is not equal to our field `float mSkewX` we set
-         * `mSkewX` to it, call the `invalidate` method to force our button to be redrawn
-         * with new skew value, and then call our `invalidateSkewedBounds` to also invalidate the
-         * appropriate area of our parent. If our parameter `float value` is already equal to our
-         * field `float mSkewX` we do nothing.
+         * Sets the amount of left/right skew on the button, which determines how far the button
+         * leans. If our [Float] parameter [value] is not equal to our [Float] property [mSkewX]
+         * we set [mSkewX] to it, call the [invalidate] method to force our button to be redrawn
+         * with new skew value, and then call our [invalidateSkewedBounds] to also invalidate the
+         * appropriate area of our parent. If our parameter `[value] is already equal to [mSkewX]
+         * we do nothing.
          *
-         * @param value value to set our field `float mSkewX` to.
+         * @param value value to set our [Float] property [mSkewX] to.
          */
         set(value) {
             if (value != mSkewX) {
@@ -384,19 +337,20 @@ class AnticiButton : AppCompatButton {
         }
 
     /**
-     * Need to invalidate proper area of parent for skewed bounds. If our field `float mSkewX`
-     * if not 0, we initialize `Matrix matrix` with a new instance, and set it to skew by minus
-     * `mSkewX` in the X dimension, 0 in the Y dimension. We set our field `RectF mTempRect`
-     * to be a rectangle whose left top corner is at (0,0), and whose right bottom corner is at our
-     * view's right and bottom coordinates relative to our parent (this is a rectangle surrounding
-     * our un-skewed shape). We then call the `mapRect` method of `matrix` to apply its
-     * skewing transformation to `mTempRect`. We then offset `mTempRect` by the left side
-     * of our view plus its X translation in the X direction, and by the top side of our view plus
-     * its Y translation in the Y direction (at this point `mTempRect` is the area of our parent
-     * that we occupy). We then retrieve our parent view, and call its `invalidate` method to
-     * invalidate the region from the left top of `mTempRect` to the right bottom (rounded up).
-     * Note that it is a waste of effort doing this with hardware rendering, and that it is better to
-     * just invalidate our entire parent.
+     * Need to invalidate proper area of parent for skewed bounds. If our [Float] property [mSkewX]
+     * if not 0f, we initialize [Matrix] variable `val matrix` with a new instance, and set it to
+     * skew by minus [mSkewX] in the X dimension, 0 in the Y dimension. We set our [RectF] field
+     * [mTempRect] to be a rectangle whose left top corner is at (0,0), and whose right bottom
+     * corner is at our view's right and bottom coordinates relative to our parent (this is a
+     * rectangle surrounding our un-skewed shape). We then call the [Matrix.mapRect] method of
+     * `matrix` to apply its skewing transformation to [mTempRect]. We then offset [mTempRect] by
+     * the `left` side of our view plus its X translation in the X direction, and by `the` top side
+     * of our view plus its Y translation in the Y direction (at this point [mTempRect] is the area
+     * of our parent that we occupy). We used to then retrieve our parent view, and call its
+     * [invalidate] method to invalidate the region from the left top of [mTempRect] to the right
+     * bottom (rounded up). BUT Note that it is a waste of effort doing this with hardware
+     * rendering, and that it is better to just invalidate our entire parent as we do now (silences
+     * a warning).
      */
     private fun invalidateSkewedBounds() {
         if (mSkewX != 0f) {

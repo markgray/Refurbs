@@ -22,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity
  * This example shows how to animate some simple deformations on a standard UI widget
  * to achieve some interactive and cartoon-ish effects.
  *
- *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on the DevBytes playlist in the android developers channel on YouTube at
  * [...](https://www.youtube.com/playlist?list=PLWz5rJ2EKKc_XOgcRukSoKKjewFJZrKV0).
@@ -31,9 +30,9 @@ import androidx.appcompat.app.AppCompatActivity
 class Anticipation : AppCompatActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.main.
+     * then we set our content view to our layout file [R.layout.main].
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
