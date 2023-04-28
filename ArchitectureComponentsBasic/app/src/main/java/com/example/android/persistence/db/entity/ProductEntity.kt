@@ -16,6 +16,7 @@
 package com.example.android.persistence.db.entity
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.example.android.persistence.model.Product
 
@@ -127,6 +128,7 @@ class ProductEntity : Product {
     /**
      * Our empty constructor, does nothing
      */
+    @Ignore
     constructor()
 
     /**

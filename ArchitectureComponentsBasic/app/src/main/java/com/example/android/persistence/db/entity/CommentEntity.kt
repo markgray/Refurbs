@@ -18,6 +18,7 @@ package com.example.android.persistence.db.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
+import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.android.persistence.model.Comment
@@ -138,6 +139,7 @@ class CommentEntity : Comment {
     /**
      * Our empty constructor, does nothing.
      */
+    @Ignore
     constructor()
 
     /**
