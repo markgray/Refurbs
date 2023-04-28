@@ -19,14 +19,15 @@ import androidx.room.TypeConverter
 import java.util.Date
 
 /**
- * TODO: Add kdoc
+ * Contains static methods to convert from a [Long] timestamp in milliseconds since January 1, 1970,
+ * 00:00:00 GMT to a [Date] (the [toDate] method), and vice-versa (the [toTimestamp] method).
  */
 object DateConverter {
     /**
-     * Converts its parameter `Long timestamp` to a `Date` object.
+     * Converts its [Long] parameter [timestamp] to a [Date] object.
      *
      * @param timestamp timestamp in milliseconds since January 1, 1970, 00:00:00 GMT
-     * @return `Date` object for the time `timestamp`
+     * @return [Date] instance for the time [timestamp].
      */
     @JvmStatic
     @TypeConverter
@@ -35,11 +36,11 @@ object DateConverter {
     }
 
     /**
-     * Converts a `Date` object to milliseconds since January 1, 1970, 00:00:00 GMT.
+     * Converts a [Date] instance to a [Long] milliseconds since January 1, 1970, 00:00:00 GMT.
      *
-     * @param date `Date` object we wish to convert to milliseconds since January 1, 1970,
+     * @param date [Date] instance we wish to convert to milliseconds since January 1, 1970,
      * 00:00:00 GMT
-     * @return milliseconds since January 1, 1970, 00:00:00 GMT version of our parameter `Date date`
+     * @return milliseconds since January 1, 1970, 00:00:00 GMT version of our [Date] parameter [date]
      */
     @JvmStatic
     @TypeConverter
