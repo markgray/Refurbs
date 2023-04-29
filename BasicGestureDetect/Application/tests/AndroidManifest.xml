@@ -29,12 +29,4 @@
         <uses-library android:name="android.test.runner" />
     </application>
 
-    <!--
-    Specifies the instrumentation test runner used to run the tests.
-    -->
-    <instrumentation
-            android:name="android.test.InstrumentationTestRunner"
-            android:targetPackage="com.example.android.basicgesturedetect"
-            android:label="Tests for com.example.android.basicgesturedetect" />
-
 </manifest>
