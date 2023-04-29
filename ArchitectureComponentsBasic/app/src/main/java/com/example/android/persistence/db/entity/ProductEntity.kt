@@ -18,61 +18,62 @@ package com.example.android.persistence.db.entity
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.example.android.persistence.db.DataGenerator
 import com.example.android.persistence.model.Product
 
 /**
- * This is a row in the table "products" of our Room database. The Entity annotation marks this class
- * as an entity. This class will have a mapping SQLite table in the database, and all fields will be
- * automatically persisted. The tableName property sets the table name used to "products", and the
- * primary key is our field `int id` (indicated by the PrimaryKey annotation).
+ * This is a row in the table "products" of our Room database. The `Entity` annotation marks this
+ * class as an entity. This class will have a mapping SQLite table in the database, and all fields
+ * will be automatically persisted. The `tableName` property sets the table name used to "products",
+ * and the primary key is our [Int] field [id] (indicated by the `PrimaryKey` annotation).
  */
 @Entity(tableName = "products")
 class ProductEntity : Product {
     /**
-     * Our primary key is a unique `int` for each row, generated in the class `DataGenerator`
-     * by the method `generateProducts`.
+     * Our primary key is a unique [Int] for each row, generated in the class [DataGenerator]
+     * by the method [DataGenerator.generateProducts].
      */
     @PrimaryKey
     private var id = 0
 
     /**
-     * Name of our product, generated in the class `DataGenerator` by the method
-     * `generateProducts`.
+     * Name of our product, generated in the class [DataGenerator] by the method
+     * [DataGenerator.generateProducts].
      */
     private var name: String? = null
 
     /**
-     * Description of our product, generated in the class `DataGenerator` by the method
-     * `generateProducts`.
+     * Description of our product, generated in the class [DataGenerator] by the method
+     * [DataGenerator.generateProducts].
      */
     private var description: String? = null
 
     /**
-     * Price of our product, generated in the class `DataGenerator` by the method
-     * `generateProducts`.
+     * Price of our product, generated in the class [DataGenerator] by the method
+     * [DataGenerator.generateProducts].
      */
     private var price = 0
 
     /**
-     * Getter for the `int id` field.
+     * Getter for our [Int] field [id].
      *
-     * @return the value in our field `id`
+     * @return the value in our field [id]
      */
     override fun getId(): Int {
         return id
     }
 
     /**
-     * Setter for the `int id` field
+     * Setter for our [Int] field [id].
      *
-     * @param id value to set our field `int id` to
+     * @param id value to set our field [id] to.
      */
     fun setId(id: Int) {
         this.id = id
     }
 
     /**
-     * Getter for the `String name` field.
+     * Getter for our [String] field [name].
      *
      * @return the value in our field `String name`
      */
@@ -81,45 +82,45 @@ class ProductEntity : Product {
     }
 
     /**
-     * Setter for the `String name` field
+     * Setter for our [String] field [name].
      *
-     * @param name value to set our field `String name` to
+     * @param name value to set our [String] field [name] to
      */
     fun setName(name: String?) {
         this.name = name
     }
 
     /**
-     * Getter for the `String description` field
+     * Getter for our [String] field [description].
      *
-     * @return the value in our field `String description`
+     * @return the value in our [String] field [description].
      */
     override fun getDescription(): String {
         return description!!
     }
 
     /**
-     * Setter for the `String description` field
+     * Setter for our [String] field [description].
      *
-     * @param description value to set our field `String description` to
+     * @param description value to set our [String] field [description] to.
      */
     fun setDescription(description: String?) {
         this.description = description
     }
 
     /**
-     * Getter for the `int prince` field
+     * Getter for our [Int] field [price].
      *
-     * @return value in our field `int price`
+     * @return value in our [Int] field [price].
      */
     override fun getPrice(): Int {
         return price
     }
 
     /**
-     * Setter for the `int price` field
+     * Setter for our [Int] field [price].
      *
-     * @param price value to set our field `int price` to
+     * @param price value to set our [Int] field [price] to
      */
     fun setPrice(price: Int) {
         this.price = price
@@ -134,10 +135,10 @@ class ProductEntity : Product {
     /**
      * Constructor that initializes all fields.
      *
-     * @param id value to set our field `int id` to
-     * @param name value to set our field `String name` to
-     * @param description value to set our field `String description` to
-     * @param price value to set our field `int price` to
+     * @param id value to set our [Int] field [id] to
+     * @param name value to set our [String] field [name] to
+     * @param description value to set our [String] field [description] to.
+     * @param price value to set our [Int] field [price] to
      */
     constructor(id: Int, name: String?, description: String?, price: Int) {
         this.id = id
@@ -149,7 +150,7 @@ class ProductEntity : Product {
     /**
      * Our copy constructor.
      *
-     * @param product `Product` object to copy
+     * @param product [Product] object to copy
      */
     constructor(product: Product) {
         id = product.getId()

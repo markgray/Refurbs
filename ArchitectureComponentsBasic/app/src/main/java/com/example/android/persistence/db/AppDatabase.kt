@@ -35,12 +35,14 @@ import com.example.android.persistence.db.dao.CommentDao
 import com.example.android.persistence.db.dao.ProductDao
 import com.example.android.persistence.db.entity.CommentEntity
 import com.example.android.persistence.db.entity.ProductEntity
+import java.util.Date
+import java.util.concurrent.Executor
 
 /**
- * Our `RoomDatabase` class, with a "version" of 1, and two tables containing `ProductEntity`
- * and `CommentEntity` objects in tables "product" and "comments" respectively. We use the two
- * Dao (data access objects) `ProductDao` and `CommentDao` to access the database. We also
- * use the type converter `DateConverter` to convert `Date` objects to and from milliseconds
+ * Our [RoomDatabase] class, with a "version" of 1, and two tables containing [ProductEntity]
+ * and [CommentEntity] objects in tables "product" and "comments" respectively. We use the two
+ * Dao (data access objects) [ProductDao] and [CommentDao] to access the database. We also
+ * use the type converter [DateConverter] to convert [Date] objects to and from milliseconds
  * since January 1, 1970, 00:00:00 GMT.
  */
 @Database(entities = [ProductEntity::class, CommentEntity::class], version = 1, exportSchema = false)
@@ -50,7 +52,7 @@ abstract class AppDatabase : RoomDatabase() {
      * Provides access to the Dao (data access object) methods defined for the "products" table of
      * the database.
      *
-     * @return An instance of `ProductDao` to use to access the "products" table of database
+     * @return An instance of [ProductDao] to use to access the "products" table of database
      */
     abstract fun productDao(): ProductDao
 
@@ -58,24 +60,24 @@ abstract class AppDatabase : RoomDatabase() {
      * Provides access to the Dao (data access object) methods defined for the "comments" table of
      * the database.
      *
-     * @return An instance of `CommentDao` to use to access the "comments" table of database
+     * @return An instance of [CommentDao] to use to access the "comments" table of database
      */
     abstract fun commentDao(): CommentDao
 
     /**
-     * Flag used to tell if the database has been created, set by the method `setDatabaseCreated`
-     * and retrieved using the method `getDatabaseCreated`
+     * Flag used to tell if the database has been created, set by the method [setDatabaseCreated]
+     * and retrieved using the property [databaseCreated].
      */
     private val mIsDatabaseCreated = MutableLiveData<Boolean>()
 
     /**
-     * Check whether the database already exists and expose it via [.getDatabaseCreated]. We
-     * use our parameter `Context context` to retrieve the absolute path on the filesystem where
-     * our database DATABASE_NAME ("basic-sample-db") should be located and if it exists there we call
-     * our method `setDatabaseCreated` to set our field `MutableLiveData<Boolean> mIsDatabaseCreated`
-     * to true.
+     * Check whether the database already exists and expose it via [databaseCreated]. We use our
+     * [Context] parameter [context] to retrieve the absolute path on the filesystem where our
+     * database [DATABASE_NAME] ("basic-sample-db") should be located and if it exists there we call
+     * our method [setDatabaseCreated] to set our [MutableLiveData] wrapped [Boolean] field
+     * [mIsDatabaseCreated] to `true`.
      *
-     * @param context application `Context` to use to find the absolute path on the filesystem
+     * @param context application [Context] to use to find the absolute path on the filesystem
      * where our database should be located
      */
     private fun updateDatabaseCreated(context: Context) {
@@ -85,25 +87,25 @@ abstract class AppDatabase : RoomDatabase() {
     }
 
     /**
-     * Called to set our field `MutableLiveData<Boolean> mIsDatabaseCreated` to true (which we
-     * do).
+     * Called to set our [MutableLiveData] wrapped [Boolean] field [mIsDatabaseCreated] to `true`
+     * (which we do by calling its [MutableLiveData.postValue] method with `true`).
      */
     private fun setDatabaseCreated() {
         mIsDatabaseCreated.postValue(true)
     }
 
     /**
-     * Getter for our field `MutableLiveData<Boolean> mIsDatabaseCreated`.
+     * Getter for our [MutableLiveData] wrapped [Boolean] field [mIsDatabaseCreated].
      *
-     * @return the contents of our field `MutableLiveData<Boolean> mIsDatabaseCreated`
+     * @return the value of our [MutableLiveData] wrapped [Boolean] field [mIsDatabaseCreated].
      */
     val databaseCreated: LiveData<Boolean>
         get() = mIsDatabaseCreated
 
     companion object {
         /**
-         * Our instance of `AppDatabase`, created by our `getInstance` method by calling the
-         * method `buildDatabase`.
+         * Our cached instance of [AppDatabase], created by our [getInstance] method by calling the
+         * method [buildDatabase].
          */
         private var sInstance: AppDatabase? = null
 
@@ -114,18 +116,18 @@ abstract class AppDatabase : RoomDatabase() {
         val DATABASE_NAME: String = "basic-sample-db"
 
         /**
-         * Returns the `AppDatabase` instance used for the application, creating it if need be. If
-         * our field `AppDatabase sInstance` is null, we synchronize on `AppDatabase.class`,
-         * and if it is still null, we initialize it with the value returned from our method `buildDatabase`
-         * (which will open our `AppDatabase` or create if it does not already exist). Then we call
-         * the `updateDatabaseCreated` to update our flag `MutableLiveData<Boolean> mIsDatabaseCreated`.
-         * Finally we return `sInstance` to our caller.
+         * Returns the [AppDatabase] instance used for the application, creating it if need be. If
+         * our [AppDatabase] field [sInstance] is `null`, we synchronize on [AppDatabase.class], and
+         * if it is still `null`, we initialize it with the value returned from our method [buildDatabase]
+         * (which will open our [AppDatabase] or create it if it does not already exist). Then we call
+         * the [updateDatabaseCreated] to set to `true` our [MutableLiveData] wrapped [Boolean] flag
+         * [mIsDatabaseCreated]. Finally we return [sInstance] to our caller.
          *
-         * @param context   `Context` to use to retrieve the application context (usually the application
-         * context to begin with)
-         * @param executors Instance of `AppExecutors` to use to access the Global executor pool
+         * @param context [Context] to use to retrieve the application context (usually the application
+         * context to begin with).
+         * @param executors Instance of [AppExecutors] to use to access the Global executor pool
          * for the whole application.
-         * @return our instance of `AppDatabase`
+         * @return our singleton instance of [AppDatabase].
          */
         fun getInstance(context: Context, executors: AppExecutors): AppDatabase? {
             if (sInstance == null) {
@@ -140,32 +142,34 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         /**
-         * Build the database. `Builder.build` only sets up the database configuration and creates
-         * a new instance of the database. The SQLite database is only created when it's accessed for the
-         * first time. We create a `Room` `databaseBuilder` designed to build a database with
-         * the name DATABASE_NAME ("basic-sample-db") using `AppDatabase.class` for the class which
-         * is annotated with Database and extends `RoomDatabase`. We then add an anonymous class as
-         * a `Callback` to it whose `onOpen` override simply logs the fact that it has been
-         * called, and whose `onCreate` override uses the `AppExecutors.diskIO` `Executor`
-         * to run a lambda on its single threaded thread pool which generates data for our database and
-         * inserts it (`onCreate` is only called the first time). Finally we build and return this
-         * `Room.databaseBuilder` to the caller (the result of the build is an `AppDatabase`
-         * instance).
+         * Build the database. Calling the [RoomDatabase.Builder.build] method of the [RoomDatabase.Builder]
+         * returned by [databaseBuilder] only sets up the database configuration and creates a new
+         * instance of the database. The SQLite database is only created when it's accessed for the
+         * first time. We create a [RoomDatabase.Builder] designed to build a database with the name
+         * DATABASE_NAME ("basic-sample-db") using [AppDatabase.class] for the class which is annotated
+         * with `Database` and extends [RoomDatabase]. We then add an anonymous class as a
+         * [RoomDatabase.Callback] to it whose `onOpen` override simply logs the fact that it has
+         * been called, and whose `onCreate` override uses the [Executor] of [AppExecutors.diskIO]
+         * to run a lambda on its single threaded thread pool which generates data for our database
+         * and inserts it (`onCreate` is only called the first time). Finally we build the
+         * [RoomDatabase.Builder] and return the [AppDatabase] it builds to the caller.
          *
-         * @param appContext application context for the database
-         * @param executors  our instance of `AppExecutors` to use to access the thread pool
-         * @return the `AppDatabase` our application will use to access the database.
+         * @param appContext application [Context] for the database.
+         * @param executors  our instance of [AppExecutors] to use to access the thread pool
+         * @return the [AppDatabase] our application will use to access the database.
          */
-        private fun buildDatabase(appContext: Context,
-                                  executors: AppExecutors): AppDatabase {
+        private fun buildDatabase(
+            appContext: Context,
+            executors: AppExecutors
+        ): AppDatabase {
             return databaseBuilder(appContext, AppDatabase::class.java, DATABASE_NAME)
                 .addCallback(object : Callback() {
                     /**
-                     * Called when the database we are the `Callback` for is opened. It is called
-                     * after `onCreate` if the database did not exist already. We just log the
-                     * fact that we were called.
+                     * Called when the database we are the [RoomDatabase.Callback] for is opened.
+                     * It is called after `onCreate` if the database did not exist already. We just
+                     * log the fact that we were called.
                      *
-                     * @param db `SupportSQLiteDatabase` database that has been opened
+                     * @param db the [SupportSQLiteDatabase] database that has been opened
                      */
                     override fun onOpen(db: SupportSQLiteDatabase) {
                         Log.i("AppDataBase", "Database is now open: $db")
@@ -173,19 +177,20 @@ abstract class AppDatabase : RoomDatabase() {
 
                     /**
                      * Called only when the database is first created. First we call our super's
-                     * implementation of `onCreate` (it does nothing, but what the heck).
-                     * Then we post a `Runnable` lambda to the `AppExecutors.diskIO`
-                     * executor's queue which calls our method `addDelay` to simulate a delay,
-                     * then fetches our instance to `AppDatabase database`, calls the method
-                     * `DataGenerator.generateProducts` to fill `List<ProductEntity> products`
-                     * with fake `ProductEntity` data, calls `DataGenerator.generateCommentsForProducts`
-                     * with `products` to fill `List<CommentEntity> comments` with fake
-                     * `CommentEntity` data, calls `insertData(database, products, comments)`
-                     * to insert both `products` and `comments` into `database`,
-                     * and finally calls the `setDatabaseCreated` of `database` to flag
-                     * that the database has been created.
+                     * implementation of `onCreate` (it does nothing, but what the heck). Then we
+                     * post a [Runnable] lambda to the [AppExecutors.diskIO] executor's queue which
+                     * calls our method [addDelay] to simulate a delay, then fetches our singleton
+                     * instance to [AppDatabase] variable `val database`, calls the method
+                     * [DataGenerator.generateProducts] to fill our [List] of [ProductEntity] variable
+                     * `val products` with fake [ProductEntity] data, calls the method
+                     * [DataGenerator.generateCommentsForProducts] with `products` to fill our
+                     * [List] of [CommentEntity] variable `val comments` with fake [CommentEntity]
+                     * data, calls [insertData] with `database`, `products`, and `comments` to insert
+                     * both `products` and `comments` into `database`, and finally calls the
+                     * [AppDatabase.setDatabaseCreated] method of `database` to flag that the
+                     * database has been created.
                      *
-                     * @param db `SupportSQLiteDatabase` database that has been created.
+                     * @param db the [SupportSQLiteDatabase] database that has been created.
                      */
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
@@ -194,10 +199,10 @@ abstract class AppDatabase : RoomDatabase() {
                             // Add a delay to simulate a long-running operation
                             addDelay()
                             // Generate the data for pre-population
-                            val database = getInstance(appContext, executors)
-                            val products = generateProducts()
-                            val comments = generateCommentsForProducts(products)
-                            insertData(database, products, comments)
+                            val database: AppDatabase? = getInstance(appContext, executors)
+                            val products: List<ProductEntity> = generateProducts()
+                            val comments: List<CommentEntity> = generateCommentsForProducts(products)
+                            insertData(database = database, products = products, comments = comments)
                             // notify that the database was created and it's ready to be used
                             database!!.setDatabaseCreated()
                         }
@@ -218,8 +223,11 @@ abstract class AppDatabase : RoomDatabase() {
          * @param products list of `ProductEntity` objects to insert in the "products" table of the database
          * @param comments list of `CommentEntity` objects to insert in the "comments" table of the database
          */
-        private fun insertData(database: AppDatabase?, products: List<ProductEntity>,
-                               comments: List<CommentEntity>) {
+        private fun insertData(
+            database: AppDatabase?,
+            products: List<ProductEntity>,
+            comments: List<CommentEntity>
+        ) {
             database!!.runInTransaction {
                 database.productDao().insertAll(products)
                 database.commentDao().insertAll(comments)

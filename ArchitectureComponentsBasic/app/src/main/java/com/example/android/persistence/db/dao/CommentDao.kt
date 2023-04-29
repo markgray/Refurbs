@@ -23,39 +23,39 @@ import androidx.room.Query
 import com.example.android.persistence.db.entity.CommentEntity
 
 /**
- * This class is the Data Access Object for the `CommentEntity` table "comments" as specified
+ * This class is the Data Access Object for the [CommentEntity] table "comments" as specified
  * by the Dao annotation.
  */
 @Dao
 interface CommentDao {
     /**
-     * Returns a list of all the `CommentEntity` objects in the table "comments" of the
-     * database whose `productId` column is equal to our parameter `productId` wrapped
-     * in a `LiveData` object.
+     * Returns a [List] of all the [CommentEntity] objects in the table "comments" of the
+     * database whose `productId` column is equal to our parameter [productId] wrapped
+     * in a [LiveData] object.
      *
      * @param productId value of the `productId` column we are interested in
-     * @return a `LiveData` wrapped list of all `CommentEntity` whose `productId`
-     * column matches our parameter `productId`.
+     * @return a [LiveData] wrapped [List] of all [CommentEntity] whose `productId`
+     * column matches our parameter [productId].
      */
     @Query("SELECT * FROM comments where productId = :productId")
     fun loadComments(productId: Int): LiveData<List<CommentEntity>>
 
     /**
-     * Returns a list of all the `CommentEntity` objects in the table "comments" of the
-     * database whose `productId` column is equal to our parameter `productId`.
+     * Returns a list of all the [CommentEntity] objects in the table "comments" of the
+     * database whose `productId` column is equal to our parameter [productId].
      *
      * @param productId value of the `productId` column we are interested in
-     * @return a `LiveData` wrapped list of all `CommentEntity` whose `productId`
-     * column matches our parameter `productId`.
+     * @return a [List] of all [CommentEntity] whose `productId` column matches our parameter
+     * [productId].
      */
     @Query("SELECT * FROM comments where productId = :productId")
     fun loadCommentsSync(productId: Int): List<CommentEntity>
 
     /**
-     * Inserts a list of `CommentEntity` objects into the database, with a conflict strategy
+     * Inserts a [List] of [CommentEntity] objects into the database, with a conflict strategy
      * of replacing the old data.
      *
-     * @param comments `List` of `CommentEntity` objects to insert
+     * @param comments [List] of [CommentEntity] objects to insert.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(comments: List<CommentEntity>)

@@ -23,46 +23,45 @@ import androidx.room.Query
 import com.example.android.persistence.db.entity.ProductEntity
 
 /**
- * This class is the Data Access Object for the `ProductEntity` table "products" as specified
+ * This class is the Data Access Object for the [ProductEntity] table "products" as specified
  * by the Dao annotation.
  */
 @Dao
 interface ProductDao {
     /**
-     * Loads all the `ProductEntity` objects in the "products" table of the data base into a
-     * `LiveData` wrapped list.
+     * Loads all the [ProductEntity] objects in the "products" table of the data base into a
+     * [LiveData] wrapped [List].
      *
-     * @return a `LiveData` wrapped list of all the `ProductEntity` objects in the data base
+     * @return a [LiveData] wrapped [List] of all the [ProductEntity] objects in the data base
      */
     @Query("SELECT * FROM products")
     fun loadAllProducts(): LiveData<List<ProductEntity>>
 
     /**
-     * Inserts a list of `ProductEntity` objects into the database, with a conflict strategy
+     * Inserts a list of [ProductEntity] objects into the database, with a conflict strategy
      * of replacing the old data.
      *
-     * @param products `List` of `ProductEntity` objects to insert
+     * @param products [List] of [ProductEntity] objects to insert
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(products: List<ProductEntity>)
 
     /**
-     * Retrieves the `ProductEntity` in the "products" table of the data base with the
-     * `id` column value equal to our parameter `productId` wrapped in a
-     * `LiveData` object.
+     * Retrieves the [ProductEntity] in the "products" table of the data base with the
+     * `id` column value equal to our parameter [productId] wrapped in a [LiveData] object.
      *
      * @param productId `id` column value of product to retrieve
-     * @return `LiveData` wrapped `ProductEntity` requested.
+     * @return the [LiveData] wrapped [ProductEntity] requested.
      */
     @Query("select * from products where id = :productId")
     fun loadProduct(productId: Int): LiveData<ProductEntity>
 
     /**
-     * Retrieves the `ProductEntity` in the "products" table of the data base with the
-     * `id` column value equal to our parameter `productId`. UNUSED
+     * Retrieves the [ProductEntity] in the "products" table of the data base with the
+     * `id` column value equal to our parameter [productId]. UNUSED
      *
      * @param productId `id` column value of product to retrieve
-     * @return `ProductEntity` requested.
+     * @return the [ProductEntity] requested.
      */
     @Query("select * from products where id = :productId")
     fun loadProductSync(productId: Int): ProductEntity

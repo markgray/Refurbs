@@ -25,13 +25,13 @@ import com.example.android.persistence.model.Comment
 import java.util.Date
 
 /**
- * This is a row in the table "comments" of our Room database. The Entity annotation marks this class
- * as an entity. This class will have a mapping SQLite table in the database, and all fields will be
- * automatically persisted. The tableName property gives the name of the table as "comments". The
- * foreignKeys property defines a ForeignKey constraint for the entity `ProductEntity`, with
- * the parentColumns "id" linked to our childColumns field "productId", with the onDelete action to
- * take specified as ForeignKey.CASCADE (propagates the delete operation on the parent key to each
- * dependent child key). indices for our entity are specified to be only the column "productId".
+ * This is a row in the table "comments" of our Room database. The `Entity` annotation marks this
+ * class as an entity. This class will have a mapping SQLite table in the database, and all fields
+ * will be automatically persisted. The `tableName` property gives the name of the table as "comments".
+ * The `foreignKeys` property defines a [ForeignKey] constraint for the entity [ProductEntity], with
+ * the `parentColumns` "id" linked to our childColumns field "productId", with the `onDelete` action
+ * to take specified as [ForeignKey.CASCADE] (propagates the delete operation on the parent key to
+ * each dependent child key). Indices for our entity are specified to be only the column "productId".
  */
 @Entity(tableName = "comments",
     foreignKeys = [
@@ -42,14 +42,14 @@ import java.util.Date
     indices = [Index(value = arrayOf("productId"))])
 class CommentEntity : Comment {
     /**
-     * The unique primary key for this row. The autoGenerate property of the PrimaryKey annotation
-     * specifies that SQLite should generate a unique id.
+     * The unique primary key for this row. The `autoGenerate` property of the `PrimaryKey`
+     * annotation specifies that SQLite should generate a unique id.
      */
     @PrimaryKey(autoGenerate = true)
     private var id = 0
 
     /**
-     * The `id` of the `ProductEntity` that we are a comment to. It is the childColumns
+     * The `id` of the [ProductEntity] that we are a comment to. It is the `childColumns`
      * column of the foreign key that links us.
      */
     private var productId = 0
@@ -60,14 +60,14 @@ class CommentEntity : Comment {
     private var text: String? = null
 
     /**
-     * `Date` the comment was posted.
+     * [Date] the comment was posted.
      */
     private var postedAt: Date? = null
 
     /**
-     * Getter for the value in our `id` field.
+     * Getter for the value in our [id] field.
      *
-     * @return the value in our `id` field
+     * @return the value in our [id] field
      */
     override fun getId(): Int {
         return id
