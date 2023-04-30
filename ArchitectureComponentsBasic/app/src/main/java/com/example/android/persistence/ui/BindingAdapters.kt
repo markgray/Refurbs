@@ -17,11 +17,12 @@ package com.example.android.persistence.ui
 
 import android.view.View
 import androidx.databinding.BindingAdapter
+import androidx.databinding.DataBindingUtil
 
 /**
  * This class contains the binding adapter for the attribute app:visibleGone, it is used by both
  * layout/product_fragment.xml, and layout/list_fragment.xml. It is accessed by using
- * `DataBindingUtil.inflate` to create either a `ProductFragmentBinding` or a
+ * [DataBindingUtil.inflate] to create either a `ProductFragmentBinding` or a
  * `ListFragmentBinding` and then using the `setIsLoading` method of that binding to
  * set it to true or false.
  */
@@ -29,9 +30,9 @@ object BindingAdapters {
     /**
      * This is the binding adapter for the attribute app:visibleGone
      *
-     * @param view View whose visibility we are to control
-     * @param show true to make the visibility VISIBLE, false to make it GONE. It is bound during
-     * inflation to the value of the variable `isLoading`
+     * @param view [View] whose visibility we are to control
+     * @param show `true` to make the visibility VISIBLE, `false` to make it GONE. It is bound
+     * during inflation to the value of the variable `isLoading` in the xml file.
      */
     @JvmStatic
     @BindingAdapter("visibleGone")

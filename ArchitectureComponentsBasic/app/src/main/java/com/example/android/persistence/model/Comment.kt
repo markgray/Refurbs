@@ -15,10 +15,11 @@
  */
 package com.example.android.persistence.model
 
+import com.example.android.persistence.db.entity.CommentEntity
 import java.util.Date
 
 /**
- * Interface class used by our `CommentEntity` class
+ * Interface class used by our [CommentEntity] class
  */
 interface Comment {
     /**
@@ -43,9 +44,9 @@ interface Comment {
     fun getText(): String?
 
     /**
-     * Returns the `Date` the comment was posted
+     * Returns the [Date] the comment was posted
      *
-     * @return the `Date` the comment was posted
+     * @return the [Date] the comment was posted
      */
     fun getPostedAt(): Date?
 }

@@ -24,89 +24,91 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.persistence.R
 import com.example.android.persistence.databinding.CommentItemBinding
+import com.example.android.persistence.db.entity.CommentEntity
 import com.example.android.persistence.model.Comment
 import com.example.android.persistence.ui.CommentAdapter.CommentViewHolder
 
 /**
- * `RecyclerView.Adapter` for `Comment` objects (that interface is implemented by our
- * `CommentEntity` class in package com.example.android.persistence.db.entity).
+ * [RecyclerView.Adapter] for [Comment] objects (that interface is implemented by our
+ * [CommentEntity] class in package com.example.android.persistence.db.entity).
  */
 class CommentAdapter
 /**
- * Our constructor, called only by `ProductFragment`. We just save our parameter in our
- * field `CommentClickCallback mCommentClickCallback`.
+ * Our constructor, called only by [ProductFragment]. We just save our parameter in our
+ * [CommentClickCallback] field [mCommentClickCallback].
  *
- * @param mCommentClickCallback `CommentClickCallback` whose `onClick` override should
- * be called when a `Comment` is clicked.
+ * @param mCommentClickCallback [CommentClickCallback] whose `onClick` override should
+ * be called when a [Comment] is clicked.
  */
 (
     /**
-     * The `CommentClickCallback` instance we should use when a `Comment` in our list is
-     * clicked, set by our constructor (an anonymous class which does nothing is used when we are
-     * constructed by `ProductFragment`)
+     * The [CommentClickCallback] instance we should use when a [Comment] in our list is clicked,
+     * set by our constructor (an anonymous class which does nothing is used when we are
+     * constructed by [ProductFragment]).
      */
-    private val mCommentClickCallback: CommentClickCallback?) : RecyclerView.Adapter<CommentViewHolder>() {
+    private val mCommentClickCallback: CommentClickCallback?
+) : RecyclerView.Adapter<CommentViewHolder>() {
     /**
-     * Our list of `Comment` (`CommentEntity`) objects, set by our method `setCommentList`
+     * Our [List] of [Comment] (aka [CommentEntity]) objects, set by our method [setCommentList].
      */
     private var mCommentList: List<Comment>? = null
 
     /**
-     * If the current list of `Comment` (`CommentEntity`) objects in our field
-     * `List<`? `extends Comment> mCommentList` is null we save our parameter `comments`
-     * in it and call the method `notifyItemRangeInserted` to notify any registered observers
-     * that the items have been newly inserted into the previously empty list, otherwise we create
-     * `DiffUtil.DiffResult diffResult` to calculate the list of update operations that can
-     * convert `mCommentList` into `comments`. `diffResult` takes as its argument
-     * an anonymous `DiffUtil.Callback` class (A Callback class used by DiffUtil while
-     * calculating the diff between two lists) whose `getOldListSize` override returns
-     * the size of our field `mCommentList`, whose `getNewListSize` returns the size of
-     * our parameter `comments`, whose `areItemsTheSame` override returns true if the
-     * item id of the `Comment` at its parameter `oldItemPosition` in `mCommentList`
-     * is the same as the id of the `Comment` at its parameter `newItemPosition` in
-     * `comments`, and whose override of `areContentsTheSame` returns true if the
-     * `Comment` at its parameter `oldItemPosition` in `mCommentList` has the same
-     * id, date posted stamp, product id, and the same text as the `Comment` as its parameter
-     * `newItemPosition` in `comments`. Finally we set our field `mCommentList` to
-     * our parameter `comments`, and call the `dispatchUpdatesTo` method of `diffResult`
-     * to dispatch the update events to "this" adapter.
+     * If the current [List] of [Comment] (aka [CommentEntity]) objects in our field [mCommentList]
+     * is `null` we save our [List] of [Comment] parameter [comments] in it and call the method
+     * [notifyItemRangeInserted] to notify any registered observers that the items have been newly
+     * inserted into the previously empty list. Otherwise we create [DiffUtil.DiffResult] variable
+     * `val diffResult` using the method [DiffUtil.calculateDiff] to calculate the list of update
+     * operations that can convert [mCommentList] into [comments]. [DiffUtil.calculateDiff] takes as
+     * its argument an anonymous [DiffUtil.Callback] class (A Callback class used by DiffUtil while
+     * calculating the diff between two lists) whose `getOldListSize` override returns the size of
+     * our field [mCommentList], whose `getNewListSize` override returns the size of our parameter
+     * [comments], whose `areItemsTheSame` override returns `true` if the item id of the [Comment]
+     * at its parameter `oldItemPosition` in [mCommentList] is the same as the id of the [Comment]
+     * at its parameter `newItemPosition` in [comments], and whose override of `areContentsTheSame`
+     * returns `true` if the [Comment] at its parameter `oldItemPosition` in [mCommentList] has the
+     * same id, date posted stamp, product id, and the same text as the [Comment] at its parameter
+     * `newItemPosition` in [comments]. Finally we set our field [mCommentList] to our parameter
+     * [comments], and call the `dispatchUpdatesTo` method of `diffResult` to dispatch the update
+     * events to "this" adapter.
      *
-     * @param comments list of `Comment` objects we should display.
+     * @param comments [List] of [Comment] objects we should display.
      */
     fun setCommentList(comments: List<Comment>) {
         if (mCommentList == null) {
             mCommentList = comments
             notifyItemRangeInserted(0, comments.size)
         } else {
-            val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
                 /**
-                 * Returns the size of the old list (`mCommentList`).
+                 * Returns the size of the old [List] (in our case [mCommentList]).
                  *
-                 * @return size of the old list
+                 * @return size of the old [List].
                  */
                 override fun getOldListSize(): Int {
                     return mCommentList!!.size
                 }
 
                 /**
-                 * Returns the size of the new list (`comments`).
+                 * Returns the size of the new [List] (in our case [comments]).
                  *
-                 * @return size of the new list
+                 * @return size of the new [List]
                  */
                 override fun getNewListSize(): Int {
                     return comments.size
                 }
 
                 /**
-                 * Called by the DiffUtil to decide whether two object represent the same Item. We
-                 * retrieve `Comment old` from position `oldItemPosition` in our list
-                 * `mCommentList`, and `Comment comment` from position `newItemPosition`
-                 * in our parameter `comments`, then we return the result of comparing the id
-                 * of the two `Comment` objects for equality.
+                 * Called by the [DiffUtil] to decide whether two objects represent the same Item.
+                 * We retrieve [Comment] variable `val old` from position [oldItemPosition] in our
+                 * [List] of [Comment] field [mCommentList], and [Comment] variable `val comment`
+                 * from position [newItemPosition] in our parameter [comments], then we return the
+                 * result of comparing the id of the two [Comment] objects for equality.
                  *
-                 * @param oldItemPosition The position of the item in the old list
-                 * @param newItemPosition The position of the item in the new list
-                 * @return True if the two items represent the same object or false if they are different.
+                 * @param oldItemPosition The position of the item in the old [List]
+                 * @param newItemPosition The position of the item in the new [List]
+                 * @return `true` if the two items represent the same object or `false` if they are
+                 * different.
                  */
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                     val old = mCommentList!![oldItemPosition]

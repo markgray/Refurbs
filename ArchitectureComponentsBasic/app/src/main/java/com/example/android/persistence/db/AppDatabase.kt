@@ -211,17 +211,21 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         /**
-         * Inserts the list of `ProductEntity` objects in `products` and the list of `CommentEntity`
-         * objects in `comments` into our database `AppDatabase database`. We use the `runInTransaction`
-         * method of `database` to run a `Runnable` lambda in a transaction. The runnable uses the
-         * `insertAll` method of the `ProductDao` Dao to insert all of the `ProductEntity` objects
-         * in `products` into the "products" table of `database`, and the `insertAll` method of the
-         * `CommentDao` Dao to insert all of the `CommentEntity` objects in `comments` into
-         * the "comments" table of `database`.
+         * Inserts the [List] of [ProductEntity] objects in its parameter [products] and the [List]
+         * of [CommentEntity] objects in in its parameter [comments] into its [AppDatabase] parmeter
+         * [database]. We use the [AppDatabase.runInTransaction] method of [database] to run a
+         * [Runnable] lambda in a transaction. The [Runnable] uses the [ProductDao.insertAll] method
+         * of the [ProductDao] Dao we retrieve from the [AppDatabase.productDao] method of [database]
+         * to insert all of the [ProductEntity] objects in [products] into the "products" table of
+         * [database], and the [CommentDao.insertAll] method of the [CommentDao] Dao we retrieve
+         * from the [AppDatabase.commentDao] method of [database] to insert all of the [CommentEntity]
+         * objects in [comments] into the "comments" table of [database].
          *
-         * @param database our instance of `AppDatabase`
-         * @param products list of `ProductEntity` objects to insert in the "products" table of the database
-         * @param comments list of `CommentEntity` objects to insert in the "comments" table of the database
+         * @param database our instance of [AppDatabase]
+         * @param products the [List] of [ProductEntity] objects to insert in the "products" table
+         * of the database.
+         * @param comments the [List] of [CommentEntity] objects to insert in the "comments" table
+         * of the database.
          */
         private fun insertData(
             database: AppDatabase?,

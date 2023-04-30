@@ -26,35 +26,40 @@ import java.util.concurrent.TimeUnit
  */
 object DataGenerator {
     /**
-     * First parts randomly used for `name` of `ProductEntity`
+     * First parts randomly used for the [ProductEntity.name] of the [ProductEntity].
      */
-    private val FIRST = arrayOf(
-        "Special edition", "New", "Cheap", "Quality", "Used")
+    private val FIRST = arrayOf("Special edition", "New", "Cheap", "Quality", "Used")
 
     /**
-     * Second parts randomly used for `name` of `ProductEntity`
+     * Second parts randomly used for the [ProductEntity.name] of the [ProductEntity].
      */
-    private val SECOND = arrayOf(
-        "Three-headed Monkey", "Rubber Chicken", "Pint of Grog", "Monocle")
+    private val SECOND = arrayOf("Three-headed Monkey", "Rubber Chicken", "Pint of Grog", "Monocle")
 
     /**
-     * `description` randomly used for `ProductEntity`
+     * "description" randomly used for the [ProductEntity.description] of the [ProductEntity]
      */
     private val DESCRIPTION = arrayOf(
-        "is finally here", "is recommended by Stan S. Stanman",
-        "is the best sold product on Mêlée Island", "is \uD83D\uDCAF", "is ❤️", "is fine")
+        "is finally here",
+        "is recommended by Stan S. Stanman",
+        "is the best sold product on Mêlée Island",
+        "is \uD83D\uDCAF",
+        "is ❤️",
+        "is fine"
+    )
 
     /**
-     * `text` randomly used for `CommentEntity`
+     * "text" randomly used for the [CommentEntity.text] of the [CommentEntity].
      */
     private val COMMENTS = arrayOf(
-        "Comment 1", "Comment 2", "Comment 3", "Comment 4", "Comment 5", "Comment 6")
+        "Comment 1", "Comment 2", "Comment 3",
+        "Comment 4", "Comment 5", "Comment 6"
+    )
 
     /**
-     * Generates and returns a list of `ProductEntity` objects which use random strings for the
+     * Generates and returns a [List] of [ProductEntity] objects which use random strings for the
      * name, description, and price.
      *
-     * @return list of random `ProductEntity` objects
+     * @return list of random [ProductEntity] objects
      */
     @JvmStatic
     fun generateProducts(): List<ProductEntity> {
@@ -74,17 +79,18 @@ object DataGenerator {
     }
 
     /**
-     * Generates and returns a list of `CommentEntity` objects which use randomly chosen strings
+     * Generates and returns a [List] of [CommentEntity] objects which use randomly chosen strings
      * for the text, and arbitrary times for the `postedAt` times, using each of the `ProductEntity`
-     * objects in our our parameter `List<ProductEntity> products` in turn as a target parent.
+     * objects in our [List] of [ProductEntity] parameter [products] in turn as a target parent.
      *
-     * @param products list or `ProductEntity` objects we produce comments for
-     * @return list of randomly generated `CommentEntity` objects for the `ProductEntity`
-     * objects in our our parameter `List<ProductEntity> products`.
+     * @param products list or [ProductEntity] objects we produce comments for.
+     * @return list of randomly generated [CommentEntity] objects for the [ProductEntity] objects in
+     * our our [List] of [ProductEntity] parameter [products].
      */
     @JvmStatic
     fun generateCommentsForProducts(
-        products: List<ProductEntity>): List<CommentEntity> {
+        products: List<ProductEntity>
+    ): List<CommentEntity> {
         val comments: MutableList<CommentEntity> = ArrayList()
         val rnd = Random()
         for (product in products) {

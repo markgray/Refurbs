@@ -20,29 +20,29 @@ package com.example.android.persistence.model
  */
 interface Product {
     /**
-     * Getter for a unique `int` ID value for the `Product`.
+     * Getter for a unique [Int] ID value for the [Product].
      *
-     * @return returns a unique `int` ID value for the `Product`
+     * @return returns a unique [Int] ID value for the [Product].
      */
     fun getId() : Int
     /**
-     * Getter for a `String` to use as the name of the product
+     * Getter for a [String] to use as the name of the product
      *
-     * @return `String` to use as the name of the product
+     * @return [String] to use as the name of the product
      */
     fun getName() : String
 
     /**
-     * Getter for a `String` to use as the description of the product
+     * Getter for a [String] to use as the description of the product
      *
-     * @return `String` to use as the description of the product
+     * @return [String] to use as the description of the product
      */
     fun getDescription(): String
 
     /**
-     * Getter for a `int` to use as the price of the product
+     * Getter for a [Int] to use as the price of the product
      *
-     * @return `int` to use as the price of the product
+     * @return [Int] to use as the price of the product
      */
     fun getPrice(): Int
 }
