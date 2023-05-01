@@ -15,12 +15,13 @@
  */
 package com.example.android.persistence.ui
 
+import androidx.recyclerview.widget.RecyclerView
 import com.example.android.persistence.model.Comment
 
 /**
- * Class that we use to handle clicks in our layout file layout/comment_item.xml (our RecyclerView
+ * Class that we use to handle clicks in our layout file layout/comment_item.xml (our [RecyclerView]
  * item view), it is set by setting the variable "callback" in that file, and that variable is used
- * by the attribute android:onClick in a lambda that calls the method `onClick` with the bound
+ * by the attribute android:onClick in a lambda that calls the method [onClick] with the bound
  * variable "comment".
  */
 open class CommentClickCallback {
@@ -28,7 +29,7 @@ open class CommentClickCallback {
      * This method is used by the attribute android:onClick in the file layout/comment_item.xml in a
      * lambda that calls us with the bound variable "comment".
      *
-     * @param comment the `Comment` item that has been clicked
+     * @param comment the [Comment] item that has been clicked
      */
     open fun onClick(comment: Comment?){}
 }

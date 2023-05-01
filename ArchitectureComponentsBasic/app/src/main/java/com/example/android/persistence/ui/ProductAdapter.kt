@@ -25,27 +25,22 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.persistence.R
 import com.example.android.persistence.databinding.ProductItemBinding
+import com.example.android.persistence.db.entity.ProductEntity
 import com.example.android.persistence.model.Product
 import com.example.android.persistence.ui.ProductAdapter.ProductViewHolder
 
 /**
- * `RecyclerView.Adapter` for `Product` objects (that interface is implemented by our
- * `ProductEntity` class in package com.example.android.persistence.db.entity).
- */
-class ProductAdapter
-/**
- * Our constructor. We just save our parameter `ProductClickCallback clickCallback` in our
- * field `ProductClickCallback mProductClickCallback`.
+ * [RecyclerView.Adapter] for [Product] objects (that interface is implemented by our
+ * [ProductEntity] class in package com.example.android.persistence.db.entity). In our
+ * constructor we just use our [ProductClickCallback] parameter as our [mProductClickCallback]
+ * field.
  *
- * @param mProductClickCallback the `ProductClickCallback` instance we should use.
+ * @param mProductClickCallback the [ProductClickCallback] implementation we should use. It is a
+ * class which is defined in [ProductListFragment] and which overrides the `onClick` method to show
+ * the product detail fragment. It is associated with the [ProductItemBinding] created from the
+ * layout file layout/product_item.xml by the [onCreateViewHolder] override in [ProductAdapter].
  */
-(
-    /**
-     * The `ProductClickCallback` instance we should use when a `Product` in our list is
-     * clicked, set by our constructor (a class which is defined in `ProductListFragment` and
-     * which overrides the `onClick` method to show the product detail fragment, it is associated
-     * with the layout file layout/product_item.xml by the onCreateViewHolder override in ProductAdapter.)
-     */
+class ProductAdapter(
     private val mProductClickCallback: ProductClickCallback?
 ) : RecyclerView.Adapter<ProductViewHolder>() {
     /**
@@ -124,9 +119,12 @@ class ProductAdapter
      * @return A new ViewHolder that holds a View of the given view type.
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val binding = DataBindingUtil
-            .inflate<ProductItemBinding>(LayoutInflater.from(parent.context), R.layout.product_item,
-                parent, false)
+        val binding: ProductItemBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.product_item,
+            parent,
+            false
+        )
         binding.callback = mProductClickCallback
         return ProductViewHolder(binding)
     }

@@ -18,6 +18,7 @@
 package com.example.android.persistence.ui
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
@@ -117,23 +118,28 @@ class CommentAdapter
                 }
 
                 /**
-                 * Called by the DiffUtil when it wants to check whether two items have the same data.
-                 * DiffUtil uses this information to detect if the contents of an item has changed.
-                 * We retrieve `Comment old` from position `oldItemPosition` in our list
-                 * `mCommentList`, and `Comment comment` from position `newItemPosition`
-                 * in our parameter `comments`, then we return true iff the id's of the two
-                 * `Comment` objects are the same, the time stamp posted are the same, the product
-                 * id are the same, and the text of both are the same.
+                 * Called by the [DiffUtil] when it wants to check whether two items have the same
+                 * data. [DiffUtil] uses this information to detect if the contents of an item has
+                 * changed. We retrieve [Comment] variable `val old` from position [oldItemPosition]
+                 * in our [mCommentList] list , and [Comment] variable `val comment` from position
+                 * [newItemPosition] in the parameter `comments` [List] of [Comment] of the method
+                 * [setCommentList], then we return `true` iff the id's of the two [Comment] objects
+                 * are the same, the time stamp posted are the same, the product id are the same,
+                 * and the text of both are the same.
                  *
-                 * @param oldItemPosition The position of the item in the old list
-                 * @param newItemPosition The position of the item in the new list which replaces the
-                 * oldItem
-                 * @return True if the contents of the items are the same or false if they are different.
+                 * @param oldItemPosition The position of the [Comment] in the old list
+                 * @param newItemPosition The position of the [Comment] in the new list which
+                 * replaces the old [Comment].
+                 * @return `true` if the contents of the items are the same or `false` if they
+                 * are different.
                  */
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    val old = mCommentList!![oldItemPosition]
-                    val comment = comments[newItemPosition]
-                    return old.getId() == comment.getId() && old.getPostedAt() === comment.getPostedAt() && old.getProductId() == comment.getProductId() && old.getText() == comment.getText()
+                    val old: Comment = mCommentList!![oldItemPosition]
+                    val comment: Comment = comments[newItemPosition]
+                    return old.getId() == comment.getId()
+                        && old.getPostedAt() === comment.getPostedAt()
+                        && old.getProductId() == comment.getProductId()
+                        && old.getText() == comment.getText()
                 }
             })
             mCommentList = comments
@@ -142,16 +148,16 @@ class CommentAdapter
     }
 
     /**
-     * Called when RecyclerView needs a new `ViewHolder` of the given type to represent an item.
-     * We create `CommentItemBinding binding` by inflating our layout `R.layout.comment_item`
-     * (a `CommentItemBinding` is a view data binding class generated from the inflated layout,
-     * Data-binding layout files are slightly different and start with a root tag of layout followed
-     * by a data element and a view root element. This view element is what your root would be in a
-     * non-binding layout file.) We then set the "callback" variable defined in the layout of
-     * `binding` to our field `CommentClickCallback mCommentClickCallback` which is set
-     * by our constructor when called from `ProductFragment` to a class which implements the
-     * interface `CommentClickCallback` by defining an `onClick` method. Finally we return
-     * a `CommentViewHolder` constructed using `binding`.
+     * Called when [RecyclerView] needs a new [CommentViewHolder] of the given type to represent an
+     * item. We create [CommentItemBinding] variable `val binding` by inflating our layout fie
+     * [R.layout.comment_item] (a [CommentItemBinding] is a view data binding class generated from
+     * the inflated layout, Data-binding layout files are slightly different and start with a root
+     * tag of layout followed by a data element and a view root element. This view element is what
+     * your root would be in a non-binding layout file.) We then set the "callback" variable defined
+     * in the layout of `binding` to our [CommentClickCallback] field [mCommentClickCallback] which
+     * is set by our constructor when called from [ProductFragment] to a class which implements the
+     * interface [CommentClickCallback] by defining an [CommentClickCallback.onClick] method.
+     * Finally we return a [CommentViewHolder] constructed using `binding`.
      *
      * @param parent   The ViewGroup into which the new View will be added after it is bound to
      * an adapter position.
@@ -159,24 +165,27 @@ class CommentAdapter
      * @return A new ViewHolder that holds a View of the given view type.
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
-        val binding = DataBindingUtil
-            .inflate<CommentItemBinding>(LayoutInflater.from(parent.context), R.layout.comment_item,
-                parent, false)
+        val binding: CommentItemBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.comment_item,
+            parent,
+            false
+        )
         binding.callback = mCommentClickCallback
         return CommentViewHolder(binding)
     }
 
     /**
-     * Called by RecyclerView to display the data at the specified position. This method should
-     * update the contents of the `ViewHolder.itemView` to reflect the item at the given
-     * position. We use the `setComment` method of the `binding` field of `holder`
-     * to set the "comment" variable of our binding to the text in position `position` in our
-     * `mCommentList` list of `Comment` objects, then call the `executePendingBindings`
-     * of the `binding` field of `holder` to evaluate the pending bindings, updating any
-     * Views that have expressions bound to modified variables.
+     * Called by [RecyclerView] to display the data at the specified position. This method should
+     * update the contents of the [CommentViewHolder.itemView] to reflect the item at the given
+     * position. We use the `setComment` method of the `binding` field of `holder` to set the
+     * "comment" variable of our binding to the text in position [position] in our [mCommentList]
+     * list of [Comment] objects, then call the `executePendingBindings` method of the `binding`
+     * field of [holder] to evaluate the pending bindings, updating any Views that have expressions
+     * bound to modified variables.
      *
-     * @param holder   The ViewHolder which should be updated to represent the contents of the
-     * item at the given position in the data set.
+     * @param holder   The [CommentViewHolder] which should be updated to represent the contents of
+     * the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
@@ -185,8 +194,8 @@ class CommentAdapter
     }
 
     /**
-     * Returns the total number of items in the data set held by the adapter. If `mCommentList`
-     * is null we return 0, otherwise we return the size of `mCommentList`.
+     * Returns the total number of items in the data set held by the adapter. If [mCommentList]
+     * is `null` we return 0, otherwise we return the size of [mCommentList].
      *
      * @return The total number of items in this adapter.
      */
@@ -195,21 +204,15 @@ class CommentAdapter
     }
 
     /**
-     * A ViewHolder class for our `Comment` objects, describes an item view and metadata about
-     * its place within the RecyclerView.
-     */
-    class CommentViewHolder
-    /**
-     * Our constructor. First we call our super's constructor with the outermost View in the layout
-     * file associated with the Binding `CommentItemBinding binding`, then we save our parameter
-     * in our field `CommentItemBinding binding`.
+     * A ViewHolder class for our [Comment] objects, describes an item view and metadata about
+     * its place within the [RecyclerView].  In our constructor we just call our super's constructor
+     * with the outermost [View] in the layout file associated with the [CommentItemBinding] binding
+     * parameter [binding].
      *
-     * @param binding the `CommentItemBinding` containing our view and the variables we
+     * @param binding the [CommentItemBinding] containing our view and the variables we
      * use to modify the view.
-     */(
-        /**
-         * `CommentItemBinding` we are constructed with, it is used to set the "comment"
-         * variable in the `layout` to the appropriate text in `onBindViewHolder`
-         */
-        val binding: CommentItemBinding) : RecyclerView.ViewHolder(binding.root)
+     */
+    class CommentViewHolder(
+        val binding: CommentItemBinding
+    ) : RecyclerView.ViewHolder(binding.root)
 }
