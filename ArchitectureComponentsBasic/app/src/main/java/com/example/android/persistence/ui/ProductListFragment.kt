@@ -25,27 +25,27 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.android.persistence.R
 import com.example.android.persistence.databinding.ListFragmentBinding
 import com.example.android.persistence.model.Product
 import com.example.android.persistence.viewmodel.ProductListViewModel
 
 /**
- * Fragment used to display our list of `Product` objects.
+ * [Fragment] used to display our [List] of [Product] objects.
  */
 class ProductListFragment : Fragment() {
     /**
-     * `ProductAdapter` used to hold and display our `Product` list in our
-     * `RecyclerView`
+     * [ProductAdapter] used to hold and display our [Product] list in our [RecyclerView]
      */
     private var mProductAdapter: ProductAdapter? = null
 
     /**
-     * `ListFragmentBinding` auto-generated from our "layout" file layout/list_fragment.xml
-     * that we use for binding to that layout.
+     * [ListFragmentBinding] that our [onCreateView] override generates from our "layout" file
+     * layout/list_fragment.xml using the [DataBindingUtil.inflate] method. We use it for binding
+     * to variables and views in that layout.
      */
     private var mBinding: ListFragmentBinding? = null
-
 
     /**
      * Called to have the fragment instantiate its user interface view. First we initialize our field
@@ -65,9 +65,12 @@ class ProductListFragment : Fragment() {
      * from a previous saved state as given here.
      * @return Return the View for the fragment's UI, or null.
      */
-    @Suppress("RedundantNullableReturnType")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    @Suppress("RedundantNullableReturnType") // The method we override returns nullable.
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.list_fragment, container, false)
         mProductAdapter = ProductAdapter(mProductClickCallback)
         mBinding!!.productsList.adapter = mProductAdapter

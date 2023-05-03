@@ -15,20 +15,24 @@
  */
 package com.example.android.persistence.ui
 
+import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.RecyclerView
 import com.example.android.persistence.model.Product
 
 /**
- * Interface that we use to handle clicks in our layout file layout/product_item.xml (our RecyclerView
- * item view), it is set by setting the variable "callback" in that file, and that variable is used
+ * Class that we use to handle clicks in our layout file layout/product_item.xml (our [RecyclerView]
+ * item view). it is set by setting the variable "callback" in that file, and that variable is used
  * by the attribute android:onClick in a lambda that calls the method `onClick` with the bound
  * variable "product".
  */
 open class ProductClickCallback {
     /**
      * This method is used by the attribute android:onClick in the file layout/product_item.xml in a
-     * lambda that calls us with the bound variable "product".
+     * lambda that calls us with the bound variable "product". An override in [ProductListFragment]
+     * calls the [MainActivity.show] method to "show" that [Product] if the lifecycle of the activity
+     * is at least [Lifecycle.State.STARTED].
      *
-     * @param product the `Product` item that has been clicked
+     * @param product the [Product] item that has been clicked
      */
     open fun onClick(product: Product?) { }
 }

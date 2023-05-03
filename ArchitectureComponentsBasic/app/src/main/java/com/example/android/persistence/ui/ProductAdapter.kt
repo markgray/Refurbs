@@ -134,15 +134,16 @@ class ProductAdapter(
 
     /**
      * Called by [RecyclerView] to display the data at the specified position. This method should
-     * update the contents of the `ViewHolder.itemView` to reflect the item at the given
-     * position. We use the `setProduct` method of the `binding` field of `holder`
-     * to set the "product" variable of our binding to the `Product` in position `position`
-     * in our `mProductList` list of `Product` objects, then call the `executePendingBindings`
-     * of the `binding` field of `holder` to evaluate the pending bindings, updating any
+     * update the contents of the [ProductViewHolder.itemView] to reflect the item at the given
+     * position. We use the [ProductItemBinding.setProduct] method (aka kotlin `product` property)
+     * of the [ProductViewHolder.binding] field of our parameter [holder] to set the "product"
+     * variable of our binding to the [Product] in the position of our parameter [position]
+     * in our [List] of [Product] field [mProductList], then call the `executePendingBindings`
+     * method of the `binding` field of [holder] to evaluate the pending bindings, updating any
      * Views that have expressions bound to modified variables.
      *
-     * @param holder   The ViewHolder which should be updated to represent the contents of the
-     * item at the given position in the data set.
+     * @param holder   The [ProductViewHolder] which should be updated to represent the contents of
+     * the item at the given [position] in the data set.
      * @param position The position of the item within the adapter's data set.
      */
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
@@ -151,8 +152,9 @@ class ProductAdapter(
     }
 
     /**
-     * Returns the total number of items in the data set held by the adapter. If `mProductList`
-     * is null we return 0, otherwise we return the size of `mProductList`.
+     * Returns the total number of items in the data set held by the adapter. If our [List] of
+     * [Product] field [mProductList] is `null` we return 0, otherwise we return the size of
+     * [mProductList].
      *
      * @return The total number of items in this adapter.
      */
@@ -161,21 +163,15 @@ class ProductAdapter(
     }
 
     /**
-     * A ViewHolder class for our `Product` objects, describes an item view and metadata about
-     * its place within the RecyclerView.
-     */
-    class ProductViewHolder
-    /**
-     * Our constructor. First we call our super's constructor with the outermost View in the layout
-     * file associated with the Binding `ProductItemBinding binding`, then we save our parameter
-     * in our field `ProductItemBinding binding`.
+     * A ViewHolder class for our [Product] objects, describes an item view and metadata about
+     * its place within the [RecyclerView]. In our constructor we call our super's constructor with
+     * the outermost [View] in the layout file associated with our [ProductItemBinding] parameter
+     * [binding], with that parameter becoming our [ProductItemBinding] field [binding].
      *
-     * @param binding the `ProductItemBinding` containing our view and the variables we
+     * @param binding the [ProductItemBinding] containing our view and the variables we
      * use to modify the view.
-     */(
-        /**
-         * `ProductItemBinding` we are constructed with, it is used to set the "product"
-         * variable in the `layout` to the appropriate text in `onBindViewHolder`
-         */
-        val binding: ProductItemBinding) : RecyclerView.ViewHolder(binding.root)
+     */
+    class ProductViewHolder(
+        val binding: ProductItemBinding
+    ) : RecyclerView.ViewHolder(binding.root)
 }
