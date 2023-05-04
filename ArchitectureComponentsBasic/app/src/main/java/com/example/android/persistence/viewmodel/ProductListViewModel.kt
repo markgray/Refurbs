@@ -21,27 +21,29 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import com.example.android.persistence.BasicApp
 import com.example.android.persistence.db.entity.ProductEntity
+import com.example.android.persistence.ui.ProductListFragment
 
 /**
- * The purpose of this `AndroidViewModel` is to acquire and keep the information that is
- * necessary for our `ProductListFragment` fragment. First we call our super's constructor,
- * then we initialize our field [mObservableProducts] with a new instance
- * of [MediatorLiveData] for data of type [List] of [ProductEntity] and set its value
- * to `null`. We initialize `LiveData<List<ProductEntity>> products` by launching an
- * asynchronous query to our database to retrieve the list of `ProductEntity` objects in
- * it, and finally we add an observer for `products` whose `onChanged` method is
- * the `setValue` method of `mObservableProducts`.
+ * The purpose of this [AndroidViewModel] is to acquire and keep the information that is necessary
+ * for our [ProductListFragment] fragment. First we call our super's constructor, then we declare
+ * our field [mObservableProducts] to be a [MediatorLiveData] wrapped [List] of [ProductEntity] and
+ * initialize it to a new instance and set its value to `null` in our init block. Also in our init
+ * block we initialize [LiveData] wrapped [List] of [ProductEntity] field [products] by launching an
+ * asynchronous query to our database to retrieve the list of [ProductEntity] objects in it, and
+ * finally we add an observer for [products] whose `onChanged` method is the `setValue` method of
+ * [mObservableProducts].
  *
- * @param application a fragment, in whose scope this ViewModel should be retained
+ * @param application the [Application] of this app in whose scope this ViewModel should be retained
  */
 class ProductListViewModel(application: Application) : AndroidViewModel(application) {
     /**
-     * MediatorLiveData can observe other LiveData objects and react on their emissions. Our constructor
-     * adds an `Observer` to the list of products from the database (which is  get notified when
-     * the data changes) and the `subscribeUi` method of `ProductListFragment` also adds an
-     * `Observer` which updates the UI when this data is changed.
+     * [MediatorLiveData] can observe other [LiveData] objects and react on their emissions. Our
+     * init block adds an [Observer] to the list of products from the database (which geta notified
+     * when the data changes) and the `subscribeUi` method of `ProductListFragment` also adds an
+     * [Observer] which updates the UI when this data is changed.
      */
     private val mObservableProducts: MediatorLiveData<List<ProductEntity>?>
 
@@ -56,8 +58,9 @@ class ProductListViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     /**
-     * Expose the LiveData Products query so the UI can observe it. We just return a reference to
-     * our field `MediatorLiveData<List<ProductEntity>> mObservableProducts`.
+     * Expose the private [MediatorLiveData] wrapped [List] of [ProductEntity] field [mObservableProducts]
+     * in a public [LiveData] wrapped [List] of [ProductEntity] field so the UI can observe it. We just
+     * return a reference to our field [mObservableProducts].
      *
      * @return a reference to our field `MediatorLiveData<List<ProductEntity>> mObservableProducts`
      */

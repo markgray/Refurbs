@@ -25,20 +25,20 @@ import com.example.android.persistence.BasicApp
 import com.example.android.persistence.DataRepository
 import com.example.android.persistence.db.entity.CommentEntity
 import com.example.android.persistence.db.entity.ProductEntity
+import com.example.android.persistence.ui.ProductFragment
 
 /**
- * The purpose of this `AndroidViewModel` is to acquire and keep the information that is
- * necessary for our `ProductFragment` fragment and its "layout" file layout/product_fragment.xml.
- * Our constructor. First we call our super's constructor, then we save our parameter `productId`
- * in our field `int mProductId`. We initialize `mObservableComments` by initiating
- * a load from `DataRepository repository` of the list of `CommentEntity` objects for
- * the product with id `productId`, and then initialize `mObservableProduct` by
- * initiating a load from `DataRepository repository` of the `ProductEntity` with product
- * id `productId`.
+ * The purpose of this [AndroidViewModel] is to acquire and keep the information that is
+ * necessary for our [ProductFragment] fragment and its "layout" file layout/product_fragment.xml.
+ * Our constructor. First we call our super's constructor, and then in our init block we save our
+ * [Int] parameter `productId` in our field `mProductId`. We initialize `mObservableComments` by
+ * initiating a load from `DataRepository repository` of the list of `CommentEntity` objects for
+ * the product with id `productId`, and then initialize `mObservableProduct` by initiating a load
+ * from `DataRepository repository` of the `ProductEntity` with product id `productId`.
  *
- * @param application `Application` to use as the life cycle scope for our `ViewModel`
- * @param repository  `DataRepository` to load our data from
- * @param productId   product ID of the `ProductEntity` we are concerned with.
+ * @param application the [Application] to use as the life cycle scope for our `ViewModel`
+ * @param repository the [DataRepository] to load our data from
+ * @param productId product ID of the [ProductEntity] we are concerned with.
  */
 class ProductViewModel(
     application: Application,
@@ -50,9 +50,6 @@ class ProductViewModel(
      * reference to our field `LiveData<ProductEntity> mObservableProduct`.
      *
      * @return a reference to our field `LiveData<ProductEntity> mObservableProduct`
-     */
-    /**
-     * `LiveData` data holder class for the observable `ProductEntity` we are concerned with
      */
     val observableProduct: LiveData<ProductEntity>
 
