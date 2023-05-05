@@ -31,25 +31,16 @@ import com.example.android.common.logger.LogFragment
  * This sample detects gestures on a view and logs them. In order to try this sample out, try
  * dragging or tapping the text.
  *
- *
  * In this sample, the gestures are detected using a custom gesture listener that extends
- * [SimpleOnGestureListener][1] and writes the detected [MotionEvent][2] into the log.
- *
+ * [SimpleOnGestureListener] and writes the detected [MotionEvent] into the log.
  *
  * In this example, the steps followed to set up the gesture detector are:
+ *  1. Create the [GestureListener] that includes all your callbacks.
  *
- *  *
- * 1. Create the GestureListener that includes all your callbacks.
+ *  2. Create the [GestureDetector] that will take the [GestureListener] as an argument.
  *
- *  *
- * 2. Create the GestureDetector ([SimpleOnGestureListener][1]) that will take the listener
- * as an argument.
- *
- *  *
- * 3. For the view where the gestures will occur, create an [onTouchListener][3] that sends
- * all motion events to the gesture detector.
- *
- *
+ *  3. For the view where the gestures will occur, create an [View.OnTouchListener] that sends
+ *  all motion events to the gesture detector.
  */
 class BasicGestureDetectFragment : Fragment() {
     /**
