@@ -16,6 +16,7 @@
 package com.example.android.persistence.viewmodel
 
 import android.app.Application
+import android.view.View
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -30,11 +31,12 @@ import com.example.android.persistence.ui.ProductFragment
 /**
  * The purpose of this [AndroidViewModel] is to acquire and keep the information that is
  * necessary for our [ProductFragment] fragment and its "layout" file layout/product_fragment.xml.
- * Our constructor. First we call our super's constructor, and then in our init block we save our
- * [Int] parameter `productId` in our field `mProductId`. We initialize `mObservableComments` by
- * initiating a load from `DataRepository repository` of the list of `CommentEntity` objects for
- * the product with id `productId`, and then initialize `mObservableProduct` by initiating a load
- * from `DataRepository repository` of the `ProductEntity` with product id `productId`.
+ * In our constructor we call our super's constructor, and then in our init block we save our [Int]
+ * parameter `productId` in our field `mProductId`. We initialize `mObservableComments` by
+ * initiating a load from [DataRepository] parameter `repository` of the list of [CommentEntity]
+ * objects for the product with id `productId`, and then initialize `mObservableProduct` by
+ * initiating a load from [DataRepository] parameter `repository` of the [ProductEntity] with
+ * product id `productId`.
  *
  * @param application the [Application] to use as the life cycle scope for our `ViewModel`
  * @param repository the [DataRepository] to load our data from
@@ -46,37 +48,26 @@ class ProductViewModel(
     productId: Int
 ) : AndroidViewModel(application) {
     /**
-     * Expose the LiveData `ProductEntity` query so the UI can observe it. We just return a
-     * reference to our field `LiveData<ProductEntity> mObservableProduct`.
-     *
-     * @return a reference to our field `LiveData<ProductEntity> mObservableProduct`
+     * Exposes the [LiveData] wrapped [ProductEntity] query so the UI can observe it.
      */
     val observableProduct: LiveData<ProductEntity>
 
     /**
-     * `ObservableField` that is used to bind our `ProductEntity` to the `View`
+     * [ObservableField] that is used to bind our [ProductEntity] to the [View]
      */
     @JvmField
     var product: ObservableField<ProductEntity> = ObservableField<ProductEntity>()
 
     /**
-     * Product ID of the `ProductEntity` we are concerned with
+     * Product ID of the [ProductEntity] we are concerned with
      */
     private var mProductId = 0
+
     /**
-     * Expose the LiveData Comments query so the UI can observe it. We just return a reference to
-     * our field `LiveData<List<CommentEntity>> mObservableComments`.
-     *
-     * @return a reference to our field `LiveData<List<CommentEntity>> mObservableComments`
-     */
-    /**
-     * `LiveData` query for the `CommentEntity` objects for our `ProductEntity`
+     * Exposes the [LiveData] wrapped [CommentEntity] query so the UI can observe it.
      */
     val comments: LiveData<List<CommentEntity>>
 
-    /**
-     *
-     */
     init {
         mProductId = productId
         comments = repository.loadComments(mProductId)
@@ -84,9 +75,9 @@ class ProductViewModel(
     }
 
     /**
-     * Setter for our `ObservableField` `product`, called from `ProductFragment`
+     * Setter for our [ObservableField] field [product], called from [ProductFragment]
      * when the database read has completed. We just call the `set` method of our field
-     * `product` to set it to our parameter `ProductEntity product`.
+     * [product] to set it to our [ProductEntity] parameter [product].
      *
      * @param product `ProductEntity` we have loaded, now ready to be displayed
      */
@@ -103,30 +94,21 @@ class ProductViewModel(
      * `mProductId`, then initialize our field `DataRepository mRepository` by
      * calling the `getRepository` method of our parameter `application`.
      *
-     * @param mApplication `Application` to use for the scope of the `ProductViewModel`
-     * we create
-     * @param mProductId   Product id of the `ProductEntity` to use when we create a
-     * `ProductViewModel`
+     * @param mApplication [Application] to use for the scope of the [ProductViewModel] we create
+     * @param mProductId Product id of the [ProductEntity] to use when we create a [ProductViewModel]
      */
     class Factory(
-        /**
-         * `Application` to use for the scope of the `ProductViewModel` our `Factory`
-         * creates.
-         */
         private val mApplication: Application,
-        /**
-         * Product id of the `ProductEntity` to use when we create a `ProductViewModel`
-         */
         private val mProductId: Int
     ) : ViewModelProvider.NewInstanceFactory() {
         /**
-         * `DataRepository` to use when we create a `ProductViewModel`.
+         * [DataRepository] to use when we create a [ProductViewModel].
          */
         private var mRepository: DataRepository = (mApplication as BasicApp).repository
 
         /**
-         * Returns a `ProductViewModel` constructed using our fields `mApplication`,
-         * `mRepository` and `mProductId`.
+         * Returns a [ProductViewModel] constructed using our fields [mApplication],
+         * [mRepository] and [mProductId].
          *
          * @param modelClass The class of the ViewModel to create an instance of it if it is not
          * present. UNUSED
@@ -134,7 +116,7 @@ class ProductViewModel(
          * @return A ViewModel that is an instance of the given type `T`.
         </T> */
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            @Suppress("UNCHECKED_CAST")
+            @Suppress("UNCHECKED_CAST") // If it is not a `T` I prefer to crash
             return ProductViewModel(mApplication, mRepository, mProductId) as T
         }
     }
