@@ -16,28 +16,30 @@
 package com.example.android.basicmultitouch
 
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 /**
- * This is an example of keeping track of individual touches across multiple
- * [android.view.MotionEvent]s.
+ * This is an example of keeping track of individual touches across multiple [MotionEvent]s.
  *
- *
- * This is illustrated by a View ([TouchDisplayView]) that responds to
+ * This is illustrated by a [TouchDisplayView] custom [View] that responds to
  * touch events and draws coloured circles for each pointer, stores the last
  * positions of this pointer and draws them. This example shows the relationship
- * between MotionEvent indices, pointer identifiers and actions.
+ * between [MotionEvent] indices, pointer identifiers and actions.
  *
  * @see android.view.MotionEvent
  */
 class MainActivity : AppCompatActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.layout_mainactivity
-     * (this layout file contains a `TouchDisplayView` widget overlayed over a `TextView`
-     * in a shared `FrameLayout`).
+     * `onCreate`, then we set our content view to our layout file [R.layout.layout_mainactivity]
+     * (this layout file contains a [TouchDisplayView] widget overlayed over a [TextView] in a
+     * shared [FrameLayout]).
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
