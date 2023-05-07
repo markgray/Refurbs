@@ -21,9 +21,14 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.android.common.activities.SampleActivityBase
 import com.example.android.common.logger.Log
 import com.example.android.common.logger.LogFragment
+import com.example.android.common.logger.LogNode
+import com.example.android.common.logger.LogView
 import com.example.android.common.logger.LogWrapper
 import com.example.android.common.logger.MessageOnlyLogFilter
 
@@ -34,22 +39,22 @@ import com.example.android.common.logger.MessageOnlyLogFilter
 class MainActivity : SampleActivityBase() {
     /**
      * Called when the activity is starting. We first call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_main. If
-     * the FragmentManager for interacting with fragments associated with this activity cannot find
-     * a fragment with the tag FRAGTAG ("BasicGestureDetectFragment"), we initialize our variable
-     * `FragmentTransaction transaction` by using the fragment manager to begin a transaction.
-     * We then initialize `BasicGestureDetectFragment fragment`, use `transaction` to add
-     * `fragment` with the tag name FRAGTAG without specifying a container for it to be placed
-     * in (it uses `findViewById` to find the view that it interacts with). Then we commit the
-     * transaction.
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. If
+     * the [FragmentManager] for interacting with fragments associated with this activity cannot find
+     * a fragment with the tag [FRAGTAG] ("BasicGestureDetectFragment"), we initialize our
+     * [FragmentTransaction] variable `val transaction` by using the fragment manager to begin a
+     * transaction. We then initialize [BasicGestureDetectFragment] variable `val fragment` to a new
+     * instance, use `transaction` to add `fragment` with the tag name [FRAGTAG] without specifying
+     * a container for it to be placed in (it uses `findViewById` to find the view that it interacts
+     * with). Then we commit the transaction.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (supportFragmentManager.findFragmentByTag(FRAGTAG) == null) {
-            val transaction = supportFragmentManager.beginTransaction()
+            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
             val fragment = BasicGestureDetectFragment()
             transaction.add(fragment, FRAGTAG)
             transaction.commit()
@@ -57,13 +62,13 @@ class MainActivity : SampleActivityBase() {
     }
 
     /**
-     * Initialize the contents of the Activity's standard options menu. We use a `MenuInflater`
-     * with this context to inflate our menu layout file R.menu.main into our parameter `Menu menu`
-     * and return true so that the menu will be displayed.
+     * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater] with
+     * this context to inflate our menu layout file [R.menu.main] into our [Menu] parameter [menu]
+     * and return `true` so that the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
-     * @return You must return true for the menu to be displayed;
-     * if you return false it will not be shown.
+     * @return You must return `true` for the menu to be displayed, if you return `false` it will
+     * not be shown. We return `true`.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
@@ -71,14 +76,14 @@ class MainActivity : SampleActivityBase() {
     }
 
     /**
-     * Create a chain of targets that will receive log data. We initialize `LogWrapper logWrapper`
-     * with a new instance, and set it as the LogNode that log data will be sent to. We create a new
-     * instance for `MessageOnlyLogFilter msgFilter` (strips out everything except the message
-     * text) and set it as the LogNode that `logWrapper` will next send data to. We then initialize
-     * `LogFragment logFragment` by using the FragmentManager for interacting with fragments
-     * associated with this activity to find the fragment with the resource id R.id.log_fragment,
-     * then set its `LogView` as the LogNode that `msgFilter` will send data to. Finally
-     * we log the message "Ready".
+     * Create a chain of targets that will receive log data. We initialize [LogWrapper] variable
+     * `val logWrapper` with a new instance, and set it as the [LogNode] that log data will be sent
+     * to. We create a new instance for [MessageOnlyLogFilter] variable `val msgFilter` (strips out
+     * everything except the message text) and set it as the [LogNode] that `logWrapper` will next
+     * send data to. We then initialize [LogFragment] variable `val logFragment` by using the
+     * [FragmentManager] for interacting with fragments associated with this activity to find the
+     * fragment with the resource id [R.id.log_fragment], then set its [LogView] as the [LogNode]
+     * that `msgFilter` will send data to. Finally we log the message "Ready".
      */
     override fun initializeLogging() {
         // Wraps Android's native log framework.
