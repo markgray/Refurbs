@@ -19,25 +19,21 @@ package com.example.android.basicmultitouch
 
 /**
  * Helper class for creating pools of objects. An example use looks like this:
- * <pre>
- * public class MyPooledClass {
  *
- * private static final SynchronizedPool<MyPooledClass> sPool =
- * new SynchronizedPool<MyPooledClass>(10);
+ *    public class MyPooledClass {
+ *        private static final SynchronizedPool<MyPooledClass> sPool =
+ *        new SynchronizedPool<MyPooledClass>(10);
  *
- * public static MyPooledClass obtain() {
- * MyPooledClass instance = sPool.acquire();
- * return (instance != null) ? instance : new MyPooledClass();
- * }
+ *         public static MyPooledClass obtain() {
+ *             MyPooledClass instance = sPool.acquire();
+ *             return (instance != null) ? instance : new MyPooledClass();
+ *         }
  *
- * public void recycle() {
- * // Clear state if needed.
- * sPool.release(this);
- * }
- *
- * . . .
- * }
-</MyPooledClass></MyPooledClass></pre> *
+ *         public void recycle() {
+ *             // Clear state if needed.
+ *            sPool.release(this);
+ *         }
+ *      }
  */
 class Pools
 /**
@@ -48,10 +44,10 @@ private constructor() {
      * Interface for managing a pool of objects.
      *
      * @param <T> The pooled type.
-    </T> */
+     */
     interface Pool<T> {
         /**
-         * @return An instance from the pool if such, null otherwise.
+         * @return An instance of `T` from the pool if any there, `null` otherwise.
          */
         fun acquire(): T
 
@@ -70,22 +66,23 @@ private constructor() {
      * Simple (non-synchronized) pool of objects.
      *
      * @param <T> The pooled type.
-    </T> */
+     * @param maxPoolSize maximum pool size
+     */
     open class SimplePool<T>(maxPoolSize: Int) : Pool<T?> {
         /**
-         * Our pool of objects, it is allocated in our constructor.
+         * Our pool of objects, it is allocated in our init block.
          */
         private val mPool: Array<Any?>
 
         /**
-         * Current number of entries in our `Object[] mPool` pool
+         * Current number of entries in our [Array] of [Any] field [mPool] pool of objects.
          */
         private var mPoolSize = 0
 
         /**
-         * Creates a new instance. If our parameter `maxPoolSize` is less than or equal to zero
-         * we through IllegalArgumentException. Otherwise we allocate `maxPoolSize` objects for
-         * our field `Object[] mPool`.
+         * Creates a new instance. If the parameter `maxPoolSize` of our constructor is less than or
+         * equal to zero we through [IllegalArgumentException]. Otherwise we allocate an `maxPoolSize`
+         * [Array] of `null`'s for [Array] of [Any] field [mPool].
          *
          * param maxPoolSize The max pool size.
          *
@@ -97,14 +94,14 @@ private constructor() {
         }
 
         /**
-         * Tries to return a `T` object removed from our pool `Object[] mPool` if there are
-         * any there. If `mPoolSize` is greater than 0, we set `int lastPooledIndex` to
-         * `mPoolSize` minus 1, initialize `T instance` with the object at index `lastPooledIndex`
-         * in our `Object[] mPool` pool, set that entry to null, decrement `mPoolSize` and
-         * return `instance`. If `mPoolSize` is not greater than 0 we return null.
+         * Tries to return a `T` object removed from our [Array] of [Any] field [mPool] if there are
+         * any there. If [mPoolSize] is greater than 0, we set [Int] variable `val lastPooledIndex`
+         * to [mPoolSize] minus 1, initialize [T] variable `val instance` with the object at index
+         * `lastPooledIndex` the [mPool] pool, set that entry to null, decrement [mPoolSize] and
+         * return `instance`. If [mPoolSize] is not greater than 0 we return `null`.
          *
-         * @return a `T` object if there were any in our pool `Object[] mPool` or null if
-         * there were none.
+         * @return a [T] object if there were any in our [Array] of [Any] pool  [mPool] or `null`
+         * if there were none.
          */
         override fun acquire(): T? {
             if (mPoolSize > 0) {
@@ -118,14 +115,14 @@ private constructor() {
         }
 
         /**
-         * Returns a `T` object to the pool (if there is room). If our method `isInPool`
-         * finds our parameter `T instance` already in our pool we throw an IllegalStateException.
-         * If our field `mPoolSize` is less than the length of our field `Object[] mPool`
-         * (there is still room) we store `instance` in `mPool[mPoolSize]`, increment
-         * `mPoolSize` and return true to the caller. Otherwise we return false.
+         * Adds a [T] object to the pool (if there is room). If our method [isInPool] finds our [T]
+         * parameter [instance] already in our pool we throw an [IllegalStateException]. If our [Int]
+         * field [mPoolSize] is less than the size of our [Array] of [Any] field [mPool] (there is
+         * still room) we store [instance] in [mPool] at index [mPoolSize], increment [mPoolSize]
+         * and return `true` to the caller. Otherwise we return `false`.
          *
-         * @param instance The instance to release.
-         * @return true if we were able to add it to our pool, false if the pool is full.
+         * @param instance The instance to add to the pool (why is the fun is called [release]?)
+         * @return `true` if we were able to add it to our pool, `false` if the pool is full.
          *
          * @throws IllegalStateException If the instance is already in the pool.
          */
@@ -140,14 +137,14 @@ private constructor() {
         }
 
         /**
-         * Looks for our parameter `T instance` in our field `Object[] mPool`. We loop over
-         * `int i` for the `mPoolSize` objects in `Object[] mPool` and if our parameter
-         * `instance` is equal to `mPool[i]` we return true. If none of the objects in
-         * `mPool` is equal to `instance` we return false.
+         * Looks for our [T] parameter [instance] in our [Array] of [Any] field [mPool]. We loop
+         * over [Int] variable `i` from 0 until [mPoolSize] for objects in [mPool] and if our
+         * parameter [instance] is equal to the [T] at index `i` in [mPool]  we return `true`. If
+         * none of the objects in [mPool] is equal to [instance] we return `false`.
          *
-         * @param instance `T` instance to search for in our field `Object[] mPool`
-         * @return true if our parameter `T instance` is in our field `Object[] mPool`,
-         * false if it is not.
+         * @param instance [T] instance to search for in our [Array] of [Any] field [mPool]
+         * @return `true` if our [T] parameter [instance] is in our [Array] of [Any] field [mPool],
+         * and `false` if it is not.
          */
         private fun isInPool(instance: T?): Boolean {
             for (i in 0 until mPoolSize) {
@@ -160,10 +157,10 @@ private constructor() {
     }
 
     /**
-     * Synchronized) pool of objects.
+     * `Synchronized` pool of objects.
      *
-     * @param <T> The pooled type.
-    </T> */
+     * @param [T] The pooled type.
+     */
     class SynchronizedPool<T>
     /**
      * Creates a new instance. We just call our super's constructor.
@@ -179,18 +176,18 @@ private constructor() {
         private val mLock = Any()
 
         /**
-         * Synchronized on `mLock` we return the value returned by our super's implementation
+         * Synchronized on [mLock] we return the value returned by our super's implementation
          * of `acquire`.
          *
-         * @return `T` object from our pool if any are available
+         * @return [T] object from our pool if any are available
          */
         override fun acquire(): T? {
             synchronized(mLock) { return super.acquire() }
         }
 
         /**
-         * Synchronized on `mLock` we return the value returned by our super's implementation
-         * of `acquire`.
+         * Synchronized on [mLock] we return the value returned by our super's implementation
+         * of `release` when it tries to add our [T] parameter [instance] to the pool.
          *
          * @param instance `T` object to return to our pool if there is room.
          * @return true if we were able to add it to our pool, false if the pool is full.

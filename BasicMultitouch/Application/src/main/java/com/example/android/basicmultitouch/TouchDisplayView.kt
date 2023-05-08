@@ -29,22 +29,19 @@ import android.view.MotionEvent
 import android.view.View
 
 /**
- * View that shows touch events and their history. This view demonstrates the
- * use of [.onTouchEvent] and [android.view.MotionEvent]s to keep
- * track of touch pointers across events.
+ * View that shows touch events and their history. This view demonstrates the use of [onTouchEvent]
+ * and [MotionEvent]'s to keep track of touch pointers across events.
  *
- * Constructor that is called when inflating a view from XML. This is called
- * when a view is being constructed from an XML file, supplying attributes
- * that were specified in the XML file. This version uses a default style of
- * 0, so the only attribute values applied are those in the Context's Theme
- * and the given AttributeSet. First we call our super's constructor, then we
- * initialize our field `SparseArray<TouchHistory> mTouches` with a new
- * instance whose initial capacity is 10. Finally we call our method `initialisePaint`
- * to set up the required `Paint` objects for the screen
- * density of this device.
+ * Constructor that is called when inflating a view from XML. This is called when a view is being
+ * constructed from an XML file, supplying attributes that were specified in the XML file. This
+ * version uses a default style of 0, so the only attribute values applied are those in the
+ * [Context]'s Theme and the given [AttributeSet]. First we call our super's constructor, then in
+ * our init block we initialize our [SparseArray] of [TouchHistory] field [mTouches] with a new
+ * instance whose initial capacity is 10. Also in our init block we call our method [initialisePaint]
+ * to set up the required [Paint] objects for the screen density of this device.
  *
- * @param context The Context the view is running in, through which it can
- * access the current theme, resources, etc.
+ * @param context The [Context] the view is running in, through which it can access the current theme,
+ * resources, etc.
  * @param attrs The attributes of the XML tag that is inflating the view.
  */
 class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
@@ -54,15 +51,14 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
     private val mTouches: SparseArray<TouchHistory>
 
     /**
-     * True if we are tracking at least one finger, false if there are no fingers touching.
+     * `true` if we are tracking at least one finger, `false` if there are no fingers touching.
      */
     private var mHasTouch = false
 
     /**
-     * Holds data related to a touch pointer, including its current position,
-     * pressure and historical positions. Objects are allocated through an
-     * object pool using `obtain()` and `recycle()` to reuse
-     * existing objects.
+     * Holds data related to a touch pointer, including its current position, pressure and
+     * historical positions. Objects are allocated through an object pool using `obtain()` and
+     * `recycle()` to reuse existing objects.
      */
     class TouchHistory {
         /**
@@ -81,7 +77,8 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
         var pressure: Float = 0f
 
         /**
-         * Label of the touch we represent, of the form "id: " with the pointer ID of the touch appended
+         * Label of the touch we represent, of the form "id: " with the pointer ID
+         * of the touch appended
          */
         var label: String? = null
 
@@ -91,18 +88,18 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
         var historyIndex: Int = 0
 
         /**
-         * Number of points in our `PointF[] history` array.
+         * Number of points in our [Array] of [PointF] field [history].
          */
         var historyCount: Int = 0
 
         /**
-         * array of pointer position history
+         * [Array] of pointer position history (can hold [HISTORY_COUNT] (20) [PointF]'s)
          */
         var history: Array<PointF?> = arrayOfNulls(HISTORY_COUNT)
 
         /**
-         * Our constructor. We initialize all HISTORY_COUNT entries in `PointF[] history` with
-         * a new instance of `PointF`.
+         * Part of our constructor. We initialize all [HISTORY_COUNT] entries in the [Array] of
+         * [PointF] field [history] with a new instance of [PointF].
          */
         init {
 
@@ -126,7 +123,7 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
         }
 
         /**
-         * Recycles this instance back to our `SimplePool<TouchHistory> sPool` for reuse.
+         * Recycles this instance back to our [SimplePool] of [TouchHistory] field [sPool] for reuse.
          */
         fun recycle() {
             historyIndex = 0
@@ -135,12 +132,12 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
         }
 
         /**
-         * Add a point to its history. Overwrites oldest point if the maximum number of historical
-         * points is already stored. We initialize `PointF p` with the `PointF` at index
-         * `historyIndex` of our array of pointer position history `PointF[] history`,
-         * then set its `x` field to our parameter `x` and its `y` field to our
-         * parameter `y`. We increment `historyIndex` modulo the length of `history`
-         * (circular buffer style), then if `historyCount` is less than HISTORY_COUNT we increment
+         * Add a point to the [history] of this [TouchHistory]. Overwrites oldest point if the
+         * maximum number of historical points is already stored. We initialize [PointF] variable
+         * `val p` with the [PointF] at index [historyIndex] of our array of [PointF] pointer
+         * position history field [history], then set its `x` field to our parameter `x` and its
+         * `y` field to our parameter `y`. We increment [historyIndex] modulo the size of [history]
+         * (circular buffer style), then if [historyCount] is less than [HISTORY_COUNT] we increment
          * it.
          *
          * @param x x coordinate
@@ -158,32 +155,32 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
 
         companion object {
             /**
-             * number of historical points to store
+             * number of historical points to store in a [TouchHistory]
              */
             const val HISTORY_COUNT: Int = 20
 
             /**
-             * Maximum number of historical `TouchHistory` positions we remember
+             * Maximum number of historical [TouchHistory] positions we remember
              */
             private const val MAX_POOL_SIZE = 10
 
             /**
-             * Our pool of MAX_POOL_SIZE `TouchHistory` objects.
+             * Our [Pool] of [MAX_POOL_SIZE] instances of [TouchHistory].
              */
             private val sPool = Pools.SimplePool<TouchHistory>(MAX_POOL_SIZE)
 
             /**
-             * Returns a `TouchHistory` object initialized to hold our parameters, recycling from
-             * our `SimplePool<TouchHistory> sPool` if possible. We initialize `TouchHistory data`
-             * by attempting to acquire an existing `TouchHistory` from `SimplePool<TouchHistory> sPool`.
-             * If this is null we set `data` to a new instance of `TouchHistory`. We then call
-             * the `setTouch` method of `data` to initialize it to hold all of our parameters.
+             * Returns a [TouchHistory] instance initialized to hold our parameters, recycling from
+             * our [SimplePool] of [TouchHistory] field [sPool] if possible. We initialize [TouchHistory]
+             * `var data` by attempting to acquire an existing [TouchHistory] from [sPool]. If this
+             * is `null` we set `data` to a new instance of [TouchHistory]. We then call the
+             * [TouchHistory.setTouch] method of `data` to initialize it to hold all of our parameters.
              * Finally we return `data` to the caller.
              *
              * @param x X coordinate of the event
              * @param y Y coordinate of the event
              * @param pressure pressure of the event
-             * @return A `TouchHistory` object holding our parameters.
+             * @return A [TouchHistory] object holding our parameters.
              */
             fun obtain(x: Float, y: Float, pressure: Float): TouchHistory {
                 var data = sPool.acquire()
@@ -197,20 +194,19 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
     }
 
     /**
-     * Implement this method to handle touch screen motion events. We initialize `action` with
-     * the kind of action being performed by `event`, then switch on the results of masking off
-     * the ACTION_MASK bits of `action`:
+     * Implement this method to handle touch screen motion events. We initialize [Int] variable
+     * `val action` with the kind of action being performed by our [MotionEvent] parameter [event],
+     * then switch on the results of masking off the ACTION_MASK bits of `action`:
      *
-     *  *
-     * ACTION_DOWN: (first pressed gesture has started) We retrieve the pointer identifier
-     * associated with this event from pointer index 0 (the first pointer that is down) of
-     * `event` in order to initialize `int id`. We initialize `TouchHistory data`
-     * with an instance (from the pool, or new) which has its x, y, and pressure components set
-     * to the values of the x, y, and pressure components from pointer index 0 of `event`.
-     * We then set the `label` field of `data` to a string formed by concatenating
-     * the string value of 0 to the string "id: ". We then store `data` under the index
-     * `id` to `SparseArray<TouchHistory> mTouches`, set our field `hasTouch`
-     * to true and break.
+     *  * ACTION_DOWN: (first pressed gesture has started) We retrieve the pointer identifier
+     *  associated with this event from pointer index 0 (the first pointer that is down) of
+     *  [event] in order to initialize [Int] variable `val id`. We initialize [TouchHistory]
+     *  variable `val data` with an instance (from the pool, or new) which has its x, y, and
+     *  pressure components set to the values of the x, y, and pressure components from pointer
+     *  index 0 of [event]. We then set the `label` field of `data` to a string formed by
+     *  concatenating the string value of 0 to the string "id: ". We then store `data` under
+     *  the index`id` to our [SparseArray] of [TouchHistory] field [mTouches], and set our
+     *  [Boolean]  field [hasTouch] to `true`.
      *
      *  *
      * ACTION_POINTER_DOWN: (A non-primary pointer has gone down, after an event for the primary
@@ -262,31 +258,33 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
      * thread and return true to the caller to consume the event.
      *
      * @param event The motion event.
-     * @return True if the event was handled, false otherwise.
+     * @return `true` if the event was handled, `false` otherwise.
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val action = event.action
+        val action: Int = event.action
         when (action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
-
                 // first pressed gesture has started
-
                 /*
                  * Only one touch event is stored in the MotionEvent. Extract
                  * the pointer identifier of this touch from the first index
                  * within the MotionEvent object.
                  */
                 val id = event.getPointerId(0)
-                val data = TouchHistory.obtain(event.getX(0), event.getY(0),
-                    event.getPressure(0))
+                val data = TouchHistory.obtain(
+                    x = event.getX(0),
+                    y = event.getY(0),
+                    pressure = event.getPressure(0)
+                )
                 data.label = "id: " + 0
 
                 /*
                  * Store the data under its pointer identifier. The pointer
                  * number stays consistent for the duration of a gesture,
                  * accounting for other pointers going up or down.
-                 */mTouches.put(id, data)
+                 */
+                mTouches.put(id, data)
                 mHasTouch = true
             }
 
@@ -313,7 +311,8 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
                  * this pointer can change over multiple events, but this
                  * pointer is always identified by the same identifier for this
                  * active gesture.
-                 */mTouches.put(id, data)
+                 */
+                mTouches.put(id, data)
             }
 
             MotionEvent.ACTION_UP -> {
@@ -469,8 +468,7 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
 
 
     init {
-
-        // SparseArray for touch events, indexed by touch id
+        // Allocate space for our SparseArray of touch events, indexed by touch id
         mTouches = SparseArray(10)
         initialisePaint()
     }
