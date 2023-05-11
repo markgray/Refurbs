@@ -20,61 +20,62 @@ package com.example.android.common.logger
 import android.util.Log
 
 /**
- * Helper class for a list (or tree) of LoggerNodes.
- *
- *
- * When this is set as the head of the list,
- * an instance of it can function as a drop-in replacement for [android.util.Log].
- * Most of the methods in this class server only to map a method call in Log to its equivalent
- * in LogNode.
+ * Helper class for a list (or tree) of LoggerNodes. When this is set as the head of the list, an
+ * instance of it can function as a drop-in replacement for [android.util.Log]. Most of the methods
+ * in this class server only to map a method call in Log to its equivalent in [LogNode].
  */
 object Log {
     // Grabbing the native values from Android's native logging facilities,
     // to make for easy migration and interop.
+
     /**
-     * TODO: Add kdoc
+     * No priority specified.
      */
     const val NONE: Int = -1
+
     /**
-     * TODO: Add kdoc
+     * The most verbose (least important) logging priority. Used by Log.v()
      */
     const val VERBOSE: Int = Log.VERBOSE
+
     /**
-     * TODO: Add kdoc
+     * The second most verbose logging priority. Used by Log.d()
      */
     const val DEBUG: Int = Log.DEBUG
+
     /**
-     * TODO: Add kdoc
+     * The third most verbose logging priority. Used by Log.i()
      */
     const val INFO: Int = Log.INFO
+
     /**
-     * TODO: Add kdoc
+     * The fourth most verbose logging priority. Used by Log.w()
      */
     const val WARN: Int = Log.WARN
+
     /**
-     * TODO: Add kdoc
+     * The fifth most verbose logging priority. Used by Log.e()
      */
     const val ERROR: Int = Log.ERROR
+
     /**
-     * TODO: Add kdoc
+     * The most serious and least verbose logging priority. Used by Log.wtf()
      */
     const val ASSERT: Int = Log.ASSERT
+
     /**
-     * Returns the next LogNode in the linked list.
+     * Stores the beginning of the [LogNode] topology.
      */
-    /**
-     * Sets the LogNode data will be sent to.
-     */
-    // Stores the beginning of the LogNode topology.
     var logNode: LogNode? = null
 
     /**
-     * Instructs the LogNode to print the log data provided. Other LogNodes can
-     * be chained to the end of the LogNode as desired.
+     * Instructs the [LogNode] field [logNode] to print the log data provided. Other [LogNode]'s can
+     * be chained to the end of the [LogNode] as desired.
      *
      * @param priority Log level of the data being logged. Verbose, Error, etc.
      * @param tag Tag for for the log data. Can be used to organize log statements.
      * @param msg The actual message to be logged. The actual message to be logged.
+     * @param tr The (optional) [Throwable] which prompted the logging
      */
     @JvmOverloads
     fun println(priority: Int, tag: String?, msg: String?, tr: Throwable? = null) {
@@ -84,10 +85,11 @@ object Log {
     }
 
     /**
-     * Prints a message at VERBOSE priority.
+     * Prints a message at [VERBOSE] priority.
      *
      * @param tag Tag for for the log data. Can be used to organize log statements.
      * @param msg The actual message to be logged.
+     * @param tr The (optional) [Throwable] which prompted the logging
      */
     @JvmOverloads
     fun v(tag: String?, msg: String?, tr: Throwable? = null) {
@@ -95,10 +97,11 @@ object Log {
     }
 
     /**
-     * Prints a message at DEBUG priority.
+     * Prints a message at [DEBUG] priority.
      *
      * @param tag Tag for for the log data. Can be used to organize log statements.
      * @param msg The actual message to be logged.
+     * @param tr The (optional) [Throwable] which prompted the logging
      */
     @JvmOverloads
     fun d(tag: String?, msg: String?, tr: Throwable? = null) {
@@ -106,10 +109,11 @@ object Log {
     }
 
     /**
-     * Prints a message at INFO priority.
+     * Prints a message at [INFO] priority.
      *
      * @param tag Tag for for the log data. Can be used to organize log statements.
      * @param msg The actual message to be logged.
+     * @param tr The (optional) [Throwable] which prompted the logging
      */
     @JvmOverloads
     fun i(tag: String?, msg: String?, tr: Throwable? = null) {
@@ -117,10 +121,11 @@ object Log {
     }
 
     /**
-     * Prints a message at WARN priority.
+     * Prints a message at [WARN] priority.
      *
      * @param tag Tag for for the log data. Can be used to organize log statements.
      * @param msg The actual message to be logged.
+     * @param tr The (optional) [Throwable] which prompted the logging
      */
     @JvmOverloads
     fun w(tag: String?, msg: String?, tr: Throwable? = null) {
@@ -128,10 +133,10 @@ object Log {
     }
 
     /**
-     * Prints a message at WARN priority.
+     * Prints a message at [WARN] priority.
      *
      * @param tag Tag for for the log data. Can be used to organize log statements.
-     * @param tr If an exception was thrown, this can be sent along for the logging facilities
+     * @param tr If an [Exception] was thrown, this can be sent along for the logging facilities
      * to extract and print useful information.
      */
     fun w(tag: String?, tr: Throwable?) {
@@ -139,10 +144,11 @@ object Log {
     }
 
     /**
-     * Prints a message at ERROR priority.
+     * Prints a message at [ERROR] priority.
      *
      * @param tag Tag for for the log data. Can be used to organize log statements.
      * @param msg The actual message to be logged.
+     * @param tr The (optional) [Throwable] which prompted the logging
      */
     @JvmOverloads
     fun e(tag: String?, msg: String?, tr: Throwable? = null) {
@@ -150,10 +156,11 @@ object Log {
     }
 
     /**
-     * Prints a message at ASSERT priority.
+     * Prints a message at [ASSERT] priority.
      *
      * @param tag Tag for for the log data. Can be used to organize log statements.
      * @param msg The actual message to be logged.
+     * @param tr The (optional) [Throwable] which prompted the logging
      */
     @JvmOverloads
     fun wtf(tag: String?, msg: String?, tr: Throwable? = null) {
@@ -164,7 +171,7 @@ object Log {
      * Prints a message at ASSERT priority.
      *
      * @param tag Tag for for the log data. Can be used to organize log statements.
-     * @param tr If an exception was thrown, this can be sent along for the logging facilities
+     * @param tr If an [Exception] was thrown, this can be sent along for the logging facilities
      * to extract and print useful information.
      */
     fun wtf(tag: String?, tr: Throwable?) {

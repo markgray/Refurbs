@@ -25,10 +25,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 
 /**
- * Simple fragment containing only a TextView. Used by TextPagerAdapter to create
- * tutorial-style pages for apps.
+ * Simple fragment containing only a [TextView].
  */
 class SimpleTextFragment
 /**
@@ -44,37 +44,38 @@ class SimpleTextFragment
      * Contains a resource ID for the text that will be displayed by this fragment.
      */
     var mTextId: Int = -1
+
     /**
-     * Getter for our `TextView mTextView` field.
-     *
-     * @return contents of our `TextView mTextView` field
-     */
-    /**
-     * For situations where the app wants to modify text at Runtime, exposing the TextView.
+     * Access to the [TextView] which is returned from our [onCreateView] override to serve as the
+     * [View] for the fragment's UI. Public to allow the rest of the app wants to modify its text or
+     * [TextView] options at Runtime.
      */
     var textView: TextView? = null
         private set
 
     /**
      * Called to have the fragment instantiate its user interface view. First we call our method
-     * `processArguments()` to process any arguments that may have been provided via a call to
-     * `setArguments` (None are in this example). We initialize our field `TextView mTextView`
-     * with a new instance and set its gravity to Gravity.CENTER (places the object in the center of
-     * its container in both the vertical and horizontal axis, not changing its size). If our field
-     * `String mText` is not null we set the text of `mTextView` to it and log that text.
-     * Finally we return `mTextView` to the caller.
+     * [processArguments] to process any arguments that may have been provided via a call to
+     * [setArguments] (None are in this example). We initialize our [TextView] field [textView]
+     * with a new instance and set its gravity to [Gravity.CENTER] (places the object in the center
+     * of its container in both the vertical and horizontal axis, not changing its size). If our
+     * [String] field [mText] is not `null` we set the text of [textView] to it and log that text.
+     * Finally we return [textView] to the caller.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param container If non-`null`, this is the parent view that the fragment's UI will be
+     * attached to. The fragment should not add the view itself, but this can be used to generate
+     * the LayoutParams of the view.
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here. We ignore.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Before initializing the textView, check if any arguments were provided via setArguments.
         processArguments()
 
@@ -89,10 +90,9 @@ class SimpleTextFragment
     }
 
     /**
-     * Changes the text for this TextView, according to the resource ID provided. We call our method
-     * `getTextView` to get our text view and call its `setText` method with the string
-     * that the `FragmentActivity` this fragment is currently associated with fetches for the
-     * resource id contained in our parameter `int stringId`.
+     * Changes the text of our [TextView] to the [String] whose resource ID is our [Int] parameter
+     * [stringId]. We call [TextView.setText] method with the [String] that the [FragmentActivity]
+     * this fragment is currently associated with fetches for the resource id [stringId].
      *
      * @param stringId A resource ID representing the text content for this Fragment's TextView.
      */
@@ -101,16 +101,14 @@ class SimpleTextFragment
     }
 
     /**
-     * Processes the arguments passed into this Fragment via setArguments method.
-     * Currently the method only looks for text or a textID, nothing else.
-     *
-     *
-     * If `getArguments()` returns null we do nothing, otherwise we set `Bundle args` to
-     * the arguments supplied when the fragment was instantiated and if `args` contains a string
-     * under the key TEXT_KEY we set our field `String mText` to that string, and log what we did.
-     * Else if `args` contains an integer stored under the key TEXT_ID_KEY, we set our field
-     * `int mTextId` to that integer and set our field `String mText` to the string in
-     * our resources with the id `mTextId`.
+     * Processes the arguments passed into this [Fragment] via [setArguments] method. Currently the
+     * method only looks for text or a textID, nothing else. If the [getArguments] method (aka
+     * kotlin `arguments` property) returns `null` we do nothing, otherwise we set [Bundle] variable
+     * `val args` to the arguments supplied when the fragment was instantiated and if `args` contains
+     * a string under the key [TEXT_KEY] we set our [String] field [mText] to that string, and log
+     * what we did. Else if `args` contains an integer stored under the key [TEXT_ID_KEY], we set
+     * our [Int] field [mTextId] to that integer and set our [String] field [mText] to the string in
+     * our resources with the id [mTextId] that the [getString] method returns.
      */
     fun processArguments() {
         // For most objects we'd handle the multiple possibilities for initialization variables
