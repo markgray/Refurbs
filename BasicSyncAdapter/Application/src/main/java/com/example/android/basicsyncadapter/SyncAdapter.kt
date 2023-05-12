@@ -313,9 +313,9 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
     @Throws(IOException::class, XmlPullParserException::class, RemoteException::class, OperationApplicationException::class, ParseException::class)
     fun updateLocalFeedData(stream: InputStream?, syncResult: SyncResult) {
         val feedParser = FeedParser()
-        val contentResolver = context.contentResolver
+        val contentResolver: ContentResolver = context.contentResolver
         Log.i(TAG, "Parsing stream as Atom feed")
-        val entries = feedParser.parse(stream!!)
+        val entries: List<FeedParser.Entry> = feedParser.parse(stream!!)
         Log.i(TAG, "Parsing complete. Found " + entries.size + " entries")
         val batch = ArrayList<ContentProviderOperation>()
 

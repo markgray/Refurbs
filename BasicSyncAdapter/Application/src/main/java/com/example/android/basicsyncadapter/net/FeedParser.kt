@@ -26,28 +26,24 @@ import java.io.InputStream
 import java.text.ParseException
 
 /**
- * This class parses generic Atom feeds.
- *
- *
- * Given an InputStream representation of a feed, it returns a List of entries,
- * where each list element represents a single entry (post) in the XML feed.
- *
+ * This class parses generic Atom feeds. Given an InputStream representation of a feed, it returns
+ * a List of entries, where each list element represents a single entry (post) in the XML feed.
  *
  * An example of an Atom feed can be found at:
  * http://en.wikipedia.org/w/index.php?title=Atom_(standard)&oldid=560239173#Example_of_an_Atom_1.0_feed
  */
 class FeedParser {
     /**
-     * Parse an Atom feed, returning a collection of Entry objects. First we initialize our variable
-     * `XmlPullParser parser` with a new instance. We disable its FEATURE_PROCESS_NAMESPACES
-     * feature, set the input stream it is going to process to `in`, and skip white space until
-     * it has reached the first xml start tag or end tag. Finally we return the list of `Entry`
-     * objects returned by our method `readFeed` when it is called for `parser`.
+     * Parse an Atom feed, returning a collection of [Entry] objects. First we initialize our
+     * [XmlPullParser] variable `val parser` with a new instance. We disable its FEATURE_PROCESS_NAMESPACES
+     * feature, set the input stream it is going to process to [inputStream], and skip white space
+     * until it has reached the first xml start tag or end tag. Finally we return the list of [Entry]
+     * objects returned by our method [readFeed] when it is called for `parser`.
      *
-     * @param `in` Atom feed, as a stream.
-     * @return List of [com.example.android.basicsyncadapter.net.FeedParser.Entry] objects.
+     * @param inputStream Atom feed, as a stream.
+     * @return [List] of [Entry] objects.
      * @throws org.xmlpull.v1.XmlPullParserException on error parsing feed.
-     * @throws java.io.IOException                   on I/O error.
+     * @throws java.io.IOException on I/O error.
      */
     @Throws(XmlPullParserException::class, IOException::class, ParseException::class)
     fun parse(inputStream: InputStream): List<Entry> {
@@ -61,18 +57,18 @@ class FeedParser {
     }
 
     /**
-     * Decode a feed attached to an XmlPullParser. First we initialize `List<Entry> entries`
-     * with a new instance. Next we check if the current event is a START_TAG with the name "feed"
-     * (throwing XmlPullParserException if it is not) then while the next parsing event is not a
-     * END_TAG we loop, setting `String name` to the name of the current element. If this
-     * `name` is equal to "entry" we add the value returned by our method `readEntry`
-     * when reading `parser`, otherwise we skip this tag. When we reach the END_TAG for the
-     * "feed" element we stop looping and return `entries` to the caller.
+     * Decode a feed attached to an [XmlPullParser]. First we initialize [List] of [Entry] variable
+     * `val entries` with a new instance of [ArrayList]. Next we check if the current event is a
+     * START_TAG with the name "feed" (throwing [XmlPullParserException] if it is not) then while
+     * the next parsing event is not a END_TAG we loop, setting [String] variable `val name` to the
+     * name of the current element. If this `name` is equal to "entry" we add the value returned by
+     * our method [readEntry] when it reads from [parser], otherwise we skip this tag. When we reach
+     * the END_TAG for the "feed" element we stop looping and return `entries` to the caller.
      *
      * @param parser Incoming XMl
-     * @return List of [com.example.android.basicsyncadapter.net.FeedParser.Entry] objects.
+     * @return [List] of [Entry] objects.
      * @throws org.xmlpull.v1.XmlPullParserException on error parsing feed.
-     * @throws java.io.IOException                   on I/O error.
+     * @throws java.io.IOException on I/O error.
      */
     @Throws(XmlPullParserException::class, IOException::class, ParseException::class)
     private fun readFeed(parser: XmlPullParser): List<Entry> {
@@ -84,13 +80,13 @@ class FeedParser {
         // <?xml version="1.0" encoding="utf-8"?>
         // <feed xmlns="http://www.w3.org/2005/Atom">
         // ...
-        // </feed>
+        // </feed> TODO: Figure out why require does not see the "feed" tag (it is there!)
         parser.require(XmlPullParser.START_TAG, ns, "feed")
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.eventType != XmlPullParser.START_TAG) {
                 continue
             }
-            val name = parser.name
+            val name: String = parser.name
             // Starts by looking for the <entry> tag. This tag repeates inside of <feed> for each
             // article in the feed.
             //
