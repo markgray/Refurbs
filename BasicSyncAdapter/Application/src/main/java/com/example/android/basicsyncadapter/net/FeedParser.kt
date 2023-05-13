@@ -114,48 +114,43 @@ class FeedParser {
     }
 
     /**
-     * Parses the contents of an entry. If it encounters a title, summary, or link tag, hands them
-     * off to their respective "read" methods for processing. Otherwise, skips the tag. First we check
-     * if the current event is a START_TAG with the name "entry" (throwing XmlPullParserException
-     * if it is not). Then we initialize `String id`, `String title`, and `String link`
-     * to null and `long publishedOn` to 0.
+     * Parses the contents of an entry. If it encounters a "title", "summary", or "link" tag, hands
+     * them off to their respective "read" methods for processing. Otherwise, skips the tag.
      *
+     * First we check if the current event is a START_TAG with the name "entry" (throwing
+     * [XmlPullParserException] if it is not). Then we initialize [String] variable `var id`,
+     * [String] variable `var title`, and [String] variable `var link` to `null` and [Long] variable
+     * `var publishedOn` to 0.
      *
-     * We then loop while the next event of `parser` is not END_TAG. If the event type is not
-     * START_TAG we skip the event, otherwise we set `String name` to the name of the current
-     * element and switch on `name`:
+     * We then loop while the next event of [parser] is not END_TAG. If the event type is not
+     * START_TAG we skip the event, otherwise we set [String] variable `val name` to the name of
+     * the current element and execute a `when` statement on `name`:
      *
-     *  *
-     * "id" - we set `id` to the value that our method `readTag` returns when
-     * reading `parser` for a TAG_ID element. Then we break.
+     *  * "id" - we set `id` to the value that our method [readTag] returns when reading [parser]
+     *  for a [TAG_ID] element.
      *
-     *  *
-     * "title" - we set `title` to the value that our method `readTag` returns when
-     * reading `parser` for a TAG_TITLE element. Then we break.
+     *  * "title" - we set `title` to the value that our method [readTag] returns when reading
+     *  [parser] for a [TAG_TITLE] element.
      *
-     *  *
-     * "link" - we set `String tempLink` to the value that our method `readTag`
-     * returns when reading `parser` for a TAG_LINK element, then if `tempLink`
-     * is not null we set `link` to `tempLink`. Then we break.
+     *  * "link" - we set [String] variable `val tempLink` to the value that our method [readTag]
+     *  returns when reading [parser] for a [TAG_LINK] element, then if `tempLink` is not `null` we
+     *  set `link` to `tempLink`.
      *
-     *  *
-     * "published" - we initialize `Time t` with a new instance, call the `parse3339`
-     * method of `t` with the value that our method `readTag` returns when reading
-     * `parser` for a TAG_PUBLISHED element, then set `publishedOn` to `t`
-     * converted to milliseconds. Then we break.
+     *  * "published" - we initialize [Time] variable `val t` with a new instance, call the
+     *  [Time.parse3339] method of `t` with the value that our method [readTag] returns when
+     *  reading [parser] for a TAG_PUBLISHED element, then set `publishedOn` to `t` converted to
+     *  milliseconds.
      *
-     *  *
-     * default - we skip this tag since we are not interested in it. Then we break.
+     *  * `else` - we skip this tag since we are not interested in it.
      *
-     *
-     * When we reach the END_TAG of this "entry" element, we return a new instance of `Entry`
-     * constructed using id, title, link, and publishedOn.
+     * When we reach the END_TAG of this "entry" element, we return a new instance of [Entry]
+     * constructed using `id`, `title`, `link`, and `publishedOn`.
      *
      * @param parser Incoming XMl
-     * @return `Entry` object created from "entry" element  read from `parser`
+     * @return [Entry] object created from the "entry" element read from [parser]
      * @throws XmlPullParserException on error parsing feed.
-     * @throws IOException            on I/O error.
-     * @throws ParseException         Error has been reached unexpectedly while parsing.
+     * @throws IOException on I/O error.
+     * @throws ParseException Error has been reached unexpectedly while parsing.
      */
     @Throws(XmlPullParserException::class, IOException::class, ParseException::class)
     private fun readEntry(parser: XmlPullParser): Entry {
@@ -201,30 +196,24 @@ class FeedParser {
     }
 
     /**
-     * Process an incoming tag and read the selected value from it. We switch on `tagType`:
+     * Process an incoming tag and read the selected value from it. We switch on our [Int] parameter
+     * [tagType]:
      *
-     *  *
-     * TAG_ID - we return the string returned by our method `readBasicTag` when it reads
-     * `parser` looking for an "id" element.
+     *  * [TAG_ID] - we return the [String] returned by our method [readBasicTag] when it reads
+     *  [parser] looking for an "id" element.
      *
-     *  *
-     * TAG_TITLE - we return the string returned by our method `readBasicTag` when it reads
-     * `parser` looking for a "title" element.
+     *  * [TAG_TITLE] - we return the [String] returned by our method [readBasicTag] when it reads
+     *  [parser] looking for a "title" element.
      *
-     *  *
-     * TAG_PUBLISHED - we return the string returned by our method `readBasicTag` when it reads
-     * `parser` looking for a "published" element.
+     *  * [TAG_PUBLISHED] - we return the [String] returned by our method [readBasicTag] when it
+     *  reads [parser] looking for a "published" element.
      *
-     *  *
-     * TAG_LINK - we return the string returned by our method `readAlternateLink` when it
-     * reads `parser`.
+     *  * [TAG_LINK] - we return the [String] returned by our method [readAlternateLink] when it
+     *  reads [parser].
      *
-     *  *
-     * default - we throw IllegalArgumentException
+     *  * `else` - we throw [IllegalArgumentException]
      *
-     *
-     *
-     * @param parser  XmlPullParser we are to read from
+     * @param parser the [XmlPullParser] we are to read from
      * @param tagType Type of the tag we are supposed to read
      * @return Body of the specified tag
      * @throws IOException            on I/O error.
@@ -243,21 +232,19 @@ class FeedParser {
 
     /**
      * Reads the body of a basic XML tag, which is guaranteed not to contain any nested elements.
-     * You probably want to call readTag(). First we check if the current event is a START_TAG with
-     * the name `tag` (throwing XmlPullParserException if it is not). We set `String result`
-     * to the value returned by our method `readText` when reading from `parser`. Then we
-     * check if the current event is a END_TAG with the name `tag` (throwing XmlPullParserException
+     * You probably want to call [readTag]. First we check if the current event is a START_TAG with
+     * the name [tag] (throwing [XmlPullParserException] if it is not). We set [String] variable
+     * `val result` to the value returned by our method [readText] when reading from [parser]. Then
+     * we check if the current event is a END_TAG with the name [tag] (throwing [XmlPullParserException]
      * if it is not). Finally we return `result` to the caller.
      *
      * @param parser Current parser object
-     * @param tag    XML element tag name to parse
+     * @param tag XML element tag name to parse
      * @return Body of the specified tag
-     * @throws java.io.IOException                   Signals that an I/O exception of some sort has
-     * occurred. This class is the general class of
-     * exceptions produced by failed or interrupted
-     * I/O operations.
-     * @throws org.xmlpull.v1.XmlPullParserException This exception is thrown to signal XML Pull
-     * Parser related faults.
+     * @throws [IOException] Signals that an I/O exception of some sort has occurred. This class
+     * is the general class of exceptions produced by failed or interrupted I/O operations.
+     * @throws [XmlPullParserException] This exception is thrown to signal XML Pull Parser
+     * related faults.
      */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readBasicTag(parser: XmlPullParser, tag: String): String? {
@@ -268,23 +255,21 @@ class FeedParser {
     }
 
     /**
-     * Processes link tags in the feed. First we initialize `String link` to null. Then we check
-     * if the current event is a START_TAG with the name "link" (throwing XmlPullParserException if it
-     * is not). Then we call the `getName` method of `parser` (a copy/paste residue?),
-     * and set `String relType` to the value of the attribute "rel" if any. If `relType`
-     * is "alternate", we set `link` to the value of the attribute "href" if any.
-     *
+     * Processes link tags in the feed. First we initialize [String] variable `var link` to `null`.
+     * Then we check if the current event is a START_TAG with the name "link" (throwing
+     * [XmlPullParserException] if it is not). Then we call the `getName` method of [parser] (a
+     * copy/paste residue?), and set [String] variable `val relType` to the value of the attribute
+     * "rel" if any. If `relType` is "alternate", we set `link` to the value of the attribute "href"
+     * if any.
      *
      * Then we loop until the next event is END_TAG, and then return `link` to the caller.
      *
      * @param parser Current parser object
      * @return Body of the "link" tag
-     * @throws java.io.IOException    Signals that an I/O exception of some sort has
-     * occurred. This class is the general class of
-     * exceptions produced by failed or interrupted
-     * I/O operations.
-     * @throws XmlPullParserException This exception is thrown to signal XML Pull
-     * Parser related faults.
+     * @throws [IOException] Signals that an I/O exception of some sort has occurred. This class is
+     * the general class of exceptions produced by failed or interrupted I/O operations.
+     * @throws [XmlPullParserException] This exception is thrown to signal XML Pull Parser
+     * related faults.
      */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readAlternateLink(parser: XmlPullParser): String? {
@@ -305,7 +290,7 @@ class FeedParser {
     /**
      * For the tags title and summary, extracts their text values. First we initialize the variable
      * `String result` to null. If the next parsing event is TEXT we set `result` to
-     * the element content, and advance `parser` to the next event (START_TAG or END_TAG).
+     * the element content, and advance [parser] to the next event (START_TAG or END_TAG).
      * Finally we return `result` to the caller.
      *
      * @param parser Current parser object
@@ -333,7 +318,7 @@ class FeedParser {
      * finds the matching END_TAG (as indicated by the value of "depth" being 0).
      *
      *
-     * First we fetch the type of the current event of `parser` and throw IllegalStateException
+     * First we fetch the type of the current event of [parser] and throw IllegalStateException
      * if it is not a START_TAG. Then we initialize `int depth` to 1, then loop while depth
      * is not equal to 0. We switch on the next event:
      *
