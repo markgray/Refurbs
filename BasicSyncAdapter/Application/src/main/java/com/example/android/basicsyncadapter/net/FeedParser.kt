@@ -288,19 +288,16 @@ class FeedParser {
     }
 
     /**
-     * For the tags title and summary, extracts their text values. First we initialize the variable
-     * `String result` to null. If the next parsing event is TEXT we set `result` to
-     * the element content, and advance [parser] to the next event (START_TAG or END_TAG).
+     * For the tags "title" and "summary", extracts their text values. First we initialize the
+     * [String] variable `var result` to `null`. If the next parsing event is `TEXT` we set `result`
+     * to the element content, and advance [parser] to the next event (`START_TAG` or `END_TAG`).
      * Finally we return `result` to the caller.
      *
      * @param parser Current parser object
      * @return text content of TEXT event (if any)
-     * @throws IOException            Signals that an I/O exception of some sort has
-     * occurred. This class is the general class of
-     * exceptions produced by failed or interrupted
-     * I/O operations.
-     * @throws XmlPullParserException This exception is thrown to signal XML Pull
-     * Parser related faults.
+     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is
+     * the general class of exceptions produced by failed or interrupted I/O operations.
+     * @throws XmlPullParserException This exception is thrown to signal XML Pull Parser related faults.
      */
     @Throws(IOException::class, XmlPullParserException::class)
     private fun readText(parser: XmlPullParser): String? {
@@ -313,30 +310,22 @@ class FeedParser {
     }
 
     /**
-     * Skips tags the parser isn't interested in. Uses depth to handle nested tags. i.e.,
-     * if the next tag after a START_TAG isn't a matching END_TAG, it keeps going until it
-     * finds the matching END_TAG (as indicated by the value of "depth" being 0).
+     * Skips tags the parser isn't interested in. Uses depth to handle nested tags. i.e., if the
+     * next tag after a `START_TAG` isn't a matching `END_TAG`, it keeps going until it finds the
+     * matching `END_TAG` (as indicated by the value of "depth" being 0).
      *
+     * First we fetch the type of the current event of [parser] and throw [IllegalStateException]
+     * if it is not a `START_TAG`. Then we initialize [Int] variable `var depth` to 1, then loop
+     * while depth is not equal to 0. We `when` switch on the next event:
      *
-     * First we fetch the type of the current event of [parser] and throw IllegalStateException
-     * if it is not a START_TAG. Then we initialize `int depth` to 1, then loop while depth
-     * is not equal to 0. We switch on the next event:
+     *  * `END_TAG` - we decrement depth
      *
-     *  *
-     * END_TAG - we decrement depth and break
-     *
-     *  *
-     * START_TAG - we increment depth and break
-     *
-     *
+     *  * `START_TAG` - we increment depth
      *
      * @param parser Incoming XMl
-     * @throws XmlPullParserException This exception is thrown to signal XML Pull
-     * Parser related faults.
-     * @throws IOException            Signals that an I/O exception of some sort has
-     * occurred. This class is the general class of
-     * exceptions produced by failed or interrupted
-     * I/O operations.
+     * @throws XmlPullParserException This exception is thrown to signal XML Pull Parser related faults.
+     * @throws IOException Signals that an I/O exception of some sort has occurred. This class is
+     * the general class of exceptions produced by failed or interrupted I/O operations.
      */
     @Throws(XmlPullParserException::class, IOException::class)
     private fun skip(parser: XmlPullParser) {
@@ -351,10 +340,8 @@ class FeedParser {
     }
 
     /**
-     * This class represents a single entry (post) in the XML feed.
-     *
-     *
-     * It includes the data members "id", "title," "link," and "published"
+     * This class represents a single entry (post) in the XML feed. It includes the data members
+     * "id", "title," "link," and "published"
      */
     class Entry
     /**
@@ -364,7 +351,8 @@ class FeedParser {
      * @param title     Value of the "title" element.
      * @param link      Value of the "link" element.
      * @param published Value of the "published" element, converted to milliseconds.
-     */ internal constructor(
+     */
+    internal constructor(
         /**
          * Value of the "id" element.
          */
@@ -380,10 +368,12 @@ class FeedParser {
         /**
          * Value of the "published" element, converted to milliseconds.
          */
-        val published: Long)
+        val published: Long
+    )
 
     companion object {
         // Constants indicting XML element names that we're interested in
+
         /**
          * "id" element
          */
@@ -405,7 +395,7 @@ class FeedParser {
         private const val TAG_LINK = 4
 
         /**
-         * Xml namespace. We don't use XML namespaces, null will match any namespace
+         * Xml namespace. We don't use XML namespaces, `null` will match any namespace
          */
         private val ns: String? = null
     }

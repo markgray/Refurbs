@@ -29,7 +29,7 @@ import android.provider.BaseColumns
 import com.example.android.common.db.SelectionBuilder
 
 /**
- * `ContentProvider` class specified as a provider in AndroidManifest.xml, with android:authorities
+ * [ContentProvider] class specified as a provider in AndroidManifest.xml, with android:authorities
  * defined to be "com.example.android.basicsyncadapter"
  */
 class FeedProvider : ContentProvider() {
@@ -39,11 +39,11 @@ class FeedProvider : ContentProvider() {
     var mDatabaseHelper: FeedDatabase? = null
 
     /**
-     * Implement this to initialize your content provider on startup. We initialize our field
-     * `FeedDatabase mDatabaseHelper` with a new instance, and return true to the caller
-     * to signify that we have been successfully loaded.
+     * Implement this to initialize your content provider on startup. We initialize our [FeedDatabase]
+     * field [mDatabaseHelper] with a new instance, and return `true` to the caller to signify that
+     * we have been successfully loaded.
      *
-     * @return true if the provider was successfully loaded, false otherwise
+     * @return `true` if the provider was successfully loaded, `false` otherwise
      */
     override fun onCreate(): Boolean {
         mDatabaseHelper = FeedDatabase(context)
@@ -51,23 +51,19 @@ class FeedProvider : ContentProvider() {
     }
 
     /**
-     * Determine the mime type for entries returned by a given URI. First we initialize `int match`
-     * by using `UriMatcher sUriMatcher` to match `Uri uri`. Then we switch on `match`:
+     * Determine the mime type for entries returned by a given URI. First we initialize [Int]
+     * variable `val match` by using [UriMatcher] field [sUriMatcher] to match our [Uri] parameter
+     * [uri]. Then we `when` switch on `match`:
      *
-     *  *
-     * ROUTE_ENTRIES - we return FeedContract.Entry.CONTENT_TYPE to the caller
-     * ("vnd.android.cursor.dir/vnd.basicsyncadapter.entries")
+     *  * [ROUTE_ENTRIES] - we return [FeedContract.Entry.CONTENT_TYPE] to the caller
+     *  ("vnd.android.cursor.dir/vnd.basicsyncadapter.entries")
      *
-     *  *
-     * ROUTE_ENTRIES_ID - we return FeedContract.Entry.CONTENT_ITEM_TYPE to the caller
-     * ("vnd.android.cursor.item/vnd.basicsyncadapter.entry")
+     *  * [ROUTE_ENTRIES_ID] - we return [FeedContract.Entry.CONTENT_ITEM_TYPE] to the caller
+     *  ("vnd.android.cursor.item/vnd.basicsyncadapter.entry")
      *
-     *  *
-     * default - we throw UnsupportedOperationException
+     *  * default - we throw [UnsupportedOperationException]
      *
-     *
-     *
-     * @param uri the URI to query.
+     * @param uri the [Uri] to query.
      * @return a MIME type string, or `null` if there is no type.
      */
     override fun getType(uri: Uri): String? {
@@ -80,67 +76,81 @@ class FeedProvider : ContentProvider() {
     }
 
     /**
-     * Perform a database query by URI. First we initialize `SQLiteDatabase db` by using the
-     * `getReadableDatabase` method of `FeedDatabase mDatabaseHelper` to create or open
-     * our database. We initialize `SelectionBuilder builder` with a new instance, then set
-     * `int uriMatch` to the code returned when we use `sUriMatcher.match` to match our
-     * parameter `Uri uri` and we then switch on `uriMatch`:
+     * Perform a database query by URI. First we initialize [SQLiteDatabase] variable `val db` by
+     * using the [FeedDatabase.getReadableDatabase] method of [FeedDatabase] field [mDatabaseHelper]
+     * to create or open our database. We initialize [SelectionBuilder] variable `val builder` with
+     * a new instance, and initialize our "null varargs kludge" variable `val spreadFooler` to our
+     * [Array] of [String] parameter [selectionArgs] if it is not `null` or to an empty [Array] of
+     * [String] if it is `null`. We then set [Int] varible `val uriMatch` to the code returned when
+     * we use the [UriMatcher.match] method of our [sUriMatcher] field to match our [Uri] parameter
+     * [uri] and we then `when` switch on `uriMatch`:
      *
-     *  *
-     * ROUTE_ENTRIES_ID: Returns a single entry, by ID. We initialize `String id` with
-     * the last path segment of `uri`, then append a selection clause to `builder`
-     * for the unique ID for a row equal to "?", which is filled in by the selection argument
-     * `id`. We then fall through to also execute the code for the ROUTE_ENTRIES case.
+     *  * [ROUTE_ENTRIES_ID]: Returns a single entry, by ID. We initialize [String] variabe `val id`
+     *  with the last path segment of [uri], then append a selection clause to `builder` for the
+     *  unique ID for a row equal to "?", which is filled in by the selection argument `id`.
+     *  We call the [SelectionBuilder.table] method of `builder` to set the Table name to use for
+     *  the SQL FROM statement to [FeedContract.Entry.TABLE_NAME] ("entry"), and append a
+     *  [SelectionBuilder.where] to the `builder` returned to Append our parameter [selection] with
+     *  the "varargs spread" of `spreadFooler` as the selection clause. We then create [Cursor]
+     *  variable `val c` using the [SelectionBuilder.query] method of `builder` for the database
+     *  `db`, projection [projection], and sort order [sortOrder]. We initialize [Context] variable
+     *  `val ctx` with the context this provider is running in, and register `c` with the content
+     *  resolver to watch our content [Uri] parameter [uri] for changes (listener attached to this
+     *  resolver will be notified). Finally we return `c` to the caller.
      *
-     *  *
-     * ROUTE_ENTRIES: Return all known entries. We set the table of `builder` to the table
-     * FeedContract.Entry.TABLE_NAME ("entry"), the selection clause to our parameter
-     * `selection` and the selection arguments to our parameter `selectionArgs`.
-     * We then create `Cursor c` using the `query` method of `builder` for
-     * the database `db`, projection `projection`, and sort order `sortOrder`.
-     * We initialize `Context ctx` with the context this provider is running in, and
-     * register `c` with the content resolver to watch our content URI `uri` for
-     * changes (listener attached to this resolver will be notified). Finally we return `c`
-     * to the caller
+     *  * [ROUTE_ENTRIES]: Return all known entries. We call the [SelectionBuilder.table] method of
+     *  `builder` to set the Table name to use for  the SQL FROM statement to
+     *  [FeedContract.Entry.TABLE_NAME] ("entry"), and append a [SelectionBuilder.where] to the
+     *  `builder` returned to Append our parameter [selection] with the "varargs spread" of
+     *  `spreadFooler` as the selection clause. We then create [Cursor] variable `val c` using the
+     *  [SelectionBuilder.query] method of `builder` for the database `db`, projection [projection],
+     *  and sort order [sortOrder]. We initialize [Context] variable `val ctx` with the context this
+     *  provider is running in, and register `c` with the content resolver to watch our content
+     *  [Uri] parameter [uri] for changes (listener attached to this resolver will be notified).
+     *  Finally we return `c` to the caller
      *
-     *  *
-     * default: We throw UnsupportedOperationException.
-     *
+     *  * default: We throw [UnsupportedOperationException].
      *
      *
-     * @param uri           The URI to query. This will be the full URI sent by the client; if the
-     * client is requesting a specific record, the URI will end in a record number
-     * that the implementation should parse and add to a WHERE or HAVING clause,
-     * specifying that _id value.
-     * @param projection    The list of columns to put into the cursor. If
-     * `null` all columns are included.
-     * @param selection     A selection criteria to apply when filtering rows.
-     * If `null` then all rows are included.
-     * @param selectionArgs You may include ?s in selection, which will be replaced by the values
-     * from selectionArgs, in order that they appear in the selection. The
-     * values will be bound as Strings.
-     * @param sortOrder     How the rows in the cursor should be sorted. If `null` then the
-     * provider is free to define the sort order.
-     * @return a Cursor or `null`.
+     *
+     * @param uri The [Uri] to query. This will be the full URI sent by the client; if the client
+     * is requesting a specific record, the URI will end in a record number that the implementation
+     * should parse and add to a WHERE or HAVING clause, specifying that _id value.
+     * @param projection The list of columns to put into the cursor. If `null` all columns
+     * are included.
+     * @param selection A selection criteria to apply when filtering rows. If `null` then all rows
+     * are included.
+     * @param selectionArgs You may include ?s in [selection], which will be replaced by the values
+     * from [selectionArgs], in order that they appear in the selection. The values will be bound as
+     * [String]'s.
+     * @param sortOrder How the rows in the cursor should be sorted. If `null` then the provider is
+     * free to define the sort order.
+     * @return a [Cursor] or `null`.
      */
-    override fun query(uri: Uri, projection: Array<String>?, selection: String?,
-                       selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
+    override fun query(
+        uri: Uri,
+        projection: Array<String>?,
+        selection: String?,
+        selectionArgs: Array<String>?,
+        sortOrder: String?
+    ): Cursor? {
+
         val db: SQLiteDatabase = mDatabaseHelper!!.readableDatabase
         val builder = SelectionBuilder()
+        val spreadFooler: Array<String> = selectionArgs ?: arrayOf()
         val uriMatch: Int = sUriMatcher.match(uri)
-        val spreadFooler = selectionArgs ?: arrayOf()
         return when (uriMatch) {
             ROUTE_ENTRIES_ID -> {
                 // Return a single entry, by ID.
-                val id = uri.lastPathSegment
+                val id: String? = uri.lastPathSegment
                 builder.where(BaseColumns._ID + "=?", id)
                 // Return all known entries.
                 builder.table(FeedContract.Entry.TABLE_NAME)
                     .where(selection, *spreadFooler)
-                val c = builder.query(db, projection, sortOrder)
+                val c: Cursor = builder.query(db, projection, sortOrder)
                 // Note: Notification URI must be manually set here for loaders to correctly
                 // register ContentObservers.
-                val ctx = context!!
+                val ctx: Context = context!!
                 c.setNotificationUri(ctx.contentResolver, uri)
                 c
             }
