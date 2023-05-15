@@ -1,0 +1,85 @@
+/*
+ * Copyright (C) 2015 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn")
+
+package com.example.android.directshare
+
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.widget.EditText
+import android.widget.Toolbar
+
+/**
+ * Provides the landing screen of this sample. There is nothing particularly interesting here. All
+ * the codes related to the Direct Share feature are in [SampleChooserTargetService].
+ */
+class MainActivity : Activity() {
+    /**
+     * `EditText` with id R.id.body, user enters text here that they want to share.
+     */
+    private var mEditBody: EditText? = null
+
+    /**
+     * Called when the activity is starting. First we call through to our super's implementation of
+     * `onCreate`, then we set our content view to our layout file R.layout.main. We set the
+     * action bar of our activity to the `Toolbar` whose view has id R.id.toolbar, initialize
+     * `mEditBody` by finding the view with id R.id.body, and set the `OnClickListener`
+     * of the view with id R.id.share to our field `mOnClickListener`.
+     *
+     * @param savedInstanceState We do not override `onSaveInstanceState` so do not use
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.main)
+        setActionBar(findViewById<View>(R.id.toolbar) as Toolbar)
+        mEditBody = findViewById(R.id.body)
+        findViewById<View>(R.id.share).setOnClickListener(mOnClickListener)
+    }
+
+    /**
+     * `OnClickListener` for the `Button` with id R.id.share ("SHARE"), its `onClick`
+     * override simply calls our method `share`.
+     */
+    private val mOnClickListener = View.OnClickListener { v ->
+        /**
+         * Called when the Button with id R.id.share is clicked. We use a switch statement to make
+         * sure the view has id R.id.share before calling our method `share`.
+         *
+         * @param v `View` that was clicked.
+         */
+        when (v.id) {
+            R.id.share -> share()
+        }
+    }
+
+    /**
+     * Emits a sample share [Intent]. We initialize `Intent sharingIntent` with an intent
+     * whose action is ACTION_SEND, set its type to "text/plain", and add the text in our
+     * `EditText mEditBody` as an extra under the key EXTRA_TEXT ("android.intent.extra.TEXT").
+     * We then start the chooser activity created by the `Intent.createChooser` method from
+     * `sharingIntent`, with the title set to the string with id R.string.send_intent_title
+     * ("Send a message via:").
+     *
+     */
+    private fun share() {
+        val sharingIntent = Intent(Intent.ACTION_SEND)
+        sharingIntent.type = "text/plain"
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, mEditBody!!.text.toString())
+        startActivity(Intent.createChooser(sharingIntent, getString(R.string.send_intent_title)))
+    }
+}
