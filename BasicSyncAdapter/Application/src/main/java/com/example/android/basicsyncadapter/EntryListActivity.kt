@@ -9,9 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 class EntryListActivity : AppCompatActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_entry_list.
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_entry_list].
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

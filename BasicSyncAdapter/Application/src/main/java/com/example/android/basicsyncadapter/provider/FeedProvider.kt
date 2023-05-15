@@ -18,9 +18,11 @@
 package com.example.android.basicsyncadapter.provider
 
 import android.content.ContentProvider
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.UriMatcher
+import android.database.ContentObserver
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
@@ -169,36 +171,31 @@ class FeedProvider : ContentProvider() {
     }
 
     /**
-     * Insert a new entry into the database. First we initialize `SQLiteDatabase db` by using
-     * the `getWritableDatabase` method of `FeedDatabase mDatabaseHelper` to create or
-     * open our database. We set `int match` to the code returned when we use the `match`
-     * method of `sUriMatcher` to match our parameter `Uri uri`. We declare `Uri result`
-     * and we then switch on `match`:
+     * Insert a new entry into the database. First we initialize [SQLiteDatabase] variable `val db`
+     * by using the [FeedDatabase.getWritableDatabase] method of [FeedDatabase] field [mDatabaseHelper]
+     * to create or open our database. We set [Int] variable `val match` to the code returned when
+     * we use the [UriMatcher.match] method of our [sUriMatcher] field to match our [Uri] parameter
+     * [uri]. We declare [Uri] variable `var result` and we then `when` switch on `match`:
      *
-     *  *
-     * ROUTE_ENTRIES: We set `long id` to the result returned by the `insertOrThrow`
-     * method of `db` when it inserts `values` into the table TABLE_NAME ("entries").
-     * We then set `result` to the `Uri` created by appending a "/" and the string
-     * value of `id` to TABLE_NAME, and break.
+     *  * [ROUTE_ENTRIES]: We set [Long] variable `val id` to the result returned by the
+     *  [SQLiteDatabase.insertOrThrow] method of `db` when it inserts our [ContentValues]
+     *  parameter [values] into the table `TABLE_NAME` ("entries"). We then set `result` to
+     *  the [Uri] created by appending a "/" and the string value of `id` to TABLE_NAME.
      *
-     *  *
-     * ROUTE_ENTRIES_ID: We throw UnsupportedOperationException
+     *  * [ROUTE_ENTRIES_ID]: We throw [UnsupportedOperationException]
      *
-     *  *
-     * default: We throw UnsupportedOperationException
+     *  * default: We throw [UnsupportedOperationException]
      *
+     * We initialize [Context] variable `val ctx` with the context this provider is running in, use
+     * it to get an instance of [ContentResolver] in order to have it send a broadcast to registered
+     * [ContentObserver]'s, to refresh the UI. Finally we return `result` to the caller.
      *
-     * We initialize `Context ctx` with the context this provider is running in, use it to get
-     * an instance of `ContentResolver` in order to have it send a broadcast to registered
-     * `ContentObservers`, to refresh the UI. Finally we return `result` to the caller.
-     *
-     * @param uri    The content:// URI of the insertion request. This must not be `null`.
-     * @param values A set of column_name/value pairs to add to the database.
-     * This must not be `null`.
-     * @return The URI for the newly inserted item.
+     * @param uri The `content://` [Uri] of the insertion request. This must not be `null`.
+     * @param values A set of column_name/value pairs to add to the database. This must not be `null`.
+     * @return The [Uri] for the newly inserted item.
      */
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        val db = mDatabaseHelper!!.writableDatabase!!
+        val db: SQLiteDatabase = mDatabaseHelper!!.writableDatabase!!
         val match = sUriMatcher.match(uri)
         val result: Uri
         result = when (match) {
@@ -211,55 +208,53 @@ class FeedProvider : ContentProvider() {
             else -> throw UnsupportedOperationException("Unknown uri: $uri")
         }
         // Send broadcast to registered ContentObservers, to refresh UI.
-        val ctx = context!!
+        val ctx: Context = context!!
         ctx.contentResolver.notifyChange(uri, null, false)
         return result
     }
 
     /**
-     * Delete an entry by database by URI. First we initialize `SQLiteDatabase db` by using the
-     * `getWritableDatabase` method of `FeedDatabase mDatabaseHelper` to create or open
-     * our database. We initialize `SelectionBuilder builder` with a new instance, then set
-     * `int match` to the code returned when we use `sUriMatcher.match` to match our
-     * parameter `Uri uri`, we declare `int count` and then switch on `match`:
+     * Delete an entry in the database by [Uri]. First we initialize [SQLiteDatabase] variable
+     * `val db` by using the [FeedDatabase.getWritableDatabase] method of [FeedDatabase] field
+     * [mDatabaseHelper] to create or open our database. We initialize [SelectionBuilder] variable
+     * `val builder` with a new instance, then set [Int] variable `val match` to the code returned
+     * when we use the [UriMatcher.match] method of our [sUriMatcher] field to match our [Uri]
+     * parameter [uri], we initialize our [Array] of [String] variable `val spreadFooler` to our
+     * parameter [selectionArgs] if it is not `null` or to an empty [Array] if it is, we declare
+     * [Int] variable `val count`,  and then switch on `match`:
      *
-     *  *
-     * ROUTE_ENTRIES: We set `count` to the value returned by chaining to `builder`
-     * the commands to set the table to TABLE_NAME, set the selection to our parameter
-     * `selection` with the selection arguments given by our parameter `selectionArgs`,
-     * then calling the `delete` method of this `builder` with the argument
-     * `SQLiteDatabase db`. We then break.
+     *  * [ROUTE_ENTRIES]: We set `count` to the value returned by chaining to `builder` the
+     *  commands to set the table to `TABLE_NAME`, set the selection to our parameter [selection]
+     *  with the vararg selection arguments given by our variable `spreadFooler`, then calling the
+     *  `delete` method of this `builder` with the [SQLiteDatabase] argument `db`.
      *
-     *  *
-     * ROUTE_ENTRIES_ID: We initialize `String id` with the last path segment of
-     * `uri`. We set `count` to the value returned by chaining to `builder`
-     * the commands to set the table to TABLE_NAME, the selection to the string formed by
-     * concatenating the "_id" column to the string "=?", with the selection arguments given
-     * by `id`, adding our parameters `selection` and `selectionArgs` to
-     * the selection clause, then calling the `delete` method of `builder` with
-     * the argument `SQLiteDatabase db`. We then break.
+     *  * ROUTE_ENTRIES_ID: We initialize [String] variable `val id` with the last path segment of
+     *  [uri]. We set `count` to the value returned by chaining to `builder` the commands to set the
+     *  table to `TABLE_NAME`, the selection to the string formed by concatenating the "_id" column
+     *  to the string "=?", with the selection arguments given by `id`, adding an additional `where`
+     *  clause of our parameter [selection] with the varargs selection arguments provided by our
+     *  variable `spreadFooler`, then calling the `delete` method of `builder` with the [SQLiteDatabase]
+     *  argument `db`.
      *
-     *  *
-     * default: We throw UnsupportedOperationException
+     *  * default: We throw [UnsupportedOperationException]
      *
+     * We initialize [Context] variable `val ctx` with the context this provider is running in, use
+     * it to get an instance of [ContentResolver] in order to have it send a broadcast to registered
+     * [ContentObserver]'s to refresh the UI. Finally we return `count` to the caller.
      *
-     * We initialize `Context ctx` with the context this provider is running in, use it to get
-     * an instance of `ContentResolver` in order to have it send a broadcast to registered
-     * `ContentObservers`, to refresh the UI. Finally we return `count` to the caller.
-     *
-     * @param uri           The full URI to query, including a row ID (if a specific record is requested).
-     * @param selection     An optional restriction to apply to rows when deleting.
-     * @param selectionArgs You may include ?s in selection, which will be replaced by
-     * the values from selectionArgs, in order that they appear in the selection.
-     * The values will be bound as Strings.
+     * @param uri The full [Uri] to query, including a row ID (if a specific record is requested).
+     * @param selection An optional restriction to apply to rows when deleting.
+     * @param selectionArgs You may include ?s in selection, which will be replaced by the values
+     * from selectionArgs, in order that they appear in the selection. The values will be bound as
+     * [String]'s.
      * @return The number of rows affected.
      */
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
-        val db = mDatabaseHelper!!.writableDatabase
+        val db: SQLiteDatabase = mDatabaseHelper!!.writableDatabase
         val builder = SelectionBuilder()
-        val match = sUriMatcher.match(uri)
+        val match: Int = sUriMatcher.match(uri)
+        val spreadFooler: Array<String> = selectionArgs ?: arrayOf()
         val count: Int
-        val spreadFooler = selectionArgs ?: arrayOf()
         count = when (match) {
             ROUTE_ENTRIES -> builder.table(FeedContract.Entry.TABLE_NAME)
                 .where(selection, *spreadFooler)
@@ -276,58 +271,56 @@ class FeedProvider : ContentProvider() {
             else -> throw UnsupportedOperationException("Unknown uri: $uri")
         }
         // Send broadcast to registered ContentObservers, to refresh UI.
-        val ctx = context!!
+        val ctx: Context = context!!
         ctx.contentResolver.notifyChange(uri, null, false)
         return count
     }
 
     /**
-     * Update an entry in the database by URI. First we initialize `SQLiteDatabase db` by using the
-     * `getWritableDatabase` method of `FeedDatabase mDatabaseHelper` to create or open
-     * our database. We initialize `SelectionBuilder builder` with a new instance, then set
-     * `int match` to the code returned when we use `sUriMatcher.match` to match our
-     * parameter `Uri uri`, we declare `int count` and then switch on `match`:
+     * Update an entry in the database by [Uri]. First we initialize [SQLiteDatabase] variable
+     * `val db` by using the [FeedDatabase.getWritableDatabase] method of [FeedDatabase] field
+     * [mDatabaseHelper] to create or open our database. We initialize [SelectionBuilder] variable
+     * `val builder` with a new instance, then set [Int] variable `val match` to the code returned
+     * when we use the [UriMatcher.match] method of [sUriMatcher] to match our [Uri] parameter [uri]
+     * `Uri `, we initialize our [Array] of [String] variable `val spreadFooler` to our parameter
+     * [selectionArgs] if it is not `null` or to an empty [Array] if it is, we declare [Int] variable
+     * `val count` and then `when` switch on `match`:
      *
-     *  *
-     * ROUTE_ENTRIES: We set `count` to the value returned by chaining to `builder`
-     * the commands to set the table to TABLE_NAME, set the selection to our parameter
-     * `selection` with the selection arguments given by our parameter `selectionArgs`,
-     * then calling the `update` method of this `builder` with the arguments
-     * `SQLiteDatabase db` and `ContentValues values`. We then break.
+     *  * [ROUTE_ENTRIES]: We set `count` to the value returned by chaining to `builder` the commands
+     *  to set the table to `TABLE_NAME`, set the selection to our parameter [selection] with the
+     *  varargs selection arguments given by our variable `spreadFooler`, then calling the `update`
+     *  method of this `builder` with the [SQLiteDatabase] argument `db` and [ContentValues] argument
+     *  `values`.
      *
-     *  *
-     * ROUTE_ENTRIES_ID: We initialize `String id` with the last path segment of
-     * `uri`. We set `count` to the value returned by chaining to `builder`
-     * the commands to set the table to TABLE_NAME, the selection to the string formed by
-     * concatenating the "_id" column to the string "=?", with the selection arguments given
-     * by `id`, adding our parameters `selection` and `selectionArgs` to
-     * the selection clause, then calling the `update` method of `builder` with
-     * the argument `SQLiteDatabase db` and `ContentValues values`. We then break.
+     *  * [ROUTE_ENTRIES_ID]: We initialize [String] variable `val id` with the last path segment of
+     *  [Uri] parameter [uri]. We set `count` to the value returned by chaining to `builder` the
+     *  commands to set the table to `TABLE_NAME`, the selection to the string formed by concatenating
+     *  the "_id" column to the string "=?", with the selection arguments given by `id`, adding our
+     *  parameter [selection] with the varargs selection arguments our variable `spreadFooler`
+     *  to the selection clause, then calling the `update` method of `builder` with the [SQLiteDatabase]
+     *  argument `db` and [ContentValues] argument `values`.
      *
-     *  *
-     * default: We throw UnsupportedOperationException
+     *  * default: We throw [UnsupportedOperationException]
      *
+     * We initialize [Context] variable `val ctx` with the context this provider is running in, use
+     * it to get an instance of [ContentResolver] in order to have it send a broadcast to registered
+     * [ContentObserver]'s to refresh the UI. Finally we return `count` to the caller.
      *
-     * We initialize `Context ctx` with the context this provider is running in, use it to get
-     * an instance of `ContentResolver` in order to have it send a broadcast to registered
-     * `ContentObservers`, to refresh the UI. Finally we return `count` to the caller.
-     *
-     * @param uri           The URI to query. This can potentially have a record ID if this
-     * is an update request for a specific record.
-     * @param values        A set of column_name/value pairs to update in the database.
-     * This must not be `null`.
-     * @param selection     An optional filter to match rows to update.
-     * @param selectionArgs You may include ?s in selection, which will be replaced by
-     * the values from selectionArgs, in order that they appear in the selection.
-     * The values will be bound as Strings.
+     * @param uri The URI to query. This can potentially have a record ID if this is an update request
+     * for a specific record.
+     * @param values A set of column_name/value pairs to update in the database. This must not be `null`.
+     * @param selection An optional filter to match rows to update.
+     * @param selectionArgs You may include ?s in selection, which will be replaced by the values
+     * from selectionArgs, in order that they appear in the selection. The values will be bound as
+     * [String]'s.
      * @return the number of rows affected.
      */
     override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
-        val db = mDatabaseHelper!!.writableDatabase
+        val db: SQLiteDatabase = mDatabaseHelper!!.writableDatabase
         val builder = SelectionBuilder()
-        val match = sUriMatcher.match(uri)
+        val match: Int = sUriMatcher.match(uri)
+        val spreadFooler: Array<String> = selectionArgs ?: arrayOf()
         val count: Int
-        val spreadFooler = selectionArgs ?: arrayOf()
         count = when (match) {
             ROUTE_ENTRIES -> builder.table(FeedContract.Entry.TABLE_NAME)
                 .where(selection, *spreadFooler)
@@ -349,16 +342,14 @@ class FeedProvider : ContentProvider() {
     }
 
     /**
-     * SQLite backend for @{link FeedProvider}.
-     *
-     *
-     * Provides access to an disk-backed, SQLite data-store which is utilized by FeedProvider. This
-     * database should never be accessed by other parts of the application directly.
+     * SQLite backend for [FeedProvider]. Provides access to an disk-backed, SQLite data-store which
+     * is utilized by [FeedProvider]. This database should never be accessed by other parts of the
+     * application directly.
      */
     class FeedDatabase
     /**
-     * Our constructor. We call our super's constructor with DATABASE_NAME as the name of the
-     * database file, and DATABASE_VERSION as the version.
+     * Our constructor. We call our super's constructor with [DATABASE_NAME] as the name of the
+     * database file, and [DATABASE_VERSION] as the version.
      *
      * @param context Context the provider is running in.
      */
@@ -367,9 +358,8 @@ class FeedProvider : ContentProvider() {
          * Called when the database is created for the first time. This is where the
          * creation of tables and the initial population of the tables should happen.
          *
-         *
-         * We call the `execSQL` method of our parameter `db` to execute the single SQL
-         * statement SQL_CREATE_ENTRIES which creates the "entry" table.
+         * We call the [SQLiteDatabase.execSQL] method of our parameter [db] to execute the single
+         * SQL statement [SQL_CREATE_ENTRIES] which creates the "entry" table.
          *
          * @param db The database.
          */
@@ -378,12 +368,12 @@ class FeedProvider : ContentProvider() {
         }
 
         /**
-         * Called when the database needs to be upgraded. We call the `execSQL` method of our
-         * parameter `db` to execute the single SQL statement SQL_DELETE_ENTRIES which deletes
-         * the "entry" table (SQL: "DROP TABLE IF EXISTS "), then call our `onCreate` to create
-         * the "entry" table.
+         * Called when the database needs to be upgraded. We call the [SQLiteDatabase.execSQL]
+         * method of our parameter [db] to execute the single SQL statement [SQL_DELETE_ENTRIES]
+         * which deletes the "entry" table (SQL: "DROP TABLE IF EXISTS "), then call our [onCreate]
+         * method to create the "entry" table.
          *
-         * @param db         The database.
+         * @param db The database.
          * @param oldVersion The old database version.
          * @param newVersion The new database version.
          */
@@ -432,12 +422,11 @@ class FeedProvider : ContentProvider() {
          * Content authority for this provider.
          */
         private const val AUTHORITY = FeedContract.CONTENT_AUTHORITY
-        // The constants below represent individual URI routes, as IDs. Every URI pattern recognized by
-        // this ContentProvider is defined using sUriMatcher.addURI(), and associated with one of these
-        // IDs.
-        //
-        // When a incoming URI is run through sUriMatcher, it will be tested against the defined
-        // URI patterns, and the corresponding route ID will be returned.
+        // The constants below represent individual URI routes, as IDs. Every URI pattern recognized
+        // by this ContentProvider is defined using sUriMatcher.addURI(), and associated with one of
+        // these IDs. When a incoming URI is run through sUriMatcher, it will be tested against the
+        // defined URI patterns, and the corresponding route ID will be returned.
+
         /**
          * URI ID for route: /entries
          */

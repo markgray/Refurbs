@@ -32,6 +32,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ListView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.MenuItemCompat
 import androidx.cursoradapter.widget.SimpleCursorAdapter
@@ -39,31 +40,21 @@ import androidx.fragment.app.ListFragment
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.CursorLoader
 import androidx.loader.content.Loader
+import com.example.android.basicsyncadapter.provider.FeedProvider
 import com.example.android.basicsyncadapter.provider.FeedContract
 import com.example.android.common.accounts.GenericAccountService
 
 /**
  * List fragment containing a list of Atom entry objects (articles) stored in the local database.
- *
- *
- * Database access is mediated by a content provider, specified in
- * [com.example.android.basicsyncadapter.provider.FeedProvider]. This content
- * provider is
- * automatically populated by  [SyncService].
- *
- *
- * Selecting an item from the displayed list displays the article in the default browser.
- *
- *
- * If the content provider doesn't return any data, then the first sync hasn't run yet. This sync
- * adapter assumes data exists in the provider once a sync has run. If your app doesn't work like
- * this, you should add a flag that notes if a sync has run, so you can differentiate between "no
- * available data" and "no initial sync", and display this in the UI.
- *
- *
- * The ActionBar displays a "Refresh" button. When the user clicks "Refresh", the sync adapter
- * runs immediately. An indeterminate ProgressBar element is displayed, showing that the sync is
- * occurring.
+ * Database access is mediated by a content provider, specified in [FeedProvider] This content
+ * provider is automatically populated by [SyncService]. Selecting an item from the displayed list
+ * displays the article in the default browser. If the content provider doesn't return any data,
+ * then the first sync hasn't run yet. This sync adapter assumes data exists in the provider once a
+ * sync has run. If your app doesn't work like this, you should add a flag that notes if a sync has
+ * run, so you can differentiate between "no available data" and "no initial sync", and display this
+ * in the UI. The ActionBar displays a "Refresh" button. When the user clicks "Refresh", the sync
+ * adapter runs immediately. An indeterminate ProgressBar element is displayed, showing that the
+ * sync is occurring.
  */
 class EntryListFragment
 /**
@@ -72,17 +63,14 @@ class EntryListFragment
  */
     : ListFragment(), LoaderManager.LoaderCallbacks<Cursor> {
     /**
-     * Cursor adapter for controlling ListView results.
+     * Cursor adapter for controlling [ListView] results.
      */
     private var mAdapter: SimpleCursorAdapter? = null
 
     /**
-     * Handle to a SyncObserver. The ProgressBar element is visible until the SyncObserver reports
-     * that the sync is complete.
-     *
-     *
-     * This allows us to delete our SyncObserver once the application is no longer in the
-     * foreground.
+     * Handle to a [SyncStatusObserver]. The [ProgressBar] element is visible until the
+     * [SyncStatusObserver] reports that the sync is complete. This allows us to delete
+     * our [SyncStatusObserver] once the application is no longer in the foreground.
      */
     private var mSyncObserverHandle: Any? = null
 
@@ -93,13 +81,12 @@ class EntryListFragment
 
     /**
      * Called to do initial creation of a fragment. First we call our super's implementation of
-     * `onCreate` the we call `setHasOptionsMenu(true)` to report that this fragment
-     * would like to participate in populating the options menu by receiving a call to
-     * `onCreateOptionsMenu` and related methods.
+     * `onCreate` the we call [setHasOptionsMenu] with `true` to report that this fragment would
+     * like to participate in populating the options menu by receiving a call to [onCreateOptionsMenu]
+     * and related methods.
      *
      * @param savedInstanceState If the fragment is being re-created from a previous saved state,
-     * this is the state. We do not override `onSaveInstanceState`
-     * so do not use.
+     * this is the state. We do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
