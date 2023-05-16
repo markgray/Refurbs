@@ -17,10 +17,12 @@
 
 package com.example.android.basicsyncadapter
 
+import android.accounts.Account
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.SyncStatusObserver
+import android.database.ContentObserver
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
@@ -81,7 +83,7 @@ class EntryListFragment
 
     /**
      * Called to do initial creation of a fragment. First we call our super's implementation of
-     * `onCreate` the we call [setHasOptionsMenu] with `true` to report that this fragment would
+     * `onCreate` then we call [setHasOptionsMenu] with `true` to report that this fragment would
      * like to participate in populating the options menu by receiving a call to [onCreateOptionsMenu]
      * and related methods.
      *
@@ -94,19 +96,13 @@ class EntryListFragment
     }
 
     /**
-     * Called when a fragment is first attached to its context. Create SyncAccount at launch, if
-     * needed.
+     * Called when a fragment is first attached to its context. Create sync [Account] at launch, if
+     * needed. This will create a new [Account] with the system for our application, register our
+     * [SyncService] with it, and establish a sync schedule. First we call our super's implementation
+     * of `onAttach`, then we call the method [SyncUtils.CreateSyncAccount] to create an entry for
+     * this application in the system account list, if it isn't already there.
      *
-     *
-     * This will create a new account with the system for our application, register our
-     * [SyncService] with it, and establish a sync schedule.
-     *
-     *
-     * First we call our super's implementation of `onAttach`, then we call the method
-     * `SyncUtils.CreateSyncAccount` to create an entry for this application in the system
-     * account list, if it isn't already there.
-     *
-     * @param context The calling context being used to instantiate the fragment.
+     * @param context The calling [Context] being used to instantiate the fragment.
      */
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -116,33 +112,31 @@ class EntryListFragment
     }
 
     /**
-     * Called immediately after `onCreateView(LayoutInflater, ViewGroup, Bundle)`
-     * has returned, but before any saved state has been restored in to the view.
-     * This gives subclasses a chance to initialize themselves once
-     * they know their view hierarchy has been completely created.  The fragment's
-     * view hierarchy is not however attached to its parent at this point.
-     *
+     * Called immediately after [onCreateView] has returned, but before any saved state has been
+     * restored in to the view. This gives subclasses a chance to initialize themselves once they
+     * know their view hierarchy has been completely created. The fragment's view hierarchy is not
+     * however attached to its parent at this point.
      *
      * First we call our super's implementation of `onViewCreated`, then we initialize our
-     * field `SimpleCursorAdapter mAdapter` with a new instance constructed to use the layout
-     * android.R.layout.simple_list_item_activated_2, with a null cursor specified because we do not
-     * have one yet, displaying the cursor column names specified in FROM_COLUMNS, and displaying them
-     * in the layout fields specified in TO_FIELDS. We then set the view binder of `mAdapter`
-     * to an anonymous class whose `setViewValue` override intercepts data from the column
-     * COLUMN_PUBLISHED in order to convert the long time stamp into a formatted string which it
-     * uses to set the text of the `View view`, all other columns are allowed to be processed
-     * by `SimpleCursorAdapter`.
+     * [SimpleCursorAdapter] field [mAdapter] with a new instance constructed to use the layout
+     * [android.R.layout.simple_list_item_activated_2], with a `null` cursor specified because we do
+     * not have one yet, displaying the cursor column names specified in [FROM_COLUMNS], and
+     * displaying them in the layout fields specified in [TO_FIELDS]. We then set the view binder
+     * of [mAdapter] to an anonymous class whose `setViewValue` override intercepts data from the
+     * column [COLUMN_PUBLISHED] in order to convert the long time stamp into a formatted string
+     * which it uses to set the text of the `viewToBind`, all other columns are allowed to be
+     * processed by [SimpleCursorAdapter].
      *
+     * We then set our list adapter to [mAdapter], set our empty text to the string with id
+     * [R.string.loading] ("Waiting for sync..."). We then fetch the [LoaderManager] for this
+     * fragment (creating it if needed) and call its [LoaderManager.initLoader] method to ensure
+     * a loader is initialized and active. (If the loader doesn't already exist, one is created
+     * and (if the fragment is currently started) starts the loader. Otherwise the last created
+     * loader is re-used.)
      *
-     * We then set our list adapter to `mAdapter`, set our empty text to the string with id
-     * R.string.loading ("Waiting for sync..."). We then fetch the `LoaderManager` for this
-     * fragment (creating it if needed) and call its `initLoader` method to ensure a loader is
-     * initialized and active. (If the loader doesn't already exist, one is created and (if the
-     * fragment is currently started) starts the loader. Otherwise the last created loader is re-used.)
-     *
-     * @param view               The View returned by `onCreateView(LayoutInflater, ViewGroup, Bundle)`.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     * @param view The [View] returned by [onCreateView].
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed from a
+     * previous saved state as given here.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -154,31 +148,27 @@ class EntryListFragment
             TO_FIELDS,  // Layout fields to use
             0 // No flags
         )
-        mAdapter!!.viewBinder = SimpleCursorAdapter.ViewBinder { viewToBind, cursor, i ->
+        mAdapter!!.viewBinder = SimpleCursorAdapter.ViewBinder { viewToBind: View, cursor: Cursor, i: Int ->
 
             /**
-             * Binds the Cursor column defined by the specified index to the specified viewToBind.
+             * Binds the Cursor column defined by the specified index to the specified `viewToBind`.
+             * When binding is handled by this `ViewBinder`, this method must return `true`. If this
+             * method returns `false`, SimpleCursorAdapter will attempt to handle the binding on its
+             * own.
              *
-             *
-             * When binding is handled by this ViewBinder, this method must return true.
-             * If this method returns false, SimpleCursorAdapter will attempts to handle
-             * the binding on its own.
-             *
-             *
-             * If the column `i` is COLUMN_PUBLISHED we initialize `Time t` with a new
-             * instance, and set its fields in accordance to the UTC milliseconds of the long value
-             * stored in the `Cursor cursor` under the key `i`. We then set the text of
-             * the `View viewToBind` to a formatted string created from `t` using the format
+             * If the column `i` is [COLUMN_PUBLISHED] we initialize [Time] variable `val t` with a
+             * new instance, and set its fields in accordance to the UTC milliseconds of the long
+             * value stored in the [Cursor] `cursor` under the key `i`. We then set the text of
+             * the [View] `viewToBind` to a formatted string created from `t` using the format
              * "%Y-%m-%d %H:%M", and return true to the caller.
              *
+             * If the column `i` is not [COLUMN_PUBLISHED] we return `false` to the caller so that
+             * [SimpleCursorAdapter] will display the data.
              *
-             * If the column `i` is not COLUMN_PUBLISHED we return false to the caller so that
-             * `SimpleCursorAdapter` will display the data.
-             *
-             * @param viewToBind   the viewToBind to bind the data to
-             * @param cursor the cursor to get the data from
-             * @param i      the column at which the data can be found in the cursor
-             * @return true if the data was bound to the viewToBind, false otherwise
+             * @param viewToBind the [View] to bind the data to
+             * @param cursor the [Cursor] to get the data from
+             * @param i the column at which the data can be found in the cursor
+             * @return `true` if the data was bound to the viewToBind, `false` otherwise
              */
             if (i == COLUMN_PUBLISHED) {
                 // Convert timestamp to human-readable date
@@ -198,15 +188,15 @@ class EntryListFragment
 
     /**
      * Called when the fragment is visible to the user and actively running. First we call our super's
-     * implementation of `onResume`, then we call the `onStatusChanged` method of our field
-     * `SyncStatusObserver mSyncStatusObserver` to set the state of the Refresh button, and if a
-     * sync is active, turn on the ProgressBar widget. Otherwise, turn it off.
+     * implementation of `onResume`, then we call the [SyncStatusObserver.onStatusChanged] method of
+     * our field [mSyncStatusObserver] to set the state of the `Refresh` button, and if a sync is
+     * active, turn on the [ProgressBar] widget. Otherwise, turn it off.
      *
-     *
-     * We create `int mask` by or'ing together SYNC_OBSERVER_TYPE_PENDING and SYNC_OBSERVER_TYPE_ACTIVE
-     * then use it when we add our field `SyncStatusObserver mSyncStatusObserver` as a `SyncStatusObserver`,
-     * We save the `Object` returned by `addStatusChangeListener` in our field `mSyncObserverHandle`
-     * so that we can remove the observer later.
+     * We create [Int] variable `val mask` by or'ing together [ContentResolver.SYNC_OBSERVER_TYPE_PENDING]
+     * and [ContentResolver.SYNC_OBSERVER_TYPE_ACTIVE] then use it when we add our [SyncStatusObserver]
+     * field [mSyncStatusObserver] as a [SyncStatusObserver]. We save the [Any] returned by the
+     * [ContentResolver.addStatusChangeListener] in our field [mSyncObserverHandle] so that we can
+     * remove the observer later.
      */
     override fun onResume() {
         super.onResume()
@@ -220,9 +210,9 @@ class EntryListFragment
 
     /**
      * Called when the Fragment is no longer resumed. First we call our super's implementation of
-     * `onPause`, then if our field `Object mSyncObserverHandle` is not null we call the
-     * `removeStatusChangeListener` to remove our `StatusChangeListener` and set
-     * `mSyncObserverHandle` to null.
+     * `onPause`, then if our [Any] field [mSyncObserverHandle] is not `null` we call the
+     * [ContentResolver.removeStatusChangeListener] method to remove our [SyncStatusObserver] and
+     * set [mSyncObserverHandle] to `null`.
      */
     override fun onPause() {
         super.onPause()
@@ -233,23 +223,18 @@ class EntryListFragment
     }
 
     /**
-     * Instantiate and return a new Loader for the given ID. Query the content provider for data.
-     *
-     *
-     * Loaders do queries in a background thread. They also provide a ContentObserver that is
+     * Instantiate and return a new [Loader] for the given ID. Query the content provider for data.
+     * Loaders do queries in a background thread. They also provide a [ContentObserver] that is
      * triggered when data in the content provider changes. When the sync adapter updates the
-     * content provider, the ContentObserver responds by resetting the loader and then reloading
-     * it.
-     *
-     *
-     * We return a `CursorLoader` constructed to retrieve the URI FeedContract.Entry.CONTENT_URI
+     * content provider, the [ContentObserver] responds by resetting the loader and then reloading
+     * it. We return a `CursorLoader` constructed to retrieve the URI [FeedContract.Entry.CONTENT_URI]
      * ("content://com.example.android.basicsyncadapter/entries") with the projection to use specified
-     * by PROJECTION, with null as the selection (returns all rows), and sorted by the column
-     * COLUMN_NAME_PUBLISHED ("published") in "desc" (descending) order.
+     * by [PROJECTION], with null as the selection (returns all rows), and sorted by the column
+     * [FeedContract.Entry.COLUMN_NAME_PUBLISHED] ("published") in "desc" (descending) order.
      *
-     * @param i      The ID whose loader is to be created.
+     * @param i The ID whose loader is to be created.
      * @param bundle Any arguments supplied by the caller.
-     * @return Return a new Loader instance that is ready to start loading.
+     * @return Return a new [Loader] instance that is ready to start loading.
      */
     override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor> {
         // We only have one loader, so we can ignore the value of i.
@@ -263,28 +248,26 @@ class EntryListFragment
     }
 
     /**
-     * Called when a previously created loader has finished its load.
-     *
-     *
-     * Move the Cursor returned by the query into the ListView adapter. This refreshes the existing
-     * UI with the data in the Cursor. To do this we just call the `changeCursor` method of
-     * our field `SimpleCursorAdapter mAdapter`.
+     * Called when a previously created loader has finished its load. Move the Cursor returned by
+     * the query into the [ListView] adapter. This refreshes the existing UI with the data in the
+     * [Cursor]. To do this we just call the [SimpleCursorAdapter.changeCursor] method of
+     * our field [mAdapter].
      *
      * @param cursorLoader The Loader that has finished.
-     * @param cursor       The data generated by the Loader.
+     * @param cursor The data generated by the Loader.
      */
     override fun onLoadFinished(cursorLoader: Loader<Cursor>, cursor: Cursor) {
         mAdapter!!.changeCursor(cursor)
     }
 
     /**
-     * Called when the ContentObserver defined for the content provider detects that data has
-     * changed. The ContentObserver resets the loader, and then re-runs the loader. In the adapter,
-     * set the Cursor value to null. This removes the reference to the Cursor, allowing it to be
-     * garbage-collected. To do this we just call the `changeCursor` method of our field
-     * `SimpleCursorAdapter mAdapter`.
+     * Called when the [ContentObserver] defined for the content provider detects that data has
+     * changed. The [ContentObserver] resets the loader, and then re-runs the loader. In the adapter,
+     * set the [Cursor] value to `null`. This removes the reference to the Cursor, allowing it to be
+     * garbage-collected. To do this we just call the [SimpleCursorAdapter.changeCursor] method with
+     * `null` of our field [mAdapter].
      *
-     * @param cursorLoader The Loader that is being reset.
+     * @param cursorLoader The [Loader] that is being reset.
      */
     override fun onLoaderReset(cursorLoader: Loader<Cursor>) {
         mAdapter!!.changeCursor(null)
@@ -292,12 +275,11 @@ class EntryListFragment
 
     /**
      * Create the ActionBar. First we call our super's implementation of `onCreateOptionsMenu`
-     * then we save our parameter `Menu menu` in our field `Menu mOptionsMenu`. Finally
-     * we use our parameter `MenuInflater inflater` to inflate our menu layout R.menu.main into
-     * our parameter `Menu menu`.
+     * then we save our [Menu] parameter [menu] in our field [mOptionsMenu]. Finally we use our
+     * [MenuInflater] parameter [inflater] to inflate our menu layout [R.menu.main] into [menu].
      *
-     * @param menu     The options menu in which you place our items.
-     * @param inflater `MenuInflater` to use to instantiate menu XML files into Menu objects
+     * @param menu The options menu in which you place our items.
+     * @param inflater [MenuInflater] to use to instantiate menu XML files into [Menu] objects
      */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -306,15 +288,15 @@ class EntryListFragment
     }
 
     /**
-     * Respond to user gestures on the ActionBar. We switch on the id of our parameter `MenuItem item`
-     * catching only R.id.menu_refresh in which case we call the method `SyncUtils.TriggerRefresh`
-     * to trigger an immediate sync ("refresh") and return true to the caller to consume the selection
-     * here. Otherwise we return the value returned by calling our super's implementation of
-     * `onOptionsItemSelected`.
+     * Respond to user gestures on the ActionBar. We `when` switch on the id of our [MenuItem]
+     * parameter [item] catching only [R.id.menu_refresh] in which case we call our method
+     * [SyncUtils.TriggerRefresh] to trigger an immediate sync ("refresh") and return `true` to the
+     * caller to consume the selection here. Otherwise we return the value returned by calling our
+     * super's implementation of `onOptionsItemSelected`.
      *
      * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
+     * @return [Boolean]: Return `false` to allow normal menu processing to proceed, `true` to
+     * consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -329,18 +311,18 @@ class EntryListFragment
     /**
      * This method will be called when an item in the list is selected, we then load the article in
      * the default browser. First we call our super's implementation of `onListItemClick`. We
-     * initialize `Cursor c` having our field `SimpleCursorAdapter mAdapter` return its
-     * cursor positioned at the item at position `position`. We then initialize
-     * `String articleUrlString` by getting the string stored in the column COLUMN_URL_STRING
-     * in `Cursor c`. If this is null we log the error and return. If it is not null, we log
-     * the string, then create `Uri articleURL` from it. We create `Intent i` with action
-     * ACTION_VIEW for the `articleURL`, and finally we start the activity that will process
-     * `Intent i`.
+     * initialize [Cursor] variable `val c` having our [SimpleCursorAdapter] field [mAdapter] return
+     * its cursor positioned at the item at position [position]. We then initialize [String] variable
+     * `val articleUrlString` by getting the string stored in the column [COLUMN_URL_STRING]
+     * in [Cursor] `c`. If this is `null` we log the error and return. If it is not `null`, we log
+     * the string, then create [Uri] variable `val articleURL` from it. We create [Intent] variable
+     * `val i` with action [Intent.ACTION_VIEW] for the `articleURL`, and finally we start the
+     * activity that will process [Intent] `i`.
      *
      * @param listView The ListView where the click happened
-     * @param view     The view that was clicked within the ListView
+     * @param view The view that was clicked within the ListView
      * @param position The position of the view in the list
-     * @param id       The row id of the item that was clicked
+     * @param id The row id of the item that was clicked
      */
     override fun onListItemClick(listView: ListView, view: View, position: Int, id: Long) {
         super.onListItemClick(listView, view, position, id)
@@ -365,25 +347,18 @@ class EntryListFragment
     }
 
     /**
-     * Set the state of the Refresh button. If a sync is active, turn on the ProgressBar widget.
-     * Otherwise, turn it off. If our field `Menu mOptionsMenu` is null we return having done
-     * nothing. Otherwise we initialize `MenuItem refreshItem` by finding the item in
-     * `mOptionsMenu` with id R.id.menu_refresh and if this is not null we branch on the
-     * value of our parameter `boolean refreshing`:
+     * Set the state of the Refresh button. If a sync is active, turn on the [ProgressBar] widget.
+     * Otherwise, turn it off. If our [Menu] field [mOptionsMenu] is `null` we return having done
+     * nothing. Otherwise we initialize [MenuItem] variable `val refreshItem` by finding the item in
+     * [mOptionsMenu] with id [R.id.menu_refresh] and if this is not `null` we branch on the
+     * value of our [Boolean] parameter [refreshing]:
      *
-     *  *
-     * True:
-     * We set the action view of `MenuItem refreshItem` to the layout file
-     * R.layout.actionbar_indeterminate_progress (an indeterminateProgressStyle
-     * `ProgressBar`).
+     *  * `true`: We set the action view of [MenuItem] `refreshItem` to the layout file
+     *  [R.layout.actionbar_indeterminate_progress] (an indeterminateProgressStyle [ProgressBar]).
      *
-     *  *
-     * False:
-     * We set the action view of `MenuItem refreshItem` to null
+     *  * `false`: We set the action view of [MenuItem] `refreshItem` to null
      *
-     *
-     *
-     * @param refreshing True if an active sync is occurring, false otherwise
+     * @param refreshing `true` if an active sync is occurring, `false` otherwise
      */
     fun setRefreshActionButtonState(refreshing: Boolean) {
         if (mOptionsMenu == null) {
@@ -401,8 +376,8 @@ class EntryListFragment
     }
 
     /**
-     * Create a new anonymous SyncStatusObserver. It's attached to the app's ContentResolver in
-     * onResume(), and removed in onPause(). If status changes, it sets the state of the Refresh
+     * Create a new anonymous [SyncStatusObserver]. It's attached to the app's [ContentResolver] in
+     * [onResume], and removed in [onPause]. If status changes, it sets the state of the Refresh
      * button. If a sync is active or pending, the Refresh button is replaced by an indeterminate
      * ProgressBar; otherwise, the button itself is displayed.
      */
@@ -444,8 +419,10 @@ class EntryListFragment
             FeedContract.Entry.COLUMN_NAME_LINK,
             FeedContract.Entry.COLUMN_NAME_PUBLISHED
         )
-        // Column indexes. The index of a column in the Cursor is the same as its relative position in
-        // the projection.
+
+        // Column indexes. The index of a column in the Cursor is the same as its relative position
+        // in the projection.
+
         /**
          * Column index for _ID
          */

@@ -17,6 +17,7 @@
 
 package com.example.android.basicsyncadapter
 
+import android.accounts.Account
 import android.accounts.AccountManager
 import android.annotation.SuppressLint
 import android.content.ContentResolver
@@ -84,7 +85,7 @@ object SyncUtils {
             .getDefaultSharedPreferences(context).getBoolean(PREF_SETUP_COMPLETE, false)
 
         // Create account, if it's missing. (Either first run, or user has deleted account.)
-        val account = GenericAccountService.GetAccount(ACCOUNT_TYPE)
+        val account: Account = GenericAccountService.GetAccount(ACCOUNT_TYPE)
         val accountManager = context.getSystemService(Context.ACCOUNT_SERVICE) as AccountManager
         if (accountManager.addAccountExplicitly(account, null, null)) {
             // Inform the system that this account supports sync

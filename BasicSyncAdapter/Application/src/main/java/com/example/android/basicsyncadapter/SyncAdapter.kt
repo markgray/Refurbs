@@ -26,6 +26,7 @@ import android.content.Context
 import android.content.OperationApplicationException
 import android.content.SyncResult
 import android.os.Bundle
+import android.os.IBinder
 import android.os.RemoteException
 import android.provider.BaseColumns
 import android.util.Log
@@ -40,52 +41,43 @@ import java.net.URL
 import java.text.ParseException
 
 /**
- * Define a sync adapter for the app.
- *
- *
- * This class is instantiated in [SyncService], which also binds SyncAdapter to the system.
- * SyncAdapter should only be initialized in SyncService, never anywhere else.
- *
- *
- * The system calls onPerformSync() via an RPC call through the IBinder object supplied by
- * SyncService.
+ * Define a sync adapter for the app. This class is instantiated in [SyncService], which also binds
+ * [SyncAdapter] to the system. [SyncAdapter] should only be initialized in [SyncService], never
+ * anywhere else. The system calls [onPerformSync] via an RPC call through the [IBinder] object
+ * supplied by [SyncService].
  */
 internal class SyncAdapter : AbstractThreadedSyncAdapter {
     /**
-     * Content resolver, for performing database operations. Set in our constructor.
+     * [ContentResolver], for performing database operations. Set in our constructor.
      */
     private val mContentResolver: ContentResolver
 
     /**
-     * Constructor. Calls our super's constructor, then Obtains handle to content resolver to initialize
-     * our field `ContentResolver mContentResolver` for later use. The parameters are only used
-     * by our super's constructor.
+     * Constructor. Calls our super's constructor, then Obtains handle to content resolver to
+     * initialize our [ContentResolver] field [mContentResolver] for later use. The parameters are
+     * only used by our super's constructor.
      *
-     * @param context        the [android.content.Context] that this is running within.
-     * @param autoInitialize if true then sync requests that have
-     * [ContentResolver.SYNC_EXTRAS_INITIALIZE] set will be internally handled by
-     * [AbstractThreadedSyncAdapter] by calling
-     * [ContentResolver.setIsSyncable] with 1 if it
-     * is currently set to <0.
+     * @param context the [Context] that this is running within.
+     * @param autoInitialize if `true` then sync requests that have [ContentResolver.SYNC_EXTRAS_INITIALIZE]
+     * set will be internally handled by [AbstractThreadedSyncAdapter] by calling [ContentResolver.setIsSyncable]
+     * with 1 if it is currently set to <0.
      */
     constructor(context: Context, autoInitialize: Boolean) : super(context, autoInitialize) {
         mContentResolver = context.contentResolver
     }
 
     /**
-     * Constructor. Calls our super's constructor, then Obtains handle to content resolver to initialize
-     * our field `ContentResolver mContentResolver` for later use. The parameters are only used
-     * by our super's constructor.
+     * Constructor. Calls our super's constructor, then Obtains handle to content resolver to
+     * initialize our [ContentResolver] field [mContentResolver] for later use. The parameters are
+     * only used by our super's constructor.
      *
-     * @param context            the [android.content.Context] that this is running within.
-     * @param autoInitialize     if true then sync requests that have
-     * [ContentResolver.SYNC_EXTRAS_INITIALIZE] set will be internally handled by
-     * [AbstractThreadedSyncAdapter] by calling
-     * [ContentResolver.setIsSyncable] with 1 if it
-     * is currently set to <0.
-     * @param allowParallelSyncs if true then allow syncs for different accounts to run
+     * @param context the [Context] that this is running within.
+     * @param autoInitialize if `true` then sync requests that have [ContentResolver.SYNC_EXTRAS_INITIALIZE]
+     * set will be internally handled by [AbstractThreadedSyncAdapter] by calling [ContentResolver.setIsSyncable]
+     * with 1 if it is currently set to <0.
+     * @param allowParallelSyncs if `true` then allow syncs for different accounts to run
      * at the same time, each in their own thread. This must be consistent with the setting
-     * in the SyncAdapter's configuration file.
+     * in the [SyncAdapter]'s configuration file.
      */
     constructor(context: Context, autoInitialize: Boolean, allowParallelSyncs: Boolean) : super(context, autoInitialize, allowParallelSyncs) {
         mContentResolver = context.contentResolver
