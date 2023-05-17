@@ -19,12 +19,15 @@ package com.example.android.basicsyncadapter
 
 import android.accounts.Account
 import android.content.AbstractThreadedSyncAdapter
+import android.content.ContentProvider
 import android.content.ContentProviderClient
 import android.content.ContentProviderOperation
 import android.content.ContentResolver
 import android.content.Context
 import android.content.OperationApplicationException
 import android.content.SyncResult
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.os.RemoteException
@@ -79,90 +82,86 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
      * at the same time, each in their own thread. This must be consistent with the setting
      * in the [SyncAdapter]'s configuration file.
      */
-    constructor(context: Context, autoInitialize: Boolean, allowParallelSyncs: Boolean) : super(context, autoInitialize, allowParallelSyncs) {
+    constructor(
+        context: Context,
+        autoInitialize: Boolean,
+        allowParallelSyncs: Boolean
+    ) : super(context, autoInitialize, allowParallelSyncs) {
         mContentResolver = context.contentResolver
     }
 
     /**
      * Called by the Android system in response to a request to run the sync adapter. The work
      * required to read data from the network, parse it, and store it in the content provider is
-     * done here. Extending AbstractThreadedSyncAdapter ensures that all methods within SyncAdapter
-     * run on a background thread. For this reason, blocking I/O and other long-running tasks can be
-     * run *in situ*, and you don't have to set up a separate thread for them.
-     *
-     *
-     * This is where we actually perform any work required to perform a sync.
-     * [android.content.AbstractThreadedSyncAdapter] guarantees that this will be called on a non-UI thread,
+     * done here. Extending [AbstractThreadedSyncAdapter] ensures that all methods within
+     * [SyncAdapter] run on a background thread. For this reason, blocking I/O and other
+     * long-running tasks can be run *in situ*, and you don't have to set up a separate thread
+     * for them. This is where we actually perform any work required to perform a sync.
+     * [AbstractThreadedSyncAdapter] guarantees that this will be called on a non-UI thread,
      * so it is safe to perform blocking I/O here.
      *
+     * The [SyncResult] parameter [syncResult] allows you to pass information back to the method
+     * that triggered the sync.
      *
-     * The syncResult argument allows you to pass information back to the method that triggered
-     * the sync.
+     * Perform a sync for this account. [SyncAdapter]-specific parameters may be specified in
+     * [Bundle] parameter [extras], which is guaranteed to not be null. Invocations of this method
+     * are guaranteed to be serialized.
      *
-     *
-     * Perform a sync for this account. SyncAdapter-specific parameters may
-     * be specified in extras, which is guaranteed to not be null. Invocations
-     * of this method are guaranteed to be serialized.
-     *
-     *
-     * First we log the fact we are "Beginning network synchronization", then wrapped in a try block
-     * intended to catch MalformedURLException, IOException, XmlPullParserException, ParseException,
-     * RemoteException, or OperationApplicationException we initialize `URL location` with
-     * an URL for FEED_URL ("http://android-developers.blogspot.com/atom.xml"), and declare null
-     * `InputStream stream`. Wrapped in an inner try block intended to catch exceptions with
+     * First we log the fact we are "Beginning network synchronization", then wrapped in a try
+     * block intended to catch [MalformedURLException], [IOException], [XmlPullParserException],
+     * [ParseException], [RemoteException], or [OperationApplicationException] we initialize
+     * [URL] variable `val location` with an [URL] for [FEED_URL]
+     * ("http://android-developers.blogspot.com/atom.xml"), and declare [InputStream] variable
+     * `var stream` to be `null`. Wrapped in an inner try block intended to catch exceptions with
      * a finally block that makes sure `stream` is closed exception or not, we initialize
-     * `stream` with the `InputStream` returned by our method `downloadUrl` for
-     * `URL location`. We then call our method `updateLocalFeedData` with `stream`
-     * and our parameter `SyncResult syncResult` to Read XML from the input stream, storing it
-     * into the content provider.
+     * `stream` with the [InputStream] returned by our method [downloadUrl] for [URL] `location`.
+     * We then call our method [updateLocalFeedData] with `stream` and our [SyncResult] parameter
+     * [syncResult] to Read XML from the input stream, storing it into the content provider.
      *
-     *
-     * The catch blocks for the outer try block all log the exception, and increment the field in the
-     * `stats` field of our parameter `SyncResult syncResult` reserved for that particular
+     * The catch blocks for the outer try block all log the exception, and increment the field in
+     * the `stats` field of our [SyncResult] parameter [syncResult] reserved for that particular
      * exception:
      *
-     *  *
-     * MalformedURLException - Thrown to indicate that a malformed URL has occurred. Either
-     * no legal protocol could be found in a specification string or the string could not be
-     * parsed. Increments `numParseExceptions` (for some reason)
+     *  * [MalformedURLException] - Thrown to indicate that a malformed [URL] has occurred. Either
+     *  no legal protocol could be found in a specification string or the string could not be
+     *  parsed. Increments `numParseExceptions` (for some reason)
      *
-     *  *
-     * IOException - Signals that an I/O exception of some sort has occurred. This class is
-     * the general class of exceptions produced by failed or interrupted I/O operations.
-     * Increments `numIoExceptions`
+     *  * [IOException] - Signals that an I/O exception of some sort has occurred. This class is the
+     *  general class of exceptions produced by failed or interrupted I/O operations. Increments
+     *  `numIoExceptions`.
      *
-     *  *
-     * XmlPullParserException - This exception is thrown to signal XML Pull Parser related
-     * faults. Increments `numParseExceptions`
+     *  * [XmlPullParserException] - This exception is thrown to signal XML Pull Parser related
+     *  faults. Increments `numParseExceptions`
      *
-     *  *
-     * ParseException - Signals that an error has been reached unexpectedly while parsing.
-     * Increments `numParseExceptions`
+     *  * [ParseException] - Signals that an error has been reached unexpectedly while parsing.
+     *  Increments `numParseExceptions`
      *
-     *  *
-     * RemoteException - Parent exception for all Binder remote-invocation errors.
-     * Increments `databaseError` Used to indicate that the SyncAdapter experienced a
-     * hard error due to an error it received from interacting with the storage layer. The
-     * SyncManager will record that the sync request failed and it will not reschedule the
-     * request.
+     *  * [RemoteException] - Parent exception for all Binder remote-invocation errors.
+     *  Increments `databaseError`. Used to indicate that the SyncAdapter experienced a
+     *  hard error due to an error it received from interacting with the storage layer. The
+     *  SyncManager will record that the sync request failed and it will not reschedule the
+     *  request.
      *
-     *  *
-     * OperationApplicationException - Thrown when an application of a ContentProviderOperation
+     *  * [OperationApplicationException] - Thrown when an application of a ContentProviderOperation
      * (Represents a single operation to be performed as part of a batch of operations)
      * fails due to the specified constraints. Increments `databaseError`
-     *
      *
      * If no exceptions are thrown, we log "Network synchronization complete"
      *
      * @param account    the account that should be synced
-     * @param extras     SyncAdapter-specific parameters
+     * @param extras     [SyncAdapter]-specific parameters
      * @param authority  the authority of this sync request
-     * @param provider   a ContentProviderClient that points to the ContentProvider for this
+     * @param provider   a [ContentProviderClient] that points to the [ContentProvider] for this
      * authority
-     * @param syncResult SyncAdapter-specific parameters
+     * @param syncResult [SyncAdapter]-specific parameters
      */
-    override fun onPerformSync(account: Account, extras: Bundle, authority: String,
-                               provider: ContentProviderClient, syncResult: SyncResult) {
+    override fun onPerformSync(
+        account: Account,
+        extras: Bundle,
+        authority: String,
+        provider: ContentProviderClient,
+        syncResult: SyncResult
+    ) {
         Log.i(TAG, "Beginning network synchronization")
         try {
             val location = URL(FEED_URL)
@@ -205,53 +204,46 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
     }
 
     /**
-     * Read XML from an input stream, storing it into the content provider.
-     *
-     *
-     * This is where incoming data is persisted, committing the results of a sync. In order to
-     * minimize (expensive) disk operations, we compare incoming data with what's already in our
-     * database, and compute a merge. Only changes (insert/update/delete) will result in a database
-     * write.
-     *
-     *
-     * As an additional optimization, we use a batch operation to perform all database writes at
-     * once.
-     *
+     * Read XML from an input stream, storing it into the content provider. This is where incoming
+     * data is persisted, committing the results of a sync. In order to minimize (expensive) disk
+     * operations, we compare incoming data with what's already in our database, and compute a
+     * merge. Only changes (insert/update/delete) will result in a database write. As an additional
+     * optimization, we use a batch operation to perform all database writes at once.
      *
      * Merge strategy:
      *
-     *  * 1. Get cursor to all items in feed
-     *  * 2. For each item, check if it's in the incoming data.
+     *  1. Get cursor to all items in feed
+     *  2. For each item, check if it's in the incoming data.
      *
-     *  * a. YES: Remove from "incoming" list. Check if data has mutated, if so, perform
-     * database UPDATE.
-     *  * b. NO: Schedule DELETE from database.
+     *      a. YES: Remove from "incoming" list. Check if data has mutated, if so, perform
+     *      database UPDATE.
      *
-     * (At this point, incoming database only contains missing items.)
-     *  * 3. For any items remaining in incoming list, ADD to database.
+     *      b. NO: Schedule DELETE from database.
      *
-     * First we initialize `FeedParser feedParser` with a new instance (our net.FeedParser
-     * class parses generic Atom feeds). Then we initialize `ContentResolver contentResolver`
-     * with a ContentResolver instance for our application's package. Then we fill our variable
-     * `List<FeedParser.Entry> entries` with the entries that the `feedParser` method
-     * `parse` parses from its reading of our parameter `stream`. We initialize our variables
-     * `ArrayList<ContentProviderOperation> batch` with a new `ArrayList` , and
-     * `HashMap<String, FeedParser.Entry> entryMap` with a new `HashMap`. Then for every
-     * `FeedParser.Entry e` in `entries` we store `e` under the key `e.id`
-     * in `entryMap`.
+     *  3. At this point, incoming database only contains missing items. For any items remaining
+     *  in incoming list, ADD to database.
      *
+     * First we initialize [FeedParser] variable `val feedParser` with a new instance (our
+     * [FeedParser] class parses generic Atom feeds). Then we initialize [ContentResolver] variable
+     * `val contentResolver` with a [ContentResolver] instance for our application's package. Then
+     * we fill our [List] of [FeedParser.Entry] variable `val entries` with the entries that the
+     * [FeedParser.parse] method of `feedParser` parses from its reading of our [InputStream]
+     * parameter [stream]. We initialize our [ArrayList] of [ContentProviderOperation] variable
+     * `val batch` with a new [ArrayList], and our [HashMap] of [String] to [FeedParser.Entry]
+     * `val entryMap` with a new [HashMap]. Then for every [FeedParser.Entry]  `e` in `entries` we
+     * store `e` under the key `e.id` in `entryMap`.
      *
-     * We now initialize `Uri uri` with the uri for all entries in our local database
-     * CONTENT_URI ("content://com.example.android.basicsyncadapter/entries") and initialize
-     * `Cursor c` with the results of querying `uri` using the projection PROJECTION.
-     * We declare `int id`, `String entryId`, `String title`, `String link`,
-     * and `long published` (these variables will hold the columns we read from each row of
-     * `Cursor c` in the loop to follow).
+     * We now initialize [Uri] variable `val uri` with the [Uri] for all entries in our local
+     * database CONTENT_URI ("content://com.example.android.basicsyncadapter/entries") and
+     * initialize [Cursor] variable `val c` with the results of querying `uri` using the projection
+     * [PROJECTION]. We declare [Int] variable `var id`, [String] variable `var entryId`, [String]
+     * variable `var title`, [String] variable `var link`, and [Long] variable `var published`
+     * (these variables will hold the columns we read from each row of [Cursor] `c` in the loop
+     * to follow).
      *
-     *
-     * We now loop for all the rows in `Cursor c` first incrementing the `numEntries`
-     * field of the `stats` field of `SyncResult syncResult` (Counter for tracking how
-     * many entries were affected by the sync operation, as defined by the SyncAdapter). Reading
+     * We now loop for all the rows in [Cursor] `c` first incrementing the `numEntries` field of the
+     * `stats` field of [SyncResult] parameter [syncResult] (Counter for tracking how many entries
+     * were affected by the sync operation, as defined by the [SyncAdapter]). Reading
      * from `Cursor c` we set `id` to the int stored in column COLUMN_ID, `entryId`
      * to the string stored in COLUMN_ENTRY_ID, `title` to the string stored in column COLUMN_TITLE,
      * `link` to the string stored in COLUMN_LINK, and `published` to the long stored in
@@ -293,8 +285,9 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
      * that a row was updated for the Uri FeedContract.Entry.CONTENT_URI
      * ("content://com.example.android.basicsyncadapter/entries")
      *
-     * @param stream     `InputStream` we are to read from
-     * @param syncResult `SyncResult` we are to update when done.
+     * @param stream     [InputStream] we are to read from
+     * @param syncResult [SyncResult] we are to update when done.
+     *
      * @throws IOException                   Signals that an I/O exception of some sort has occurred.
      * @throws XmlPullParserException        This exception is thrown to signal XML Pull Parser related faults.
      * @throws RemoteException               Parent exception for all Binder remote-invocation errors
@@ -319,8 +312,14 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
 
         // Get list of all items
         Log.i(TAG, "Fetching local entries for merge")
-        val uri = FeedContract.Entry.CONTENT_URI // Get all entries
-        val c = contentResolver.query(uri, PROJECTION, null, null, null)!!
+        val uri: Uri = FeedContract.Entry.CONTENT_URI // Get all entries
+        val c: Cursor = contentResolver.query(
+            uri,
+            PROJECTION,
+            null,
+            null,
+            null
+        )!!
         Log.i(TAG, "Found " + c.count + " local entries. Computing merge solution...")
 
         // Find stale data
