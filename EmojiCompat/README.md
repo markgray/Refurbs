@@ -33,7 +33,7 @@ list of set of hashes for the certificates. For more information about FontReque
 Downloadable Fonts documentation. You can then create an instance of
 [FontRequestEmojiCompatConfig][6] and pass it to EmojiCompat.init().
 
-```java
+```
 final FontRequest fontRequest = new FontRequest(
                     "com.google.android.gms.fonts",
                     "com.google.android.gms",
