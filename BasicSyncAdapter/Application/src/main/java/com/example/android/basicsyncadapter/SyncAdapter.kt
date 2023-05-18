@@ -41,6 +41,7 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
+import java.net.URLConnection
 import java.text.ParseException
 
 /**
@@ -243,57 +244,52 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
      *
      * We now loop for all the rows in [Cursor] `c` first incrementing the `numEntries` field of the
      * `stats` field of [SyncResult] parameter [syncResult] (Counter for tracking how many entries
-     * were affected by the sync operation, as defined by the [SyncAdapter]). Reading
-     * from `Cursor c` we set `id` to the int stored in column COLUMN_ID, `entryId`
-     * to the string stored in COLUMN_ENTRY_ID, `title` to the string stored in column COLUMN_TITLE,
-     * `link` to the string stored in COLUMN_LINK, and `published` to the long stored in
-     * column COLUMN_PUBLISHED. We next try to fetch `FeedParser.Entry match` from the entry
-     * in `entryMap` stored under key `entryId`. If `match` is:
+     * were affected by the sync operation, as defined by the [SyncAdapter]). Reading from [Cursor]
+     * `c` we set `id` to the int stored in column [COLUMN_ID], `entryId` to the string stored in
+     * [COLUMN_ENTRY_ID], `title` to the string stored in column [COLUMN_TITLE], `link` to the string
+     * stored in [COLUMN_LINK], and `published` to the [Long] stored in column [COLUMN_PUBLISHED].
+     * We next try to fetch [FeedParser.Entry] variable `val match` from the entry in `entryMap`
+     * stored under key `entryId`. If `match` is:
      *
-     *  *
-     * not null - we remove it from `entryMap` to avoid inserting it again later. We
-     * create `Uri existingUri` to point to the Uri for this entry. Then if any of the
-     * fields `title`, `link`, or `published` have changed we call the
-     * `newUpdate` method of `ContentProviderOperation` to create a builder for
-     * building an update `ContentProviderOperation` for updating `existingUri`
-     * which we proceed to set values for COLUMN_NAME_TITLE, COLUMN_NAME_LINK, and
-     * COLUMN_NAME_PUBLISHED using `withValue` from the values for these columns in
-     * `FeedParser.Entry match`. We then build this builder and add the
-     * `ContentProviderOperation` to our list `batch`. We then increment the
-     * `numUpdates` field of the `stats` field of `syncResult`, and loop
-     * back for the next `Entry`.
+     *  * not `null` - we remove it from `entryMap` to avoid inserting it again later. We create
+     *  [Uri] variable `val existingUri` to point to the [Uri] for this entry. Then if any of the
+     *  fields `title`, `link`, or `published` have changed we call the `newUpdate` method of
+     *  [ContentProviderOperation] to create a builder for building an update [ContentProviderOperation]
+     *  for updating `existingUri` which we proceed to set values for [FeedContract.Entry.COLUMN_NAME_TITLE],
+     *  [FeedContract.Entry.COLUMN_NAME_LINK], and [FeedContract.Entry.COLUMN_NAME_PUBLISHED] using
+     *  `withValue` from the values for these columns in [FeedParser.Entry] `match`. We then build
+     *  this builder and add the [ContentProviderOperation] to our list `batch`. We then increment
+     *  the `numUpdates` field of the `stats` field of `syncResult`, and loop back for the next
+     *  [FeedParser.Entry].
      *
-     *  *
-     * null - we just log "No action: "
+     *  * null - we just log "No action: "
      *
+     * After handling all the rows in [Cursor] `c` we close `c`, and move on to add the values in
+     * `entryMap` that are new. To do this we loop through all the [FeedParser.Entry] `var e` that
+     * remain in `entryMap` creating a Builder suitable for building an insert [ContentProviderOperation],
+     * then proceeding to set values for [FeedContract.Entry.COLUMN_NAME_ENTRY_ID],
+     * [FeedContract.Entry.COLUMN_NAME_TITLE], [FeedContract.Entry.COLUMN_NAME_LINK], and
+     * [FeedContract.Entry.COLUMN_NAME_PUBLISHED] using `withValue` from the values for these columns
+     * in `e`. We then build this builder and add the [ContentProviderOperation] to our list `batch`.
+     * We then increment the `numInserts` field of the `stats` field of [syncResult], and loop
+     * back for the next [FeedParser.Entry] `e`.
      *
-     * After handling all the rows in `Cursor c` we close `c`, and move on to add the
-     * values in `entryMap` that are new. To do this we loop through all the `Entry e`
-     * that remain in `entryMap` creating a Builder suitable for building an insert
-     * `ContentProviderOperation`, then proceeding to set values for COLUMN_NAME_ENTRY_ID,
-     * COLUMN_NAME_TITLE, COLUMN_NAME_LINK, and COLUMN_NAME_PUBLISHED using `withValue` from
-     * the values for these columns in `e`. We then build this builder and add the
-     * `ContentProviderOperation` to our list `batch`. We then increment the
-     * `numInserts` field of the `stats` field of `syncResult`, and loop
-     * back for the next `Entry e`.
-     *
-     *
-     * Having filled `batch` with `ContentProviderOperation` objects we call the
-     * `applyBatch` of our `ContentResolver mContentResolver` to apply the transactions
-     * in `batch` to CONTENT_AUTHORITY ("com.example.android.basicsyncadapter"). We then call
-     * the `notifyChange` method of `mContentResolver` to notify registered observers
-     * that a row was updated for the Uri FeedContract.Entry.CONTENT_URI
+     * Having filled `batch` with [ContentProviderOperation] objects we call the `applyBatch` method
+     * of our [ContentResolver] field [mContentResolver] to apply the transactions in `batch` to
+     * [FeedContract.CONTENT_AUTHORITY] ("com.example.android.basicsyncadapter"). We then call the
+     * [ContentResolver.notifyChange] method of [mContentResolver] to notify registered observers
+     * that a row was updated for the [Uri] of [FeedContract.Entry.CONTENT_URI]
      * ("content://com.example.android.basicsyncadapter/entries")
      *
-     * @param stream     [InputStream] we are to read from
+     * @param stream [InputStream] we are to read from
      * @param syncResult [SyncResult] we are to update when done.
      *
-     * @throws IOException                   Signals that an I/O exception of some sort has occurred.
-     * @throws XmlPullParserException        This exception is thrown to signal XML Pull Parser related faults.
-     * @throws RemoteException               Parent exception for all Binder remote-invocation errors
-     * @throws OperationApplicationException Thrown when an application of a ContentProviderOperation
+     * @throws IOException Signals that an I/O exception of some sort has occurred.
+     * @throws XmlPullParserException This exception is thrown to signal XML Pull Parser related faults.
+     * @throws RemoteException Parent exception for all Binder remote-invocation errors
+     * @throws OperationApplicationException Thrown when an application of a [ContentProviderOperation]
      * fails due to specified constraints.
-     * @throws ParseException                Signals that an error has been reached unexpectedly while parsing.
+     * @throws ParseException Signals that an error has been reached unexpectedly while parsing.
      */
     @Throws(IOException::class, XmlPullParserException::class, RemoteException::class, OperationApplicationException::class, ParseException::class)
     fun updateLocalFeedData(stream: InputStream?, syncResult: SyncResult) {
@@ -366,7 +362,7 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
         c.close()
 
         // Add new items
-        for (e in entryMap.values) {
+        for (e: FeedParser.Entry in entryMap.values) {
             Log.i(TAG, "Scheduling insert: entry_id=" + e.id)
             batch.add(ContentProviderOperation.newInsert(FeedContract.Entry.CONTENT_URI)
                 .withValue(FeedContract.Entry.COLUMN_NAME_ENTRY_ID, e.id)
@@ -389,18 +385,18 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
     }
 
     /**
-     * Given a string representation of a URL, sets up a connection and gets an input stream. We
-     * initialize `HttpURLConnection conn` by calling the `openConnection` method of
-     * `URL url` which returns a URLConnection instance that represents a connection to the
-     * remote object referred to by the URL. We configure `conn` to have a read timeout of
-     * NET_READ_TIMEOUT_MILLIS (10000ms), a connect timeout of NET_CONNECT_TIMEOUT_MILLIS (15000ms)
-     * a request method of "GET", and set the DoInput flag to true (since we intend to use the URL
-     * connection for input). We then call the `connect` method of `conn` to open a
-     * communications link. Finally we return an input stream that reads from this open connection
-     * returned by the `getInputStream` method of `conn`.
+     * Given a string representation of a [URL], sets up a connection and gets an input stream. We
+     * initialize [HttpURLConnection] variable `val conn` by calling the `openConnection` method of
+     * [URL] parameter [url] which returns a [URLConnection] instance that represents a connection
+     * to the remote object referred to by the [URL]. We configure `conn` to have a read timeout of
+     * [NET_READ_TIMEOUT_MILLIS] (10000ms), a connect timeout of [NET_CONNECT_TIMEOUT_MILLIS] (15000ms)
+     * a request method of "GET", and set the `DoInput` flag to true (since we intend to use the
+     * [URL] connection for input). We then call the `connect` method of `conn` to open a communications
+     * link. Finally we return an input stream that reads from this open connection returned by the
+     * [HttpURLConnection.getInputStream] method (aka kotlin `inputStream` property) of `conn`.
      *
-     * @param url URL to connect to
-     * @return an `InputStream` connected to our parameter `URL url`
+     * @param url [URL] to connect to
+     * @return an `[InputStream] connected to our [URL] parameter [url]
      * @throws IOException Signals that an I/O exception of some sort has occurred.
      */
     @Throws(IOException::class)
@@ -416,14 +412,15 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
     }
 
     companion object {
+        /**
+         * TAG used for logging.
+         */
         const val TAG = "SyncAdapter"
 
         /**
-         * URL to fetch content from during a sync.
-         *
-         *
-         * This points to the Android Developers Blog. (Side note: We highly recommend reading the
-         * Android Developer Blog to stay up to date on the latest Android platform developments!)
+         * [URL] to fetch content from during a sync. This points to the Android Developers Blog.
+         * (Side note: We highly recommend reading the Android Developer Blog to stay up to date on
+         * the latest Android platform developments!)
          */
         private const val FEED_URL = "https://android-developers.blogspot.com/atom.xml"
 
@@ -445,7 +442,8 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
             FeedContract.Entry.COLUMN_NAME_ENTRY_ID,
             FeedContract.Entry.COLUMN_NAME_TITLE,
             FeedContract.Entry.COLUMN_NAME_LINK,
-            FeedContract.Entry.COLUMN_NAME_PUBLISHED)
+            FeedContract.Entry.COLUMN_NAME_PUBLISHED
+        )
 
         // Constants representing column positions from PROJECTION.
         const val COLUMN_ID = 0

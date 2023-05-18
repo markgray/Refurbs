@@ -32,10 +32,9 @@ import com.example.android.common.accounts.GenericAccountService
  */
 object SyncUtils {
     /**
-     * how frequently the sync should be performed, in seconds
+     * how frequently the sync should be performed, in seconds: 1 hour (in seconds)
      */
-    private const val SYNC_FREQUENCY = (60 * 60 // 1 hour (in seconds)
-        ).toLong()
+    private const val SYNC_FREQUENCY = (60 * 60).toLong()
 
     /**
      * Content provider authority ("com.example.android.basicsyncadapter")
