@@ -56,15 +56,16 @@ object SyncUtils {
 
     /**
      * Create an entry for this application in the system account list, if it isn't already there.
-     * First we initialize `newAccount` to false, and initialize `setupComplete` with
-     * the shared preference boolean stored under the key PREF_SETUP_COMPLETE ("setup_complete"),
-     * defaulting to false if it does not exist yet. We initialize `Account account` with the
-     * value returned by the `GetAccount` method of our class `GenericAccountService`
-     * for our account type ACCOUNT_TYPE (`GetAccount` creates it if it is the first run, or
-     * the user has deleted account). We initialize `AccountManager accountManager` with a
-     * handle to the system level service ACCOUNT_SERVICE. If the `addAccountExplicitly` method
-     * of `accountManager` succeeds in adding `account` (it returns true) the account
-     * did not previously exist so we:
+     * First we initialize [Boolean] variable `var newAccount` to false, and initialize [Boolean]
+     * variable `val setupComplete` with the shared preference [Boolean] stored under the key
+     * [PREF_SETUP_COMPLETE] ("setup_complete"), defaulting to `false` if it does not exist yet.
+     * We initialize [Account] variable `val account` with the value returned by the
+     * [GenericAccountService.GetAccount] method of our class [GenericAccountService] for our
+     * account type [ACCOUNT_TYPE] (`GetAccount` creates it if it is the first run, or the user
+     * has deleted the account). We initialize [AccountManager] variable `val accountManager` with
+     * a handle to the system level service [Context.ACCOUNT_SERVICE]. If the `addAccountExplicitly`
+     * method of `accountManager` succeeds in adding `account` (it returns true) the account did not
+     * previously exist so we:
      *
      *  * Inform the system that this account supports sync
      *  * Inform the system that this account is eligible for auto sync when the network is up
@@ -72,15 +73,15 @@ object SyncUtils {
      *  * Set our flag `newAccount` to true
      *
      * Finally if this is a `newAccount` or `setupComplete` is false we call our method
-     * `TriggerRefresh` to trigger an immediate sync and store true in our shared preferences
-     * under the key PREF_SETUP_COMPLETE.
+     * [TriggerRefresh] to trigger an immediate sync and store `true` in our shared preferences
+     * under the key [PREF_SETUP_COMPLETE].
      *
-     * @param context Context
+     * @param context [Context] we are running in.
      */
     @SuppressLint("ApplySharedPref")
     fun CreateSyncAccount(context: Context) {
         var newAccount = false
-        val setupComplete = PreferenceManager
+        val setupComplete: Boolean = PreferenceManager
             .getDefaultSharedPreferences(context).getBoolean(PREF_SETUP_COMPLETE, false)
 
         // Create account, if it's missing. (Either first run, or user has deleted account.)
@@ -109,27 +110,24 @@ object SyncUtils {
     }
 
     /**
-     * Helper method to trigger an immediate sync ("refresh").
+     * Helper method to trigger an immediate sync ("refresh"). This should only be used when we need
+     * to preempt the normal sync schedule. Typically, this means the user has pressed the "refresh"
+     * button.
      *
+     * Note that [ContentResolver.SYNC_EXTRAS_MANUAL] will cause an immediate sync, without any
+     * optimization to preserve battery life. If you know new data is available (perhaps via a GCM
+     * notification), but the user is not actively waiting for that data, you should omit this flag;
+     * this will give the OS additional freedom in scheduling your sync request.
      *
-     * This should only be used when we need to preempt the normal sync schedule. Typically, this
-     * means the user has pressed the "refresh" button.
-     *
-     *
-     * Note that SYNC_EXTRAS_MANUAL will cause an immediate sync, without any optimization to
-     * preserve battery life. If you know new data is available (perhaps via a GCM notification),
-     * but the user is not actively waiting for that data, you should omit this flag; this will give
-     * the OS additional freedom in scheduling your sync request.
-     *
-     *
-     * First we initialize `Bundle b` with a new instance, then we store true in it under the
-     * key SYNC_EXTRAS_MANUAL ("force") (Setting this extra is the equivalent of setting both
-     * SYNC_EXTRAS_IGNORE_SETTINGS and SYNC_EXTRAS_IGNORE_BACKOFF), and store true in it under the
-     * key SYNC_EXTRAS_EXPEDITED ("expedited") (If this extra is set to true, the sync request will
-     * be scheduled at the front of the sync request queue and without any delay). Finally we use
-     * the `requestSync` method of the `ContentResolver` to start an asynchronous sync
-     * operation for the sync account ACCOUNT_TYPE, authority CONTENT_AUTHORITY, and with `b`
-     * as the as the extras to pass to the SyncAdapter.
+     * First we initialize [Bundle] variable `val b` with a new instance, then we store `true` in it
+     * under the key [ContentResolver.SYNC_EXTRAS_MANUAL] ("force") (Setting this extra is the
+     * equivalent of setting both [ContentResolver.SYNC_EXTRAS_IGNORE_SETTINGS] and
+     * [ContentResolver.SYNC_EXTRAS_IGNORE_BACKOFF]), and store `true` in it under the key
+     * [ContentResolver.SYNC_EXTRAS_EXPEDITED] ("expedited") (If this extra is set to `true`, the
+     * sync request will be scheduled at the front of the sync request queue and without any delay).
+     * Finally we use the [ContentResolver.requestSync] method to start an asynchronous sync
+     * operation for the sync account [ACCOUNT_TYPE], authority [FeedContract.CONTENT_AUTHORITY],
+     * and with `b` as the as the extras to pass to the [SyncAdapter].
      */
     fun TriggerRefresh() {
         val b = Bundle()

@@ -32,7 +32,6 @@ import java.util.Arrays
 /**
  * Helper for building selection clauses for [SQLiteDatabase].
  *
- *
  * This class provides a convenient frontend for working with SQL. Instead of composing statements
  * manually using string concatenation, method calls are used to construct the statement one
  * clause at a time. These methods can be chained together.
