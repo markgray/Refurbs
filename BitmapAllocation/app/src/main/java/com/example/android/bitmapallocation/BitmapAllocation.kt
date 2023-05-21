@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,7 +30,6 @@ import androidx.appcompat.app.AppCompatActivity
 /**
  * This example shows how to speed up bitmap loading and reduce garbage collection
  * by reusing existing bitmaps.
- *
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com,
  * or on YouTube at [...](https://www.youtube.com/watch?v=rsQet4nBVi8).
@@ -51,48 +51,49 @@ class BitmapAllocation : AppCompatActivity() {
     var mCurrentBitmap: Bitmap? = null
 
     /**
-     * Bitmap options we use for all `BitmapFactory` calls.
+     * Bitmap options we use for all [BitmapFactory] calls.
      */
     var mBitmapOptions: BitmapFactory.Options? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_bitmap_allocation. We initialize
-     * our variable `int[] imageIDs` with the resource id's of the 6 jpg's we display, initialize
-     * `CheckBox checkbox` by finding the view in our layout with id R.id.checkbox ("Reuse Bitmap"
-     * if checked the old bitmap will be reused), initialize `TextView durationTextview` by finding
-     * the view with id R.id.loadDuration (we will display the time it took to decode and display our images
-     * here), and initialize `ImageView imageview` by finding the view with id R.id.imageview (we will
-     * display our images here). We initialize our field `BitmapFactory.Options mBitmapOptions` with
-     * a new instance, and set its `inJustDecodeBounds` field to true (the decoder will return null
-     * (no bitmap), but the size fields of `mBitmapOptions` will still be set, allowing the caller
-     * to query the bitmap without having to allocate the memory for its pixels). We then call the
-     * `decodeResource` method of `BitmapFactory` to set the fields of `mBitmapOptions`
-     * given the jpg with resource id R.drawable.a. We then create a bitmap for `Bitmap mCurrentBitmap`
-     * using the `outWidth` field of `mBitmapOptions` as the width of the bitmap and the
-     * `outHeight` field as the height of the bitmap, using ARGB_8888 as the bitmap configuration
-     * (each pixel is stored on 4 bytes, with each channel (RGB and alpha for translucency) stored with
-     * 8 bits of precision). We then set the `inJustDecodeBounds` field of `mBitmapOptions`
-     * to false, set its `inBitmap` field to `mCurrentBitmap` (decode methods that take the
-     * Options object will attempt to reuse this bitmap when loading content), and set its `inSampleSize`
-     * field to 1 (no sub-sampling). We then call the `decodeResource` method of `BitmapFactory`
-     * to decode the jpg with resource id R.drawable.a into `Bitmap mCurrentBitmap`, then set the
-     * content of `ImageView imageview` to it. Finally we set the `OnClickListener` of
-     * `imageview` to an anonymous class which cycles through the resource id's in `imageIDs`
-     * displaying each jpg in turn and reusing `mCurrentBitmap` it the checkbox `checkbox` is
-     * checked.
+     * then we set our content view to our layout file R.layout.activity_bitmap_allocation. We
+     * initialize our [IntArray] variable `val imageIDs` with the resource id's of the 6 jpg's we
+     * display, initialize [CheckBox] variable `val checkbox` by finding the view in our layout with
+     * id [R.id.checkbox] ("Reuse Bitmap" -- if checked the old bitmap will be reused), initialize
+     * [TextView] variable `val durationTextview` by finding the view with id [R.id.loadDuration]
+     * (we will display the time it took to decode and display our images here), and initialize
+     * [ImageView] variable `val imageview` by finding the view with id [R.id.imageview] (we will
+     * display our images here). We initialize our [BitmapFactory.Options] field [mBitmapOptions]
+     * with a new instance, and set its `inJustDecodeBounds` field to `true` (the decoder will return
+     * `null` (no bitmap), but the size fields of [mBitmapOptions] will still be set, allowing the
+     * caller to query the bitmap without having to allocate the memory for its pixels). We then
+     * call the [BitmapFactory.decodeResource] method to set the fields of [mBitmapOptions] given
+     * the jpg with resource id [R.drawable.a]. We then create a bitmap for [Bitmap] field
+     * [mCurrentBitmap] using the `outWidth` field of [mBitmapOptions] as the width of the bitmap
+     * and the `outHeight` field as the height of the bitmap, using ARGB_8888 as the bitmap
+     * configuration (each pixel is stored in 4 bytes, with each channel (RGB and alpha for
+     * translucency) stored with 8 bits of precision). We then set the `inJustDecodeBounds` field
+     * of [mBitmapOptions] to `false`, set its `inBitmap` field to [mCurrentBitmap] (decode methods
+     * that take the `Options` object will attempt to reuse this bitmap when loading content), and
+     * set its `inSampleSize` field to 1 (no sub-sampling). We then call the `decodeResource` method
+     * of [BitmapFactory] to decode the jpg with resource id [R.drawable.a] into [Bitmap] field
+     * [mCurrentBitmap], then set the content of [ImageView] variable `imageview` to it. Finally we
+     * set the [View.OnClickListener] of `imageview` to an anonymous class which cycles through the
+     * resource id's in `imageIDs` displaying each jpg in turn and reusing [mCurrentBitmap] if the
+     * checkbox `checkbox` is checked.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     @SuppressLint("SetTextI18n")
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bitmap_allocation)
-        val imageIDs = intArrayOf(R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d,
+        val imageIDs: IntArray = intArrayOf(R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d,
             R.drawable.e, R.drawable.f)
-        val checkbox = findViewById<CheckBox>(R.id.checkbox)
-        val durationTextview = findViewById<TextView>(R.id.loadDuration)
-        val imageview = findViewById<ImageView>(R.id.imageview)
+        val checkbox: CheckBox = findViewById(R.id.checkbox)
+        val durationTextview: TextView = findViewById(R.id.loadDuration)
+        val imageview: ImageView = findViewById(R.id.imageview)
 
         // Create bitmap to be re-used, based on the size of one of the bitmaps
         mBitmapOptions = BitmapFactory.Options()
