@@ -17,78 +17,71 @@
 
 package com.example.android.bitmapscaling
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 /**
- * This example shows how the use of BitmapOptions affects the resulting size of a loaded
- * bitmap. Sub-sampling can speed up load times and reduce the need for large bitmaps
- * in memory if your target bitmap size is much smaller, although it's good to understand
- * that you can't get specific Bitmap sizes, but rather power-of-two reductions in sizes.
- *
- *
- * Watch the associated video for this demo on the DevBytes channel of developer.android.com
- * or on YouTube[]( at <a href=)//www.youtube.com/watch?v=12cB7gn">...">...L6po.
+ * This example shows how the use of [BitmapFactory.Options] affects the resulting size of a loaded
+ * bitmap. Sub-sampling can speed up load times and reduce the need for large bitmaps in memory if
+ * your target bitmap size is much smaller, although it's good to understand that you can't get
+ * specific [Bitmap] sizes, but rather power-of-two reductions in sizes.
  */
 class BitmapScaling : AppCompatActivity() {
     /**
-     * TODO: Add kdoc
+     * The [TextView] we use to display the size of the [Bitmap] for different scaling
      */
     var sizeOfBitmap: TextView? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_bitmap_scaling. We initialize
-     * `LinearLayout container` by finding the view with id R.id.scaledImageContainer (we will
-     * place our scaled images in this `ViewGroup`), and `ImageView originalImageView` by
-     * finding the view with id R.id.originalImageHolder (we will place our full sized bitmap here).
-     * We initialize our field `TextView sizeOfBitmap` by finding the view with id R.id.size_of_bitmap
-     * (we will list the size of the bitmaps created here).
+     * then we set our content view to our layout file [R.layout.activity_bitmap_scaling]. We
+     * initialize [LinearLayout] variable `val container` by finding the view with id
+     * [R.id.scaledImageContainer] (we will place our scaled images in this [ViewGroup]), and
+     * [ImageView] variable `val finding the view with id [R.id.originalImageHolder] (we will place
+     * our full sized bitmap here). We initialize our [TextView] field [sizeOfBitmap] by finding the
+     * view with id [R.id.size_of_bitmap] (we will list the size of the bitmaps created here).
      *
+     * We then create [Bitmap] variable `val bitmap` by decoding the jpg with resource id
+     * [R.drawable.jellybean_statue] and set it to be the content of `originalImageView`. We append
+     * text to [sizeOfBitmap] reporting the size of `bitmap`. Then for [Int] `i` from 2 to 9 we call
+     * our method [addScaledImageView] to add a bitmap scaled from the jpg we just using a scaling
+     * factor of `i` into `container`.
      *
-     * We then create `Bitmap bitmap` by decoding the jpg with resource id R.drawable.jellybean_statue
-     * and set it to be the content of `originalImageView`. We append text to `sizeOfBitmap`
-     * reporting the size of `bitmap`. Then for `int i` from 2 to 9 we call our method
-     * `addScaledImageView` to add a bitmap scaled from the jpg we just using a scaling factor of
-     * `i` into `container`.
-     *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bitmap_scaling)
-        val container = findViewById<LinearLayout>(R.id.scaledImageContainer)
-        val originalImageView = findViewById<ImageView>(R.id.originalImageHolder)
+        val container: LinearLayout = findViewById(R.id.scaledImageContainer)
+        val originalImageView: ImageView = findViewById(R.id.originalImageHolder)
         sizeOfBitmap = findViewById(R.id.size_of_bitmap)
-        val bitmap = BitmapFactory.decodeResource(resources,
-            R.drawable.jellybean_statue)
+        val bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.jellybean_statue)
         originalImageView.setImageBitmap(bitmap)
-        sizeOfBitmap!!.append("""
-    Size of bitmap for no scaling ${bitmap.byteCount}
-    
-    """.trimIndent())
+        sizeOfBitmap!!.append("Size of bitmap for no scaling ${bitmap.byteCount}\n")
         for (i in 2..9) {
             addScaledImageView(i, container)
         }
     }
 
     /**
-     * Scales the jpg with resource id R.drawable.jellybean_statue by the parameter `sampleSize`
-     * and adds it to the `LinearLayout container` parameter. We initialize our variable
-     * `BitmapFactory.Options bitmapOptions` with a new instance and set its `inSampleSize`
-     * field to our parameter `sampleSize`. We then initialize `Bitmap scaledBitmap` by
-     * decoding the jpg with resource id R.drawable.jellybean_statue into it using `bitmapOptions`
-     * for the bitmap options. We then append text to `sizeOfBitmap` reporting the size of
-     * `scaledBitmap`. We initialize `ImageView scaledImageView` with a new instance, set
-     * its layout parameters to use WRAP_CONTENT for both width and height, set its content to
-     * `scaledBitmap`, and finally add it to our parameter `container`.
+     * Scales the jpg with resource id [R.drawable.jellybean_statue] by the parameter [sampleSize]
+     * and adds it to the [LinearLayout] parameter [container] . We initialize our
+     * [BitmapFactory.Options] variable `val bitmapOptions` with a new instance and set its
+     * `inSampleSize` field to our parameter [sampleSize]. We then initialize [Bitmap] variable
+     * `val scaledBitmap` by decoding the jpg with resource id [R.drawable.jellybean_statue] into it
+     * using `bitmapOptions` for the bitmap options. We then append text to [sizeOfBitmap] reporting
+     * the size of `scaledBitmap`. We initialize [ImageView] variable `val scaledImageView` with a
+     * new instance, set its layout parameters to use WRAP_CONTENT for both width and height, set
+     * its content to `scaledBitmap`, and finally add it to our parameter [container].
      *
      * @param sampleSize scaling factor to use to sub-sample `original`
-     * @param container `ViewGroup` we are to add our sub-sampled bitmap to
+     * @param container [ViewGroup] we are to add our sub-sampled bitmap to
      */
     private fun addScaledImageView(sampleSize: Int, container: LinearLayout) {
 
@@ -102,8 +95,7 @@ class BitmapScaling : AppCompatActivity() {
         bitmapOptions.inSampleSize = sampleSize
         val scaledBitmap = BitmapFactory.decodeResource(resources,
             R.drawable.jellybean_statue, bitmapOptions)
-        sizeOfBitmap!!.append("""Size of bitmap with scaling of $sampleSize ${scaledBitmap.byteCount}
-""")
+        sizeOfBitmap!!.append("Size of bitmap with scaling of $sampleSize ${scaledBitmap.byteCount}\n")
         val scaledImageView = ImageView(this)
         scaledImageView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT)
