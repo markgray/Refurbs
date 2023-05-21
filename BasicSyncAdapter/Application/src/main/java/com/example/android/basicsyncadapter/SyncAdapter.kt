@@ -421,8 +421,18 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
          * [URL] to fetch content from during a sync. This points to the Android Developers Blog.
          * (Side note: We highly recommend reading the Android Developer Blog to stay up to date on
          * the latest Android platform developments!)
+         *
+         * *NOTE* The old URL:
+         *
+         * private const val FEED_URL = "https://android-developers.blogspot.com/atom.xml"
+         *
+         * Has moved to:
+         *
+         * "https://feeds.feedburner.com/blogspot/hsDu"
+         *
+         * XmlPullParser does not handle the redirect correctly.
          */
-        private const val FEED_URL = "https://android-developers.blogspot.com/atom.xml"
+        private const val FEED_URL = "https://feeds.feedburner.com/blogspot/hsDu"
 
         /**
          * Network connection timeout, in milliseconds.
