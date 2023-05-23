@@ -280,45 +280,41 @@ class CardFlip : Activity(), CardFlipListener {
      * We then switch on the value of our parameter `stack`:
      *
      *  * [RIGHT_STACK]: If [velocityX] is less than 0 (right to left fling) and `xGreaterThanY`
-     *  is also true (horizontal fling) we first check that `bothStacksEnabled` is true (breaking
+     *  is also true (horizontal fling) we first check that `bothStacksEnabled` is `true` (breaking
      *  without doing anything if one or the other stack is disabled). Having decided we do need to
-     * flip the top card of RIGHT_STACK to LEFT_STACK, we call the `bringChildToFront` method
-     * of `RelativeLayout mLayout` to change the z order of `cardView` so it's on top of
-     * all other children, then call its `requestLayout` method to schedule a layout pass of
-     * its view tree. We then remove the top `CardView` from `rightStack` and add
-     * `cardView` to `leftStack`. Finally we call the `flipRightToLeft` method
-     * of `cardView` to animate the flip from the right to left stack using `velocityX`
-     * to determine how fast the animation should run, and then we break. On the other hand we
-     * check whether `xGreaterThanY` is false (a vertical fling) and if so we initialize
-     * `boolean rotateCardsOut` to true if `velocityY` is greater than 0 (a downward
-     * fling) and to false if it is not (an upward fling). We then call our method `rotateCards`
-     * to rotate the RIGHT_STACK stack around the BOTTOM_LEFT corner, rotating the stack out if
-     * `rotateCardsOut` is true, or back in if it is false.
+     *  flip the top card of [RIGHT_STACK] to [LEFT_STACK], we call the `bringChildToFront` method
+     *  of [RelativeLayout] field [mLayout] to change the z order of [cardView] so it's on top of
+     *  all other children, then call its [RelativeLayout.requestLayout] method to schedule a layout
+     *  pass of its view tree. We then remove the top [CardView] from `rightStack` and add `cardView`
+     *  to `leftStack`. Finally we call the [CardView.flipRightToLeft] method of [cardView] to animate
+     *  the flip from the right to left stack using [velocityX] to determine how fast the animation
+     *  should run, and then we break. On the other hand we check whether `xGreaterThanY` is `false`
+     *  (a vertical fling) and if so we initialize [Boolean] variable `val rotateCardsOut` to `true`
+     *  if [velocityY] is greater than 0 (a downward fling) and to `false` if it is not (an upward
+     *  fling). We then call our method [rotateCards] to rotate the [RIGHT_STACK] stack around the
+     *  [Corner.BOTTOM_LEFT] corner, rotating the stack out if `rotateCardsOut` is `true`, or back
+     *  in if it is `false`.
      *
-     *  *
-     * LEFT_STACK: If `velocityX` is greater than 0 (left to right fling) and `xGreaterThanY`
-     * is also true (horizontal fling) we first check that `bothStacksEnabled` is true (breaking
-     * without doing anything if one or the other stack is disabled). Having decided we do need to
-     * flip the top card of LEFT_STACK to RIGHT_STACK, we call the `bringChildToFront` method
-     * of `RelativeLayout mLayout` to change the z order of `cardView` so it's on top of
-     * all other children, then call its `requestLayout` method to schedule a layout pass of
-     * its view tree. We then remove the top `CardView` from `leftStack` and add
-     * `cardView` to `rightStack`. Finally we call the `flipLeftToRight` method
-     * of `cardView` to animate the flip from the left to right stack using `velocityX`
-     * to determine how fast the animation should run, and then we break. On the other hand we
-     * check whether `xGreaterThanY` is false (a vertical fling) and if so we initialize
-     * `boolean rotateCardsOut` to true if `velocityY` is greater than 0 (a downward
-     * fling) and to false if it is not (an upward fling). We then call our method `rotateCards`
-     * to rotate the LEFT_STACK stack around the BOTTOM_LEFT corner, rotating the stack out if
-     * `rotateCardsOut` is true, or back in if it is false. We then break.
+     *  * [LEFT_STACK]: If [velocityX] is greater than 0 (left to right fling) and `xGreaterThanY`
+     *  is also `true` (horizontal fling) we first check that `bothStacksEnabled` is `true` (breaking
+     *  without doing anything if one or the other stack is disabled). Having decided we do need to
+     *  flip the top card of [LEFT_STACK] to [RIGHT_STACK], we call the [RelativeLayout.bringChildToFront]
+     *  method of [RelativeLayout] field [mLayout] to change the z order of [cardView] so it's on top
+     *  of all other children, then call its [RelativeLayout.requestLayout] method to schedule a layout
+     *  pass of its view tree. We then remove the top [CardView] from `leftStack` and add [cardView]
+     *  to `rightStack`. Finally we call the [CardView.flipLeftToRight] method of [cardView] to animate
+     *  the flip from the left to right stack using [velocityX] to determine how fast the animation
+     *  should run, and then we break. On the other hand we check whether `xGreaterThanY` is `false`
+     *  (a vertical fling) and if so we initialize [Boolean] variable `val rotateCardsOut` to `true`
+     *  if [velocityY] is greater than 0 (a downward fling) and to `false` if it is not (an upward
+     *  fling). We then call our method [rotateCards] to rotate the [LEFT_STACK] stack around the
+     *  [Corner.BOTTOM_LEFT] corner, rotating the stack out if `rotateCardsOut` is `true`, or back
+     *  in if it is `false`. We then break.
      *
-     *  *
-     * default: we just break.
+     *  * default: we just break.
      *
-     *
-     *
-     * @param cardView  the `CardView` that needs to be flipped to the other stack.
-     * @param stack     the stack that the `CardView` is on
+     * @param cardView  the [CardView] that needs to be flipped to the other stack.
+     * @param stack     the stack that the [CardView] is on
      * @param velocityX The velocity of the fling measured in pixels per second along the x axis.
      * @param velocityY The velocity of the fling measured in pixels per second along the y axis.
      */
@@ -359,20 +355,20 @@ class CardFlip : Activity(), CardFlipListener {
     }
 
     /**
-     * Part of the `CardFlipListener` interface, it is called at the end of the animation of
-     * the flip of a card invoked by the `flipHorizontally` method of the `CardView`.
-     * We just re-enable the interpretation of touch events by setting `mTouchEventsEnabled`
-     * to true.
+     * Part of the [CardFlipListener] interface, it is called at the end of the animation of
+     * the flip of a card invoked by the [CardView.flipHorizontally] method of the [CardView].
+     * We just re-enable the interpretation of touch events by setting [mTouchEventsEnabled]
+     * to `true`.
      */
     override fun onCardFlipEnd() {
         mTouchEventsEnabled = true
     }
 
     /**
-     * Part of the `CardFlipListener` interface, it is called at the beginning of the animation
-     * of the flip of a card invoked by the `flipHorizontally` method of the `CardView`.
-     * We just disable the interpretation of touch events by setting `mTouchEventsEnabled`
-     * to false.
+     * Part of the [CardFlipListener] interface, it is called at the beginning of the animation
+     * of the flip of a card invoked by the [CardView.flipHorizontally] method of the [CardView].
+     * We just disable the interpretation of touch events by setting [mTouchEventsEnabled]
+     * to `false`.
      */
     override fun onCardFlipStart() {
         mTouchEventsEnabled = false
