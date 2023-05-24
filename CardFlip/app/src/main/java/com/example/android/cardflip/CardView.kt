@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_PARAMETER", "unused", "DEPRECATION", "ReplaceJavaStaticMethodWithKotlinAnalog", "PrivatePropertyName", "MemberVisibilityCanBePrivate")
+@file:Suppress("UNUSED_PARAMETER", "unused", "DEPRECATION", "ReplaceJavaStaticMethodWithKotlinAnalog", "PrivatePropertyName", "MemberVisibilityCanBePrivate", "ReplaceNotNullAssertionWithElvisReturn")
 
 package com.example.android.cardflip
 
@@ -36,7 +36,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 
 /**
- * This CardView object is a view which can flip horizontally about its edges,
+ * This [CardView] object is a view which can flip horizontally about its edges,
  * as well as rotate clockwise or counter-clockwise about any of its corners. In
  * the middle of a flip animation, this view darkens to imitate a shadow-like effect.
  *
@@ -50,7 +50,25 @@ class CardView : ImageView {
      * Constants used to specify the corner of the card that is of interest.
      */
     enum class Corner {
-        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+        /**
+         * Top left corner
+         */
+        TOP_LEFT,
+
+        /**
+         * Top right corner
+         */
+        TOP_RIGHT,
+
+        /**
+         * Bottom left corener
+         */
+        BOTTOM_LEFT,
+
+        /**
+         * Bottom right corner
+         */
+        BOTTOM_RIGHT
     }
 
     /**
@@ -97,29 +115,29 @@ class CardView : ImageView {
     private val ANTIALIAS_BORDER = 1
 
     /**
-     * `BitmapDrawable` used for the front of the card, loaded with the jpg with resource id
-     * R.drawable.red
+     * [BitmapDrawable] used for the front of the card, loaded with the jpg with resource id
+     * [R.drawable.red]
      */
     private var mFrontBitmapDrawable: BitmapDrawable? = null
 
     /**
-     * `BitmapDrawable` used for the back of the card, loaded with the jpg with resource id
-     * R.drawable.blue
+     * [BitmapDrawable] used for the back of the card, loaded with the jpg with resource id
+     * [R.drawable.blue]
      */
     private var mBackBitmapDrawable: BitmapDrawable? = null
 
     /**
-     * `BitmapDrawable` currently being displayed by this `CardView`, either
-     * `BitmapDrawable mFrontBitmapDrawable` or `BitmapDrawable mBackBitmapDrawable`
+     * [BitmapDrawable] currently being displayed by this [CardView], either [BitmapDrawable] field
+     * [mFrontBitmapDrawable] or [BitmapDrawable] field [mBackBitmapDrawable]
      */
     private var mCurrentBitmapDrawable: BitmapDrawable? = null
 
     /**
-     * Flag indicating that the front of the `CardView` is showing, toggled by our method
-     * `toggleFrontShowing` which is called only by our method `flipHorizontally`, it
-     * is used by our method `updateDrawableBitmap` to decide which `BitmapDrawable`
-     * to use for `BitmapDrawable mCurrentBitmapDrawable` which it then displays, choosing
-     * `mFrontBitmapDrawable` if true, or `mBackBitmapDrawable` if false.
+     * Flag indicating that the front of the [CardView] is showing, toggled by our method
+     * [toggleFrontShowing] which is called only by our method [flipHorizontally], it is used
+     * by our method [updateDrawableBitmap] to decide which [BitmapDrawable] to use for
+     * [BitmapDrawable] field [mCurrentBitmapDrawable] which it then displays, choosing
+     * [mFrontBitmapDrawable] if `true`, or [mBackBitmapDrawable] if `false`.
      */
     private var mIsFrontShowing = true
 
@@ -317,9 +335,13 @@ class CardView : ImageView {
         val shadowKeyFrameStart = Keyframe.ofFloat(0f, 0f)
         val shadowKeyFrameMid = Keyframe.ofFloat(0.5f, 1f)
         val shadowKeyFrameEnd = Keyframe.ofFloat(1f, 0f)
-        val shadowPropertyValuesHolder = PropertyValuesHolder.ofKeyframe("shadow", shadowKeyFrameStart, shadowKeyFrameMid, shadowKeyFrameEnd)
-        val colorizer = ObjectAnimator.ofPropertyValuesHolder(this,
-            shadowPropertyValuesHolder)
+        val shadowPropertyValuesHolder = PropertyValuesHolder.ofKeyframe(
+            "shadow",
+            shadowKeyFrameStart,
+            shadowKeyFrameMid,
+            shadowKeyFrameEnd
+        )
+        val colorizer = ObjectAnimator.ofPropertyValuesHolder(this, shadowPropertyValuesHolder)
         mCardFlipListener!!.onCardFlipStart()
         val set = AnimatorSet()
         var duration = MAX_FLIP_DURATION - Math.abs(velocity) / VELOCITY_TO_DURATION_CONSTANT

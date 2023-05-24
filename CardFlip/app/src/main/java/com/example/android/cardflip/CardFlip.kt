@@ -20,6 +20,7 @@ package com.example.android.cardflip
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.os.Bundle
 import android.view.GestureDetector
@@ -377,13 +378,13 @@ class CardFlip : Activity(), CardFlipListener {
     /**
      * Called when a touch screen event was not handled by any of the views under it. This is most
      * useful to process touch events that happen outside of your window bounds, where there is no
-     * view to receive it. If our flag `mTouchEventsEnabled` is true (no card flip animations
-     * are in progress) we return the value the `onTouchEvent` override of our field
-     * `GestureDetector gDetector` returns when we call it to interpret the `MotionEvent`,
+     * view to receive it. If our flag [mTouchEventsEnabled] is `true` (no card flip animations
+     * are in progress) we return the value the [GestureDetector.onTouchEvent] override of our
+     * [GestureDetector] field [gDetector] returns when we call it to interpret the [MotionEvent],
      * otherwise we return the value returned by our super's implementation of `onTouchEvent`.
      *
      * @param me The touch screen event being processed.
-     * @return Return true if you have consumed the event, false if you haven't.
+     * @return Return `true` if you have consumed the event, `false` if you haven't.
      */
     override fun onTouchEvent(me: MotionEvent): Boolean {
         return if (mTouchEventsEnabled) {
@@ -396,50 +397,54 @@ class CardFlip : Activity(), CardFlipListener {
     /**
      * Retrieves an animator object for each card in the specified stack that either rotates it in
      * or out depending on its current state. All of these animations are then played together. First
-     * we initialize our variable `List<Animator> animations` with a new instance, then we
-     * initialize `ArrayList <CardView> cards` with a reference to stack `stack` in our
-     * field `List<ArrayList<CardView>> mStackCards`. Then we loop over `int i` for all
-     * of the cards in `cards`, initializing `CardView cardView` with the `CardView`
-     * at position `i` in `cards` then adding to `animations` the `ObjectAnimator`
-     * returned by the `getRotationAnimator` method of `cardView` when given `i` as
-     * the height of the card from the top, for the corner `corner`, passing it our parameter
-     * `isRotatingOut` to inform it about whether we want to fan out cards (true) or collapse
-     * the fanned out stack (false), and false for its `isClockwise` parameter so that it knows
-     * that the fan out is counter clockwise. Then we call the `bringChildToFront` of our field
-     * `RelativeLayout mLayout` to change the z order of `cardView` so it's on top of all
-     * other children, and loop around to the next `CardView` in `cards`.
-     *
+     * we initialize our [List] of [Animator] variable `val animations` with a new instance, then we
+     * initialize our [ArrayList] of [CardView] variable `val cards` with a reference to stack [stack]
+     * in our [List] of [ArrayList] of [CardView] field [mStackCards]. Then we loop over [Int] variable
+     * `i` for all of the [CardView] in `cards`, initializing [CardView] variable `val cardView` with
+     * the [CardView] at position `i` in `cards` then adding to `animations` the [ObjectAnimator]
+     * returned by the [CardView.getRotationAnimator] method of `cardView` when given `i` as
+     * the height of the card from the top, for the corner [corner], passing it our parameter
+     * [isRotatingOut] to inform it about whether we want to fan out cards (`true`) or collapse
+     * the fanned out stack (`false`), and `false` for its `isClockwise` parameter so that it knows
+     * that the fan out is counter clockwise. Then we call the [RelativeLayout.bringChildToFront]
+     * method of our [RelativeLayout] field [mLayout] to change the z order of `cardView` so it's
+     * on top of all other children, and loop around for the next [CardView] in `cards`.
      *
      * When done creating animations for cards in the stack we wish to rotate, and bringing each of
      * them to the front so that the cards being rotated in the current stack will overlay the cards
-     * in the other stack we call the `requestLayout` method of `mLayout` in order to
+     * in the other stack we call the [RelativeLayout.requestLayout] method of [mLayout] in order to
      * apply the changes made to the Z ordering.
      *
+     * Next we initialize [AnimatorSet] variable `val set` with a new instance and set it up to play
+     * all of the animations in `animations` at the same time. Then we add an anonymous
+     * [AnimatorListenerAdapter] to `set` whose [AnimatorListenerAdapter.onAnimationEnd] override
+     * sets the [mIsStackEnabled] flag of stack [stack] to the inverse of our [Boolean] parameter
+     * [isRotatingOut], disabling the flipping of cards from one stack to the other while this stack
+     * is rotated out or enabling it if it just rotated back in (the other stack is free to rotate
+     * in or out whatever the setting or this flag might be). Finally we start `set` running.
      *
-     * Next we initialize `AnimatorSet set` with a new instance and set it up to play all of the
-     * animations in `animations` at the same time. Then we add an anonymous `AnimatorListenerAdapter`
-     * to `set` whose `onAnimationEnd` override sets `mIsStackEnabled[stack]` to the
-     * inverse of our parameter `isRotatingOut` disabling the flipping of cards from one stack
-     * to the other while this stack is rotated out or enabling it if it just rotated back in (the
-     * other stack is free to rotate in or out whatever the setting or this flag might be). Finally
-     * we start `set` running.
-     *
-     * @param stack stack number, either RIGHT_STACK or LEFT_STACK
-     * @param corner corner, always BOTTOM_LEFT in our usage.
-     * @param isRotatingOut if true fans the card stack out, if false rotates it back to a stack.
+     * @param stack stack number, either [RIGHT_STACK] or [LEFT_STACK]
+     * @param corner corner, always [Corner.BOTTOM_LEFT] in our usage.
+     * @param isRotatingOut if `true` fans the card stack out, if `false` rotates it back to a stack.
      */
     fun rotateCards(stack: Int, corner: Corner?, isRotatingOut: Boolean) {
         val animations: MutableList<Animator> = ArrayList()
-        val cards = mStackCards!![stack]
+        val cards: ArrayList<CardView> = mStackCards!![stack]
         for (i in cards.indices) {
             val cardView = cards[i]
-            animations.add(cardView.getRotationAnimator(i, corner, isRotatingOut, false))
+            animations.add(cardView.getRotationAnimator(
+                cardFromTop = i,
+                corner = corner,
+                isRotatingOut = isRotatingOut,
+                isClockwise = false
+            ))
             mLayout!!.bringChildToFront(cardView)
         }
         /* All the cards are being brought to the front in order to guarantee that
          * the cards being rotated in the current stack will overlay the cards in the
          * other stack. After the z-ordering of all the cards is updated, a layout must
-         * be requested in order to apply the changes made.*/mLayout!!.requestLayout()
+         * be requested in order to apply the changes made.*/
+        mLayout!!.requestLayout()
         val set = AnimatorSet()
         set.playTogether(animations)
         set.addListener(object : AnimatorListenerAdapter() {
@@ -460,43 +465,48 @@ class CardFlip : Activity(), CardFlipListener {
 
     /**
      * Retrieves an animator object for each card in the specified stack to complete a full revolution
-     * around one of its corners, and plays all of them together. First we initialize our variable
-     * `List<Animator> animations` with a new instance, then we initialize `ArrayList <CardView> cards`
-     * with a reference to stack `stack` in our field `List<ArrayList<CardView>> mStackCards`.
-     * Then we loop over `int i` for all of the cards in `cards`, initializing `CardView cardView`
-     * with the `CardView` at position `i` in `cards` then adding to `animations`
-     * the `ObjectAnimator` returned by the `getFullRotationAnimator` method of `cardView`
-     * when given `i` as the height of the card from the top, for the corner `corner`, and
-     * passing false for its `isClockwise` parameter so that it knows that the rotation is to be
-     * counter clockwise. Then we call the `bringChildToFront` of our field `RelativeLayout mLayout`
-     * to change the z order of `cardView` so it's on top of all other children, and loop around to the
-     * next `CardView` in `cards`.
-     *
+     * around one of its corners, and plays all of them together. First we initialize our [List] of
+     * [Animator] variable `val animations` with a new instance, then we initialize [ArrayList] of
+     * [CardView] variable `val cards` with a reference to stack [stack] in our [List] of [ArrayList]
+     * of [CardView] field [mStackCards]. Then we loop over [Int] `i` for all of the [CardView] in
+     * `cards`, initializing [CardView] variable `val cardView` with the [CardView] at position `i`
+     * in `cards` then adding to `animations` the [ObjectAnimator] returned by the
+     * [CardView.getFullRotationAnimator] method of `cardView` when given `i` as the height of the
+     * card from the top, [corner] for the corner, and passing `false` for its `isClockwise` parameter
+     * so that it knows that the rotation is to be counter clockwise. Then we call the
+     * [RelativeLayout.bringChildToFront] method of our [RelativeLayout] field [mLayout] to change
+     * the z order of `cardView` so it's on top of all other children, and loop around to the
+     * next [CardView] in `cards`.
      *
      * When done creating animations for cards in the stack we wish to rotate, and bringing each of
      * them to the front so that the cards being rotated in the current stack will overlay the cards
-     * in the other stack we call the `requestLayout` method of `mLayout` in order to
-     * apply the changes made to the Z ordering. We then set our flag `mTouchEventsEnabled` to
-     * false to disable the interpretation of any touch events.
+     * in the other stack, we call the [RelativeLayout.requestLayout] method of [mLayout] in order
+     * to apply the changes made to the Z ordering. We then set our flag [mTouchEventsEnabled] to
+     * `false` to disable the interpretation of any touch events.
      *
+     * Next we initialize [AnimatorSet] variable `val set` with a new instance and set it up to play
+     * all of the animations in `animations` at the same time. Then we add an anonymous
+     * [AnimatorListenerAdapter] to `set` whose [AnimatorListenerAdapter.onAnimationEnd] override
+     * sets [mTouchEventsEnabled] to `true` to re-enable the interpretation of touch events. Finally
+     * we start `set` running.
      *
-     * Next we initialize `AnimatorSet set` with a new instance and set it up to play all of the
-     * animations in `animations` at the same time. Then we add an anonymous `AnimatorListenerAdapter`
-     * to `set` whose `onAnimationEnd` override sets `mTouchEventsEnabled` to re-enable
-     * the interpretation of touch events. Finally we start `set` running.
-     *
-     * @param stack stack number, either RIGHT_STACK or LEFT_STACK
-     * @param corner corner, always BOTTOM_LEFT in our usage.
+     * @param stack stack number, either [RIGHT_STACK] or [LEFT_STACK]
+     * @param corner corner, always [Corner.BOTTOM_LEFT] in our usage.
      */
     fun rotateCardsFullRotation(stack: Int, corner: Corner?) {
         val animations: MutableList<Animator> = ArrayList()
-        val cards = mStackCards!![stack]
+        val cards: ArrayList<CardView> = mStackCards!![stack]
         for (i in cards.indices) {
-            val cardView = cards[i]
-            animations.add(cardView.getFullRotationAnimator(i, corner, false))
+            val cardView: CardView = cards[i]
+            animations.add(cardView.getFullRotationAnimator(
+                cardFromTop = i,
+                corner = corner,
+                isClockwise = false
+            ))
+            /* Same reasoning for bringing cards to front as in rotateCards().*/
             mLayout!!.bringChildToFront(cardView)
         }
-        /* Same reasoning for bringing cards to front as in rotateCards().*/mLayout!!.requestLayout()
+        mLayout!!.requestLayout()
         mTouchEventsEnabled = false
         val set = AnimatorSet()
         set.playTogether(animations)
@@ -516,13 +526,13 @@ class CardFlip : Activity(), CardFlipListener {
 
     companion object {
         /**
-         * Pixel offset of a single card in a stack, used to offset the card depending on how many cars
-         * are in the pile underneath it.
+         * Pixel offset of a single card in a stack, used to offset the card depending on how many
+         * cards are in the pile underneath it.
          */
         const val CARD_PILE_OFFSET: Int = 3
 
         /**
-         * Number of cards that are created for the RIGHT_STACK when the activity starts.
+         * Number of cards that are created for the [RIGHT_STACK] when the activity starts.
          */
         const val STARTING_NUMBER_CARDS: Int = 15
 
