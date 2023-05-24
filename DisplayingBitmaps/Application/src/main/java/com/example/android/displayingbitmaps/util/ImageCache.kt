@@ -44,15 +44,16 @@ import java.security.NoSuchAlgorithmException
 import java.util.Collections
 
 /**
- * This class handles disk and memory caching of bitmaps in conjunction with the
- * [ImageWorker] class and its subclasses. Use
- * [ImageCache.getInstance] to get an instance of this
- * class, although usually a cache should be added directly to an [ImageWorker] by calling
- * [ImageWorker.addImageCache].
+ * This class handles disk and memory caching of bitmaps in conjunction with the [ImageWorker] class
+ * and its subclasses. Use [ImageCache.getInstance] to get an instance of this class, although
+ * usually a cache should be added directly to an [ImageWorker] by calling [ImageWorker.addImageCache].
+ * Our constructor just calls our [initialize] method with our parameter in our `init` block.
+ *
+ * @param cacheParams The cache parameters to use to initialize the cache
  */
 class ImageCache private constructor(cacheParams: ImageCacheParams) {
     /**
-     * `DiskLruCache` we use to cache to disk
+     * [DiskLruCache] we use to cache to disk
      */
     private var mDiskLruCache: DiskLruCache? = null
 
@@ -62,7 +63,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     private var mMemoryCache: LruCache<String, BitmapDrawable>? = null
 
     /**
-     * `ImageCacheParams` that were used to create this instance.
+     * [ImageCacheParams] that were used to create this instance.
      */
     private var mCacheParams: ImageCacheParams? = null
 
@@ -85,34 +86,29 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     /**
      * Create a new ImageCache object using the specified parameters. This should not be
      * called directly by other classes, instead use `ImageCache.getInstance` to fetch an
-     * ImageCache instance. We just call our `init` method with our parameter.
+     * ImageCache instance. We just call our `initialize` method with our parameter.
      *
      * param cacheParams The cache parameters to use to initialize the cache
      */
     init {
-        init(cacheParams)
+        initialize(cacheParams)
     }
 
     /**
-     * Initialize the cache, providing all parameters. First we save our parameter `cacheParams`
-     * in our field `ImageCacheParams mCacheParams`. If the `memoryCacheEnabled` field of
-     * `mCacheParams` is true we:
+     * Initialize the cache, providing all parameters. First we save our [ImageCacheParams] parameter
+     * [cacheParams] in our [ImageCacheParams] field [mCacheParams].
+     * If the [ImageCacheParams.memoryCacheEnabled] field of [mCacheParams] is true we:
      *
-     *  1.
-     * If `BuildConfig.DEBUG` is true we log the fact that a memory cache was created.
+     *  1. If [BuildConfig.DEBUG] is true we log the fact that a memory cache was created.
      *
-     *  1.
-     * If we are running on HONEYCOMB or above, we initialize `mReusableBitmaps` with
-     * a synchronized set wrapped `HashSet` of soft referenced `BitMap` objects.
+     *  2. If we are running on HONEYCOMB or above, we initialize our [mReusableBitmaps] field with
+     *  a "synchronized set wrapped" [HashSet] of soft referenced [Bitmap] objects.
      *
-     *  1.
-     * We initialize our field `LruCache<String, BitmapDrawable> mMemoryCache` with a
-     * new instance of size `mCacheParams.memCacheSize` overriding its `entryRemoved`
-     * method to notify a `RecyclingBitmapDrawable` that it is no longer cached or to
-     * add a standard `BitmapDrawable` to the reusable set `mReusableBitmaps`.
-     * If also overrides the `sizeOf` method to return the size of the bitmap divided
-     * by 1024.
-     *
+     *  3. We initialize our field `LruCache<String, BitmapDrawable> mMemoryCache` with a
+     *  new instance of size `mCacheParams.memCacheSize` overriding its `entryRemoved`
+     *  method to notify a `RecyclingBitmapDrawable` that it is no longer cached or to
+     *  add a standard `BitmapDrawable` to the reusable set `mReusableBitmaps`. It also
+     *  overrides the `sizeOf` method to return the size of the bitmap divided by 1024.
      *
      * Finally if the `initDiskCacheOnCreate` field of `cacheParams` is true we call the
      * `initDiskCache` method (it is always false in our case, and the `initDiskCache`
@@ -120,7 +116,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
      *
      * @param cacheParams The cache parameters to initialize the cache
      */
-    private fun init(cacheParams: ImageCacheParams) {
+    private fun initialize(cacheParams: ImageCacheParams) {
         mCacheParams = cacheParams
 
         //BEGIN_INCLUDE(init_memory_cache)
@@ -316,7 +312,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                             out.close()
                         }
                     } else {
-                        snapshot.getInputStream(DISK_CACHE_INDEX).close()
+                        snapshot.getInputStream(DISK_CACHE_INDEX)!!.close()
                     }
                 } catch (e: IOException) {
                     Log.e(TAG, "addBitmapToCache - $e")

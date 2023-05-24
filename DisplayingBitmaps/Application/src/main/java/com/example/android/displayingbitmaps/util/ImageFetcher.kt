@@ -128,7 +128,7 @@ class ImageFetcher : ImageResizer {
         synchronized(mHttpDiskCacheLock) {
             if (ImageCache.getUsableSpace(mHttpCacheDir!!) > HTTP_CACHE_SIZE) {
                 try {
-                    mHttpDiskCache = DiskLruCache.open(mHttpCacheDir, 1, 1, HTTP_CACHE_SIZE.toLong())
+                    mHttpDiskCache = DiskLruCache.open(mHttpCacheDir!!, 1, 1, HTTP_CACHE_SIZE.toLong())
                     if (BuildConfig.DEBUG) {
                         Log.d(TAG, "HTTP cache initialized")
                     }

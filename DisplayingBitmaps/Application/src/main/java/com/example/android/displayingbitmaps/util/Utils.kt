@@ -13,36 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.example.android.displayingbitmaps.util
 
-package com.example.android.displayingbitmaps.util;
-
-import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
-import android.os.Build;
-import android.os.Build.VERSION_CODES;
-import android.os.StrictMode;
-
-import com.example.android.displayingbitmaps.ui.ImageDetailActivity;
-import com.example.android.displayingbitmaps.ui.ImageGridActivity;
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.os.Build
+import android.os.Build.VERSION_CODES
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
+import android.os.StrictMode.VmPolicy
+import com.example.android.displayingbitmaps.ui.ImageDetailActivity
+import com.example.android.displayingbitmaps.ui.ImageGridActivity
 
 /**
  * Class containing some static utility methods.
  */
-public class Utils {
+object Utils {
     /**
-     * Our constructor
-     */
-    private Utils() {
-    }
-
-    /**
-     * Enables {@code StrictMode} logging for debugging purposes. If we do not have at least a
+     * Enables `StrictMode` logging for debugging purposes. If we do not have at least a
      * GINGERBREAD device we do nothing. Otherwise we create a new instance to initialize our variable
-     * {@code StrictMode.ThreadPolicy.Builder threadPolicyBuilder}, configure it to detect all
+     * `StrictMode.ThreadPolicy.Builder threadPolicyBuilder`, configure it to detect all
      * potentially suspect actions for this thread (slow calls, disk reads, disk writes, network
      * operations, mismatches between defined resource types and getter calls, and unbuffered
      * input/output operations) then set the penalty to Log detected violations to the system log.
-     * We initialize {@code StrictMode.VmPolicy.Builder vmPolicyBuilder} with a new instance, configure
+     * We initialize `StrictMode.VmPolicy.Builder vmPolicyBuilder` with a new instance, configure
      * it to detect all potentially suspect actions for the VM process (on any thread) (leaks of Activity
      * subclasses, network traffic from the calling app which is not wrapped in SSL/TLS, calling
      * application sends a content:// Uri to another app without setting FLAG_GRANT_READ_URI_PERMISSION
@@ -52,33 +46,32 @@ public class Utils {
      * or other SQLite object is finalized without having been closed, and sockets in the calling app
      * which have not been tagged using TrafficStats) then set the penalty to Log detected violations
      * to the system log.
-     * <p>
-     * If have at least a HONEYCOMB device we add the penalty to flash the screen to {@code threadPolicyBuilder},
-     * and set the class instance limit of {@code vmPolicyBuilder} for both {@code ImageGridActivity},
-     * and {@code ImageDetailActivity} to 1. We not build {@code threadPolicyBuilder} and set the thread
-     * policy for the current thread to it, and build {@code vmPolicyBuilder} and set the policy for
+     *
+     *
+     * If have at least a HONEYCOMB device we add the penalty to flash the screen to `threadPolicyBuilder`,
+     * and set the class instance limit of `vmPolicyBuilder` for both `ImageGridActivity`,
+     * and `ImageDetailActivity` to 1. We not build `threadPolicyBuilder` and set the thread
+     * policy for the current thread to it, and build `vmPolicyBuilder` and set the policy for
      * actions in the VM process (on any thread) to it.
      */
+    @SuppressLint("ObsoleteSdkInt")
     @TargetApi(VERSION_CODES.HONEYCOMB)
-    public static void enableStrictMode() {
-        if (Utils.hasGingerbread()) {
-            StrictMode.ThreadPolicy.Builder threadPolicyBuilder =
-                    new StrictMode.ThreadPolicy.Builder()
-                            .detectAll()
-                            .penaltyLog();
-            StrictMode.VmPolicy.Builder vmPolicyBuilder =
-                    new StrictMode.VmPolicy.Builder()
-                            .detectAll()
-                            .penaltyLog();
-
-            if (Utils.hasHoneycomb()) {
-                threadPolicyBuilder.penaltyFlashScreen();
+    fun enableStrictMode() {
+        if (hasGingerbread()) {
+            val threadPolicyBuilder = ThreadPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+            val vmPolicyBuilder = VmPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+            if (hasHoneycomb()) {
+                threadPolicyBuilder.penaltyFlashScreen()
                 vmPolicyBuilder
-                        .setClassInstanceLimit(ImageGridActivity.class, 1)
-                        .setClassInstanceLimit(ImageDetailActivity.class, 1);
+                    .setClassInstanceLimit(ImageGridActivity::class.java, 1)
+                    .setClassInstanceLimit(ImageDetailActivity::class.java, 1)
             }
-            StrictMode.setThreadPolicy(threadPolicyBuilder.build());
-            StrictMode.setVmPolicy(vmPolicyBuilder.build());
+            StrictMode.setThreadPolicy(threadPolicyBuilder.build())
+            StrictMode.setVmPolicy(vmPolicyBuilder.build())
         }
     }
 
@@ -88,10 +81,10 @@ public class Utils {
      * @return true if our build version is greater than FROYO
      */
     @SuppressLint("ObsoleteSdkInt")
-    public static boolean hasFroyo() {
+    fun hasFroyo(): Boolean {
         // Can use static final constants like FROYO, declared in later versions
         // of the OS since they are inlined at compile time. This is guaranteed behavior.
-        return Build.VERSION.SDK_INT >= VERSION_CODES.FROYO;
+        return Build.VERSION.SDK_INT >= VERSION_CODES.FROYO
     }
 
     /**
@@ -100,8 +93,8 @@ public class Utils {
      * @return true if our build version is greater than GINGERBREAD
      */
     @SuppressLint("ObsoleteSdkInt")
-    public static boolean hasGingerbread() {
-        return Build.VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD;
+    fun hasGingerbread(): Boolean {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.GINGERBREAD
     }
 
     /**
@@ -109,9 +102,10 @@ public class Utils {
      *
      * @return true if our build version is greater than HONEYCOMB
      */
+    @JvmStatic
     @SuppressLint("ObsoleteSdkInt")
-    public static boolean hasHoneycomb() {
-        return Build.VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB;
+    fun hasHoneycomb(): Boolean {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB
     }
 
     /**
@@ -120,8 +114,8 @@ public class Utils {
      * @return true if our build version is greater than HONEYCOMB_MR1
      */
     @SuppressLint("ObsoleteSdkInt")
-    public static boolean hasHoneycombMR1() {
-        return Build.VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB_MR1;
+    fun hasHoneycombMR1(): Boolean {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB_MR1
     }
 
     /**
@@ -129,8 +123,9 @@ public class Utils {
      *
      * @return true if our build version is greater than JELLY_BEAN
      */
-    public static boolean hasJellyBean() {
-        return Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN;
+    @SuppressLint("ObsoleteSdkInt")
+    fun hasJellyBean(): Boolean {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN
     }
 
     /**
@@ -138,7 +133,8 @@ public class Utils {
      *
      * @return true if our build version is greater than KITKAT
      */
-    public static boolean hasKitKat() {
-        return Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT;
+    @SuppressLint("ObsoleteSdkInt")
+    fun hasKitKat(): Boolean {
+        return Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT
     }
 }
