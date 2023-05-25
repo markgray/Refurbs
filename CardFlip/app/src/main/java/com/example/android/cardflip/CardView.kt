@@ -142,50 +142,52 @@ class CardView : ImageView {
     private var mIsFrontShowing = true
 
     /**
-     * Flag indicating that the `CardView` has been flipped, it is toggled by our method
-     * `toggleIsHorizontallyFlipped` at the end of the animation created by our method
-     * `flipHorizontally` to flip the card from one stack to the other. It starts out
-     * false to indicate that the card is on the right hand stack. If is used by our override of
-     * `onDraw` to decide whether it needs to concatenate `Matrix mHorizontalFlipMatrix`
-     * to the `Canvas` before calling our super's implementation of `onDraw`. The matrix
-     * scales the canvas horizontally about its midpoint with the X scaling factor -1.
+     * Flag indicating that the [CardView] has been flipped, it is toggled by our method
+     * [toggleIsHorizontallyFlipped] at the end of the animation created by our method
+     * [flipHorizontally] to flip the card from one stack to the other. It starts out
+     * `false` to indicate that the card is on the right hand stack. If is used by our
+     * override of [onDraw] to decide whether it needs to concatenate [Matrix] field
+     * [mHorizontalFlipMatrix] to the [Canvas] before calling our super's implementation
+     * of `onDraw`. The matrix scales the canvas horizontally about its midpoint with the
+     * X scaling factor -1.
      */
     private var mIsHorizontallyFlipped = false
 
     /**
-     * Matrix used to scale the canvas horizontally about its midpoint with the X scaling factor -1,
-     * it is used by our override of `onDraw` if `mIsHorizontallyFlipped` is true to
-     * "flip" the card to its back before calling our super's implementation of `onDraw`.
+     * [Matrix] used to scale the canvas horizontally about its midpoint with the X scaling
+     * factor -1, it is used by our override of [onDraw] if [mIsHorizontallyFlipped] is `true`
+     * to "flip" the card to its back before calling our super's implementation of `onDraw`.
      */
     private var mHorizontalFlipMatrix: Matrix? = null
 
     /**
-     * The `CardFlipListener` whose `onCardFlipStart` and `onCardFlipEnd` overrides
-     * are called when a card flip animation begins and ends respectively.
+     * The [CardFlipListener] whose [CardFlipListener.onCardFlipStart] and
+     * [CardFlipListener.onCardFlipEnd] overrides are called when a card flip
+     * animation begins and ends respectively.
      */
     private var mCardFlipListener: CardFlipListener? = null
 
     /**
-     * Simple constructor to use when creating a `CardView` from code. We first call our super's
-     * constructor, then call our `init` method to initialize this instance.
+     * Simple constructor to use when creating a [CardView] from code. We first call our super's
+     * constructor, then call our [initialize] method to initialize this instance.
      *
-     * @param context The Context the view is running in, through which it can access the current
+     * @param context The [Context] the view is running in, through which it can access the current
      * theme, resources, etc.
      */
     constructor(context: Context?) : super(context) {
-        init(context)
+        initialize(context)
     }
 
     /**
-     * Perform inflation from XML. First we call our super's constructor, then call our `init`
+     * Perform inflation from XML. First we call our super's constructor, then call our [initialize]
      * method to initialize this instance. UNUSED.
      *
-     * @param context The Context the view is running in, through which it can access the current
+     * @param context The [Context] the view is running in, through which it can access the current
      * theme, resources, etc.
      * @param attrs   The attributes of the XML tag that is inflating the view.
      */
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        init(context)
+        initialize(context)
     }
 
     /**
@@ -202,7 +204,7 @@ class CardView : ImageView {
      *
      * @param context The Context the view is running in, UNUSED.
      */
-    fun init(context: Context?) {
+    fun initialize(context: Context?) {
         mHorizontalFlipMatrix = Matrix()
         cameraDistance = CAMERA_DISTANCE.toFloat()
         mFrontBitmapDrawable = bitmapWithBorder(resources
