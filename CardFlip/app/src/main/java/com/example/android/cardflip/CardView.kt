@@ -31,6 +31,7 @@ import android.graphics.Matrix
 import android.graphics.PorterDuff
 import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
+import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -192,57 +193,63 @@ class CardView : ImageView {
 
     /**
      * Loads the bitmap drawables used for the front and back for this card. First we initialize our
-     * field `Matrix mHorizontalFlipMatrix` with a new instance, then we set the distance along
-     * the Z axis (orthogonal to the X/Y plane on which views are drawn) from the camera to this view
-     * to our constant CAMERA_DISTANCE (8000). We initialize our field `BitmapDrawable mFrontBitmapDrawable`
-     * with the `BitmapDrawable` created by our method `bitmapWithBorder` from the jpg with
-     * resource id R.drawable.red, and `BitmapDrawable mBackBitmapDrawable` with the `BitmapDrawable`
-     * created by our method `bitmapWithBorder` from the jpg with resource id R.drawable.blue.
-     * We then call our `updateDrawableBitmap` method to set `mCurrentBitmapDrawable` to
-     * `mFrontBitmapDrawable` (since `mIsFrontShowing` starts our true) and then set the
-     * content of our `ImageView` to `mCurrentBitmapDrawable`.
+     * [Matrix] field [mHorizontalFlipMatrix] with a new instance, then we set the distance along
+     * the Z axis (orthogonal to the X/Y plane on which views are drawn) from the camera to this
+     * view to our constant [CAMERA_DISTANCE] (8000). We initialize our [BitmapDrawable] field
+     * [mFrontBitmapDrawable] with the [BitmapDrawable] created by our method [bitmapWithBorder]
+     * from the jpg with resource id [R.drawable.red], and [BitmapDrawable] field [mBackBitmapDrawable]
+     * with the [BitmapDrawable] created by our method [bitmapWithBorder] from the jpg with resource
+     * id [R.drawable.blue]. We then call our [updateDrawableBitmap] method to set [BitmapDrawable]
+     * field [mCurrentBitmapDrawable] to [mFrontBitmapDrawable] (since [mIsFrontShowing] starts out
+     * `true`) and then set the content of our [ImageView] to [mCurrentBitmapDrawable].
      *
-     * @param context The Context the view is running in, UNUSED.
+     * @param context The [Context] the view is running in, UNUSED.
      */
     fun initialize(context: Context?) {
         mHorizontalFlipMatrix = Matrix()
         cameraDistance = CAMERA_DISTANCE.toFloat()
-        mFrontBitmapDrawable = bitmapWithBorder(resources
-            .getDrawable(R.drawable.red) as BitmapDrawable)
-        mBackBitmapDrawable = bitmapWithBorder(resources
-            .getDrawable(R.drawable.blue) as BitmapDrawable)
+        mFrontBitmapDrawable = bitmapWithBorder(resources.getDrawable(R.drawable.red) as BitmapDrawable)
+        mBackBitmapDrawable = bitmapWithBorder(resources.getDrawable(R.drawable.blue) as BitmapDrawable)
         updateDrawableBitmap()
     }
 
     /**
      * Adding a 1 pixel transparent border around the bitmap can be used to anti-alias the image as
-     * it rotates. We initialize `Bitmap bitmapWithBorder` with an instance whose width and
-     * height are both 2 pixels larger than the width and height of our parameter `bitmapDrawable`,
-     * then initialize `Canvas canvas` with an instance which will draw into `bitmapWithBorder`.
-     * We then call the `drawBitmap` of `canvas` to draw the `Bitmap` of `bitmapDrawable`
-     * into itself with the upper left corner at (1,1). Finally we return the `BitmapDrawable`
-     * created from `Bitmap bitmapWithBorder` setting initial target density based on the display
-     * metrics of the resources associated with this view.
+     * it rotates. We initialize [Bitmap] variable `val bitmapWithBorder` with an instance whose
+     * width and height are both 2 pixels larger than the width and height of our [BitmapDrawable]
+     * parameter [bitmapDrawable], then initialize [Canvas] variable `val canvas` with an instance
+     * which will draw into `bitmapWithBorder`. We then call the [Canvas.drawBitmap] method of
+     * `canvas` to draw the [Bitmap] of `bitmapDrawable` into itself with the upper left corner at
+     * (1,1). Finally we return the [BitmapDrawable] created from [Bitmap] `bitmapWithBorder` setting
+     * initial target density based on the display metrics of the resources associated with this view.
      *
      * @param bitmapDrawable `BitmapDrawable` we want to surround with a 1 pixel transparent border
      * @return A `BitmapDrawable` containing our parameter `BitmapDrawable bitmapDrawable`
      * surrounded by a 1 pixel transparent border.
      */
     private fun bitmapWithBorder(bitmapDrawable: BitmapDrawable): BitmapDrawable {
-        val bitmapWithBorder = Bitmap.createBitmap(bitmapDrawable.intrinsicWidth +
-            ANTIALIAS_BORDER * 2, bitmapDrawable.intrinsicHeight + ANTIALIAS_BORDER * 2,
-            Bitmap.Config.ARGB_8888)
+        val bitmapWithBorder = Bitmap.createBitmap(
+            bitmapDrawable.intrinsicWidth + ANTIALIAS_BORDER * 2,
+            bitmapDrawable.intrinsicHeight + ANTIALIAS_BORDER * 2,
+            Bitmap.Config.ARGB_8888
+        )
         val canvas = Canvas(bitmapWithBorder)
-        canvas.drawBitmap(bitmapDrawable.bitmap, ANTIALIAS_BORDER.toFloat(), ANTIALIAS_BORDER.toFloat(), null)
+        canvas.drawBitmap(
+            bitmapDrawable.bitmap,
+            ANTIALIAS_BORDER.toFloat(),
+            ANTIALIAS_BORDER.toFloat(),
+            null
+        )
         return BitmapDrawable(resources, bitmapWithBorder)
     }
 
     /**
-     * Initiates a horizontal flip from right to left. First we call the `setPivotX` method to
-     * set the X location of the point around which our `View` is rotated or scaled to 0. Then
-     * we call our method `flipHorizontally` to flip our `CardView` counter clockwise at
-     * a velocity of `velocity` with `numberInPile` as the number of cards underneath this
-     * card in the new pile so as to properly adjust its position offset in the stack.
+     * Initiates a horizontal flip from right to left. First we call the [View.setPivotX] method
+     * (aka kotlin `pivotX` property) to set the X location of the point around which our [View] is
+     * rotated or scaled to 0. Then we call our method [flipHorizontally] to flip our [CardView]
+     * counter clockwise at a velocity of our [Int] parameter [velocity] with our [Int] parameter
+     * [numberInPile] as the number of cards underneath this card in the new pile so as to properly
+     * adjust its position offset in the stack.
      *
      * @param numberInPile total number of cards in the left hand stack before the flip completes.
      * @param velocity     calculated from the velocity of the fling, and used to vary the duration of
@@ -254,15 +261,16 @@ class CardView : ImageView {
     }
 
     /**
-     * Initiates a horizontal flip from left to right. First we call the `setPivotX` method to
-     * set the X location of the point around which our `View` is rotated or scaled to the width
-     * of our `View`. Then we call our method `flipHorizontally` to flip our `CardView`
-     * clockwise at a velocity of `velocity` with `numberInPile` as the number of cards
-     * underneath this card in the new pile so as to properly adjust its position offset in the stack.
+     * Initiates a horizontal flip from left to right. First we call the [View.setPivotX] method
+     * (aka kotlin `pivotX` property) to set the X location of the point around which our [View] is
+     * rotated or scaled to the width of our [View]. Then we call our method [flipHorizontally] to
+     * flip our [CardView] clockwise at a velocity of our [Int] parameter [velocity] with our [Int]
+     * parameter [numberInPile] as the number of cards underneath this card in the new pile so as to
+     * properly adjust its position offset in the stack.
      *
      * @param numberInPile total number of cards in the left hand stack before the flip completes.
-     * @param velocity     calculated from the velocity of the fling, and used to vary the duration of
-     * the animation of the card flip.
+     * @param velocity     calculated from the velocity of the fling, and used to vary the duration
+     * of the animation of the card flip.
      */
     fun flipLeftToRight(numberInPile: Int, velocity: Int) {
         pivotX = width.toFloat()
