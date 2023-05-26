@@ -23,6 +23,8 @@ import android.animation.AnimatorSet
 import android.animation.Keyframe
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
+import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -279,65 +281,73 @@ class CardView : ImageView {
 
     /**
      * Animates a horizontal (about the y-axis) flip of this card. First we call our method
-     * `toggleFrontShowing` to toggle the `mIsFrontShowing` flag. We initialize our
-     * variable `PropertyValuesHolder rotation` with an instance for the property ROTATION_Y
-     * using a value of 180 if our parameter `clockwise` is true, or 180 if it is false. We
-     * initialize `PropertyValuesHolder xOffset` with an instance for the property TRANSLATION_X
-     * and the value CardFlip.CARD_PILE_OFFSET times our parameter `numberInPile` and
-     * `PropertyValuesHolder yOffset` with an instance for the property TRANSLATION_Y with the
-     * same value. We initialize `ObjectAnimator cardAnimator` with an instance that will
-     * animate the properties held in `rotation`, `xOffset`, and `yOffset` of 'this'.
-     * We then add an `AnimatorUpdateListener` to `cardAnimator` whose `onAnimationUpdate`
-     * override checks if the elapsed/interpolated fraction of the animation it is listening too is
-     * greater than or equal to 0.5 and if it is calls our `updateDrawableBitmap` method to update
+     * [toggleFrontShowing] to toggle the [mIsFrontShowing] flag. We initialize our
+     * [PropertyValuesHolder] variable `val rotation` with an instance for the property
+     * [View.ROTATION_Y] using a value of 180 if our [Boolean] parameter [clockwise] is `true`,
+     * or minus 180 if it is `false`. We initialize [PropertyValuesHolder] variable `val xOffset`
+     * with an instance for the property [View.TRANSLATION_X] and the value [CardFlip.CARD_PILE_OFFSET]
+     * times our [Int] parameter [numberInPile] and [PropertyValuesHolder] variable `val yOffset`
+     * with an instance for the property [View.TRANSLATION_Y] with the same value. We initialize
+     * [ObjectAnimator] variable `val cardAnimator` with an instance that will animate the properties
+     * held in `rotation`, `xOffset`, and `yOffset` of `this` [CardView]. We then add an
+     * [AnimatorUpdateListener] to `cardAnimator` whose [AnimatorUpdateListener.onAnimationUpdate]
+     * override checks if the elapsed/interpolated fraction of the animation it is listening to is
+     * greater than or equal to 0.5 and if it is calls our [updateDrawableBitmap] method to update
      * the visible bitmap of this view so that the correct front or back image is being shown.
      *
+     * We initialize [Keyframe] variable `val shadowKeyFrameStart` with an instance whose time is 0
+     * and whose value is 0, [Keyframe] variable `val shadowKeyFrameMid` with an instance whose time
+     * is 0.5 and whose value is 1, and [Keyframe] variable `val shadowKeyFrameEnd` with an instance
+     * whose time is 1 and whose value is 0. We initialize [PropertyValuesHolder] variable
+     * `val shadowPropertyValuesHolder` with an instance for the property "shadow" and the
+     * [Keyframe]'s `shadowKeyFrameStart`, `shadowKeyFrameMid` and `shadowKeyFrameEnd`. We then
+     * initialize [ObjectAnimator] variable `val colorizer` to an instance that will animate
+     * `shadowPropertyValuesHolder` on `this` [CardView].
      *
-     * We initialize `Keyframe shadowKeyFrameStart` with an instance whose time is 0 and whose
-     * value is 0, `Keyframe shadowKeyFrameMid` with an instance whose time is 0.5 and whose
-     * value is 1, and `Keyframe shadowKeyFrameEnd` with an instance whose time is 1 and whose
-     * value is 0. We initialize `PropertyValuesHolder shadowPropertyValuesHolder` with an
-     * for the property "shadow" and the `Keyframe`'s `shadowKeyFrameStart`, `shadowKeyFrameMid`
-     * and `shadowKeyFrameEnd`. We then initialize `ObjectAnimator colorizer` to an instance
-     * that will animate `shadowPropertyValuesHolder` on 'this'.
-     *
-     *
-     * We then call the `onCardFlipStart` override of our field `CardFlipListener mCardFlipListener`,
-     * initialize `AnimatorSet set` with a new instance, initialize `int duration` to a value
-     * calculated by subtracting the absolute value of our parameter `velocity` divided by the constant
-     * VELOCITY_TO_DURATION_CONSTANT (15) from the constant MAX_FLIP_DURATION (700). If this is less than
-     * the constant MIN_FLIP_DURATION (300) we set `duration` to MIN_FLIP_DURATION. We then set the
-     * duration of `set` to `duration`, set it up to play `cardAnimator` and `colorizer`
-     * together, add an `AnimatorListenerAdapter` whose `onAnimationEnd` override calls our
-     * `toggleIsHorizontallyFlipped` method to toggle the `mIsHorizontallyFlipped` flag and
-     * invalidate our view, calls our `updateDrawableBitmap` method to update our image, calls our
-     * `updateLayoutParams` method to update our layout parameters to their new values, and finally
-     * calls the `onCardFlipEnd` override of our field `CardFlipListener mCardFlipListener`.
-     *
+     * We then call the [CardFlipListener.onCardFlipStart] override of our [CardFlipListener] field
+     * [mCardFlipListener], initialize [AnimatorSet] variable `val set` with a new instance,
+     * initialize [Int] variable `var duration` to a value calculated by subtracting the absolute
+     * value of our [Int] parameter [velocity] divided by the constant [VELOCITY_TO_DURATION_CONSTANT]
+     * (15) from the constant [MAX_FLIP_DURATION] (700). If this is less than the constant
+     * [MIN_FLIP_DURATION] (300) we set `duration` to [MIN_FLIP_DURATION]. We then set the duration
+     * of `set` to `duration`, set it up to play `cardAnimator` and `colorizer` together, add an
+     * [AnimatorListenerAdapter] whose [AnimatorListenerAdapter.onAnimationEnd] override calls our
+     * [toggleIsHorizontallyFlipped] method to toggle the [mIsHorizontallyFlipped] flag and
+     * invalidate our view, calls our [updateDrawableBitmap] method to update our image, calls our
+     * [updateLayoutParams] method to update our layout parameters to their new values, and finally
+     * calls the [CardFlipListener.onCardFlipEnd] override of our [CardFlipListener] field
+     * [mCardFlipListener]`
      *
      * Having done all this, we start `set` running.
      *
-     * @param numberInPile Specifies how many cards are underneath this card in the new
-     * pile so as to properly adjust its position offset in the stack.
-     * @param clockwise    Specifies whether the horizontal animation is 180 degrees
-     * clockwise or 180 degrees counter clockwise.
-     * @param velocity     calculated from the velocity of the fling, and used to vary the duration of
-     * the animation of the card flip.
+     * @param numberInPile Specifies how many cards are underneath this card in the new pile so as
+     * to properly adjust its position offset in the stack.
+     * @param clockwise    Specifies whether the horizontal animation is 180 degrees clockwise or
+     * 180 degrees counter clockwise.
+     * @param velocity     calculated from the velocity of the fling, and used to vary the duration
+     * of the animation of the card flip.
      */
     fun flipHorizontally(numberInPile: Int, clockwise: Boolean, velocity: Int) {
         toggleFrontShowing()
-        val rotation = PropertyValuesHolder.ofFloat(ROTATION_Y,
-            (
-                if (clockwise) 180 else -180).toFloat())
-        val xOffset = PropertyValuesHolder.ofFloat(TRANSLATION_X,
-            (
-                numberInPile * CardFlip.CARD_PILE_OFFSET).toFloat())
-        val yOffset = PropertyValuesHolder.ofFloat(TRANSLATION_Y,
-            (
-                numberInPile * CardFlip.CARD_PILE_OFFSET).toFloat())
-        val cardAnimator = ObjectAnimator.ofPropertyValuesHolder(this, rotation,
-            xOffset, yOffset)
-        cardAnimator.addUpdateListener { valueAnimator ->
+        val rotation: PropertyValuesHolder = PropertyValuesHolder.ofFloat(
+            ROTATION_Y,
+            (if (clockwise) 180 else -180).toFloat()
+        )
+        val xOffset = PropertyValuesHolder.ofFloat(
+            TRANSLATION_X,
+            (numberInPile * CardFlip.CARD_PILE_OFFSET).toFloat()
+        )
+        val yOffset = PropertyValuesHolder.ofFloat(
+            TRANSLATION_Y,
+            (numberInPile * CardFlip.CARD_PILE_OFFSET).toFloat()
+        )
+        val cardAnimator = ObjectAnimator.ofPropertyValuesHolder(
+            this,
+            rotation,
+            xOffset,
+            yOffset
+        )
+        cardAnimator.addUpdateListener { valueAnimator: ValueAnimator ->
             if (valueAnimator.animatedFraction >= 0.5) {
                 updateDrawableBitmap()
             }
@@ -354,12 +364,22 @@ class CardView : ImageView {
         val colorizer = ObjectAnimator.ofPropertyValuesHolder(this, shadowPropertyValuesHolder)
         mCardFlipListener!!.onCardFlipStart()
         val set = AnimatorSet()
-        var duration = MAX_FLIP_DURATION - Math.abs(velocity) / VELOCITY_TO_DURATION_CONSTANT
+        var duration = MAX_FLIP_DURATION - (Math.abs(velocity) / VELOCITY_TO_DURATION_CONSTANT)
         duration = if (duration < MIN_FLIP_DURATION) MIN_FLIP_DURATION else duration
         set.duration = duration.toLong()
         set.playTogether(cardAnimator, colorizer)
         set.interpolator = AccelerateDecelerateInterpolator()
         set.addListener(object : AnimatorListenerAdapter() {
+            /**
+             * Notifies the end of the animation. This callback is not invoked for animations with
+             * repeat count set to `INFINITE`. We call our [toggleIsHorizontallyFlipped] method to
+             * toggle the [mIsHorizontallyFlipped] flag and invalidate our view, call our
+             * [updateDrawableBitmap] method to update our image, call our [updateLayoutParams]
+             * method to update our layout parameters to their new values, and finally
+             * call the [CardFlipListener.onCardFlipEnd] override of our field [mCardFlipListener].
+             *
+             * @param animation The animation which reached its end.
+             */
             override fun onAnimationEnd(animation: Animator) {
                 toggleIsHorizontallyFlipped()
                 updateDrawableBitmap()
