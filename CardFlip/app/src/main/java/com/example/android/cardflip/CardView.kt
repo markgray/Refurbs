@@ -391,28 +391,28 @@ class CardView : ImageView {
     }
 
     /**
-     * Darkens this ImageView's image by applying a shadow color filter over it. Called from a
-     * `PropertyValuesHolder` animation. We initialize `int colorValue` by subtracting
-     * 200 times our parameter `value` from 255. We then set our color filter to a rgb color
-     * that uses `colorValue` for all components, using a MULTIPLY PorterDuff mode.
+     * Darkens this [ImageView]'s image by applying a shadow color filter over it. Called from a
+     * [PropertyValuesHolder] animation. We initialize [Int] variable `val colorValue` by
+     * subtracting 200 times our parameter [value] from 255. We then set our color filter to a rgb
+     * color that uses `colorValue` for all components, using a [PorterDuff.Mode.MULTIPLY] mode.
      *
-     * @param value amount to darken the image by, 0 to 1.
+     * @param value amount to darken the image by, 0f to 1f.
      */
     fun setShadow(value: Float) {
-        val colorValue = (255 - 200 * value).toInt()
-        setColorFilter(Color.rgb(colorValue, colorValue, colorValue),
-            PorterDuff.Mode.MULTIPLY)
+        val colorValue: Int = (255 - 200 * value).toInt()
+        setColorFilter(Color.rgb(colorValue, colorValue, colorValue), PorterDuff.Mode.MULTIPLY)
     }
 
     /**
-     * Convenience function to toggle the value of our `boolean mIsFrontShowing` field
+     * Convenience function to toggle the value of our [Boolean] field [mIsFrontShowing].
      */
     fun toggleFrontShowing() {
         mIsFrontShowing = !mIsFrontShowing
     }
 
     /**
-     * Convenience function to toggle the value of our `boolean mIsHorizontallyFlipped` field
+     * Convenience function to toggle the value of our [Boolean] field [mIsHorizontallyFlipped],
+     * and then call [invalidate] to invalidate the whole view so that [onDraw] will be called.
      */
     fun toggleIsHorizontallyFlipped() {
         mIsHorizontallyFlipped = !mIsHorizontallyFlipped
@@ -422,9 +422,9 @@ class CardView : ImageView {
     /**
      * This is called during layout when the size of this view has changed. If you were just added
      * to the view hierarchy, you're called with the old values of 0. First we call our super's
-     * implementation of `onSizeChanged`, then we set `mHorizontalFlipMatrix` to scale
-     * X by -1, Y by 1, around the pivot point (`w/2`,`h/2` (flips the `CardView`
-     * over when concatenated to the `Canvas` matrix before drawing).
+     * implementation of `onSizeChanged`, then we set [Matrix] field [mHorizontalFlipMatrix] to
+     * scale X by -1, Y by 1, around the pivot point (`w/2`,`h/2` (flips the [CardView] over when
+     * concatenated to the [Canvas] matrix before drawing).
      *
      * @param w Current width of this view.
      * @param h Current height of this view.
@@ -437,11 +437,11 @@ class CardView : ImageView {
     }
 
     /**
-     * We implement this to do our drawing. If our flag `mIsHorizontallyFlipped` is true we
-     * concatenate the current matrix of our parameter `Canvas canvas` with our matrix
-     * `Matrix mHorizontalFlipMatrix` in order to scale the canvas horizontally about its
-     * midpoint in the case that the card is in a horizontally flipped state (`mHorizontalFlipMatrix`
-     * scales X by -1). In any case we then call our super's implementation of `onDraw` to draw us.
+     * We implement this to do our drawing. If our [Boolean] field [mIsHorizontallyFlipped] is `true`
+     * we concatenate the current matrix of our [Canvas] parameter [canvas] with our [Matrix] field
+     * [mHorizontalFlipMatrix] in order to scale the canvas horizontally about its midpoint in the
+     * case that the card is in a horizontally flipped state ([mHorizontalFlipMatrix] scales X by
+     * -1). In any case we then call our super's implementation of `onDraw` to draw us.
      *
      * @param canvas the canvas on which the background will be drawn
      */
@@ -453,21 +453,22 @@ class CardView : ImageView {
     }
 
     /**
-     * Updates the layout parameters of this view so as to reset the rotationX and rotationY parameters,
-     * and remain independent of its previous position, while also maintaining its current position in
-     * the layout. We initialize `RelativeLayout.LayoutParams params` by retrieving the layout
-     * parameters for this view, then we set its `leftMargin` field to its current "real" value
-     * which we calculate by adding to it the absolute value of its rotation around the vertical axis
-     * through the pivot point modulo 360 divided by 180, times 2 times the X coordinate of its pivot
-     * point minus the width of our view (this comes out to 0 when the card has just been flipped to
-     * the left stack, and (on a pixel) to 540 (half its width) when it has been flipped ot the right
-     * stack). Set then set our X rotation to 0 and our Y rotation to 0 and set our view's layout params
-     * to `params`.
+     * Updates the layout parameters of this view so as to reset the `rotationX` and `rotationY`
+     * parameters, and remain independent of its previous position, while also maintaining its
+     * current position in the layout. We initialize [RelativeLayout.LayoutParams] variable
+     * `val params` by retrieving the layout parameters for this view, then we set its `leftMargin`
+     * field to its current "real" value which we calculate by adding to it the absolute value of
+     * its rotation around the vertical axis through the pivot point modulo 360 divided by 180,
+     * times 2 times the X coordinate of its pivot point minus the width of our view (this comes out
+     * to 0 when the card has just been flipped to the left stack, and (on a pixel) to 540 (half its
+     * width) when it has been flipped to the right stack). Set then set our X rotation to 0 and our
+     * Y rotation to 0 and set our view's layout params to `params`.
      */
     fun updateLayoutParams() {
         val params = layoutParams as RelativeLayout.LayoutParams
-        params.leftMargin = (params.leftMargin + Math.abs(rotationY) % 360 / 180 *
-            (2 * pivotX - width)).toInt()
+        params.leftMargin = (
+            params.leftMargin + Math.abs(rotationY) % 360 / 180 * (2 * pivotX - width)
+            ).toInt()
         rotationX = 0f
         rotationY = 0f
         layoutParams = params
@@ -475,9 +476,9 @@ class CardView : ImageView {
 
     /**
      * Toggles the visible bitmap of this view between its front and back drawables. If our field
-     * `mIsFrontShowing` is true we set `mCurrentBitmapDrawable` to `mFrontBitmapDrawable`,
-     * if false we set it to `mBackBitmapDrawable`. Then we set the content of our `ImageView`
-     * to `mCurrentBitmapDrawable`.
+     * [mIsFrontShowing] is `true` we set [mCurrentBitmapDrawable] to [mFrontBitmapDrawable],
+     * if `false` we set it to [mBackBitmapDrawable]. Then we set the content of our [ImageView]
+     * to [mCurrentBitmapDrawable].
      */
     fun updateDrawableBitmap() {
         mCurrentBitmapDrawable = if (mIsFrontShowing) mFrontBitmapDrawable else mBackBitmapDrawable
@@ -486,10 +487,10 @@ class CardView : ImageView {
 
     /**
      * Sets the appropriate translation of this card depending on how many cards are in the pile
-     * underneath it. We call the `setTranslationX` method to set the horizontal location of
-     * our view relative to its [left][.getLeft] position to CardFlip.CARD_PILE_OFFSET times
-     * our parameter `numInPile` and call the `setTranslationY` to set the Y offset to
-     * the same value.
+     * underneath it. We call the [setTranslationX] method (kotlin `translationX` property) to set
+     * the horizontal location of our view relative to its left position to [CardFlip.CARD_PILE_OFFSET]
+     * times our [Int] parameter [numInPile] and call the [setTranslationY] method (kotlin
+     * `translationX` property) to set the Y offset to the same value.
      *
      * @param numInPile number of cards underneath us.
      */
@@ -502,23 +503,28 @@ class CardView : ImageView {
      * Returns a rotation animation which rotates this card by some degree about one of its corners
      * either in the clockwise or counter-clockwise direction. Depending on how many cards lie below
      * this one in the stack, this card will be rotated by a different amount so all the cards are
-     * visible when rotated out. First we call our `rotateCardAroundCorner` to set our pivot
-     * point to rotate around our parameter `Corner corner`. Then we initialize `int rotation`
-     * to ROTATION_PER_CARD times our parameter `cardFromTop`. If our parameter `isClockwise`
-     * is false we negate `rotation`, if our parameter `isRotatingOut` is false we set
-     * `rotation` to 0. Finally we return an `ObjectAnimator` created to animate the ROTATION
-     * property of 'this' to `rotation`.
+     * visible when rotated out. First we call our [rotateCardAroundCorner] to set our pivot point
+     * to rotate around our [Corner] parameter [corner]. Then we initialize [Int] variable
+     * `var rotation` to [ROTATION_PER_CARD] times our [Int] parameter [cardFromTop]. If our
+     * [Boolean] parameter [isClockwise] is `false` we negate `rotation`, if our [Boolean] parameter
+     * [isRotatingOut] is `false` we set `rotation` to 0. Finally we return an [ObjectAnimator]
+     * created to animate the `ROTATION` property of `this` to `rotation`.
      *
-     * @param cardFromTop how far are we from the top, goes from 0 to one less than the size of the stack.
-     * @param corner which corner to rotate about, always BOTTOM_LEFT in our usage.
-     * @param isRotatingOut if true fans the card stack out, if false rotates it back to a stack.
-     * @param isClockwise if true we are rotating clock wise, if false counter clockwise.
-     * @return An `ObjectAnimator` that animates the ROTATION property of 'this'
+     * @param cardFromTop how far are we from the top, goes from 0 to one less than the size
+     * of the stack.
+     * @param corner which corner to rotate about, always [Corner.BOTTOM_LEFT] in our usage.
+     * @param isRotatingOut if `true` fans the card stack out, if `false` rotates it back to a stack.
+     * @param isClockwise if `true` we are rotating clock wise, if `false` counter clockwise.
+     * @return An [ObjectAnimator] that animates the `ROTATION` property of 'this'
      */
-    fun getRotationAnimator(cardFromTop: Int, corner: Corner?,
-                            isRotatingOut: Boolean, isClockwise: Boolean): ObjectAnimator {
+    fun getRotationAnimator(
+        cardFromTop: Int,
+        corner: Corner?,
+        isRotatingOut: Boolean,
+        isClockwise: Boolean
+    ): ObjectAnimator {
         rotateCardAroundCorner(corner)
-        var rotation = cardFromTop * ROTATION_PER_CARD
+        var rotation: Int = cardFromTop * ROTATION_PER_CARD
         if (!isClockwise) {
             rotation = -rotation
         }
@@ -529,27 +535,33 @@ class CardView : ImageView {
     }
 
     /**
-     * Returns a full rotation animator which rotates this card by 360 degrees about one of its corners
-     * either in the clockwise or counter-clockwise direction. Depending on how many cards lie below
-     * this one in the stack, a different start delay is applied to the animation so the cards don't
-     * all animate at once. First we initialize `int currentRotation` with the current rotation
-     * of our view, then call our `rotateCardAroundCorner` method to set our pivot point to be
-     * around our parameter `Corner corner`. We then initialize `int rotation` to 360 minus
-     * `currentRotation`, and if our parameter `isClockwise` is false we negate it. We
-     * initialize `ObjectAnimator animator` with an instance which animates the ROTATION property
-     * of 'this' to `rotation`, set its start delay to ROTATION_DELAY_PER_CARD times our parameter
-     * `cardFromTop` and set its duration to ROTATION_DURATION. Then we add an `AnimatorListenerAdapter`
-     * whose `onAnimationEnd` sets the rotation of our view to `currentRotation`.
+     * Returns a full rotation animator which rotates this card by 360 degrees about one of its
+     * corners either in the clockwise or counter-clockwise direction. Depending on how many cards
+     * lie below this one in the stack, a different start delay is applied to the animation so the
+     * cards don't all animate at once. First we initialize [Int] variable `val currentRotation`
+     * with the current rotation of our view, then call our [rotateCardAroundCorner] method to set
+     * our pivot point to be around our [Corner] parameter [corner]. We then initialize [Int] variable
+     * `var rotation` to 360 minus `currentRotation`, and if our [Boolean] parameter [isClockwise]
+     * is `false` we negate it. We initialize [ObjectAnimator] `val animator` with an instance which
+     * animates the `ROTATION` property of `this` to `rotation`, set its start delay to
+     * [ROTATION_DELAY_PER_CARD] times our [Int] parameter [cardFromTop] and set its duration to
+     * [ROTATION_DURATION]. Then we add an [AnimatorListenerAdapter] whose
+     * [AnimatorListenerAdapter.onAnimationEnd] override sets the rotation of our view to
+     * `currentRotation` when the animation ends.
      *
      * Finally we return `animator` to the caller.
      *
-     * @param cardFromTop how far are we from the top, goes from 0 to one less than the size of the stack.
-     * @param corner which corner to rotate about, always BOTTOM_LEFT in our usage.
-     * @param isClockwise if true we are rotating clock wise, if false counter clockwise.
-     * @return An `ObjectAnimator` that animates the ROTATION property of 'this'
+     * @param cardFromTop how far are we from the top, goes from 0 to one less than the size
+     * of the stack.
+     * @param corner which corner to rotate about, always [Corner.BOTTOM_LEFT] in our usage.
+     * @param isClockwise if `true` we are rotating clock wise, if `false` counter clockwise.
+     * @return An [ObjectAnimator] that animates the ROTATION property of 'this'
      */
-    fun getFullRotationAnimator(cardFromTop: Int, corner: Corner?,
-                                isClockwise: Boolean): ObjectAnimator {
+    fun getFullRotationAnimator(
+        cardFromTop: Int,
+        corner: Corner?,
+        isClockwise: Boolean
+    ): ObjectAnimator {
         val currentRotation = rotation.toInt()
         rotateCardAroundCorner(corner)
         var rotation = 360 - currentRotation
@@ -573,27 +585,23 @@ class CardView : ImageView {
 
     /**
      * Sets the appropriate pivot of this card so that it can be rotated about any one of its four
-     * corners. We switch on the value of our parameter `Corner corner`:
+     * corners. We `when` switch on the value of our [Corner] parameter [corner]:
      *
-     *  *
-     * TOP_LEFT: we set the X coordinate of our pivot point to 0, and the Y coordinate of our
-     * pivot point to 0 then break.
+     *  * [Corner.TOP_LEFT]: we set the X coordinate of our pivot point to 0, and the Y coordinate
+     *  of our pivot point to 0.
      *
-     *  *
-     * TOP_RIGHT: we set the X coordinate of our pivot point to the width of our view, and
-     * the Y coordinate of our pivot point to 0 then break.
+     *  * [Corner.TOP_RIGHT]: we set the X coordinate of our pivot point to the width of our view,
+     *  and the Y coordinate of our pivot point to 0.
      *
-     *  *
-     * BOTTOM_LEFT: we set the X coordinate of our pivot point to 0, and the Y coordinate of our
-     * pivot point to the height of our view then break.
+     *  * [Corner.BOTTOM_LEFT]: we set the X coordinate of our pivot point to 0, and the Y
+     *  coordinate of our pivot point to the height of our view.
      *
-     *  *
-     * BOTTOM_RIGHT: we set the X coordinate of our pivot point to the width of our view, and
-     * the Y coordinate of our pivot point to the height of our view then break.
+     *  * [Corner.BOTTOM_RIGHT]: we set the X coordinate of our pivot point to the width of our
+     *  view, and the Y coordinate of our pivot point to the height of our view.
      *
+     * * `else` we do nothing.
      *
-     *
-     * @param corner which corner to rotate about, always BOTTOM_LEFT in our usage.
+     * @param corner which [Corner] to rotate about, always [Corner.BOTTOM_LEFT] in our usage.
      */
     fun rotateCardAroundCorner(corner: Corner?) {
         when (corner) {
@@ -622,10 +630,10 @@ class CardView : ImageView {
     }
 
     /**
-     * Setter for our field `CardFlipListener mCardFlipListener`.
+     * Setter for our [CardFlipListener] field [mCardFlipListener].
      *
-     * @param cardFlipListener `CardFlipListener` whose `onCardFlipEnd` and
-     * `onCardFlipStart` overrides we are supposed to call.
+     * @param cardFlipListener [CardFlipListener] whose [CardFlipListener.onCardFlipEnd] and
+     * [CardFlipListener.onCardFlipStart] overrides we are supposed to call.
      */
     fun setCardFlipListener(cardFlipListener: CardFlipListener?) {
         mCardFlipListener = cardFlipListener
