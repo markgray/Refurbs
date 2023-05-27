@@ -20,6 +20,7 @@ package com.example.android.cardreader
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.nfc.NfcAdapter
+import android.nfc.NfcAdapter.ReaderCallback
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,22 +35,22 @@ import com.example.android.common.logger.Log
  */
 class CardReaderFragment : Fragment(), AccountCallback {
     /**
-     * Our `ReaderCallback` callback class, invoked when an NFC card is scanned while the
-     * device is running in reader mode. Passed as the callback when we call the `enableReaderMode`
-     * method of the default NFC adapter.
+     * Our [LoyaltyCardReader] custom [ReaderCallback] callback class instance, invoked when an NFC
+     * card is scanned while the device is running in reader mode. Passed as the callback when we
+     * call the [NfcAdapter.enableReaderMode] method of the default NFC adapter.
      */
     var mLoyaltyCardReader: LoyaltyCardReader? = null
 
     /**
-     * `TextView` in our layout with ID R.id.card_account_field which we use to display the
-     * account number our `onAccountReceived` override receives from `LoyaltyCardReader`.
+     * [TextView] in our layout with ID [R.id.card_account_field] which we use to display the account
+     * number our [AccountCallback.onAccountReceived] override receives from `LoyaltyCardReader`.
      */
     private var mAccountField: TextView? = null
 
     /**
      * Called when sample is created. We just call our super's implementation of `onCreate`.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     @Suppress("RedundantOverride")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,26 +58,30 @@ class CardReaderFragment : Fragment(), AccountCallback {
     }
 
     /**
-     * Called to have the fragment instantiate its user interface view. We use our parameter `inflater`
-     * to inflate our layout file R.layout.main_fragment into `View v` using our parameter `container`
-     * for the layout parameters. If `v` is not null we initialize our field `TextView mAccountField`
-     * by finding the view in it with ID R.id.card_account_field and set its text to the string "Waiting...".
-     * We initialize our field `LoyaltyCardReader mLoyaltyCardReader` with a new instance, then call
-     * our method `enableReaderMode` to enable reader mode, disable Android Beam and register our card
-     * reader callback `mLoyaltyCardReader`.
+     * Called to have the fragment instantiate its user interface view. We use our [LayoutInflater]
+     * parameter [inflater] to inflate our layout file [R.layout.main_fragment] into [View] variable
+     * `val v` using our [ViewGroup] parameter [container] for the layout parameters. If `v` is not
+     * `null` we initialize our [TextView] field [mAccountField] by finding the view in it with ID
+     * [R.id.card_account_field] and set its text to the string "Waiting...". We initialize our
+     * [LoyaltyCardReader] field [mLoyaltyCardReader] with a new instance, then call our method
+     * [enableReaderMode] to enable reader mode, disable Android Beam and register our card reader
+     * callback [mLoyaltyCardReader].
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself,
+     * but this can be used to generate the `LayoutParams` of the view.
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
     @SuppressLint("SetTextI18n")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.main_fragment, container, false)
         if (v != null) {
