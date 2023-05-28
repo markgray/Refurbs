@@ -27,6 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.example.android.cardreader.LoyaltyCardReader.AccountCallback
 import com.example.android.common.logger.Log
 
@@ -96,11 +97,9 @@ class CardReaderFragment : Fragment(), AccountCallback {
     }
 
     /**
-     * Called when the Fragment is no longer resumed.  This is generally
-     * tied to { Activity#onPause() Activity.onPause} of the containing
-     * Activity's lifecycle. We call our super's implementation of `onPause`
-     * then call our method `disableReaderMode` to restore the NFC adapter to
-     * normal mode of operation.
+     * Called when the Fragment is no longer resumed.  This is generally tied to [Activity.onPause]
+     * of the containing Activity's lifecycle. We call our super's implementation of `onPause` then
+     * call our method [disableReaderMode] to restore the NFC adapter to normal mode of operation.
      */
     override fun onPause() {
         super.onPause()
@@ -109,8 +108,8 @@ class CardReaderFragment : Fragment(), AccountCallback {
 
     /**
      * Called when the fragment is visible to the user and actively running. We call our super's
-     * implementation of `onResume`, then call our method `enableReaderMode` to enable
-     * reader mode, disable Android Beam and register our card reader callback `mLoyaltyCardReader`.
+     * implementation of `onResume`, then call our method [enableReaderMode] to enable reader mode,
+     * disable Android Beam and register our card reader callback [mLoyaltyCardReader].
      */
     override fun onResume() {
         super.onResume()
@@ -118,50 +117,52 @@ class CardReaderFragment : Fragment(), AccountCallback {
     }
 
     /**
-     * Enables reader mode, disables Android Beam and register our card reader callback `mLoyaltyCardReader`.
-     * We first log the message "Enabling reader mode", then initialize `Activity activity` with
-     * the `FragmentActivity` this fragment is currently associated with. We use `activity` as
-     * the context in order to initialize `NfcAdapter nfc` with the default NFC adapter. If `nfc`
-     * is not null we call its `enableReaderMode` method to limit the NFC controller to reader mode
-     * while this Activity is in the foreground, using `activity` as the Activity that requests the
-     * adapter to be in reader mode, `mLoyaltyCardReader` as the callback to be called when a tag is
-     * discovered, READER_FLAGS for the flags indicating poll technologies and other optional parameters
-     * (FLAG_READER_NFC_A and FLAG_READER_SKIP_NDEF_CHECK in our case), with null as the extras bundle.
-     * Note: the flags indicate that this activity is interested in NFC-A devices (including other Android
-     * devices), and that the system should not check for the presence of NDEF-formatted data (e.g. Android Beam).
+     * Enables reader mode, disables Android Beam and registers our [LoyaltyCardReader] card reader
+     * callback field [mLoyaltyCardReader]. We first log the message "Enabling reader mode", then
+     * initialize [Activity] variable `val activity` with the [FragmentActivity] this fragment is
+     * currently associated with. We use `activity` as the context in order to initialize [NfcAdapter]
+     * variable `val nfc` with the default NFC adapter. If `nfc` is not `null` we call its
+     * [NfcAdapter.enableReaderMode] method to limit the NFC controller to reader mode while this
+     * [Activity] is in the foreground, using `activity` as the [Activity] that requests the adapter
+     * to be in reader mode, [mLoyaltyCardReader] as the callback to be called when a tag is
+     * discovered, [READER_FLAGS] for the flags indicating poll technologies and other optional
+     * parameters ([NfcAdapter.FLAG_READER_NFC_A] and [NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK] in
+     * our case), with `null` as the extras bundle. Note: the flags indicate that this activity is
+     * interested in NFC-A devices (including other Android devices), and that the system should not
+     * check for the presence of NDEF-formatted data (e.g. Android Beam).
      */
     private fun enableReaderMode() {
         Log.i(TAG, "Enabling reader mode")
         val activity: Activity? = activity
-        val nfc = NfcAdapter.getDefaultAdapter(activity)
+        val nfc: NfcAdapter? = NfcAdapter.getDefaultAdapter(activity)
         nfc?.enableReaderMode(activity, mLoyaltyCardReader, READER_FLAGS, null)
     }
 
     /**
      * Restores the NFC adapter to normal mode of operation: supporting peer-to-peer (Android Beam),
      * card emulation, and polling for all supported tag technologies. We first log the message
-     * "Disabling reader mode", then initialize `Activity activity` with the `FragmentActivity`
-     * this fragment is currently associated with. We use `activity` as the context in order to
-     * initialize `NfcAdapter nfc` with the default NFC adapter. If `nfc` is not null we
-     * call its `disableReaderMode` method using `activity` as the Activity that currently
-     * has reader mode enabled.
-     *
+     * "Disabling reader mode", then initialize [Activity] variable `val activity` with the
+     * [FragmentActivity] this fragment is currently associated with. We use `activity` as the
+     * context in order to initialize [NfcAdapter] variable `val nfc` with the default NFC adapter.
+     * If `nfc` is not `null` we call its [NfcAdapter.disableReaderMode] method using `activity` as
+     * the Activity that currently has reader mode enabled.
      */
     private fun disableReaderMode() {
         Log.i(TAG, "Disabling reader mode")
         val activity: Activity? = activity
-        val nfc = NfcAdapter.getDefaultAdapter(activity)
+        val nfc: NfcAdapter? = NfcAdapter.getDefaultAdapter(activity)
         nfc?.disableReaderMode(activity)
     }
 
     /**
-     * Callback called by `LoyaltyCardReader` when it receives an account number read from the
-     * nfc adapter. We use the `FragmentActivity` this fragment is currently associated with
-     * to call its `runOnUiThread` method to run an anonymous `Runnable` whose `run`
-     * override sets the text of our field `TextView mAccountField` to our parameter `String account`.
+     * Callback called by [LoyaltyCardReader] when it receives an account number read from the
+     * nfc adapter. We use the [FragmentActivity] this fragment is currently associated with
+     * to call its [Activity.runOnUiThread] method to run an anonymous [Runnable] whose
+     * [Runnable.run] override sets the text of our [TextView] field [mAccountField] to our
+     * [String] parameter [account].
      *
      * @param account account number read from the nfc adapter by the `onTagDiscovered` override
-     * of `LoyaltyCardReader`
+     * of [LoyaltyCardReader]
      */
     override fun onAccountReceived(account: String?) {
         // This callback is run on a background thread, but updates to UI elements must be performed

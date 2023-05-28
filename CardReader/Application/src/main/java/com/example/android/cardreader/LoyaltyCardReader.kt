@@ -20,6 +20,7 @@ package com.example.android.cardreader
 import android.nfc.NfcAdapter.ReaderCallback
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
+import android.nfc.tech.TagTechnology
 import com.example.android.common.logger.Log
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -27,12 +28,16 @@ import java.util.Arrays
 
 /**
  * Callback class, invoked when an NFC card is scanned while the device is running in reader mode.
+ * Reader mode can be invoked by calling NfcAdapter.
  *
- * Reader mode can be invoked by calling NfcAdapter
+ * Our constructor. We save our [AccountCallback] parameter `accountCallback` in a new instance
+ * of [WeakReference] in our [mAccountCallback] field in our `init` block.
+ *
+ * @param accountCallback [AccountCallback] callback to call when we receive an account number.
  */
 class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
     /**
-     * Weak reference to prevent retain loop. mAccountCallback is responsible for exiting
+     * Weak reference to prevent retain loop. [mAccountCallback] is responsible for exiting
      * foreground mode before it becomes invalid (e.g. during onPause() or onStop()).
      */
     private val mAccountCallback: WeakReference<AccountCallback>
@@ -42,43 +47,40 @@ class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
      */
     interface AccountCallback {
         /**
-         * TODO: Add kdoc
+         * Called when we receive an account number in our [onTagDiscovered] override with the
+         * [String] received.
+         *
+         * @param account the account number received.
          */
         fun onAccountReceived(account: String?)
     }
 
-    /**
-     * Our constructor. We save our parameter `AccountCallback accountCallback` in a new instance
-     * of `WeakReference` for `mAccountCallback`.
-     *
-     * param accountCallback `AccountCallback` callback to call when we receive an account number.
-     */
     init {
         mAccountCallback = WeakReference(accountCallback)
     }
 
     /**
      * Callback when a new tag is discovered by the system. Communication with the card should take
-     * place here. First we log the message "New tag discovered". We initialize `IsoDep isoDep`
-     * by fetching an instance for our parameter `Tag tag`. If this is not null, wrapped in a
-     * try block intended to catch and log IOException we call the `connect` method of `isoDep`
-     * to enable I/O operations to the tag from this `TagTechnology` object. We log the message
-     * "Requesting remote AID: " then initialize `byte[] command` with an APDU for SELECT AID
-     * command for our loyalty card service SAMPLE_LOYALTY_CARD_AID (the service we are interested in
-     * communicating with). We log the message "Sending: " with the hex string of `command`
-     * appended to it, then initialize `byte[] result` with the value returned by calling the
-     * `transceive` method of `isoDep` with `command` as the raw ISO-DEP data to
-     * send. We initialize `int resultLength` with the length of `result`, and initialize
-     * the array `byte[] statusWord` with the last 2 bytes of `result` (the status word,
-     * if AID is successfully selected, 0x9000 is returned here). We then initialize `byte[] payload`
-     * with a copy of the rest of `result` (the optional payload, which is used here to hold the
-     * account number). If `statusWord` is equal to SELECT_OK_SW (0x90, 0x00) we initialize
-     * `String accountNumber` by decoding `payload` using the charset "UTF-8", log that
-     * we "Received: " this, then fetch the `AccountCallback` we were constructed with from our
-     * weak reference `mAccountCallback` in order to call its `onAccountReceived` method
-     * to pass it the `accountNumber` string.
+     * place here. First we log the message "New tag discovered". We initialize [IsoDep] variable
+     * `val isoDep` by fetching an instance for our [Tag] parameter [tag]. If this is not `null`,
+     * wrapped in a try block intended to catch and log [IOException] we call the [IsoDep.connect]
+     * method of `isoDep` to enable I/O operations to the tag from this [TagTechnology] object. We
+     * log the message "Requesting remote AID: " then initialize [ByteArray] variable `val command`
+     * with an APDU for SELECT AID command for our loyalty card service [SAMPLE_LOYALTY_CARD_AID]
+     * (the service we are interested in communicating with). We log the message "Sending: " with
+     * the hex string of `command` appended to it, then initialize [ByteArray] variable `val result`
+     * with the value returned by calling the [IsoDep.transceive] method of `isoDep` with `command`
+     * as the raw ISO-DEP data to send. We initialize [Int] variable `val resultLength` with the
+     * length of `result`, and initialize the [ByteArray] variable `val statusWord` with the last 2
+     * bytes of `result` (the status word, if AID is successfully selected, 0x9000 is returned here).
+     * We then initialize [ByteArray] variable `val payload` with a copy of the rest of `result`
+     * (the optional payload, which is used here to hold the account number). If `statusWord` is
+     * equal to [SELECT_OK_SW] (0x90, 0x00) we initialize [String] variable `val accountNumber` by
+     * decoding `payload` using the charset "UTF-8", log that we "Received: " this, then fetch the
+     * [AccountCallback] we were constructed with from our weak reference [mAccountCallback] in
+     * order to call its [AccountCallback.onAccountReceived] method with the `accountNumber` string.
      *
-     * @param tag Discovered tag
+     * @param tag Discovered [Tag]
      */
     override fun onTagDiscovered(tag: Tag) {
         Log.i(TAG, "New tag discovered")
@@ -87,7 +89,7 @@ class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
         //
         // In order to communicate with a device using HCE, the discovered tag should be processed
         // using the IsoDep class.
-        val isoDep = IsoDep.get(tag)
+        val isoDep: IsoDep? = IsoDep.get(tag)
         if (isoDep != null) {
             try {
                 // Connect to the remote NFC device
@@ -95,16 +97,16 @@ class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
                 // Build SELECT AID command for our loyalty card service.
                 // This command tells the remote device which service we wish to communicate with.
                 Log.i(TAG, "Requesting remote AID: $SAMPLE_LOYALTY_CARD_AID")
-                val command = BuildSelectApdu(SAMPLE_LOYALTY_CARD_AID)
+                val command: ByteArray = BuildSelectApdu(SAMPLE_LOYALTY_CARD_AID)
                 // Send command to remote device
                 Log.i(TAG, "Sending: " + ByteArrayToHexString(command))
-                val result = isoDep.transceive(command)
+                val result: ByteArray = isoDep.transceive(command)
                 // If AID is successfully selected, 0x9000 is returned as the status word (last 2
                 // bytes of the result) by convention. Everything before the status word is
                 // optional payload, which is used here to hold the account number.
-                val resultLength = result.size
-                val statusWord = byteArrayOf(result[resultLength - 2], result[resultLength - 1])
-                val payload = Arrays.copyOf(result, resultLength - 2)
+                val resultLength: Int = result.size
+                val statusWord: ByteArray = byteArrayOf(result[resultLength - 2], result[resultLength - 1])
+                val payload: ByteArray = Arrays.copyOf(result, resultLength - 2)
                 if (Arrays.equals(SELECT_OK_SW, statusWord)) {
                     // The remote NFC device will immediately respond with its stored account number
                     val accountNumber = String(payload, Charsets.UTF_8)
@@ -132,7 +134,6 @@ class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
         /**
          * ISO-DEP command HEADER for selecting an AID.
          *
-         *
          * Format: [Class | Instruction | Parameter 1 | Parameter 2]
          */
         private const val SELECT_APDU_HEADER = "00A40400"
@@ -143,14 +144,13 @@ class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
         private val SELECT_OK_SW = byteArrayOf(0x90.toByte(), 0x00.toByte())
 
         /**
-         * Build APDU for SELECT AID command. This command indicates which service a reader is interested
-         * in communicating with. See ISO 7816-4.
+         * Build APDU for SELECT AID command. This command indicates which service a reader is
+         * interested in communicating with. See ISO 7816-4.
          *
-         *
-         * We return the byte array constructed by our method `HexStringToByteArray` that it constructs
-         * by converting to hex characters the string we form by concatenating the string SELECT_APDU_HEADER
-         * followed by the hex encoding of the length of our parameter `String aid`, followed by
-         * `aid` itself.
+         * We return the byte array constructed by our method [HexStringToByteArray] that it
+         * constructs by converting to hex characters the string we form by concatenating the
+         * string [SELECT_APDU_HEADER] followed by the hex encoding of the length of our [String]
+         * parameter [aid], followed by [aid] itself.
          *
          * @param aid Application ID (AID) to select
          * @return APDU for SELECT AID command
@@ -158,7 +158,9 @@ class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
         @JvmStatic
         fun BuildSelectApdu(aid: String): ByteArray {
             // Format: [CLASS | INSTRUCTION | PARAMETER 1 | PARAMETER 2 | LENGTH | DATA]
-            return HexStringToByteArray(SELECT_APDU_HEADER + String.format("%02X", aid.length / 2) + aid)
+            return HexStringToByteArray(
+                SELECT_APDU_HEADER + String.format("%02X", aid.length / 2) + aid
+            )
         }
 
         /**
@@ -171,11 +173,13 @@ class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
          * `hexChars`.
          *
          * @param bytes Bytes to convert
-         * @return String, containing hexadecimal representation.
+         * @return [String], containing hexadecimal representation of our [bytes] parameter.
          */
         @JvmStatic
         fun ByteArrayToHexString(bytes: ByteArray): String {
-            val hexArray = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+            val hexArray = charArrayOf(
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+            )
             val hexChars = CharArray(bytes.size * 2)
             var v: Int
             for (j in bytes.indices) {
