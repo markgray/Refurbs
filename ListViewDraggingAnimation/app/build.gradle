@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.example.android.listviewdragginganimation"
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 33
     }
 
     buildTypes {
@@ -16,4 +16,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    namespace "com.example.android.listviewdragginganimation"
 }
