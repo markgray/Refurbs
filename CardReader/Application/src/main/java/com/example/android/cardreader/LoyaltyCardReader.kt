@@ -165,19 +165,19 @@ class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
 
         /**
          * Utility class to convert a byte array to a hexadecimal string. We initialize our constant
-         * array `char[] hexArray` to contain the hexadecimal characters 0-F, then allocate for
-         * `char[] hexChars` twice as many chars as the length of our parameter `byte[] bytes`,
-         * and declare `int v`. We then loop with `j` as the index over the bytes in `bytes`
-         * setting `v` to each byte masked by 0xFF to treat as unsigned, storing first the upper nibble
-         * of `v` followed by the lower nibble. When done we return a string constructed from
-         * `hexChars`.
+         * [CharArray] variable `val hexArray` to contain the hexadecimal characters 0-F, then
+         * allocate for [CharArray] variable `val hexChars` twice as many chars as the length of our
+         * [ByteArray] parameter [bytes], and declare [Int] variable `var v`. We then loop with `j`
+         * as the index over the bytes in [bytes] setting `v` to each byte masked by 0xFF to treat
+         * as unsigned, storing first the upper nibble of `v` followed by the lower nibble in
+         * `hexChars`. When done we return a string constructed from `hexChars`.
          *
          * @param bytes Bytes to convert
          * @return [String], containing hexadecimal representation of our [bytes] parameter.
          */
         @JvmStatic
         fun ByteArrayToHexString(bytes: ByteArray): String {
-            val hexArray = charArrayOf(
+            val hexArray: CharArray = charArrayOf(
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
             )
             val hexChars = CharArray(bytes.size * 2)
@@ -191,16 +191,17 @@ class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
         }
 
         /**
-         * Utility class to convert a hexadecimal string to a byte string. Behavior with input strings
-         * containing non-hexadecimal characters is undefined. We initialize `int len` with the
-         * length of our parameter `String s`. We allocate 1 byte per 2 hex characters for
-         * `byte[] data`. We then loop for `i=0` to `i=len` stepping by 2 setting the
-         * upper nibble of `data[i/2]` to the numeric value of the character at position `i`
-         * in radix 16, and the lower nibble to the numeric value of the character at position `i+1`
-         * in radix 16. When done with all the characters in `s` we return `data` to the caller.
+         * Utility class to convert a hexadecimal string to a byte string. Behavior with input
+         * strings containing non-hexadecimal characters is undefined. We initialize [Int] variable
+         * `val len` with the length of our [String] parameter [s]. We allocate 1 byte per 2 hex
+         * characters for [ByteArray] variable  `val data`. We then loop for `i=0` to `i=len`
+         * stepping by 2 setting the upper nibble of `data` at index `i`/2 to the numeric value of
+         * the character at position `i` in radix 16, and the lower nibble to the numeric value of
+         * the character at position `i+1` in radix 16. When done with all the characters in `s` we
+         * return `data` to the caller.
          *
-         * @param s String containing hexadecimal characters to convert
-         * @return Byte array generated from input
+         * @param s [String] containing hexadecimal characters to convert
+         * @return [ByteArray] generated from input
          */
         @JvmStatic
         fun HexStringToByteArray(s: String): ByteArray {
