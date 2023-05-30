@@ -17,24 +17,25 @@ package com.example.android.cardview
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 
 /**
- * Launcher Activity for the CardView sample app.
+ * Launcher Activity for the `CardView` sample app.
  */
 class CardViewActivity : FragmentActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`. Then we set our content view to our layout file R.layout.activity_card_view.
-     * If our parameter `savedInstanceState` is null this is the first time we have been called
-     * so we use the FragmentManager for interacting with fragments associated with this activity to
-     * begin a new `FragmentTransaction` to which we chain a command to add a new instance of
-     * `CardViewFragment` to the container view with id R.id.container, followed by a chained
-     * command to commit the transaction.
+     * `onCreate`. Then we set our content view to our layout file [R.layout.activity_card_view].
+     * If our [Bundle] parameter [savedInstanceState] is `null` this is the first time we have been
+     * called so we use the [FragmentManager] for interacting with fragments associated with this
+     * activity to begin a new [FragmentTransaction] to which we chain a command to add a new
+     * instance of [CardViewFragment] to the container view with id [R.id.container], followed by a
+     * chained command to commit the transaction.
      *
-     * @param savedInstanceState this is null the first time we are called, and we use this fact to
-     * decide if we need to create and add our fragment (when called after
-     * a configuration change it is not null, and the system will have seen
-     * to restoring the old fragment).
+     * @param savedInstanceState this is `null` the first time we are called, and we use this fact
+     * to decide if we need to create and add our fragment (when called after a configuration change
+     * it is not `null`, and the system will have seen to restoring the old fragment).
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
