@@ -1,0 +1,754 @@
+/*
+ * Copyright (C) 2013 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@file:Suppress("SameParameterValue", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
+
+package com.example.android.listviewitemanimations
+
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.os.Build
+import android.os.Bundle
+import android.view.MotionEvent
+import android.view.View
+import android.view.View.OnTouchListener
+import android.view.ViewConfiguration
+import android.view.ViewTreeObserver.OnPreDrawListener
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
+import android.view.animation.AnimationSet
+import android.view.animation.TranslateAnimation
+import android.widget.ListView
+import java.util.Collections
+
+/**
+ * This example shows how to use a swipe effect to remove items from a ListView,
+ * and how to use animations to complete the swipe as well as to animate the other
+ * items in the list into their final places. This code works on run times back to Gingerbread
+ * (Android 2.3), by using the android.view.animation classes on earlier releases.
+ *
+ *
+ * Watch the associated video for this demo on the DevBytes channel of developer.android.com
+ * or on the DevBytes playlist in the android developers channel on YouTube at
+ * [DevBytes](https://www.youtube.com/playlist?list=PLWz5rJ2EKKc_XOgcRukSoKKjewFJZrKV0).
+ * [ListViewItemAnimations](https://www.youtube.com/watch?v=PeuVuoa13S8&list=PLWz5rJ2EKKc_XOgcRukSoKKjewFJZrKV0&index=74&t=0s)
+ */
+@SuppressLint("UseSparseArrays")
+class ListViewItemAnimations : Activity() {
+    /**
+     * `StableArrayAdapter` holding the list of cheeses for our `ListView`
+     */
+    var mAdapter: StableArrayAdapter? = null
+
+    /**
+     * `ListView` with id R.id.list_view in our layout displaying our cheeses.
+     */
+    var mListView: ListView? = null
+
+    /**
+     * `BackgroundContainer` with id R.id.listViewBackground, holds our `ListView`
+     */
+    var mBackgroundContainer: BackgroundContainer? = null
+
+    /**
+     * Flag indicating that the user is swiping an item displayed in our `ListView` ACTION_MOVE
+     */
+    var mSwiping: Boolean = false
+
+    /**
+     * Flag indicating that the user has pressed an item displayed in our `ListView` ACTION_DOWN
+     */
+    var mItemPressed: Boolean = false
+
+    /**
+     * Maps the item id of a child of our `ListView` to its top Y coordinate (does not include
+     * the item being removed).
+     */
+    var mItemIdTopMap: HashMap<Long, Int> = HashMap()
+
+    /**
+     * Flag indicating that the animation of a swipe is in progress.
+     */
+    var mAnimating: Boolean = false
+
+    /**
+     * Current X position of the swipe motion, used only for Gingerbread api
+     */
+    var mCurrentX: Float = 0f
+
+    /**
+     * Current alpha value of the swiped view, used only for Gingerbread api
+     */
+    var mCurrentAlpha: Float = 1f
+
+    /**
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we set our content view to our layout file R.layout.activity_list_view_item_animations.
+     * We initialize our field `BackgroundContainer mBackgroundContainer` by finding the view
+     * with id R.id.listViewBackground, and `ListView mListView` by finding the view with id
+     * R.id.list_view. We allocate a new instance for `ArrayList<String> cheeseList` then add
+     * all the cheeses in the array `String[] Cheeses.CheeseStrings` to it. We initialize our
+     * field `StableArrayAdapter mAdapter` with a new instance which will use `cheeseList`
+     * as its dataset, displaying them using the layout R.layout.opaque_text_view with our field
+     * `OnTouchListener mTouchListener` as its `OnTouchListener`. Finally we set the adapter
+     * of `mListView` to be `mAdapter`.
+     *
+     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_list_view_item_animations)
+        mBackgroundContainer = findViewById(R.id.listViewBackground)
+        mListView = findViewById(R.id.list_view)
+        val cheeseList = ArrayList<String>()
+        Collections.addAll(cheeseList, *Cheeses.sCheeseStrings)
+        mAdapter = StableArrayAdapter(this, R.layout.opaque_text_view, cheeseList, mTouchListener)
+        mListView!!.adapter = mAdapter
+    }
+
+    /**
+     * Returns true if the current runtime is Honeycomb or later
+     */
+    @get:SuppressLint("ObsoleteSdkInt")
+    private val isRuntimePostGingerbread: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB
+
+    /**
+     * `OnTouchListener` used for every view that the `getView` override of our
+     * `StableArrayAdapter` returns to its caller.
+     */
+    private val mTouchListener: OnTouchListener = object : OnTouchListener {
+        /**
+         * X coordinate of the initial ACTION_DOWN event we received for the swiping being done currently
+         */
+        var mDownX = 0f
+
+        /**
+         * Distance in pixels a touch can wander before we think the user is scrolling, set by a call
+         * to the `getScaledTouchSlop` method of the `ViewConfiguration` of our current
+         * `ListViewItemAnimations` instance.
+         */
+        private var mSwipeSlop = -1
+
+        /**
+         * Called when a touch event is dispatched to a view. If our field `mSwipeSlop` is less
+         * than 0 we initialize it to the value returned by the `getScaledTouchSlop` method of
+         * the `ViewConfiguration` of our current `ListViewItemAnimations` instance. Then
+         * we switch on the action of our parameter `MotionEvent event`:
+         *
+         *  *
+         * ACTION_DOWN: if our flag `mAnimating` is true we return true having done nothing
+         * (we are already responding to a swipe, and multi-item swipes are not handled).
+         * Otherwise we set our flag `mItemPressed` to true, set `mDownX` to the
+         * X coordinate of `event` and break.
+         *
+         *  *
+         * ACTION_CANCEL: We call our method `setSwipePosition` to set the X translation
+         * of `View v` to 0, set our flag `mItemPressed` to false and break.
+         *
+         *  *
+         * ACTION_MOVE: if our flag `mAnimating` is true we return true having done nothing
+         * (I do not see how this can happen, but if you are fast enough I suppose you could
+         * conceivably start another swipe while the animation of a previous on is in progress,
+         * but since the `ListView` is disabled and un-clickable during the animation I
+         * do not think it possible). Otherwise we initialize `float x` with the X coordinate
+         * of `event` and if we are running on a device newer than Gingerbread we add the
+         * X translation of `v` to `x`. We set `float deltaX` to `x` minus
+         * `mDownX`, and `float deltaXAbs` to the absolute value of `deltaX`.
+         * If our `mSwiping` is false (we are not already in the middle of a swipe) we
+         * check if `deltaXAbs` is greater than `mSwipeSlop` and if so we set
+         * `mSwiping` to true, call the `requestDisallowInterceptTouchEvent(true)`
+         * method of `mListView` to prevent it from intercepting touch events until this
+         * one is over, and then call the `showBackground` method of `mBackgroundContainer`
+         * to have it start to show through the `ListView` from the top Y coordinate of
+         * `v` for the height of `v`. Then if `mSwiping` is now true we call
+         * our `setSwipePosition` method to translate the X position on the screen of
+         * `v` to `deltaX`. In any case we now break.
+         *
+         *  *
+         * ACTION_UP: if our flag `mAnimating` is true we return true having done nothing
+         * (we are already animating the movement of a view off or back onto the screen).
+         * Otherwise we branch on the value of our flag `mSwiping`:
+         *
+         *  *
+         * true: (the item has been moved already) We set `float x` to the X coordinate
+         * of `event` and if our device is post Gingerbread we add the X translation
+         * of `v` to `x`. We set `float deltaX` to `x` minus
+         * `mDownX`, and `float deltaXAbs` to the absolute value of `deltaX`.
+         * We declare `float fractionCovered`, `float endX`, and `boolean remove`.
+         * If `deltaXAbs` is greater than one quarter of the width of `v` we animate
+         * it off the screen by setting `fractionCovered` to `deltaXAbs` divided by
+         * the width of `v`, setting `endX` to minus the width of `v` if
+         * `deltaX` is less than 0, or to the width of `v` if it is not, and setting
+         * `remove` to true. If it is less than a quarter off the screen we animate it back
+         * by setting `fractionCovered` to 1 minus `deltaXAbs` divided by the width of
+         * `v`, setting `endX` 0, and setting `remove` to false. In either case
+         * we set `long duration` to the quantity 1 minus `fractionCovered` times
+         * SWIPE_DURATION then call our `animateSwipe` method to animate the X coordinate of
+         * `v` to `endX` with a duration of `duration`, and remove it if our flag
+         * `remove` is true.
+         *
+         *  *
+         * false: (the item has not been moved yet) We set our flag `mItemPressed` to false.
+         *
+         *
+         * We then break.
+         *
+         *  *
+         * default: We return false.
+         *
+         *
+         * We return true to consume the event.
+         *
+         * @param v The view the touch event has been dispatched to.
+         * @param event The MotionEvent object containing full information about the event.
+         * @return True if the listener has consumed the event, false otherwise.
+         */
+        @SuppressLint("NewApi", "ClickableViewAccessibility")
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
+            if (mSwipeSlop < 0) {
+                mSwipeSlop = ViewConfiguration.get(this@ListViewItemAnimations).scaledTouchSlop
+            }
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    if (mAnimating) {
+                        // Multi-item swipes not handled
+                        return true
+                    }
+                    mItemPressed = true
+                    mDownX = event.x
+                }
+
+                MotionEvent.ACTION_CANCEL -> {
+                    setSwipePosition(v, 0f)
+                    mItemPressed = false
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    if (mAnimating) {
+                        return true
+                    }
+                    var x = event.x
+                    if (isRuntimePostGingerbread) {
+                        x += v.translationX
+                    }
+                    val deltaX = x - mDownX
+                    val deltaXAbs = Math.abs(deltaX)
+                    if (!mSwiping) {
+                        if (deltaXAbs > mSwipeSlop) {
+                            mSwiping = true
+                            mListView!!.requestDisallowInterceptTouchEvent(true)
+                            mBackgroundContainer!!.showBackground(v.top, v.height)
+                        }
+                    }
+                    if (mSwiping) {
+                        setSwipePosition(v, deltaX)
+                    }
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    if (mAnimating) {
+                        return true
+                    }
+                    // User let go - figure out whether to animate the view out, or back into place
+                    if (mSwiping) {
+                        var x = event.x
+                        if (isRuntimePostGingerbread) {
+                            x += v.translationX
+                        }
+                        val deltaX = x - mDownX
+                        val deltaXAbs = Math.abs(deltaX)
+                        val fractionCovered: Float
+                        val endX: Float
+                        val remove: Boolean
+                        if (deltaXAbs > v.width / 4f) {
+                            // Greater than a quarter of the width - animate it out
+                            fractionCovered = deltaXAbs / v.width
+                            endX = (if (deltaX < 0) -v.width else v.width).toFloat()
+                            remove = true
+                        } else {
+                            // Not far enough - animate it back
+                            fractionCovered = 1 - (deltaXAbs / v.width)
+                            endX = 0f
+                            remove = false
+                        }
+                        // Animate position and alpha
+                        val duration = ((1 - fractionCovered) * SWIPE_DURATION).toInt().toLong()
+                        animateSwipe(v, endX, duration, remove)
+                    } else {
+                        mItemPressed = false
+                    }
+                }
+
+                else -> return false
+            }
+            return true
+        }
+    }
+
+    /**
+     * Animates a swipe of the item either back into place or out of the ListView container.
+     * NOTE: This is a simplified version of swipe behavior, for the purposes of this demo
+     * about animation. A real version should use velocity (via the VelocityTracker class)
+     * to send the item off or back at an appropriate speed. First we set our flag `mAnimating`
+     * to true, then we disable our `ListView mListView`. We then branch on whether our device
+     * is running Gingerbread or newer:
+     *
+     *  *
+     * Post Gingerbread: We obtain a `ViewPropertyAnimator` for `view`, set its
+     * duration to our parameter `long duration`, cause it to animate the alpha of
+     * `view` to 0 if `remove` is true or to 1 if it is false, cause it to animate
+     * the X translation to `endX` and set its `AnimatorListener` to an anonymous
+     * `AnimatorListenerAdapter` whose `onAnimationEnd` override sets the alpha
+     * of `view` back to 1, and its X translation to 0. Then if `remove` is true
+     * calls our `animateOtherViews` method to animate the other views in the ListView
+     * container (not including `view`) into their final positions. If `remove` is
+     * false we call the `hideBackground` method of `mBackgroundContainer` to hide
+     * the background again, set the flags `mSwiping`, and `mAnimating` to false
+     * and enable `mAnimating` again. In either case we then set `mItemPressed` to
+     * false.
+     *
+     *  *
+     * Before Gingerbread: We initialize `TranslateAnimation swipeAnim` with an instance
+     * which will animate the X coordinate from `mCurrentX` to `endX` with no change
+     * to the Y coordinate. We initialize `AlphaAnimation alphaAnim` with an instance which
+     * will animate the alpha from `mCurrentAlpha` to 0 if `remove` is true or to 1
+     * if it is false. We initialize `AnimationSet set` with an instance which will share
+     * the interpreter with all the animations in it. We then add `swipeAnim`, and
+     * `swipeAnim` to `set`, set its duration to `duration`, and start it
+     * running now on `view`. We then call our `setAnimationEndAction` method to
+     * set the `AnimationListener` of `set` to an anonymous `AnimationListenerAdapter`
+     * whose `onAnimationEnd` override runs an anonymous `Runnable` we pass it which
+     * handles changes to the other views in the `ListView` brought about when `view`
+     * is either removed or returned to its original position.
+     *
+     *
+     *
+     * @param view `View` that is being swiped
+     * @param endX Y coordinate that it is being swiped to (0 or plus or minus the width of view)
+     * @param duration duration in milliseconds of the animation
+     * @param remove true if the view is being swiped out of the ListView, false if back into it
+     */
+    @SuppressLint("NewApi")
+    private fun animateSwipe(view: View, endX: Float, duration: Long, remove: Boolean) {
+        mAnimating = true
+        mListView!!.isEnabled = false
+        if (isRuntimePostGingerbread) {
+            view.animate().setDuration(duration).alpha((if (remove) 0 else 1).toFloat()).translationX(endX)
+                .setListener(object : AnimatorListenerAdapter() {
+                    /**
+                     * Notifies the end of the animation. First we restore the animated values by
+                     * setting the alpha of `view` to 1 and its X translation to 0. Then we
+                     * branch on the value of `remove`:
+                     *
+                     *  *
+                     * true: (`view` was removed) We call our method `animateOtherViews`
+                     * to remove the item displayed in `view` from our adapter and animate the
+                     * other views into place to close the gap left where `view` used to be.
+                     *
+                     *  *
+                     * false: (`view` was animated back to its original position) we call the
+                     * `hideBackground` method of `mBackgroundContainer` to have it hide
+                     * the area underneath `view`, set `mSwiping` and `mAnimating`
+                     * to false and enable our `ListView mListView`.
+                     *
+                     *
+                     * In both cases we set our flag `mItemPressed` to false.
+                     *
+                     * @param animation The animation which reached its end.
+                     */
+                    override fun onAnimationEnd(animation: Animator) {
+                        // Restore animated values
+                        view.alpha = 1f
+                        view.translationX = 0f
+                        if (remove) {
+                            animateOtherViews(mListView, view)
+                        } else {
+                            mBackgroundContainer!!.hideBackground()
+                            mSwiping = false
+                            mAnimating = false
+                            mListView!!.isEnabled = true
+                        }
+                        mItemPressed = false
+                    }
+                })
+        } else {
+            val swipeAnim = TranslateAnimation(mCurrentX, endX, 0f, 0f)
+            val alphaAnim = AlphaAnimation(mCurrentAlpha, (if (remove) 0 else 1).toFloat())
+            val set = AnimationSet(true)
+            set.addAnimation(swipeAnim)
+            set.addAnimation(alphaAnim)
+            set.duration = duration
+            view.startAnimation(set)
+            setAnimationEndAction(set) {
+                if (remove) {
+                    animateOtherViews(mListView, view)
+                } else {
+                    mBackgroundContainer!!.hideBackground()
+                    mSwiping = false
+                    mAnimating = false
+                    mListView!!.isEnabled = true
+                }
+                mItemPressed = false
+            }
+        }
+    }
+
+    /**
+     * Sets the horizontal position and translucency of the view being swiped. We set `float fraction`
+     * to the absolute value of `deltaX` divided by the width of `view` then branch on the
+     * SDK version of the device we are running on:
+     *
+     *  *
+     * Post Gingerbread: We translate the X position of `view` by `deltaX` and set
+     * its alpha to 1 minus `fraction`
+     *
+     *  *
+     * Gingerbread (or earlier): We initialize `TranslateAnimation swipeAnim` with an instance
+     * which will move the X coordinate to `deltaX` without moving the Y coordinate. We then
+     * set `mCurrentX` to `deltaX` and `mCurrentAlpha` to 1 minus `fraction`.
+     * We initialize `AlphaAnimation alphaAnim` to an instance which will animate alpha to
+     * `mCurrentAlpha`, and initialize `AnimationSet set` to an instance which will share
+     * its interpolator between its animations. We add `swipeAnim` and `alphaAnim` to
+     * `set`, call its `setFillAfter(true)` method so that transformation that this animation
+     * performs will persist when it is finished, and call its `setFillEnabled(true)` method
+     * so that the animation will take the value of fillBefore into account (the start value of the
+     * animation will not be set). Finally we start `set` running on `view`.
+     *
+     *
+     *
+     * @param view `View` that is being swiped.
+     * @param deltaX How far `view` has moved from its original position.
+     */
+    @SuppressLint("NewApi")
+    private fun setSwipePosition(view: View, deltaX: Float) {
+        val fraction = Math.abs(deltaX) / view.width
+        if (isRuntimePostGingerbread) {
+            view.translationX = deltaX
+            view.alpha = 1 - fraction
+        } else {
+            // Hello, Gingerbread!
+            val swipeAnim = TranslateAnimation(deltaX, deltaX, 0f, 0f)
+            mCurrentX = deltaX
+            mCurrentAlpha = (1 - fraction)
+            val alphaAnim = AlphaAnimation(mCurrentAlpha, mCurrentAlpha)
+            val set = AnimationSet(true)
+            set.addAnimation(swipeAnim)
+            set.addAnimation(alphaAnim)
+            set.fillAfter = true
+            set.isFillEnabled = true
+            view.startAnimation(set)
+        }
+    }
+
+    /**
+     * This method animates all other views in the `ListView listView` container (not including
+     * `View viewToRemove`) into their final positions. It is called before `viewToRemove`
+     * has been removed from the adapter, and before layout has been run. The approach here is to
+     * figure out where everything is now, remove `viewToRemove` from the adapter, allow layout
+     * to run, figure out where everything is after layout, and then to run animations between all of
+     * those start/end positions. First we initialize `int firstVisiblePosition` with the position
+     * of the first visible view in our parameter `ListView listView`. Then we loop over `int i`
+     * for all the children in `listView`, setting `View child` to the child view at position
+     * `i`, setting `int position` to `firstVisiblePosition` plus `i`, and
+     * setting `long itemId` to the item id of the item at position `position` in our
+     * `StableArrayAdapter mAdapter`. Then if `child` is not equal to our parameter
+     * `View viewToRemove` we add the top Y coordinate of `child` to our field
+     * `HashMap<Long, Integer> mItemIdTopMap` under the key `itemId` and loop back to try
+     * the next child.
+     *
+     *
+     * When done locating the top Y coordinates of the children that will remain, we set `int position`
+     * to the position in `mListView` that `viewToRemove` occupies, then remove the item
+     * displayed there from `mAdapter`. We then initialize `ViewTreeObserver observer` with
+     * the `ViewTreeObserver` of `listView` and add an anonymous `OnPreDrawListener`
+     * to it whose `onPreDraw` override animates the remaining views to close the gap left when
+     * `viewToRemove` was removed.
+     *
+     * @param listView the `ListView` whose views we are animating.
+     * @param viewToRemove the `View` containing the item being removed.
+     */
+    private fun animateOtherViews(listView: ListView?, viewToRemove: View) {
+        val firstVisiblePosition = listView!!.firstVisiblePosition
+        for (i in 0 until listView.childCount) {
+            val child = listView.getChildAt(i)
+            val position = firstVisiblePosition + i
+            val itemId = mAdapter!!.getItemId(position)
+            if (child !== viewToRemove) {
+                mItemIdTopMap[itemId] = child.top
+            }
+        }
+        // Delete the item from the adapter
+        val position = mListView!!.getPositionForView(viewToRemove)
+        mAdapter!!.remove(mAdapter!!.getItem(position))
+
+        // After layout runs, capture position of all itemIDs, compare to pre-layout
+        // positions, and animate changes
+        val observer = listView.viewTreeObserver
+        observer.addOnPreDrawListener(object : OnPreDrawListener {
+            /**
+             * Callback method to be invoked when the view tree is about to be drawn. At this point, all
+             * views in the tree have been measured and given a frame. First we remove ourselves as a
+             * `OnPreDrawListener`. We initialize `boolean firstAnimation` to true, and
+             * initialize `int firstVisiblePosition` with the position in the adapter of the first
+             * visible item in `listView`. We then loop over `int i` for all the children
+             * in `listView`:
+             *
+             *  *
+             * We initialize `View child` with the `i`'th child of `listView`,
+             * initialize `int position` to `firstVisiblePosition` plus `i`,
+             * initialize `long itemId` with the item id of the item at position `position`
+             * in `mAdapter`, initialize `Integer startTop` to the value stored under
+             * the key `itemId` in `mItemIdTopMap`, and initialize `int top` with
+             * the top Y coordinate of `child`.
+             *
+             *  *
+             * If `startTop` is null the child is a new view so we initialize `int childHeight`
+             * to the height of `child` plus the divider height used by `listView`. We then
+             * set `startTop` to `top` plus `childHeight` if `i` is greater than
+             * 0 or to `top` minus `childHeight` if it is zero.
+             *
+             *  *
+             * We then initialize `int delta` to `startTop` minus `top` and if
+             * `delta` is not equal to 0 we need to move the child:
+             *
+             *  *
+             * If `firstAnimation` is true we initialize `Runnable endAction`
+             * with an anonymous `Runnable` whose `run` override hides the
+             * background of `mBackgroundContainer`, sets `mSwiping` and
+             * `mAnimating` to false and enables `mListView`. If it is false
+             * we initialize `endAction` to null.
+             *
+             *  *
+             * We set `firstAnimation` to false
+             *
+             *  *
+             * We call our `moveView` method to animate the translate of `child`
+             * from `delta` to 0 in its Y coordinate, running `endAction` when
+             * done if it is not null.
+             *
+             *
+             *
+             *
+             * Having animated the child views into their new position we clear `mItemIdTopMap` and
+             * return true to the caller to proceed with the current drawing pass.
+             *
+             * @return Return true to proceed with the current drawing pass, or false to cancel.
+             */
+            override fun onPreDraw(): Boolean {
+                observer.removeOnPreDrawListener(this)
+                var firstAnimation = true
+                val firstVisiblePositionLocal = listView.firstVisiblePosition
+                for (i in 0 until listView.childCount) {
+                    val child = listView.getChildAt(i)
+                    val positionLocal = firstVisiblePositionLocal + i
+                    val itemId = mAdapter!!.getItemId(positionLocal)
+                    var startTop = mItemIdTopMap[itemId]
+                    val top = child.top
+                    if (startTop == null) {
+                        // Animate new views along with the others. The catch is that they did not
+                        // exist in the start state, so we must calculate their starting position
+                        // based on whether they're coming in from the bottom (i > 0) or top.
+                        val childHeight = child.height + listView.dividerHeight
+                        startTop = top + (if (i > 0) childHeight else -childHeight)
+                    }
+                    val delta = startTop - top
+                    if (delta != 0) {
+                        @Suppress("ObjectLiteralToLambda")
+                        val endAction: Runnable? = if (firstAnimation) {
+                            object : Runnable {
+                                /**
+                                 * This `Runnable` is used to return our `ListView` to normalcy
+                                 * after the removal of an item is animated. First we call the `hideBackground`
+                                 * method of `mBackgroundContainer`, then we set `mSwiping` and
+                                 * `mAnimating` to false and enable `mListView`.
+                                 */
+                                override fun run() {
+                                    mBackgroundContainer!!.hideBackground()
+                                    mSwiping = false
+                                    mAnimating = false
+                                    mListView!!.isEnabled = true
+                                }
+                            }
+                        } else null
+                        firstAnimation = false
+                        moveView(child, 0f, 0f, delta.toFloat(), 0f, endAction)
+                    }
+                }
+                mItemIdTopMap.clear()
+                return true
+            }
+        })
+    }
+
+    /**
+     * Animate a view between start and end X/Y locations, using either old (pre-3.0) or new animation
+     * APIs. We copy our parameter `endAction` to initialize `Runnable finalEndAction`.
+     * We branch on whether we are running on a post Gingerbread device or not:
+     *
+     *  *
+     * Post Gingerbread device: we set the duration of the underlying animator that animates
+     * properties of `view` to MOVE_DURATION (150ms) (Uh? this does nothing?) If our
+     * parameter `startX` is not equal to our parameter `endX` (never happens?)
+     * we initialize `ObjectAnimator anim` with an instance which will animate the TRANSLATION_X
+     * property of `view` from `startX` to `endX`, set its duration to MOVE_DURATION,
+     * start it running and call our `setAnimatorEndAction` method to set the `AnimatorListener`
+     * of `anim` to `endAction` if it is not null, then we set `endAction` to null.
+     * If our parameter `startY` is not equal to our parameter `endY` we initialize
+     * `ObjectAnimator anim` with an instance which will animate the TRANSLATION_Y property
+     * of `view` from `startY` to `endY`, set its duration to MOVE_DURATION,
+     * start it running and call our `setAnimatorEndAction` method to set the `AnimatorListener`
+     * of `anim` to `endAction` if it is not null.
+     *
+     *  *
+     * Gingerbread (or earlier?) device: We initialize `TranslateAnimation translator` with
+     * an instance which will translate from `startX` to `endX` in the X dimension
+     * and from `startY` to `endY` in the Y dimension, set its duration to MOVE_DURATION
+     * and instruct `view` to start the animation. Then if `endAction` is not null
+     * we fetch the animation currently associated with `view` and set its `AnimationListener`
+     * to an anonymous `AnimationListenerAdapter` whose `onAnimationEnd` runs `finalEndAction`.
+     *
+     *
+     *
+     * @param view `View` that is to be moved
+     * @param startX starting X coordinate
+     * @param endX   ending  X coordinate
+     * @param startY starting Y coordinate
+     * @param endY   ending  Y coordinate
+     * @param endAction `Runnable` to run when the animation is done.
+     */
+    @SuppressLint("NewApi")
+    private fun moveView(view: View, startX: Float, endX: Float, startY: Float, endY: Float, endAction: Runnable?) {
+        var endActionLocal = endAction
+        val finalEndAction = endActionLocal
+        if (isRuntimePostGingerbread) {
+            view.animate().duration = MOVE_DURATION.toLong()
+            if (startX != endX) {
+                val anim = ObjectAnimator.ofFloat(view, View.TRANSLATION_X, startX, endX)
+                anim.duration = MOVE_DURATION.toLong()
+                anim.start()
+                setAnimatorEndAction(anim, endActionLocal)
+                endActionLocal = null
+            }
+            if (startY != endY) {
+                val anim = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, startY, endY)
+                anim.duration = MOVE_DURATION.toLong()
+                anim.start()
+                setAnimatorEndAction(anim, endActionLocal)
+            }
+        } else {
+            val translator = TranslateAnimation(startX, endX, startY, endY)
+            translator.duration = MOVE_DURATION.toLong()
+            view.startAnimation(translator)
+            if (endActionLocal != null) {
+                view.animation.setAnimationListener(object : AnimationListenerAdapter() {
+                    /**
+                     * Notifies the end of the animation. We just call the `run` method of
+                     * `Runnable finalEndAction`.
+                     *
+                     * @param animation The animation which reached its end.
+                     */
+                    override fun onAnimationEnd(animation: Animation) {
+                        finalEndAction!!.run()
+                    }
+                })
+            }
+        }
+    }
+
+    /**
+     * If our parameter `Runnable endAction` is not null we add an anonymous `AnimatorListener`
+     * to our parameter `Animator animator` which will call the `run` override of our
+     * parameter `endAction`.
+     *
+     * @param animator `Animator` whose `AnimatorListener` list we wish to add to
+     * @param endAction `Runnable` to run in the `onAnimationEnd` override of the
+     * anonymous `AnimatorListener` we add to `animator`
+     */
+    @SuppressLint("NewApi")
+    private fun setAnimatorEndAction(animator: Animator, endAction: Runnable?) {
+        if (endAction != null) {
+            animator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    endAction.run()
+                }
+            })
+        }
+    }
+
+    /**
+     * If our parameter `Runnable endAction` is not null we set an anonymous `AnimatorListener`
+     * to our parameter `Animation animation` which will call the `run` override of our
+     * parameter `endAction`.
+     *
+     * @param animation `Animation` whose `AnimatorListener` list we wish to add to
+     * @param endAction `Runnable` to run in the `onAnimationEnd` override of the
+     * anonymous `AnimatorListener` we add to `animator`
+     */
+    private fun setAnimationEndAction(animation: Animation, endAction: Runnable?) {
+        if (endAction != null) {
+            animation.setAnimationListener(object : AnimationListenerAdapter() {
+                override fun onAnimationEnd(animation: Animation) {
+                    endAction.run()
+                }
+            })
+        }
+    }
+
+    /**
+     * Utility, to avoid having to implement every method in AnimationListener in
+     * every implementation class
+     */
+    internal open class AnimationListenerAdapter : AnimationListener {
+        /**
+         * Notifies the end of the animation.
+         *
+         * @param animation The animation which reached its end.
+         */
+        override fun onAnimationEnd(animation: Animation) {}
+
+        /**
+         * Notifies the repetition of the animation.
+         *
+         * @param animation The animation which was repeated.
+         */
+        override fun onAnimationRepeat(animation: Animation) {}
+
+        /**
+         * Notifies the start of the animation.
+         *
+         * @param animation The started animation.
+         */
+        override fun onAnimationStart(animation: Animation) {}
+    }
+
+    companion object {
+        /**
+         * Value used to calculate the duration of the X translation animation when animating the swiping
+         * out of a view when the user released the view with more than a quarter of its width off the
+         * screen or its return to the list when the user released the view before a quarter of its width.
+         */
+        private const val SWIPE_DURATION = 250
+
+        /**
+         * Duration of the animation used to move up the items that are below the item removed
+         */
+        private const val MOVE_DURATION = 150
+    }
+}
