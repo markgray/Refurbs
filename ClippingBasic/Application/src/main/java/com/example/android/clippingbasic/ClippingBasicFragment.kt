@@ -21,6 +21,7 @@ import android.graphics.Outline
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.widget.Button
@@ -43,8 +44,8 @@ class ClippingBasicFragment : Fragment() {
     private var mOutlineProvider: ViewOutlineProvider? = null
 
     /**
-     * An array of texts, loaded from the string-array with resource id R.array.sample_texts, and
-     * displayed in round robin order every time the `changeText` method is called.
+     * An array of texts, loaded from the string-array with resource id [R.array.sample_texts], and
+     * displayed in round robin order every time the [changeText] method is called.
      */
     private lateinit var mSampleTexts: Array<String>
 
@@ -55,15 +56,15 @@ class ClippingBasicFragment : Fragment() {
 
     /**
      * Called to do initial creation of a fragment. First we call our super's implementation of
-     * `onCreate` the we call `setHasOptionsMenu(true)` to report that this fragment
-     * would like to participate in populating the options menu by receiving a call to
-     * `onCreateOptionsMenu` and related methods. We initialize our field `ViewOutlineProvider mOutlineProvider`
-     * with a new instance of `ClipOutlineProvider`, and initialize `String[] mSampleTexts`
-     * by retrieving the string-array with resource id R.array.sample_texts from our activities resources.
+     * `onCreate` the we call [setHasOptionsMenu] with `true` to report that this fragment would
+     * like to participate in populating the options menu by receiving a call to [onCreateOptionsMenu]
+     * and related methods. We initialize our [ViewOutlineProvider] field [mOutlineProvider] with a
+     * new instance of [ClipOutlineProvider], and initialize [Array] of [String] field [mSampleTexts]
+     * by retrieving the string-array with resource id [R.array.sample_texts] from our activities
+     * resources.
      *
      * @param savedInstanceState If the fragment is being re-created from a previous saved state,
-     * this is the state. We do not override `onSaveInstanceState`
-     * so do not use.
+     * this is the state. We do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,53 +74,57 @@ class ClippingBasicFragment : Fragment() {
     }
 
     /**
-     * Called to have the fragment instantiate its user interface view. We return the `View`
-     * constructed  by using our parameter `LayoutInflater inflater` to inflate our layout file
-     * R.layout.clipping_basic_fragment using our parameter `ViewGroup container` to generate
+     * Called to have the fragment instantiate its user interface view. We return the [View]
+     * constructed  by using our [LayoutInflater] parameter [inflater] to inflate our layout file
+     * [R.layout.clipping_basic_fragment] using our [ViewGroup] parameter [container] to generate
      * the `LayoutParams` without attaching to it.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
+     * @param inflater The [LayoutInflater] object that can be used to inflate
+     * any views in the fragment.
+     * @param container If non-`null`, this is the parent view that the fragment's
      * UI should be attached to.  The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI.
+     * @return Return the [View] for the fragment's UI.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.clipping_basic_fragment, container, false)
     }
 
     /**
-     * Called immediately after `onCreateView(LayoutInflater, ViewGroup, Bundle)`
-     * has returned, but before any saved state has been restored in to the view.
-     * This gives subclasses a chance to initialize themselves once
-     * they know their view hierarchy has been completely created.  The fragment's
-     * view hierarchy is not however attached to its parent at this point.
+     * Called immediately after [onCreateView] has returned, but before any saved state has been
+     * restored in to the view. This gives subclasses a chance to initialize themselves once they
+     * know their view hierarchy has been completely created. The fragment's view hierarchy is not
+     * however attached to its parent at this point.
      *
      * First we call our super's implementation of `onViewCreated`, then we initialize our
-     * field `TextView mTextView` by finding the view in our parameter `View view` with
-     * id R.id.text_view and call our `changeText` method to set its text to the first string
-     * in our array of strings `mSampleTexts`. We initialize `View clippedView` by finding
-     * the view in `view` with id R.id.frame, then set its [ViewOutlineProvider] to our field
-     * `ViewOutlineProvider mOutlineProvider` (which generates the Outline that defines the shape
-     * of the shadow the view casts, and enables outline clipping). We find the view with id R.id.button
-     * and set its `OnClickListener` to an anonymous class which toggles whether the View's Outline
-     * should be used to clip the contents of the View. We find the view with id R.id.text_view then set
-     * its `OnClickListener` to an anonymous class which increments our field `mClickCount`,
-     * calls our method `changeText` to change the next to the next one in order, and then calls
-     * the `invalidateOutline` method of `View clippedView` to invalidate the outline just
-     * in case the TextView changed size.
+     * [TextView] field [mTextView] by finding the view in our [View] parameter [view] with the
+     * id [R.id.text_view] and call our [changeText] method to set its text to the first string in
+     * our [Array] of strings field [mSampleTexts]. We initialize [View] variable `val clippedView`
+     * by finding the view in [view] with id [R.id.frame], then set its [ViewOutlineProvider] to our
+     * [ViewOutlineProvider] field [mOutlineProvider] (which generates the [Outline] that defines the
+     * shape of the shadow the view casts, and enables outline clipping). We find the view with id
+     * [R.id.button] and set its [OnClickListener] to an anonymous class which toggles whether the
+     * [View]'s Outline should be used to clip the contents of the View. We find the view with id
+     * [R.id.text_view] then set its [OnClickListener] to an anonymous class which increments our
+     * field [mClickCount], calls our method [changeText] to change the next to the next one in
+     * order, and then calls the [View.invalidateOutline] method of [View] variable `clippedView` to
+     * invalidate the outline just in case the [TextView] changed size.
      *
-     * @param view               The View returned by `onCreateView(LayoutInflater, ViewGroup, Bundle)`.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param view The [View] returned by [onCreateView].
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /* Set the initial text for the TextView. */mTextView = view.findViewById(R.id.text_view)
+        /* Set the initial text for the TextView. */
+        mTextView = view.findViewById(R.id.text_view)
         changeText()
         val clippedView = view.findViewById<View>(R.id.frame)
 
