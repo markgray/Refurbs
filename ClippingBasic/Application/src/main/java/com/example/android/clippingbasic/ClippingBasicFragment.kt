@@ -126,29 +126,28 @@ class ClippingBasicFragment : Fragment() {
         /* Set the initial text for the TextView. */
         mTextView = view.findViewById(R.id.text_view)
         changeText()
-        val clippedView = view.findViewById<View>(R.id.frame)
+        val clippedView: View = view.findViewById(R.id.frame)
 
-        /* Sets the OutlineProvider for the View. */clippedView.outlineProvider = mOutlineProvider
+        /* Sets the OutlineProvider for the View. */
+        clippedView.outlineProvider = mOutlineProvider
 
         /* When the button is clicked, the text is clipped or un-clipped. */
-        view.findViewById<View>(R.id.button).setOnClickListener { bt ->
+        view.findViewById<View>(R.id.button).setOnClickListener { bt: View ->
             /**
-             * Called when the button with id R.id.button is clicked. We branch on the value returned
-             * by the `getClipToOutline` method of `clippedView`:
+             * Called when the button with id [R.id.button] is clicked. We branch on the value
+             * returned by the [View.getClipToOutline] method of `clippedView`:
              *
-             *  *
-             * true: (the Outline should be used to clip the contents of the View) we call the
-             * `setClipToOutline(false)` method of `clippedView` to disable the
-             * clipping to outline, log this action, then set the text of the `Button`
-             * to the string with resource id R.string.clip_button ("Enable outline clipping")
+             *  * `true`: (the Outline should be used to clip the contents of the View) we call the
+             *  [View.setClipToOutline] method of `clippedView` with `false` to disable the clipping
+             *  to outline, log this action, then set the text of the [Button] to the string with
+             *  resource id [R.string.clip_button] ("Enable outline clipping")
              *
-             *  *
-             * false: (the Outline should not be used to clip the contents of the View) we call
-             * the `setClipToOutline(true)` method of `clippedView` to enable the
-             * clipping to outline, log this action, then set the text of the `Button`
-             * to the string with resource id R.string.unclip_button ("Disable outline clipping")
+             *  * `false`: (the Outline should not be used to clip the contents of the View) we call
+             *  the [View.setClipToOutline] method of `clippedView` with `true` to enable the
+             *  clipping to outline, log this action, then set the text of the [Button] to the
+             *  string with resource id [R.string.unclip_button] ("Disable outline clipping")
              *
-             * @param bt `View` that was clicked
+             * @param bt [View] that was clicked
              */
             // Toggle whether the View is clipped to the outline
             if (clippedView.clipToOutline) {
@@ -177,9 +176,9 @@ class ClippingBasicFragment : Fragment() {
     }
 
     /**
-     * Changes the text of our field `TextView mTextView` to the string found in our field
-     * `String[] mSampleTexts` at entry `mClickCount` modulo the length of the array
-     * `mSampleTexts`.
+     * Changes the text of our [TextView] field [mTextView] to the string found in our [Array] of
+     * [String] field [mSampleTexts] at entry [mClickCount] modulo the length of the array
+     * [mSampleTexts].
      */
     private fun changeText() {
         // Compute the position of the string in the array using the number of strings
@@ -197,21 +196,20 @@ class ClippingBasicFragment : Fragment() {
      */
     private class ClipOutlineProvider : ViewOutlineProvider() {
         /**
-         * Called to get the provider to populate the Outline. This method will be called by a View
-         * when its owned Drawables are invalidated, when the View's size changes, or if
+         * Called to get the provider to populate the Outline. This method will be called by a [View]
+         * when its owned Drawables are invalidated, when the [View]'s size changes, or if
          * [View.invalidateOutline] is called explicitly. The input outline is empty and has
          * an alpha of `1.0f`.
          *
-         *
-         * We initialize `int margin` to be the minimum of the width and height of our parameter
-         * `View view` divided by 10. Then we call the `setRoundRect` method of our parameter
-         * `Outline outline` to have a left value of `margin`, a top value of `margin`,
-         * a right value of the width of `view` minus `margin`, a bottom value of the height
-         * of `view` minus `margin`, and a radius of one half of `margin` (a rounded
+         * We initialize [Int] variable `val margin` to be the minimum of the width and height of
+         * our [View] parameter [view] divided by 10. Then we call the [Outline.setRoundRect] method
+         * of our [Outline] parameter [outline] to have a left value of `margin`, a top value of
+         * `margin`, a right value of the width of [view] minus `margin`, a bottom value of the
+         * height of [view] minus `margin`, and a radius of one half of `margin` (a rounded
          * rectangle which is inset by 10%).
          *
-         * @param view The view building the outline.
-         * @param outline The empty outline to be populated.
+         * @param view The [View] building the outline.
+         * @param outline The empty [Outline] to be populated.
          */
         override fun getOutline(view: View, outline: Outline) {
             val margin = Math.min(view.width, view.height) / 10
