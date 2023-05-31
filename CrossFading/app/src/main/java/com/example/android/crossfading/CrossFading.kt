@@ -27,7 +27,7 @@ import android.os.Bundle
 import android.widget.ImageView
 
 /**
- * This example shows how to use TransitionDrawable to perform a simple cross-fade effect
+ * This example shows how to use [TransitionDrawable] to perform a simple cross-fade effect
  * between two drawables.
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
@@ -35,7 +35,7 @@ import android.widget.ImageView
  */
 class CrossFading : Activity() {
     /**
-     * Which layer of the `TransitionDrawable` is currently being
+     * Which layer of the [TransitionDrawable] is currently being
      * displayed -- 0 is the first layer, 1 is the second layer.
      */
     var mCurrentDrawable: Int = 0
