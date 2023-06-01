@@ -26,9 +26,9 @@ import android.widget.Button
 import android.widget.RelativeLayout
 
 /**
- * This app shows how to move a view in a curved path between two endpoints.
- * The real work is done by PathEvaluator, which interpolates along a path
- * using Bezier control and anchor points in the path.
+ * This app shows how to move a view in a curved path between two endpoints. The real work is done
+ * by [PathEvaluator], which interpolates along a path using Bezier control and anchor points in the
+ * path.
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on the DevBytes playlist in the AndroidDevelopers channel on YouTube at
@@ -37,13 +37,13 @@ import android.widget.RelativeLayout
  */
 class CurvedMotion : Activity() {
     /**
-     * Flag indicating whether our `Button mButton` is at the top left of the screen (beginning
-     * position) or has been moved to the bottom of the screen.
+     * Flag indicating whether our [Button] field [mButton] is at the top left of the screen
+     * (beginning position) or has been moved to the bottom of the screen.
      */
     var mTopLeft: Boolean = true
 
     /**
-     * `Button` in our layout file with id R.id.button ("Click Me!") whose position on the
+     * [Button] in our layout file with id [R.id.button] ("Click Me!") whose position on the
      * screen we animate when the button is clicked.
      */
     var mButton: Button? = null
@@ -113,7 +113,8 @@ class CurvedMotion : Activity() {
                         // Set up the animation
                         val anim = ObjectAnimator.ofObject(
                             this@CurvedMotion, "buttonLoc",
-                            PathEvaluator(), *path.points.toTypedArray())
+                            PathEvaluator(), *path.points.toTypedArray()
+                        )
                         anim.interpolator = sDecelerateInterpolator
                         anim.start()
                         return true
