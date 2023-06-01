@@ -24,6 +24,7 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
+import android.view.View.OnClickListener
 import android.widget.ImageView
 
 /**
@@ -42,33 +43,30 @@ class CrossFading : Activity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_cross_fading. We initialize
-     * `ImageView imageView` by finding the view with id R.id.image_view. We initialize both
-     * `Bitmap bitmap0` and `Bitmap bitmap1` with 500 by 500 pixel bitmaps with a config
-     * of ARGB_8888. We initialize `Canvas canvas` with an instance that will draw into
-     * `bitmap0` then call its `drawColor` method to fill its entire bitmap with the
-     * color RED using srcover porterduff mode. We then set `canvas` to an instance that will
-     * draw into `bitmap1` and call its `drawColor` method to fill its entire bitmap with
-     * the color GREEN. We allocate 2 entries to initialize `BitmapDrawable drawables[]`, then
-     * set `drawables[0]` to an instance created from `bitmap0`, and `drawables[1]`
-     * to an instance created from `bitmap1`. We initialize `TransitionDrawable crossfader`
-     * with an instance created from `drawables` then set the content of `imageView` to it.
-     * Finally we set the `OnClickListener` of `imageView` to an anonymous class whose
-     * `onClick` override branches on the value of `mCurrentDrawable`:
+     * then we set our content view to our layout file [R.layout.activity_cross_fading]. We initialize
+     * [ImageView] variable `val imageView` by finding the view with id [R.id.image_view]. We
+     * initialize both [Bitmap] variable `val bitmap0` and [Bitmap] variable `val bitmap1` with 500
+     * by 500 pixel bitmaps with a config of ARGB_8888. We initialize [Canvas] variable `var canvas`
+     * with an instance that will draw into `bitmap0` then call its [Canvas.drawColor] method to fill
+     * its entire bitmap with the color [Color.RED] using `srcover` porterduff mode. We then set
+     * `canvas` to a new instance that will draw into `bitmap1` and call its [Canvas.drawColor]
+     * method to fill its entire bitmap with the color [Color.GREEN]. We allocate 2 entries to
+     * initialize [Array] of [BitmapDrawable] `val drawables`, then set `drawables[0]` to an instance
+     * created from `bitmap0`, and `drawables[1]` to an instance created from `bitmap1`. We
+     * initialize [TransitionDrawable] variable `val crossfader` with an instance created from
+     * `drawables` then set the content of `imageView` to it. Finally we set the [OnClickListener]
+     * of `imageView` to an anonymous class whose [OnClickListener.onClick] override branches on the
+     * value of [Int] field [mCurrentDrawable]:
      *
-     *  *
-     * 0: calls the `startTransition` method of `crossfader` with a duration of
-     * 500 milliseconds to transition the second layer on top of the first layer (taking 500ms
-     * to do so), then sets `mCurrentDrawable` to 1.
+     *  * 0: calls the [TransitionDrawable.startTransition] method of `crossfader` with a duration
+     *  of 500 milliseconds  to transition the second layer on top of the first layer (taking 500ms
+     *  to do so), then sets [mCurrentDrawable] to 1.
      *
-     *  *
-     * 1: calls the `reverseTransition` method of `crossfader` with a duration of
-     * 500 milliseconds to reverse the transition, picking up where the transition currently
-     * is (taking 500ms to do so), then sets `mCurrentDrawable` to 0.
+     *  * 1: calls the [TransitionDrawable.reverseTransition] method of `crossfader` with a duration
+     *  of 500 milliseconds to reverse the transition, picking up where the transition currently is
+     *  (taking 500ms to do so), then sets [mCurrentDrawable] to 0.
      *
-     *
-     *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +80,7 @@ class CrossFading : Activity() {
         canvas.drawColor(Color.RED)
         canvas = Canvas(bitmap1)
         canvas.drawColor(Color.GREEN)
-        val drawables = arrayOfNulls<BitmapDrawable>(2)
+        val drawables: Array<BitmapDrawable?> = arrayOfNulls(size = 2)
         drawables[0] = BitmapDrawable(resources, bitmap0)
         drawables[1] = BitmapDrawable(resources, bitmap1)
 
