@@ -18,10 +18,10 @@ package com.example.android.curvedmotion
 import android.animation.TypeEvaluator
 
 /**
- * This evaluator interpolates between two PathPoint values given the value t, the
+ * This evaluator interpolates between two [PathPoint] values given the value `t`, the
  * proportion traveled between those points. The value of the interpolation depends
- * on the operation specified by the endValue (the operation for the interval between
- * PathPoints is always specified by the end point of that interval).
+ * on the operation specified by the `endValue` (the operation for the interval between
+ * [PathPoint]'s is always specified by the end point of that interval).
  */
 class PathEvaluator : TypeEvaluator<PathPoint> {
     /**
