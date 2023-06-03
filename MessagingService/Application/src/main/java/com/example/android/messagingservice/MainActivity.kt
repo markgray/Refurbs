@@ -1,0 +1,88 @@
+/*
+ * Copyright (C) 2014 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+
+package com.example.android.messagingservice
+
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.graphics.Color
+import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.FragmentActivity
+
+/**
+ * This sample shows a simple service that sends notifications using
+ * NotificationCompat. It also extends the notification with Remote
+ * Input to allow Android N devices to reply via text directly from
+ * the notification without having to open an App. The same Remote
+ * Input object also allows Android Auto users to respond by voice
+ * when the notification is presented there.
+ *
+ * Note: Each unread conversation from a user is sent as a distinct notification.
+ */
+class MainActivity : FragmentActivity() {
+
+    /**
+     * Handle to the NOTIFICATION_SERVICE system level service.
+     */
+    var mNM // Class used to notify the user of events that happen
+        : NotificationManager? = null
+
+    /**
+     * Called when the activity is starting (or restarting after an orientation change). First we
+     * call through to our super's implementation of onCreate, then we set our content view to our
+     * layout file R.layout.activity_main. Then if the parameter `Bundle savedInstanceState`
+     * is null (first time running) we use the FragmentManager for interacting with fragments
+     * associated with this activity to begin a `FragmentTransaction` which we use to add a new
+     * instance of our fragment `MessagingFragment` to the container view with ID R.id.container
+     * and commit that `FragmentTransaction`.
+     *
+     * @param savedInstanceState we use it only to decide if we are running for the first time (it is
+     * null then, otherwise it contains info that the FragmentManager is
+     * concerned with.
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        mNM = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val chan1 = NotificationChannel(PRIMARY_CHANNEL, PRIMARY_CHANNEL,
+            NotificationManager.IMPORTANCE_DEFAULT)
+        chan1.lightColor = Color.GREEN
+        chan1.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        mNM!!.createNotificationChannel(chan1)
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.container, MessagingFragment(), "MessagingFragment")
+                .commit()
+        } else {
+            Log.i(TAG, "we have been this way before")
+        }
+    }
+
+    companion object {
+        /**
+         * The id of the primary notification channel
+         */
+        const val PRIMARY_CHANNEL: String = "default"
+
+        /**
+         * TAG used for logging
+         */
+        const val TAG: String = "MessagingService"
+    }
+}
