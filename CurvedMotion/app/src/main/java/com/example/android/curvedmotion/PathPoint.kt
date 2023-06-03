@@ -25,43 +25,50 @@ package com.example.android.curvedmotion
  */
 class PathPoint {
     /**
-     * The location of this PathPoint
+     * The x coordinate of this [PathPoint]
      */
     var mX: Float
 
     /**
-     * TODO: Add kdoc
+     * The y coordinate of this [PathPoint]
      */
     var mY: Float
 
     /**
-     * The first control point, if any, for a PathPoint of type CURVE
+     * The x coordinate of the first control point, if any, for a [PathPoint] of type [CURVE].
      */
     var mControl0X: Float = 0f
 
     /**
-     * TODO: Add kdoc
+     * The y coordinate of the first control point, if any, for a [PathPoint] of type [CURVE].
      */
     var mControl0Y: Float = 0f
 
     /**
-     * The second control point, if any, for a PathPoint of type CURVE
+     * The x coordinate of the second control point, if any, for a [PathPoint] of type [CURVE].
      */
     var mControl1X: Float = 0f
 
     /**
-     * TODO: Add kdoc
+     * The y coordinate of the second control point, if any, for a [PathPoint] of type [CURVE].
      */
     var mControl1Y: Float = 0f
 
     /**
-     * The motion described by the path to get from the previous PathPoint in an AnimatorPath
-     * to the location of this PathPoint. This can be one of MOVE, LINE, or CURVE.
+     * The motion described by the path to get from the previous [PathPoint] in an [AnimatorPath]
+     * to the location of this [PathPoint]. This can be one of [MOVE], [LINE], or [CURVE].
      */
     var mOperation: Int
 
     /**
-     * Line/Move constructor
+     * Line/Move constructor. We just store our parameters in the corresponding fields of this
+     * [PathPoint].
+     *
+     * @param operation the motion described by the path to get from the previous [PathPoint] in an
+     * [AnimatorPath] to the location of this [PathPoint]. This can be one of [MOVE], [LINE], or
+     * [CURVE].
+     * @param x The x coordinate of this [PathPoint].
+     * @param y The y coordinate of this [PathPoint].
      */
     private constructor(operation: Int, x: Float, y: Float) {
         mOperation = operation
@@ -70,7 +77,15 @@ class PathPoint {
     }
 
     /**
-     * Curve constructor
+     * Curve constructor. We just store our parameters in the corresponding fields of this
+     * [PathPoint] and set our [mOperation] field to [CURVE].
+     *
+     * @param c0X The x coordinate of the first control point
+     * @param c0Y The y coordinate of the first control point
+     * @param c1X The x coordinate of the second control point
+     * @param c1Y The y coordinate of the second control point
+     * @param x The x coordinate of this [PathPoint]
+     * @param y The y coordinate of this [PathPoint]
      */
     private constructor(c0X: Float, c0Y: Float, c1X: Float, c1Y: Float, x: Float, y: Float) {
         mControl0X = c0X
@@ -83,40 +98,50 @@ class PathPoint {
     }
 
     companion object {
+        /*
+         * The possible path operations that describe how to move from a preceding [PathPoint] to the
+         * location described by this [PathPoint].
+         */
+
         /**
-         * The possible path operations that describe how to move from a preceding PathPoint to the
-         * location described by this PathPoint.
+         * A discontinuous move to our xy location
          */
         const val MOVE: Int = 0
 
         /**
-         * TODO: Add kdoc
+         * A continuous line from the previous [PathPoint] to our xy location
          */
         const val LINE: Int = 1
 
         /**
-         * TODO: Add kdoc
+         * A Bezier curve from the previous [PathPoint] to our xy location
          */
         const val CURVE: Int = 2
 
         /**
          * Constructs and returns a PathPoint object that describes a line to the given xy location.
+         * We just return a [PathPoint] constructed to use [LINE] as its [PathPoint.mOperation]
+         * field, and our [Float] parameters [x] and [y] for its [PathPoint.mX] and [PathPoint.mY]
+         * fields respectively.
+         *
+         * @param x The x coordinate of the [PathPoint] of the [LINE].
+         * @param y The y coordinate of the [PathPoint] of the [LINE].
          */
         fun lineTo(x: Float, y: Float): PathPoint {
-            return PathPoint(LINE, x, y)
+            return PathPoint(operation = LINE, x = x, y = y)
         }
 
         /**
-         * Constructs and returns a PathPoint object that describes a curve to the given xy location
-         * with the control points at c0 and c1.
+         * Constructs and returns a [PathPoint] object that describes a Bezier curve to the given
+         * [x] and [y] coordinates with the control points at ([c0X], [c0Y]) and ([c1X], [c1Y]).
          */
         fun curveTo(c0X: Float, c0Y: Float, c1X: Float, c1Y: Float, x: Float, y: Float): PathPoint {
             return PathPoint(c0X, c0Y, c1X, c1Y, x, y)
         }
 
         /**
-         * Constructs and returns a PathPoint object that describes a discontinuous move to the given
-         * xy location.
+         * Constructs and returns a [PathPoint] object that describes a discontinuous move to the
+         * given [x] and [y] coordinates.
          */
         fun moveTo(x: Float, y: Float): PathPoint {
             return PathPoint(MOVE, x, y)

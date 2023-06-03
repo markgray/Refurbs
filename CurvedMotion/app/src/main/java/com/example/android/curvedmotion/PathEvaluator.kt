@@ -26,46 +26,43 @@ import android.animation.TypeEvaluator
 class PathEvaluator : TypeEvaluator<PathPoint> {
     /**
      * This function returns the result of linearly interpolating the start and end values, with
-     * `t` representing the proportion between the start and end values. The calculation is a
-     * simple parametric calculation: result = x0 + t * (x1 - x0), where `x0` is `startValue`,
-     * `x1` is `endValue`, and `t` is the fraction from the starting to the ending values.
+     * [Float] parameter [t] representing the proportion between the start and end values. The
+     * calculation is a simple parametric calculation: result = x0 + t * (x1 - x0), where `x0` is
+     * [PathPoint] parameter [startValue], `x1` is [PathPoint] parameter [endValue], and [t] is the
+     * fraction from the starting to the ending values.
      *
+     * First we declare [Float] variable `val x` and [Float] variable `val y`, then we branch on the
+     * value of the [PathPoint.mOperation] field of our [PathPoint] parameter [endValue]:
      *
-     * First we declare `float x` and `float y`, then we branch on the value of the
-     * `mOperation` field of our parameter `PathPoint endValue`:
+     *  * [PathPoint.CURVE]: we initialize [Float] variable `val oneMinusT` to 1 minus our parameter
+     *  [t] then calculate values for `x` and `y` by interpreting [endValue] as a Bezier curve
+     *  between the starting point contained in the [PathPoint.mX] and [PathPoint.mY] fields of our
+     *  [PathPoint] parameter [startValue] and the end point contained in those fields of [PathPoint]
+     *  parameter [endValue].
      *
-     *  *
-     * CURVE: we initialize `float oneMinusT` to 1 minus our parameter `t` then
-     * calculate values for `x` and `y` by interpreting `endValue` as a
-     * Bezier curve between the starting point contained in the `mX` and `mY`
-     * fields of our parameter `PathPoint startValue` and the end point contained in
-     * those fields of `endValue`.
+     *  * [PathPoint.LINE]: we calculate values for `x` and `y` by using [t] to calculate how far
+     *  along we are moving from the [PathPoint.mX] and [PathPoint.mY] fields of [PathPoint]
+     *  parameter [startValue] and the end point contained in those fields of [PathPoint]
+     *  parameter [endValue].
      *
-     *  *
-     * LINE: we calculate values for `x` and `y` by using `t` to calculate
-     * how far along we are moving from the `mX` and `mY` fields of `startValue`
-     * and the end point contained in those fields of `endValue`.
+     *  * All other operations: we just set `x` to the [PathPoint.mX] field of [PathPoint]
+     *  parameter [endValue] and `y` to its [PathPoint.mY] field.
      *
-     *  *
-     * All other operations: we just set `x` to the `mX` field of `endValue`
-     * and `y` to its `mY` field.
-     *
-     *
-     * We return the `PathPoint` object returned by the `moveTo` method of `PathPoint`
-     * when given the parameters `x` and `y` (a `PathPoint` object that describes a
-     * discontinuous move to the given xy location).
+     * We return the [PathPoint] object returned by the [PathPoint.moveTo] method of [PathPoint]
+     * when given the parameters `x` and `y` (a [PathPoint] object that describes a discontinuous
+     * move to the given xy location).
      *
      * @param t          The fraction from the starting to the ending values
      * @param startValue The start value.
      * @param endValue   The end value.
-     * @return A linear interpolation between the start and end values, given the `t` parameter.
+     * @return A linear interpolation between the start and end values, given the [t] parameter.
      */
     override fun evaluate(t: Float, startValue: PathPoint, endValue: PathPoint): PathPoint {
         val x: Float
         val y: Float
         when (endValue.mOperation) {
             PathPoint.CURVE -> {
-                val oneMinusT = 1 - t
+                val oneMinusT: Float = 1f - t
                 x = oneMinusT * oneMinusT * oneMinusT * startValue.mX
                     + 3 * oneMinusT * oneMinusT * t * endValue.mControl0X
                     + 3 * oneMinusT * t * t * endValue.mControl1X + t * t * t * endValue.mX
