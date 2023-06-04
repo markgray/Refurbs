@@ -17,6 +17,8 @@ package com.example.android.directoryselection
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 
 /**
  * Launcher Activity for the Directory Selection sample app.
@@ -24,15 +26,15 @@ import androidx.fragment.app.FragmentActivity
 class DirectorySelectionActivity : FragmentActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_directory_selection.
-     * If our parameter `Bundle savedInstanceState` is null then it is the first time that we were
-     * called so we need to construct and add our `DirectorySelectionFragment`. To do this we use
-     * the FragmentManager for interacting with fragments associated with this activity to begin a
-     * `FragmentTransaction` in which we add a new instance of `DirectorySelectionFragment`
-     * to the container with id R.id.container, and then we commit the `FragmentTransaction`.
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_directory_selection].
+     * If our [Bundle] parameter [savedInstanceState] is `null` this is the first time that we were
+     * called so we need to construct and add our [DirectorySelectionFragment]. To do this we use
+     * the [FragmentManager] for interacting with fragments associated with this activity to begin a
+     * [FragmentTransaction] in which we add a new instance of [DirectorySelectionFragment]
+     * to the container with id [R.id.container], and then we commit the [FragmentTransaction].
      *
      * @param savedInstanceState used only to determine if we are being called for the first time
-     * (null) in which case we need to create and add our fragment. On a
+     * (`null`) in which case we need to create and add our fragment. On a
      * configuration change our fragment will be restored by the system.
      */
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -27,6 +27,7 @@ import android.provider.DocumentsContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
@@ -41,40 +42,39 @@ import java.io.FileNotFoundException
  */
 class DirectorySelectionFragment : Fragment() {
     /**
-     * The uri of the current directory.
+     * The [Uri] of the current directory.
      */
     var mCurrentDirectoryUri: Uri? = null
 
     /**
-     * `TextView` with id R.id.textview_current_directory, used to display the name of the
-     * currently selected directory (whose contents are displayed in the RecyclerView below it).
+     * [TextView] with id [R.id.textview_current_directory], used to display the name of the
+     * currently selected directory (whose contents are displayed in the [RecyclerView] below it).
      */
     @JvmField
     var mCurrentDirectoryTextView: TextView? = null
 
     /**
-     * `Button` with id R.id.button_create_directory used to create an `AlertDialog`
+     * [Button] with id [R.id.button_create_directory] used to create an [AlertDialog]
      * when clicked which allows the user to create a new directory.
      */
     @JvmField
     var mCreateDirectoryButton: Button? = null
 
     /**
-     * `RecyclerView` that uses a `DirectoryEntryAdapter` to display the contents of the
-     * current directory (files and directories below `Uri mCurrentDirectoryUri`).
+     * [RecyclerView] that uses a [DirectoryEntryAdapter] to display the contents of the
+     * current directory (files and directories below [Uri] field [mCurrentDirectoryUri]).
      */
     @JvmField
     var mRecyclerView: RecyclerView? = null
 
     /**
-     * Adapter used to fill our field `RecyclerView mRecyclerView` with `DirectoryEntry`
-     * objects.
+     * Adapter used to fill our [RecyclerView] field [mRecyclerView] with [DirectoryEntry] objects.
      */
     @JvmField
     var mAdapter: DirectoryEntryAdapter? = null
 
     /**
-     * `LayoutManager` used by our `RecyclerView` - set in `onViewCreated` but
+     * [RecyclerView.LayoutManager] used by our [RecyclerView] - set in [onViewCreated] but
      * never used.
      */
     @JvmField
@@ -84,7 +84,7 @@ class DirectorySelectionFragment : Fragment() {
      * Called to do initial creation of our fragment. We just call through to our super's
      * implementation of `onCreate`.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     @Suppress("RedundantOverride")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,38 +92,41 @@ class DirectorySelectionFragment : Fragment() {
     }
 
     /**
-     * Called to have the fragment instantiate its user interface view. We use our parameter
-     * `LayoutInflater inflater` to inflate our layout file R.layout.fragment_directory_selection
-     * using our parameter `ViewGroup container` for the LayoutParams without attaching to it
-     * and return the view created to our caller.
+     * Called to have the fragment instantiate its user interface view. We use our [LayoutInflater]
+     * parameter [inflater] to inflate our layout file [R.layout.fragment_directory_selection]
+     * using our [ViewGroup] parameter [container] for the LayoutParams without attaching to it
+     * and return the [View] created to our caller.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself, but this
+     * can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the [View] for the fragment's UI, or null.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_directory_selection, container, false)
     }
 
     /**
-     * Called immediately after [.onCreateView]
-     * has returned, but before any saved state has been restored in to the view. First we call
-     * through to our super's implementation of `onViewCreated`, then we locate the view with
-     * id R.id.button_open_directory ("Open directory") and set its `OnClickListener` to an
-     * anonymous class whose `onClick` method launches an intent for its result with the action
-     * ACTION_OPEN_DOCUMENT_TREE. Next we initialize our field `TextView mCurrentDirectoryTextView`
-     * by finding the view with id R.id.textview_current_directory, and our field `Button mCreateDirectoryButton`
-     * by finding the view with id R.id.button_create_directory ("Create Directory"). We then set the
-     * `OnClickListener` of `mCreateDirectoryButton` to an anonymous class whose `onClick`
-     * method launches an `AlertDialog` which allows the user to enter the name of a directory that
-     * he would like to create and creates it in the current directory `mCurrentDirectoryUri`.
-     *
+     * Called immediately after [onCreateView] has returned, but before any saved state has been
+     * restored in to the view. First we call through to our super's implementation of `onViewCreated`,
+     * then we locate the view with id [R.id.button_open_directory] ("Open directory") and set its
+     * [OnClickListener] to an anonymous class whose [OnClickListener.onClick] override launches an
+     * intent for its result with the action [Intent.ACTION_OPEN_DOCUMENT_TREE]. Next we initialize
+     * our [TextView] field [mCurrentDirectoryTextView] by finding the view with id
+     * [R.id.textview_current_directory], and our [Button] field [mCreateDirectoryButton] by finding
+     * the view with id [R.id.button_create_directory] ("Create Directory"). We then set the
+     * [OnClickListener] of [mCreateDirectoryButton] to an anonymous class whose [OnClickListener.onClick]
+     * override launches an [AlertDialog] which allows the user to enter the name of a directory that
+     * he would like to create and creates it in the current directory [mCurrentDirectoryUri].
      *
      * After this we initialize our field `RecyclerView mRecyclerView` by finding the view with
      * id R.id.recyclerview_directory_entries, and initialize `LayoutManager mLayoutManager` by
