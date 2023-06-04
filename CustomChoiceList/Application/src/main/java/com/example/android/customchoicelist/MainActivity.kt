@@ -17,6 +17,7 @@ package com.example.android.customchoicelist
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -52,7 +53,7 @@ class MainActivity : Activity() {
     private inner class MyAdapter : BaseAdapter() {
         /**
          * How many items are in the data set represented by this Adapter. This is just the length
-         * of the string array `Cheeses.CHEESES`.
+         * of the [Array] of [String] field [Cheeses.CHEESES].
          *
          * @return Count of items.
          */
@@ -62,7 +63,7 @@ class MainActivity : Activity() {
 
         /**
          * Get the data item associated with the specified position in the data set. We return the
-         * `String` at position `position` in the string array `Cheeses.CHEESES`.
+         * [String] at position [position] in the [Array] of [String] field [Cheeses.CHEESES].
          *
          * @param position Position of the item whose data we want within the adapter's data set.
          * @return The data at the specified position.
@@ -73,7 +74,7 @@ class MainActivity : Activity() {
 
         /**
          * Get the row id associated with the specified position in the list. We return the hashcode
-         * of the `String` at position `position` in the string array `Cheeses.CHEESES`.
+         * of the [String] at position [position] in the [Array] of [String] field [Cheeses.CHEESES].
          *
          * @param position The position of the item within the adapter's data set whose row id we want.
          * @return The id of the item at the specified position.
@@ -83,22 +84,22 @@ class MainActivity : Activity() {
         }
 
         /**
-         * Get a View that displays the data at the specified position in the data set. If our parameter
-         * `View convertView` is null we set it to the view that the `LayoutInflater` for
-         * our activities window to inflate the layout file R.layout.list_item using our parameter
-         * `ViewGroup container` for the LayoutParams without attaching to it (this layout file
-         * consists of a custom `CheckableLinearLayout` which is central to this example). We
-         * find the `TextView` in `convertView` with id android.R.id.text1 and set its text
-         * to the `String` returned by our `getItem` method for position `position`
-         * and return `convertView` to the caller.
+         * Get a View that displays the data at the specified position in the data set. If our [View]
+         * parameter [convertView] is `null` we set it to the view that the [LayoutInflater] for our
+         * activities window inflates from the layout file [R.layout.list_item] using our [ViewGroup]
+         * parameter [container] for the LayoutParams without attaching to it (this layout file
+         * consists of a custom [CheckableLinearLayout] which is central to this example). We
+         * find the [TextView] in [convertView] with id [android.R.id.text1] and set its text
+         * to the [String] returned by our [getItem] method for position [position] and return
+         * [convertView] to the caller.
          *
          * @param position The position of the item within the adapter's data set whose view we want.
          * @param convertView The old view to reuse, if possible.
          * @param container The parent that this view will eventually be attached to
-         * @return A View corresponding to the data at the specified position.
+         * @return A [View] corresponding to the data at the specified position.
          */
         override fun getView(position: Int, convertView: View?, container: ViewGroup): View {
-            var convertViewLocal = convertView
+            var convertViewLocal: View? = convertView
             if (convertViewLocal == null) {
                 convertViewLocal = layoutInflater.inflate(R.layout.list_item, container, false)
             }
