@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION") // TODO: Convert from ListActivity to RecyclerView?
-
 package com.example.android.customchoicelist
 
-import android.app.ListActivity
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.TextView
 
 /**
@@ -29,20 +29,21 @@ import android.widget.TextView
  * [android.widget.ListView] UIs. The most interesting bits are in
  * the `res/layout/` directory of this sample.
  */
-class MainActivity : ListActivity() {
+class MainActivity : Activity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.sample_main (which consists of a
-     * `LinearLayout` containing a `TextView` which explains the example and a `ListView`
-     * with id "@android:id/list" which this `ListActivity` will use to display its list of
-     * Cheeses. Finally we set our `ListAdapter` to a new instance of `MyAdapter`.
+     * then we set our content view to our layout file [R.layout.sample_main] (which consists of a
+     * [LinearLayout] containing a [TextView] which explains the example and a [ListView] with id
+     * "@android:id/list" which this [Activity] will use to display its list o Cheeses. Finally we
+     * call the [ListView.setAdapter] method of the [ListView] (aka kotlin `adapter` property) with
+     * a new instance of [MyAdapter].
      *
      * @param savedInstanceState We do not override `onSaveInstanceState` so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sample_main)
-        listAdapter = MyAdapter()
+        findViewById<ListView>(android.R.id.list).adapter = MyAdapter()
     }
 
     /**
