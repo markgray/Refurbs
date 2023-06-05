@@ -20,7 +20,9 @@ package com.example.android.directoryselection
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentResolver
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
@@ -128,15 +130,16 @@ class DirectorySelectionFragment : Fragment() {
      * override launches an [AlertDialog] which allows the user to enter the name of a directory that
      * he would like to create and creates it in the current directory [mCurrentDirectoryUri].
      *
-     * After this we initialize our field `RecyclerView mRecyclerView` by finding the view with
-     * id R.id.recyclerview_directory_entries, and initialize `LayoutManager mLayoutManager` by
-     * retrieving the `LayoutManager` of `mRecyclerView` (we never reference this again).
-     * We scroll `mRecyclerView` to position 0, initialize our field `DirectoryEntryAdapter mAdapter`
-     * with a new instance constructed with a new (empty) instance of `ArrayList<DirectoryEntry>`,
-     * and set the adapter of `mRecyclerView` to it.
+     * After this we initialize our [RecyclerView] field [mRecyclerView] by finding the view with
+     * id [R.id.recyclerview_directory_entries], and initialize [RecyclerView.LayoutManager] field
+     * [mLayoutManager] by using the [RecyclerView.getLayoutManager] method (aka `layoutManager`
+     * property in kotlin) of [mRecyclerView] to retrieve it (we never reference this again). We
+     * scroll [mRecyclerView] to position 0, initialize our [DirectoryEntryAdapter] field [mAdapter]
+     * with a new instance constructed with a new (empty) instance of [ArrayList] of [DirectoryEntry]
+     * and set the adapter of [mRecyclerView] to it.
      *
-     * @param rootView The View returned by [.onCreateView].
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param rootView The [View] returned by [onCreateView].
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
      */
     override fun onViewCreated(rootView: View, savedInstanceState: Bundle?) {
@@ -176,20 +179,20 @@ class DirectorySelectionFragment : Fragment() {
     }
 
     /**
-     * Receive the result from a previous call to [.startActivityForResult]. First
-     * we call our super's implementation of `onActivityResult`. Then if `requestCode` is
-     * REQUEST_CODE_OPEN_DIRECTORY, and `resultCode` is RESULT_OK we log the string value of the
-     * data Uri of our parameter `Intent data`, call our method `updateDirectoryEntries`
-     * with that Uri, and then notify any registered observers of `mAdapter` that the data set
-     * has changed which will reload its [RecyclerView] with the new data from the Uri.
+     * Receive the result from a previous call to [startActivityForResult]. First we call our
+     * super's implementation of `onActivityResult`. Then if our [Int] parameter [requestCode] is
+     * [REQUEST_CODE_OPEN_DIRECTORY], and our [Int] parameter [resultCode] is [Activity.RESULT_OK]
+     * we log the string value of the data [Uri] of our [Intent] parameter [data], call our method
+     * [updateDirectoryEntries] with that [Uri], and then notify any registered observers of
+     * [mAdapter] that the data set has changed which will reload its [RecyclerView] with the new
+     * data from the [Uri].
      *
-     * @param requestCode The integer request code originally supplied to
-     * startActivityForResult(), allowing you to identify who this
-     * result came from.
-     * @param resultCode The integer result code returned by the child activity
-     * through its setResult().
-     * @param data An Intent, which can return result data to the caller
-     * (various data can be attached to Intent "extras").
+     * @param requestCode The integer request code originally supplied to [startActivityForResult],
+     * allowing you to identify who this result came from.
+     * @param resultCode The integer result code returned by the child activity through its
+     * [Activity.setResult] method.
+     * @param data An [Intent], which can return result data to the caller (various data can be
+     * attached to [Intent] "extras").
      */
     @SuppressLint("NotifyDataSetChanged")
     @Deprecated("Deprecated in Java")
@@ -204,65 +207,71 @@ class DirectorySelectionFragment : Fragment() {
     }
 
     /**
-     * Updates the current directory of the uri passed as an argument and its children directories.
-     * And updates the [.mRecyclerView] depending on the contents of the children. First we
-     * initialize `ContentResolver contentResolver` with a ContentResolver instance for our
-     * application's package. We initialize `String documentId` with the [DocumentsContract.Document.COLUMN_DOCUMENT_ID]
-     * ("document_id") column by calling `getTreeDocumentId` for the `Uri uri` (this is
-     * something like "primary:Testing/sub1" assuming the user selected the directory "Testing/sub1"
-     * from the base directory of the device).
-     * We initialize `Uri docUri` with a URI representing the target [DocumentsContract.Document.COLUMN_DOCUMENT_ID] in
-     * a document provider by calling `buildDocumentUriUsingTree` with `uri` and `documentId`
-     * producing in our example for "Testing/sub1":
-     *
+     * Updates the current directory of the [Uri] parameter [uri] and its children directories, and
+     * updates the [mRecyclerView] depending on the contents of the children. First we initialize
+     * [ContentResolver] variable `val contentResolver` with a [ContentResolver] instance for our
+     * application's package. We initialize [String] variable `val documentId` with the
+     * [DocumentsContract.Document.COLUMN_DOCUMENT_ID] ("document_id") column by calling the method
+     * [DocumentsContract.getTreeDocumentId] for our [Uri] parameter [uri] (this is something like
+     * "primary:Testing/sub1" assuming the user selected the directory "Testing/sub1" from the base
+     * directory of the device). We initialize [Uri] variable `val docUri` with a URI representing
+     * the target [DocumentsContract.Document.COLUMN_DOCUMENT_ID] in a document provider by calling
+     * [DocumentsContract.buildDocumentUriUsingTree] with [uri] and `documentId` producing in our
+     * example for "Testing/sub1":
      *
      * content://com.android.externalstorage.documents/tree/primary%3ATesting%2Fsub1/document/primary%3ATesting%2Fsub1
      *
-     *
-     * We initialize `Uri childrenUri` with a URI representing the children of the target directory
-     * by calling `buildChildDocumentsUriUsingTree` with `uri` and `documentId`
-     * producing in our example for "Testing/sub1":
-     *
+     * We initialize [Uri]  variable `val childrenUri` with a URI representing the children of the
+     * target directory by calling [DocumentsContract.buildChildDocumentsUriUsingTree] with [uri]
+     * and `documentId` producing in our example for "Testing/sub1":
      *
      * content://com.android.externalstorage.documents/tree/primary%3ATesting%2Fsub1/document/primary%3ATesting%2Fsub1/children
      *
-     *
-     * We then initialize `Cursor docCursor` by using our `contentResolver` to query the
-     * `Uri docUri` for all entries returning the columns COLUMN_DISPLAY_NAME and COLUMN_MIME_TYPE.
-     * Then wrapped in a try block whose finally block calls our method `closeQuietly` to close
-     * `docUri` ignoring any exceptions we loop moving `docUri` to the next column and
-     * after logging the string contents of column 0 (the directory name) and column 1 (the mime type)
-     * we set `mCurrentDirectoryUri` to `uri`, set the text of `mCurrentDirectoryTextView`
-     * to the string in column 0 or `docCursor`, and enable the button `mCreateDirectoryButton`.
-     *
-     *
-     * We initialize `Cursor childCursor` by using our `contentResolver` to query the
-     * `Uri childCursor` for all entries returning the columns COLUMN_DISPLAY_NAME and COLUMN_MIME_TYPE.
-     * Then wrapped in a try block whose finally block calls our method `closeQuietly` to close
-     * `childCursor` ignoring any exceptions we first initialize `List<DirectoryEntry> directoryEntries`
-     * with a new `ArrayList`. Then we loop moving `childCursor` to the next column and
-     * after logging the string contents of column 0 (the directory name) and column 1 (the mime type)
-     * we initialize `DirectoryEntry entry` with a new instance, set its field `fileName`
-     * to the string contents of column 0, and its field `mimeType` to the string contents of
-     * column 1 of `childCursor`. We then add `entry` to `directoryEntries` before
-     * looping around for the next row.
+     * We then initialize [Cursor] variable `val docCursor` by using our [ContentResolver] variable
+     * `contentResolver` to query the [Uri] variable `docUri` for all entries returning the columns
+     * [DocumentsContract.Document.COLUMN_DISPLAY_NAME] and [DocumentsContract.Document.COLUMN_MIME_TYPE].
+     * Then wrapped in a try block whose finally block calls our method [closeQuietly] to close
+     * `docUri` ignoring any exceptions we loop moving `docCursor` to the next column and after
+     * logging the string contents of column 0 (the directory name) and column 1 (the mime type)
+     * we set [Uri] field [mCurrentDirectoryUri] to [uri], set the text of [mCurrentDirectoryTextView]
+     * to the string in column 0 of `docCursor`, and enable the button [mCreateDirectoryButton].
      *
      *
-     * After done with all the entries in `childCursor` we call the `setDirectoryEntries`
-     * method of `DirectoryEntryAdapter mAdapter` to set its data set to `directoryEntries`
-     * and call its `notifyDataSetChanged` to cause it to reload its `RecyclerView` with
-     * the new data.
+     * We initialize [Cursor] variable `val childCursor` by using our [ContentResolver] variable
+     * `contentResolver` to query the [Uri] variable `childrenUri` for all entries returning the
+     * columns [DocumentsContract.Document.COLUMN_DISPLAY_NAME] and [DocumentsContract.Document.COLUMN_MIME_TYPE].
+     * Then wrapped in a try block whose finally block calls our method [closeQuietly] to close
+     * `childCursor` ignoring any exceptions we first initialize [MutableList] of [DirectoryEntry]
+     * variable `val directoryEntries` with a new [ArrayList]. Then we loop moving `childCursor` to
+     * the next column and after logging the string contents of column 0 (the directory name) and
+     * column 1 (the mime type) we initialize [DirectoryEntry] variable `val entry` with a new
+     * instance, set its field [DirectoryEntry.fileName] to the string contents of column 0, and its
+     * field [DirectoryEntry.mimeType] to the string contents of column 1 of `childCursor`. We then
+     * add `entry` to `directoryEntries` before looping around for the next row.
      *
-     * @param uri The uri of the current directory.
+     * After done with all the entries in `childCursor` we call the
+     * [DirectoryEntryAdapter.setDirectoryEntries] method of [DirectoryEntryAdapter] field [mAdapter]
+     * to set its data set to `directoryEntries`and call its [DirectoryEntryAdapter.notifyDataSetChanged]
+     * method to cause it to reload its [RecyclerView] with the new data.
+     *
+     * @param uri The [Uri] of the current directory.
      */
     @SuppressLint("NotifyDataSetChanged")
     fun updateDirectoryEntries(uri: Uri?) {
-        val contentResolver = requireActivity().contentResolver
-        val documentId = DocumentsContract.getTreeDocumentId(uri)
-        val docUri = DocumentsContract.buildDocumentUriUsingTree(uri, documentId)
-        val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(uri, documentId)
-        val docCursor = contentResolver.query(docUri, arrayOf(
-            DocumentsContract.Document.COLUMN_DISPLAY_NAME, DocumentsContract.Document.COLUMN_MIME_TYPE), null, null, null)
+        val contentResolver: ContentResolver = requireActivity().contentResolver
+        val documentId: String = DocumentsContract.getTreeDocumentId(uri)
+        val docUri: Uri = DocumentsContract.buildDocumentUriUsingTree(uri, documentId)
+        val childrenUri: Uri = DocumentsContract.buildChildDocumentsUriUsingTree(uri, documentId)
+        val docCursor: Cursor? = contentResolver.query(
+            docUri,
+            arrayOf(
+                DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                DocumentsContract.Document.COLUMN_MIME_TYPE
+            ),
+            null,
+            null,
+            null
+        )
         try {
             while (docCursor!!.moveToNext()) {
                 Log.d(TAG, "found doc =" + docCursor.getString(0) + ", mime=" + docCursor
