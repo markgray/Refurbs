@@ -18,27 +18,18 @@ package com.example.android.directshare
 /**
  * Provides the list of dummy contacts. This sample implements this as constants, but real-life apps
  * should use a database and such.
- */
-class Contact
-/**
- * Instantiates a new [Contact]. We just store our parameter in our field `mName`.
  *
  * @param name The name of the contact.
- */(
-    /**
-     * The name of this contact.
-     */
-    val name: String) {
-    /**
-     * Gets the name of this contact.
-     *
-     * @return The name of this contact.
-     */
+ */
+class Contact(
+    val name: String
+) {
 
     /**
-     * Gets the icon of this contact.
+     * Gets the icon of this contact. We use the mipmap with resource ID [R.mipmap.logo_avatar] for
+     * all of our [Contact] instances.
      *
-     * @return The icon.
+     * @return The resource ID of our icon, [R.mipmap.logo_avatar]
      */
     val icon: Int
         get() = R.mipmap.logo_avatar
@@ -58,7 +49,8 @@ class Contact
             Contact("Deana"),
             Contact("Daria"),
             Contact("Melisa"),
-            Contact("Sammie"))
+            Contact("Sammie")
+        )
 
         /**
          * The contact ID.

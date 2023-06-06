@@ -22,13 +22,13 @@ import android.widget.TextView
  */
 object ContactViewBinder {
     /**
-     * Binds the `textView` with the specified `contact`. We set the text of our parameter
-     * `TextView textView` to the name returned by the `getName` method of our parameter
-     * `contact`, and set the start Drawable of `textView` to the drawable whose resource
-     * id is returned by the `getIcon` method of `contact`.
+     * Binds the [TextView] parameter [textView] with the [Contact] parameter [contact]. We set the
+     * text of our [TextView] parameter [textView] to the name returned by [Contact.name] property
+     * of our [Contact] parameter [contact], and set the start Drawable of [textView] to the drawable
+     * whose resource id is returned by the [Contact.icon] property of [contact].
      *
-     * @param contact  The contact.
-     * @param textView The TextView.
+     * @param contact  The [Contact] we are to bind to.
+     * @param textView The [TextView] we are to bind.
      */
     fun bind(contact: Contact, textView: TextView) {
         textView.text = contact.name

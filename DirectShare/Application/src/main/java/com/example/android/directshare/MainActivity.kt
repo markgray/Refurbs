@@ -21,6 +21,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toolbar
 
@@ -30,18 +31,18 @@ import android.widget.Toolbar
  */
 class MainActivity : Activity() {
     /**
-     * `EditText` with id R.id.body, user enters text here that they want to share.
+     * [EditText] with resource id [R.id.body], user enters text here that they want to share.
      */
     private var mEditBody: EditText? = null
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.main. We set the
-     * action bar of our activity to the `Toolbar` whose view has id R.id.toolbar, initialize
-     * `mEditBody` by finding the view with id R.id.body, and set the `OnClickListener`
-     * of the view with id R.id.share to our field `mOnClickListener`.
+     * `onCreate`, then we set our content view to our layout file [R.layout.main]. We set the
+     * action bar of our activity to the [Toolbar] whose view has id [R.id.toolbar], initialize
+     * [EditText] field [mEditBody] by finding the view with id [R.id.body], and set the
+     * [View.OnClickListener] of the view with id [R.id.share] to our field [mOnClickListener].
      *
-     * @param savedInstanceState We do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState We do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +53,8 @@ class MainActivity : Activity() {
     }
 
     /**
-     * `OnClickListener` for the `Button` with id R.id.share ("SHARE"), its `onClick`
-     * override simply calls our method `share`.
+     * [View.OnClickListener] for the [Button] with id [R.id.share] ("SHARE"), its
+     * [View.OnClickListener.onClick] override simply calls our method [share].
      */
     private val mOnClickListener = View.OnClickListener { v ->
         /**
@@ -68,13 +69,12 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Emits a sample share [Intent]. We initialize `Intent sharingIntent` with an intent
-     * whose action is ACTION_SEND, set its type to "text/plain", and add the text in our
-     * `EditText mEditBody` as an extra under the key EXTRA_TEXT ("android.intent.extra.TEXT").
-     * We then start the chooser activity created by the `Intent.createChooser` method from
-     * `sharingIntent`, with the title set to the string with id R.string.send_intent_title
-     * ("Send a message via:").
-     *
+     * Emits a sample share [Intent]. We initialize [Intent] variable `val sharingIntent` with an
+     * [Intent] whose action is [Intent.ACTION_SEND], set its type to "text/plain", and add the text
+     * in our [EditText] field [mEditBody] as an extra under the key [Intent.EXTRA_TEXT]
+     * ("android.intent.extra.TEXT"). We then start the chooser activity created by the
+     * [Intent.createChooser] method from `sharingIntent`, with the title set to the string with id
+     * [R.string.send_intent_title] ("Send a message via:").
      */
     private fun share() {
         val sharingIntent = Intent(Intent.ACTION_SEND)
