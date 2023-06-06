@@ -303,50 +303,62 @@ class DirectorySelectionFragment : Fragment() {
     }
 
     /**
-     * Creates a directory under the directory represented as the uri in the argument. First we
-     * initialize `ContentResolver contentResolver` with a ContentResolver instance for our
-     * application's package. We initialize `String documentId` with the [DocumentsContract.Document.COLUMN_DOCUMENT_ID]
-     * ("document_id") column by calling `getTreeDocumentId` for the `Uri uri` (this is
-     * something like "primary:Testing/sub1" assuming the user selected the directory "Testing/sub1"
-     * from the base directory of the device). Then we initialize `Uri docUri` with a URI
-     * representing the target [DocumentsContract.Document.COLUMN_DOCUMENT_ID] in a document provider by calling
-     * `buildDocumentUriUsingTree` with `uri` and `documentId`. Next we call the
-     * `createDocument` method to create a new document with the MIME type MIME_TYPE_DIR and
-     * display name from our parameter `directoryName` inside the directory `docUri` and
-     * save the newly created document URI in `Uri directoryUri`. If this is not null (success!)
-     * we log the fact that we created it and toast that fact as well. If it is null (failure) we
-     * log and toast that fact.
+     * Creates a directory under the directory represented by our [Uri] parameter [uri]. First we
+     * initialize [ContentResolver] variable `val contentResolver` with a [ContentResolver] instance
+     * for our application's package. We initialize [String] variable `val documentId` with the
+     * [DocumentsContract.Document.COLUMN_DOCUMENT_ID] ("document_id") column by calling
+     * [DocumentsContract.getTreeDocumentId] for the [Uri] parameter [uri] (this is something like
+     * "primary:Testing/sub1" assuming the user selected the directory "Testing/sub1" from the base
+     * directory of the device). Then we initialize [Uri] variable `val docUri` with a URI for the
+     * target [DocumentsContract.Document.COLUMN_DOCUMENT_ID] in a document provider by calling
+     * [DocumentsContract.buildDocumentUriUsingTree] with [uri] and `documentId`. Next we call the
+     * [DocumentsContract.createDocument] method to create a new document with the MIME type
+     * [DocumentsContract.Document.MIME_TYPE_DIR] and display name from our [String] parameter
+     * [directoryName] inside the directory `docUri` and save the newly created document URI in
+     * [Uri] variable `val directoryUri`. If this is not `null` (success!) we log the fact that we
+     * created it and toast that fact as well. If it is `null` (failure) we log and toast that fact.
      *
-     * @param uri The uri of the directory under which a new directory is created.
+     * @param uri The [Uri] of the directory under which a new directory is created.
      * @param directoryName The directory name of a new directory.
      */
     @Throws(FileNotFoundException::class)
     fun createDirectory(uri: Uri?, directoryName: String?) {
-        val contentResolver = requireActivity().contentResolver
-        val documentId = DocumentsContract.getTreeDocumentId(uri)
-        val docUri = DocumentsContract.buildDocumentUriUsingTree(uri, documentId)
-        val directoryUri = DocumentsContract
-            .createDocument(contentResolver, docUri, DocumentsContract.Document.MIME_TYPE_DIR, directoryName!!)
+        val contentResolver: ContentResolver = requireActivity().contentResolver
+        val documentId: String = DocumentsContract.getTreeDocumentId(uri)
+        val docUri: Uri = DocumentsContract.buildDocumentUriUsingTree(uri, documentId)
+        val directoryUri: Uri? = DocumentsContract.createDocument(
+            contentResolver,
+            docUri,
+            DocumentsContract.Document.MIME_TYPE_DIR,
+            directoryName!!
+        )
         if (directoryUri != null) {
             Log.i(TAG, String.format(
                 "Created directory : %s, Document Uri : %s, Created directory Uri : %s",
-                directoryName, docUri, directoryUri))
-            Toast.makeText(activity, String.format("Created a directory [%s]",
-                directoryName), Toast.LENGTH_SHORT).show()
+                directoryName, docUri, directoryUri)
+            )
+            Toast.makeText(activity, String.format(
+                "Created a directory [%s]",
+                directoryName
+            ), Toast.LENGTH_SHORT).show()
         } else {
-            Log.w(TAG, String.format("Failed to create a directory : %s, Uri %s", directoryName,
-                docUri))
-            Toast.makeText(activity, String.format("Failed to created a directory [%s] : ",
-                directoryName), Toast.LENGTH_SHORT).show()
+            Log.w(TAG, String.format(
+                "Failed to create a directory : %s, Uri %s",
+                directoryName, docUri)
+            )
+            Toast.makeText(activity, String.format(
+                "Failed to create a directory [%s] : ",
+                directoryName
+            ), Toast.LENGTH_SHORT).show()
         }
     }
 
     /**
-     * Closes its parameter `AutoCloseable closeable`. If `closeable` is not null, wrapped
-     * in a try block which catches and rethrows RuntimeException but ignores all other exceptions,
-     * we call the close method of `closeable`.
+     * Closes its [AutoCloseable] parameter [closeable]. If [closeable] is not `null`, wrapped in
+     * a try block which catches and rethrows [RuntimeException] but ignores all other exceptions,
+     * we call the [AutoCloseable.close] method of [closeable].
      *
-     * @param closeable `AutoCloseable` to close, a `Cursor` in our case
+     * @param closeable [AutoCloseable] to close, a [Cursor] in our case
      */
     fun closeQuietly(closeable: AutoCloseable?) {
         if (closeable != null) {
@@ -371,7 +383,8 @@ class DirectorySelectionFragment : Fragment() {
         const val REQUEST_CODE_OPEN_DIRECTORY: Int = 1
 
         /**
-         * Use this factory method to create a new instance of this fragment using the provided parameters.
+         * Use this factory method to create a new instance of this fragment using the provided
+         * parameters.
          *
          * @return A new instance of fragment [DirectorySelectionFragment].
          */
