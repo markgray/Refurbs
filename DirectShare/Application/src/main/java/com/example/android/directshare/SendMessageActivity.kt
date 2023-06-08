@@ -37,33 +37,36 @@ class SendMessageActivity : Activity() {
      * The ID of the contact to share the text with.
      */
     private var mContactId = 0
+
     // View references.
+
     /**
-     * `TextView` that contains the contact name that was selected.
+     * [TextView] that contains the contact name that was selected.
      */
     private var mTextContactName: TextView? = null
 
     /**
-     * `TextView` that contains the text that was shared.
+     * [TextView] that contains the text that was shared.
      */
     private var mTextMessageBody: TextView? = null
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.send_message, and
-     * set the title associated with this activity to the string with resource id R.string.sending_message
-     * ("Sending a message"). We initialize our fields `TextView mTextContactName` by finding the
-     * view with id R.id.contact_name, and `TextView mTextMessageBody` by finding the view with
-     * id R.id.message_body. We call our method `resolveIntent` with the intent that started this
-     * activity saving its boolean return value in `boolean resolved` (it returns true is the action
-     * of the intent is ACTION_SEND and the type is "text/plain", false otherwise). If `resolve`
-     * is false we call the `finish` method to close this activity and return. Otherwise we locate
-     * the button with id R.id.send and set its `OnClickListener` to `mOnClickListener`.
-     * Then we call our `prepareUi` method to set up the UI. If the intent that launched us did
-     * not contain a contact id (`mContactId` is Contact.INVALID_ID) we call our `selectContact`
-     * method to launch the `SelectContactActivity` activity in order for the user to select one.
+     * `onCreate`, then we set our content view to our layout file [R.layout.send_message], and
+     * set the title associated with this activity to the string with resource id
+     * [R.string.sending_message] ("Sending a message"). We initialize our [TextView] field
+     * [mTextContactName] by finding the view with id [R.id.contact_name], and [TextView] field
+     * [mTextMessageBody] by finding the view with id [R.id.message_body]. We call our method
+     * [resolveIntent] with the [Intent] that started this activity saving its [Boolean] return value
+     * in [Boolean] variable `val resolved` (it returns `true` if the action of the intent is
+     * [Intent.ACTION_SEND] and the type is "text/plain", `false` otherwise). If `resolve` is `false`
+     * we call the [finish] method to close this activity and return. Otherwise we locate the button
+     * with id [R.id.send] and set its [View.OnClickListener] to our field [mOnClickListener].
+     * Then we call our [prepareUi] method to set up the UI. If the [Intent] that launched us did
+     * not contain a contact id ([mContactId] is [Contact.INVALID_ID]) we call our [selectContact]
+     * method to launch the [SelectContactActivity] activity in order for the user to select one.
      *
-     * @param savedInstanceState We do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState We do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
