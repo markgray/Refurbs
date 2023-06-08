@@ -64,7 +64,7 @@ dependencies {
     // Architecture components
     implementation 'androidx.lifecycle:lifecycle-runtime:2.6.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     kapt 'androidx.lifecycle:lifecycle-common:2.6.1'
     implementation 'androidx.room:room-runtime:2.5.1'
