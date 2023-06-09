@@ -36,7 +36,7 @@ class SendMessageActivity : Activity() {
     /**
      * The ID of the contact to share the text with.
      */
-    private var mContactId = 0
+    private var mContactId: Int = 0
 
     // View references.
 
@@ -94,29 +94,24 @@ class SendMessageActivity : Activity() {
     }
 
     /**
-     * Called when an activity you launched exits, giving you the requestCode you started it with,
-     * the resultCode it returned, and any additional data from it. We switch on the value of our
-     * parameter `requestCode`:
+     * Called when an activity you launched exits, giving you the [requestCode] you started it with,
+     * the [resultCode] it returned, and any additional data from it. We switch on the value of our
+     * [Int] parameter [requestCode]:
      *
-     *  *
-     * REQUEST_SELECT_CONTACT: If the result code `resultCode` is RESULT_OK we initialize
-     * `mContactId` with the value stored under the key Contact.ID in our parameter
-     * `Intent data` defaulting to Contact.INVALID_ID. If `mContactId` is equal to
-     * Contact.INVALID_ID we call the `finish` method to close this activity and return.
-     * Otherwise we call our `prepareUi` to set up the UI, and break
+     *  * [REQUEST_SELECT_CONTACT]: If the result code [resultCode] is [Activity.RESULT_OK] we
+     *  initialize our [Int] field [mContactId] with the value stored under the key [Contact.ID] in
+     *  our [Intent] parameter [data], defaulting to [Contact.INVALID_ID]. If [mContactId] is equal
+     *  to [Contact.INVALID_ID] we call the [finish] method to close this activity and return.
+     *  Otherwise we call our [prepareUi] method to set up the UI.
      *
-     *  *
-     * default: We call our super's implementation of `onActivityResult`.
+     *  * default: We call our super's implementation of `onActivityResult`.
      *
-     *
-     *
-     * @param requestCode The integer request code originally supplied to
-     * startActivityForResult(), allowing you to identify who this
-     * result came from.
-     * @param resultCode The integer result code returned by the child activity
-     * through its setResult().
-     * @param data An Intent, which can return result data to the caller
-     * (various data can be attached to Intent "extras").
+     * @param requestCode The [Int] request code originally supplied to [startActivityForResult],
+     * allowing you to identify who this result came from.
+     * @param resultCode The [Int] result code returned by the child activity through its [setResult]
+     * method.
+     * @param data An [Intent], which can return result data to the caller (various data can be
+     * attached to [Intent] "extras").
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         when (requestCode) {
@@ -137,16 +132,16 @@ class SendMessageActivity : Activity() {
     }
 
     /**
-     * Resolves the passed [Intent]. This method can only resolve intents for sharing a plain
-     * text. [.mBody] and [.mContactId] are modified accordingly. If the action of our
-     * parameter `Intent intent` is ACTION_SEND and its type is "text/plain" we initialize our
-     * field `String mBody` with the string stored as an extra in `intent` under the key
-     * EXTRA_TEXT, and initialize `int mContactId` with the int stored under the key Contact.ID,
-     * defaulting to Contact.INVALID_ID, then we return true to the caller. Otherwise we return false
-     * to the caller.
+     * Resolves the passed [Intent]. This method can only resolve intents for sharing a plain text.
+     * [mBody] and [mContactId] are modified accordingly. If the action of our [Intent] parameter
+     * [intent] is [Intent.ACTION_SEND] and its type is "text/plain" we initialize our [String]
+     * field [mBody] with the string stored as an extra in [intent] under the key [Intent.EXTRA_TEXT],
+     * and initialize our [Int] field [mContactId] with the [mContactId] stored under the key
+     * [Contact.ID], defaulting to [Contact.INVALID_ID], then we return `true` to the caller.
+     * Otherwise we return `false` to the caller.
      *
      * @param intent The [Intent].
-     * @return True if the `intent` is resolved properly.
+     * @return `true` if the [Intent] parameter [intent] is resolved properly.
      */
     private fun resolveIntent(intent: Intent): Boolean {
         if (Intent.ACTION_SEND == intent.action && "text/plain" == intent.type) {
@@ -158,24 +153,24 @@ class SendMessageActivity : Activity() {
     }
 
     /**
-     * Sets up the UI. If our field `mContactId` is not equal to INVALID_ID, we initialize our
-     * variable `Contact contact` by fetching the contact with id `mContactId`, then bind
-     * the values in `contact` to the text view `mTextContactName`. In any case we set the
-     * text of `TextView mTextMessageBody` to `mBody`.
+     * Sets up the UI. If our [Int] field [mContactId] is not equal to [Contact.INVALID_ID], we
+     * initialize our [Contact] variable `val contact` by fetching the contact with id [mContactId],
+     * then bind the values in `contact` to the [TextView] field [mTextContactName]. In any case we
+     * set the text of [TextView] field [mTextMessageBody] to [String] field [mBody].
      */
     private fun prepareUi() {
         if (mContactId != Contact.INVALID_ID) {
-            val contact = Contact.byId(mContactId)
+            val contact: Contact = Contact.byId(mContactId)
             ContactViewBinder.bind(contact, mTextContactName!!)
         }
         mTextMessageBody!!.text = mBody
     }
 
     /**
-     * Delegates selection of a `Contact` to [SelectContactActivity]. We initialize our
-     * variable `Intent intent` with an intent constructed to launch `SelectContactActivity`,
-     * set its action to ACTION_SELECT_CONTACT, and start that intent for a result using REQUEST_SELECT_CONTACT
-     * as the request code.
+     * Delegates selection of a [Contact] to [SelectContactActivity]. We initialize our [Intent]
+     * variable `val intent` with an [Intent] constructed to launch [SelectContactActivity], set its
+     * action to [SelectContactActivity.ACTION_SELECT_CONTACT], and start that [Intent] for a result
+     * using [REQUEST_SELECT_CONTACT] as the request code.
      */
     private fun selectContact() {
         val intent = Intent(this, SelectContactActivity::class.java)
@@ -184,13 +179,13 @@ class SendMessageActivity : Activity() {
     }
 
     /**
-     * `OnClickListener` for the "SEND" button in our ui, its `onClick` override just calls
-     * our `send` method.
+     * [View.OnClickListener] for the "SEND" button in our ui, its [View.OnClickListener.onClick]
+     * override just calls our [send] method.
      */
-    private val mOnClickListener = View.OnClickListener { view ->
+    private val mOnClickListener = View.OnClickListener { view: View ->
         /**
-         * Called when the view is clicked, we switch on the id of our parameter `View view` so
-         * as to handle only the "SEND" button in our ui, and call our method `send` is it is.
+         * Called when the view is clicked, we switch on the id of our [View] parameter [view] so
+         * as to handle only the "SEND" button in our ui, and call our method [send] if it is.
          *
          * @param view view that was clicked
          */
