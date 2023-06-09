@@ -38,37 +38,32 @@ import com.example.android.displayingbitmaps.util.ImageFetcher
 import com.example.android.displayingbitmaps.util.Utils
 
 /**
- * FragmentActivity to display fullscreen image when a thumbnail in ImageGridActivity is clicked
+ * [FragmentActivity] to display fullscreen image when a thumbnail in [ImageGridActivity] is clicked
  */
 class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
     /**
-     * adapter that backs the ViewPager, creating new `ImageDetailFragment` as it is scrolled
+     * adapter that backs the [ViewPager], creating new [ImageDetailFragment] as it is scrolled
      */
     private var mAdapter: ImagePagerAdapter? = null
+
     /**
-     * Getter for our `ImageFetcher mImageFetcher` field. Called by the ViewPager child
-     * fragments to load images via this one ImageFetcher
-     *
-     * @return our `ImageFetcher mImageFetcher`
-     */
-    /**
-     * Singleton `ImageFetcher` used by the ViewPager child fragments to load images
+     * Singleton [ImageFetcher] called by the [ViewPager] child fragments to load images via this
+     * one [ImageFetcher].
      */
     var imageFetcher: ImageFetcher? = null
         private set
 
     /**
-     * `ViewPager` with ID R.id.pager in our layout file
+     * [ViewPager] with ID [R.id.pager] in our layout file.
      */
     private var mPager: ViewPager? = null
 
     /**
      * Called when the activity is starting. First we check if the gradle generated constant
-     * `BuildConfig.DEBUG` is true, and if it is we call the `Utils.enableStrictMode`
-     * method to set the policy for what potentially suspect actions should be detected and logged
-     * using android.os.StrictMode. Then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file R.layout.image_detail_pager.
-     *
+     * [BuildConfig.DEBUG] is true, and if it is we call the [Utils.enableStrictMode] method to set
+     * the policy for what potentially suspect actions should be detected and logged using
+     * [android.os.StrictMode]. Then we call our super's implementation of `onCreate`, and
+     * set our content view to our layout file [R.layout.image_detail_pager].
      *
      * We initialize `DisplayMetrics displayMetrics` with a new instance, and load it with the
      * display metrics that describe the size and density of our display. We then initialize our
