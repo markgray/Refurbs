@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
@@ -44,30 +45,30 @@ class ImageDetailFragment
     private var mImageUrl: String? = null
 
     /**
-     * `RecyclingImageView` in our layout with ID R.id.imageView, used to display our URL,
-     * shares `FrameLayout` with `ProgressBar mProgressBar` and has its visibility
-     * toggled when necessary.
+     * [RecyclingImageView] in our layout with ID [R.id.imageView], used to display our URL, shares
+     * [FrameLayout] with [ProgressBar] field [mProgressBar] and has its visibility toggled when
+     * necessary.
      */
     private var mImageView: ImageView? = null
 
     /**
-     * `ProgressBar` in our layout with ID R.id.progressbar, displays progress while URL is
-     * being downloaded, shares `FrameLayout` with `ImageView mImageView` and has its
+     * [ProgressBar] in our layout with ID [R.id.progressbar], displays progress while URL is
+     * being downloaded, shares [FrameLayout] with [ImageView] field [mImageView] and has its
      * visibility toggled when necessary.
      */
     private var mProgressBar: ProgressBar? = null
 
     /**
-     * `ImageFetcher` which downloads and caches all urls for the app
+     * [ImageFetcher] which downloads and caches all urls for the app
      */
     private var mImageFetcher: ImageFetcher? = null
 
     /**
      * Called to do initial creation of a fragment. First we call our super's implementation of
-     * `onCreate`. Then if we were instantiated with arguments we set our field `mImageUrl`
-     * to the string stored under the key IMAGE_DATA_EXTRA ("extra_image_data") defaulting to null.
+     * `onCreate`. Then if we were instantiated with arguments we set our [String] field [mImageUrl]
+     * to the string stored under the key [IMAGE_DATA_EXTRA] ("extra_image_data") defaulting to `null`.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,25 +76,29 @@ class ImageDetailFragment
     }
 
     /**
-     * Called to have the fragment instantiate its user interface view. First we use our parameter
-     * `inflater` to inflate our layout file R.layout.image_detail_fragment into `View v`.
-     * Then we locate the view with id R.id.imageView in `v` to initialize our field
-     * `mImageView`, and the view with id R.id.progressbar to initialize our field
-     * `mProgressBar`. Finally we return `v` to the caller.
+     * Called to have the fragment instantiate its user interface view. First we use our
+     * [LayoutInflater] parameter [inflater] to inflate our layout file [R.layout.image_detail_fragment]
+     * into [View] variable `val v`. Then we locate the view with id [R.id.imageView] in `v` to
+     * initialize our [ImageView] field [mImageView], and the view with id [R.id.progressbar] to
+     * initialize our [ProgressBar] field [mProgressBar]. Finally we return `v` to the caller.
      *
-     * @param inflater           The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container          If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself,
+     * but this can be used to generate the `LayoutParams` of the view.
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    @Suppress("RedundantNullableReturnType")
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate and locate the main ImageView
-        val v = inflater.inflate(R.layout.image_detail_fragment, container, false)
+        val v: View = inflater.inflate(R.layout.image_detail_fragment, container, false)
         mImageView = v.findViewById(R.id.imageView)
         mProgressBar = v.findViewById(R.id.progressbar)
         return v
