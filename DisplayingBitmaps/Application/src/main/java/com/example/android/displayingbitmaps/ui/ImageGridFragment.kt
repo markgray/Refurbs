@@ -28,10 +28,14 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.AbsListView
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
+import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_IDLE
+import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_FLING
 import android.widget.BaseAdapter
 import android.widget.GridView
 import android.widget.ImageView
@@ -44,12 +48,13 @@ import com.example.android.displayingbitmaps.provider.Images
 import com.example.android.displayingbitmaps.util.ImageCache
 import com.example.android.displayingbitmaps.util.ImageCache.ImageCacheParams
 import com.example.android.displayingbitmaps.util.ImageFetcher
+import com.example.android.displayingbitmaps.util.ImageWorker
 import com.example.android.displayingbitmaps.util.Utils
 import kotlin.math.floor
 
 /**
- * The main fragment that powers the ImageGridActivity screen. Fairly straight forward GridView
- * implementation with the key addition being the ImageWorker class w/ImageCache to load children
+ * The main fragment that powers the [ImageGridActivity] screen. Fairly straight forward [GridView]
+ * implementation with the key addition being the [ImageWorker] class w/[ImageCache] to load children
  * asynchronously, keeping the UI nice and smooth and caching thumbnails for quick retrieval. The
  * cache is retained over configuration changes like orientation change so the images are populated
  * quickly if, for example, the user rotates the device.
@@ -60,41 +65,43 @@ class ImageGridFragment
  */
     : Fragment(), OnItemClickListener {
     /**
-     * Image thumbnail size in pixels (R.dimen.image_thumbnail_size converted to pixels)
+     * Image thumbnail size in pixels ([R.dimen.image_thumbnail_size] converted to pixels)
      */
-    private var mImageThumbSize = 0
+    private var mImageThumbSize: Int = 0
 
     /**
-     * Spacing between thumbnails in our GridView in pixels (R.dimen.image_thumbnail_spacing converted to pixels)
+     * Spacing between thumbnails in our GridView in pixels ([R.dimen.image_thumbnail_spacing]
+     * converted to pixels)
      */
-    private var mImageThumbSpacing = 0
+    private var mImageThumbSpacing: Int = 0
 
     /**
-     * `ImageAdapter` adapter which fills our `GridView`
+     * [ImageAdapter] adapter which fills our [GridView]
      */
     private var mAdapter: ImageAdapter? = null
 
     /**
-     * `ImageFetcher` used to fetch and resize images fetched from a URL.
+     * [ImageFetcher] used to fetch and resize images fetched from a URL.
      */
     private var mImageFetcher: ImageFetcher? = null
 
     /**
      * Called to do initial creation of a fragment. First we call our super's implementation of
      * `onCreate`, then we report that this fragment would like to participate in populating
-     * the options menu by receiving a call to onCreateOptionsMenu and related methods. We initialize
-     * `mImageThumbSize` by retrieving the raw pixel dimension conversion of the resource value
-     * R.dimen.image_thumbnail_size, and `mImageThumbSpacing` by retrieving the pixel conversion
-     * of R.dimen.image_thumbnail_spacing. We initialize `ImageAdapter mAdapter` with a new
-     * instance. We initialize `ImageCache.ImageCacheParams cacheParams` with a new instance
-     * which uses IMAGE_CACHE_DIR ("thumbs") as its subdirectory, and set its memory cache to 25% of
-     * app memory. We initialize `ImageFetcher mImageFetcher` to a new instance configured to
-     * use `mImageThumbSize` as the width and height of the bitmaps it decodes from the fetched
-     * images, set its loading image to R.drawable.empty_photo (displays while image is being downloaded
-     * in the background), and add to `mImageFetcher` an image cache using `cacheParams`
-     * as the cache parameters to use for the image cache.
+     * the options menu by receiving a call to [onCreateOptionsMenu] and related methods. We
+     * initialize [Int] field [mImageThumbSize] by retrieving the raw pixel dimension conversion of
+     * the resource value [R.dimen.image_thumbnail_size], and [Int] field [mImageThumbSpacing] by
+     * retrieving the pixel conversion of [R.dimen.image_thumbnail_spacing]. We initialize
+     * [ImageAdapter] field [mAdapter] with a new instance. We initialize [ImageCache.ImageCacheParams]
+     * variable `val cacheParams` with a new instance which uses [IMAGE_CACHE_DIR] ("thumbs") as its
+     * subdirectory, and set its memory cache to 25% of app memory. We initialize [ImageFetcher]
+     * field [mImageFetcher] to a new instance configured to use [mImageThumbSize] as the width and
+     * height of the bitmaps it decodes from the fetched images, set its loading image to
+     * [R.drawable.empty_photo] (displays while image is being downloaded in the background), and
+     * add to [mImageFetcher] an image cache using `cacheParams` as the cache parameters to use for
+     * the image cache.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,38 +119,40 @@ class ImageGridFragment
     }
 
     /**
-     * Called to have the fragment instantiate its user interface view. We initialize `View v`
-     * by using our parameter `LayoutInflater inflater` to inflate our layout file
-     * R.layout.image_grid_fragment, and `GridView mGridView` by finding the view in `v`
-     * with id R.id.gridView. We set the adapter of `mGridView` to `mAdapter` and its
-     * `OnItemClickListener` to this. We set the `OnScrollListener` of `mGridView`
-     * to an anonymous class whose `onScrollStateChanged` override calls the `setPauseWork`
-     * method of `ImageFetcher mImageFetcher` with true if the device is older than honeycomb
-     * in order to help with performance when the scroll state was SCROLL_STATE_FLING, otherwise it
-     * calls `setPauseWork` with false to un-pause work if it was paused. Its `onScroll`
-     * override does nothing.
+     * Called to have the fragment instantiate its user interface view. We initialize [View] variable
+     * `val v` by using our [LayoutInflater] parameter [inflater] to inflate our layout file
+     * [R.layout.image_grid_fragment], and [GridView] variable `val mGridView` by finding the view
+     * in `v` with id [R.id.gridView]. We set the adapter of `mGridView` to [ImageAdapter] field
+     * [mAdapter] and its [OnItemClickListener] to `this`. We set the [AbsListView.OnScrollListener]
+     * of `mGridView` to an anonymous class whose [AbsListView.OnScrollListener.onScrollStateChanged]
+     * override calls the [ImageFetcher.setPauseWork] method of [ImageFetcher] field [mImageFetcher]
+     * with `true` if the device is older than `honeycomb` in order to help with performance when the
+     * scroll state was [AbsListView.OnScrollListener.SCROLL_STATE_FLING], otherwise it calls
+     * [ImageFetcher.setPauseWork] with `false` to un-pause work if it was paused. Its
+     * [AbsListView.OnScrollListener.onScroll] override does nothing.
      *
-     *
-     * We fetch the `ViewTreeObserver` of `mGridView` in order to add an anonymous class
-     * `OnGlobalLayoutListener` whose `onGlobalLayout` override gets the final width of
-     * the GridView and then calculates the number of columns and the width of each column. It then
-     * sets the number of columns of `mAdapter` to that number of columns and the height of an
-     * item to the width of the columns (to make a nice square thumbnail).
-     *
+     * We fetch the [ViewTreeObserver] of `mGridView` in order to add an anonymous class
+     * [OnGlobalLayoutListener] whose [OnGlobalLayoutListener.onGlobalLayout] override gets the
+     * final width of the [GridView] and then calculates the number of columns and the width of each
+     * column. It then sets the number of columns of [mAdapter] to that number of columns and the
+     * height of an item to the width of the columns (to make a nice square thumbnail).
      *
      * Finally we return `v` to the caller.
      *
-     * @param inflater           The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container          If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param inflater The [LayoutInflater] object that can be used to inflate any views in the
+     * fragment.
+     * @param container If non-`null`, this is the parent view that the fragment's UI will be
+     * attached to. The fragment should not add the view itself, but this can be used to generate
+     * the `LayoutParams` of the view.
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI.
+     * @return Return the [View] for the fragment's UI.
      */
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val v = inflater.inflate(R.layout.image_grid_fragment, container, false)
         val mGridView = v.findViewById<GridView>(R.id.gridView)
         mGridView.adapter = mAdapter
@@ -157,13 +166,12 @@ class ImageGridFragment
              * loading of images.
              *
              * @param absListView The view whose scroll state is being reported
-             * @param scrollState The current scroll state. One of
-             * [.SCROLL_STATE_TOUCH_SCROLL], [.SCROLL_STATE_IDLE],
-             * or [.SCROLL_STATE_FLING]
+             * @param scrollState The current scroll state. One of [SCROLL_STATE_TOUCH_SCROLL],
+             * [SCROLL_STATE_IDLE], or [SCROLL_STATE_FLING]
              */
             override fun onScrollStateChanged(absListView: AbsListView, scrollState: Int) {
                 // Pause fetcher to ensure smoother scrolling when flinging
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+                if (scrollState == SCROLL_STATE_FLING) {
                     // Before Honeycomb pause image loading on scroll to help with performance
                     if (!Utils.hasHoneycomb()) {
                         mImageFetcher!!.setPauseWork(true)
@@ -194,17 +202,17 @@ class ImageGridFragment
         mGridView.viewTreeObserver.addOnGlobalLayoutListener(
             object : OnGlobalLayoutListener {
                 /**
-                 * Callback method to be invoked when the global layout state or the visibility of views
-                 * within the view tree changes. If the `getNumColumns` method of `mAdapter`
-                 * returns 0 (we have not configured it before) we calculate `int numColumns`
-                 * by taking the floor of the width of `mGridView` divide by the sum of the
-                 * thumbnail size `mImageThumbSize` and spacing `mImageThumbSpacing`.
-                 * If `numColumns` is greater than zero we calculate `int columnWidth`
-                 * by dividing the width of `mGridView` by `numColumns` then subtracting
-                 * the spacing `mImageThumbSpacing`. We then call the `setNumColumns` method
-                 * of `mAdapter` to set its number of columns to `numColumns`, and its
-                 * `setItemHeight` method to set the height of each item to `columnWidth`.
-                 * Then we remove this as a `OnGlobalLayoutListener`.
+                 * Callback method to be invoked when the global layout state or the visibility of
+                 * views within the view tree changes. If the [ImageAdapter.numColumns] property of
+                 * [mAdapter] returns 0 (we have not configured it before) we calculate [Int]
+                 * variable `val numColumns` by taking the floor of the width of `mGridView` divided
+                 * by the sum of the thumbnail size [mImageThumbSize] and spacing [mImageThumbSpacing].
+                 * If `numColumns` is greater than zero we calculate [Int] variable `val columnWidth`
+                 * by dividing the width of `mGridView` by `numColumns` then subtracting the spacing
+                 * [mImageThumbSpacing]. We then set the [ImageAdapter.numColumns] property of
+                 * [mAdapter] to `numColumns`, and use its [ImageAdapter.setItemHeight] method to
+                 * set the height of each item to `columnWidth`. Then we remove `this` as a
+                 * [OnGlobalLayoutListener].
                  */
                 override fun onGlobalLayout() {
                     if (mAdapter!!.numColumns == 0) {

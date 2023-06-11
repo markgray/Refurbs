@@ -106,16 +106,16 @@ class ImageDetailFragment
 
     /**
      * Called when the fragment's activity has been created and this fragment's view hierarchy
-     * instantiated. First we make sure our parent activity is an `ImageDetailActivity`,
-     * and if it is we initialize `ImageFetcher mImageFetcher` with the `ImageFetcher`
-     * returned by our activities `getImageFetcher` method, then call the `loadImage`
-     * method of `mImageFetcher` to load the url given by our field `mImageUrl` into
-     * `ImageView mImageView`, using this as the `ImageWorker.OnImageLoadedListener`
-     * (our `onImageLoaded` override will be called when the image has finished loading).
-     * Finally if our parent activity is an `OnClickListener` and our device has is HONEYCOMB
-     * or newer we set the `OnClickListener` of `mImageView` to our activity.
+     * instantiated. First we make sure our parent activity is an [ImageDetailActivity], and if it
+     * is we initialize [ImageFetcher] field [mImageFetcher] with the [ImageFetcher] returned by our
+     * activities [ImageDetailActivity.imageFetcher] property, then call the [ImageFetcher.loadImage]
+     * method of [mImageFetcher] to load the url given by our [String] field [mImageUrl] into our
+     * [ImageView] field [mImageView], using `this` as the [ImageWorker.OnImageLoadedListener] (our
+     * [onImageLoaded] override will be called when the image has finished loading). Finally if our
+     * parent activity is an [View.OnClickListener] and our device is `HONEYCOMB` or newer we set
+     * the [View.OnClickListener] of [mImageView] to our activity.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -136,8 +136,8 @@ class ImageDetailFragment
 
     /**
      * Called when the fragment is no longer in use. First we call our super's implementation of
-     * `onDestroy`, then is our field `mImageView` is not null we cancel any pending
-     * image work for `mImageView` and set the image drawable of `mImageView` to null.
+     * `onDestroy`, then is our [ImageView] field [mImageView] is not `null` we cancel any pending
+     * image work for [mImageView] and set the image drawable of [mImageView] to null.
      */
     override fun onDestroy() {
         super.onDestroy()
@@ -149,10 +149,10 @@ class ImageDetailFragment
     }
 
     /**
-     * Called by `ImageWorker` once the image has been loaded. We set the visibility of our
-     * progress bar `mProgressBar` to GONE.
+     * Called by [ImageWorker] once the image has been loaded. We just set the visibility of our
+     * progress bar [mProgressBar] to GONE.
      *
-     * @param success True if the image was loaded successfully, false if there was an error.
+     * @param success `true` if the image was loaded successfully, `false` if there was an error.
      */
     override fun onImageLoaded(success: Boolean) {
         // Set loading spinner to gone once image has loaded. Cloud also show
@@ -168,13 +168,13 @@ class ImageDetailFragment
 
         /**
          * Factory method to generate a new instance of the fragment given an image number. First we
-         * initialize `ImageDetailFragment f`, and `Bundle args` with  new instances. We
-         * add our parameter `imageUrl` as an extra to `args` under the key IMAGE_DATA_EXTRA
-         * ("extra_image_data") and set the arguments of `f` to `args`. Finally we return
-         * `f` to the caller.
+         * initialize [ImageDetailFragment] variable `val f`, and [Bundle] variable `val args` with
+         * new instances. We add our [String] parameter [imageUrl] as an extra to `args` under the
+         * key `IMAGE_DATA_EXTRA` ("extra_image_data") and set the arguments of [ImageDetailFragment]
+         * variable `f` to `args`. Finally we return `f` to the caller.
          *
          * @param imageUrl The image url to load
-         * @return A new instance of ImageDetailFragment with imageUrl extra
+         * @return A new instance of [ImageDetailFragment] with [imageUrl] an extra in its arguments
          */
         fun newInstance(imageUrl: String?): ImageDetailFragment {
             val f = ImageDetailFragment()
