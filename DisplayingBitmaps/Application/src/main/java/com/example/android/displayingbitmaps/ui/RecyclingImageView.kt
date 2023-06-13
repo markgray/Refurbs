@@ -32,24 +32,23 @@ class RecyclingImageView : ImageView {
     /**
      * Our one argument constructor, just calls our super's constructor.
      *
-     * @param context `Context` to use to access resources
+     * @param context [Context] to use to access resources
      */
     constructor(context: Context?) : super(context)
 
     /**
      * Perform inflation from XML. We just call our super's constructor.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
-     * @param attrs   The attributes of the XML tag that is inflating the view.
+     * @param attrs The attributes of the XML tag that is inflating the view.
      */
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
     /**
-     * This is called when the view is detached from a window.  At this point it
-     * no longer has a surface for drawing. We call our `setImageDrawable`
-     * method to clear the drawable, then call our super's implementation of
-     * `onDetachedFromWindow`
+     * This is called when the view is detached from a window. At this point it no longer has a
+     * surface for drawing. We call our [setImageDrawable] method with `null` to clear the drawable,
+     * then call our super's implementation of `onDetachedFromWindow`
      *
      * @see android.widget.ImageView.onDetachedFromWindow
      */
@@ -60,48 +59,47 @@ class RecyclingImageView : ImageView {
     }
 
     /**
-     * Sets a drawable as the content of this ImageView. First we save a reference to the present
-     * drawable in `Drawable previousDrawable`, then we call our super's implementation of
-     * `setImageDrawable` to set our parameter `Drawable drawable` as the content of
-     * this ImageView. We then call our method `notifyDrawable` to notify `drawable`
-     * that it is being displayed, and call it again to notify `previousDrawable` that it is
-     * no longer being displayed.
+     * Sets a drawable as the content of this [ImageView]. First we save a reference to the present
+     * drawable in [Drawable] variable `val previousDrawable`, then we call our super's implementation
+     * of `setImageDrawable` to set our [Drawable] parameter [drawable] as the content of this
+     * [ImageView]. We then call our method [notifyDrawable] with [drawable] as its `drawable`
+     * argument and `true` as its `isDisplayed` argument to notify [drawable] that it is being
+     * displayed, and call it again with `previousDrawable` as its `drawable` argument and `false`
+     * as its `isDisplayed` argument to notify `previousDrawable` that it is no longer being
+     * displayed.
      *
      * @param drawable the Drawable to set, or `null` to clear the
      * content
      */
     override fun setImageDrawable(drawable: Drawable?) {
         // Keep hold of previous Drawable
-        val previousDrawable = getDrawable()
+        val previousDrawable: Drawable? = getDrawable()
 
         // Call super to set new Drawable
         super.setImageDrawable(drawable)
 
         // Notify new Drawable that it is being displayed
-        notifyDrawable(drawable, true)
+        notifyDrawable(drawable = drawable, isDisplayed = true)
 
         // Notify old Drawable so it is no longer being displayed
-        notifyDrawable(previousDrawable, false)
+        notifyDrawable(drawable = previousDrawable, isDisplayed = false)
     }
 
     companion object {
         /**
-         * Notifies the drawable that it's displayed state has changed. We branch based on the class of
-         * our parameter `Drawable drawable`:
+         * Notifies the drawable that it's displayed state has changed. We branch based on the class
+         * of our [Drawable] parameter [drawable]:
          *
-         *  *
-         * `RecyclingBitmapDrawable`: We call the `setIsDisplayed` method of `drawable`
-         * with our parameter `isDisplayed` (This is only used on devices older than HONEYCOMB)
+         *  * [RecyclingBitmapDrawable]: We call the [RecyclingBitmapDrawable.setIsDisplayed] method
+         *  of [drawable] with our [Boolean] parameter [isDisplayed] (This is only used on devices
+         *  older than HONEYCOMB)
          *
-         *  *
-         * `LayerDrawable`: We cast `drawable` to get `LayerDrawable layerDrawable`,
-         * then for each of the layers (2) in `layerDrawable` we call this method on the drawable
-         * of that layer and our parameter `isDisplayed`.
+         *  * [LayerDrawable]: For each of the layers (2) in [drawable] we call this method on the
+         *  [Drawable] of that layer and our parameter [isDisplayed].
          *
-         *
-         *
-         * @param drawable    `Drawable` to notify
-         * @param isDisplayed flag indicating whether the drawable is displayed (true) or not (false)
+         * @param drawable [Drawable] to notify
+         * @param isDisplayed flag indicating whether the drawable is displayed (`true`)
+         * or not (`false`)
          */
         private fun notifyDrawable(drawable: Drawable?, isDisplayed: Boolean) {
             if (drawable is RecyclingBitmapDrawable) {
@@ -109,12 +107,10 @@ class RecyclingImageView : ImageView {
                 drawable.setIsDisplayed(isDisplayed)
             } else if (drawable is LayerDrawable) {
                 // The drawable is a LayerDrawable, so recurse on each layer
-                @Suppress("UnnecessaryVariable")
-                val layerDrawable = drawable
                 var i = 0
-                val z = layerDrawable.numberOfLayers
+                val z: Int = drawable.numberOfLayers
                 while (i < z) {
-                    notifyDrawable(layerDrawable.getDrawable(i), isDisplayed)
+                    notifyDrawable(drawable.getDrawable(i), isDisplayed)
                     i++
                 }
             }

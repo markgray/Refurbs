@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "SameParameterValue", "UNNECESSARY_NOT_NULL_ASSERTION", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "ReplaceJavaStaticMethodWithKotlinAnalog")
+@file:Suppress("unused", "SameParameterValue", "UNNECESSARY_NOT_NULL_ASSERTION", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
 
 package com.example.android.displayingbitmaps.util
 
@@ -51,53 +51,40 @@ import java.util.concurrent.TimeUnit
  * or direct link:
  * https://android.googlesource.com/platform/libcore/+/android-4.1.1_r1/luni/src/main/java/libcore/io/DiskLruCache.java
  *
+ * A cache that uses a bounded amount of space on a filesystem. Each cache entry has a string key
+ * and a fixed number of values. Values are byte sequences, accessible as streams or files. Each
+ * value must be between `0` and [Integer.MAX_VALUE] bytes in length.
  *
+ * The cache stores its data in a directory on the filesystem. This directory must be exclusive to
+ * the cache; the cache may delete or overwrite files from its directory. It is an error for
+ * multiple processes to use the same cache directory at the same time.
  *
- * A cache that uses a bounded amount of space on a filesystem. Each cache
- * entry has a string key and a fixed number of values. Values are byte
- * sequences, accessible as streams or files. Each value must be between `0` and `Integer.MAX_VALUE` bytes in length.
+ * This cache limits the number of bytes that it will store on the filesystem. When the number of
+ * stored bytes exceeds the limit, the cache will remove entries in the background until the limit
+ * is satisfied. The limit is not strict: the cache may temporarily exceed it while waiting for
+ * files to be deleted. The limit does not include filesystem overhead or the cache journal so
+ * space-sensitive applications should set a conservative limit.
  *
+ * Clients call [edit] to create or update the values of an entry. An entry may have only one editor
+ * at one time; if a value is not available to be edited then [edit] will return `null`.
  *
- * The cache stores its data in a directory on the filesystem. This
- * directory must be exclusive to the cache; the cache may delete or overwrite
- * files from its directory. It is an error for multiple processes to use the
- * same cache directory at the same time.
+ *  * When an entry is being **created** it is necessary to supply a full set of values; the empty
+ *  value should be used as a placeholder if necessary.
  *
+ *  * When an entry is being **edited**, it is not necessary to supply data for every value; values
+ *  default to their previous value.
  *
- * This cache limits the number of bytes that it will store on the
- * filesystem. When the number of stored bytes exceeds the limit, the cache will
- * remove entries in the background until the limit is satisfied. The limit is
- * not strict: the cache may temporarily exceed it while waiting for files to be
- * deleted. The limit does not include filesystem overhead or the cache
- * journal so space-sensitive applications should set a conservative limit.
+ * Every [edit] call must be matched by a call to [Editor.commit] or [Editor.abort]. Committing is
+ * atomic: a read observes the full set of values as they were before or after the commit, but never
+ * a mix of values.
  *
+ * Clients call [get] to read a snapshot of an entry. The read will observe the value at the time
+ * that [get] was called. Updates and removals after the call do not impact ongoing reads.
  *
- * Clients call [.edit] to create or update the values of an entry. An
- * entry may have only one editor at one time; if a value is not available to be
- * edited then [.edit] will return null.
- *
- *  * When an entry is being **created** it is necessary to
- * supply a full set of values; the empty value should be used as a
- * placeholder if necessary.
- *  * When an entry is being **edited**, it is not necessary
- * to supply data for every value; values default to their previous
- * value.
- *
- * Every [.edit] call must be matched by a call to [Editor.commit]
- * or [Editor.abort]. Committing is atomic: a read observes the full set
- * of values as they were before or after the commit, but never a mix of values.
- *
- *
- * Clients call [.get] to read a snapshot of an entry. The read will
- * observe the value at the time that [.get] was called. Updates and
- * removals after the call do not impact ongoing reads.
- *
- *
- * This class is tolerant of some I/O errors. If files are missing from the
- * filesystem, the corresponding entries will be dropped from the cache. If
- * an error occurs while writing a cache value, the edit will fail silently.
- * Callers should handle other problems by catching `IOException` and
- * responding appropriately.
+ * This class is tolerant of some I/O errors. If files are missing from the filesystem, the
+ * corresponding entries will be dropped from the cache. If an error occurs while writing a cache
+ * value, the edit will fail silently. Callers should handle other problems by catching
+ * [IOException] and responding appropriately.
  */
 @Suppress("UNCHECKED_CAST")
 class DiskLruCache private constructor(
@@ -108,7 +95,8 @@ class DiskLruCache private constructor(
     /**
      * Version of app using us, set by our constructor and written to journal to verify on restart.
      */
-    private val appVersion: Int, valueCount: Int, maxSize: Long) : Closeable {
+    private val appVersion: Int, valueCount: Int, maxSize: Long
+) : Closeable {
     /*
      * This cache uses a journal file named "journal". A typical journal file
      * looks like this:
@@ -148,20 +136,14 @@ class DiskLruCache private constructor(
      * "journal.tmp" will be used during compaction; that file should be deleted if
      * it exists when the cache is opened.
      */
-    /**
-     * Returns the directory where this cache stores its data. We just return the value in our field
-     * `File directory` to the caller.
-     *
-     * @return the directory where this cache stores its data.
-     */
 
     /**
-     * File we write our journal to (and read back when restarting) named: JOURNAL_FILE = "journal"
+     * File we write our journal to (and read back when restarting) named: [JOURNAL_FILE] = "journal"
      */
     private val journalFile: File
 
     /**
-     * Temporary file to use when compacting journal. named: JOURNAL_FILE_TMP = "journal.tmp"
+     * Temporary file to use when compacting journal. named: [JOURNAL_FILE_TMP] = "journal.tmp"
      */
     private val journalFileTmp: File
 
@@ -182,12 +164,12 @@ class DiskLruCache private constructor(
     private var size: Long = 0
 
     /**
-     * `BufferedWriter` being used to write to journal.
+     * [BufferedWriter] being used to write to journal.
      */
     private var journalWriter: Writer? = null
 
     /**
-     * Hash of `Entry` objects pointing to disk cache keyed by a string generated by the
+     * Hash of [Entry] objects pointing to disk cache keyed by a string generated by the
      * client. It is a linked hash map whose order of iteration is the order in which its entries
      * were last accessed, from least-recently accessed to most-recently (access-order).
      * This kind of map is well-suited to building LRU caches.
@@ -207,22 +189,28 @@ class DiskLruCache private constructor(
      */
     private var nextSequenceNumber: Long = 0
 
-    /** This cache uses a single background thread to evict entries.  */
-    private val executorService: ExecutorService = ThreadPoolExecutor(0, 1,
-        60L, TimeUnit.SECONDS, LinkedBlockingQueue())
+    /**
+     * This cache uses a single background thread to evict entries.
+     */
+    private val executorService: ExecutorService = ThreadPoolExecutor(
+        /* corePoolSize = */ 0,
+        /* maximumPoolSize = */ 1,
+        /* keepAliveTime = */ 60L,
+        /* unit = */ TimeUnit.SECONDS,
+        /* workQueue = */ LinkedBlockingQueue()
+    )
 
     /**
-     * Background thread used to evict entries.
-     * `Callable` used to cleanup our cache. Synchronized on this, if `journalWriter`
-     * is null we return null (it is already closed). Otherwise we call our method `trimToSize`
-     * which removes cache entries until `size` (the number of bytes used) is less than
-     * `maxSize` (the maximum number of bytes to use for our cache). Then if our method
-     * `journalRebuildRequired` returns true (it determines that a rebuild of the journal
-     * would be profitable) we call our method `rebuildJournal` to rebuild the journal, and
-     * set `redundantOpCount` to 0. Once outside of the synchronized block we return null
-     * to the caller.
+     * Background thread used to evict entries. [Callable] used to cleanup our cache. Synchronized
+     * on this, if [Writer] field [journalWriter] is `null` we return `null` (it is already closed).
+     * Otherwise we call our method [trimToSize] which removes cache entries until [size] (the number
+     * of bytes used) is less than [maxSize] (the maximum number of bytes to use for our cache).
+     * Then if our method [journalRebuildRequired] returns `true` (it determines that a rebuild of
+     * the journal would be profitable) we call our method [rebuildJournal] to rebuild the journal,
+     * and set [redundantOpCount] to 0. Once outside of the synchronized block we return `null` to
+     * the caller.
      *
-     * @return null
+     * @return `null`
      * @throws Exception all exceptions thrown by methods we call.
      */
     private val cleanupCallable: Callable<Void> = Callable {
@@ -265,14 +253,14 @@ class DiskLruCache private constructor(
      * with `Entry` objects describing the current state of our disk cache. We construct the
      * `BufferedInputStream` `InputStream in` to read from `File journalFile`, then
      * wrapped in a try block with a finally block that calls our `closeQuietly` method to close
-     * `in` we read the first five lines of `in` into the variables `String magic`,
+     * `inputStream` we read the first five lines of `inputStream` into the variables `String magic`,
      * `String version`, `String appVersionString`, `String valueCountString` and
      * `String blank`. We then throw an IOException if any of these strings do not match what
      * we would write as the header to a journal file.
      *
      *
      * We then loop forever executing our method `readJournalLine` on the string read by our
-     * `readAsciiLine` from `in`. `readJournalLine` processes each line and updates
+     * `readAsciiLine` from `inputStream`. `readJournalLine` processes each line and updates
      * the contents of our field `LinkedHashMap<String, Entry> lruEntries` based on the contents
      * of the journal line. We break out of this infinite loop when we catch EOFException.
      *
@@ -280,13 +268,13 @@ class DiskLruCache private constructor(
      */
     @Throws(IOException::class)
     private fun readJournal() {
-        val `in`: InputStream = BufferedInputStream(FileInputStream(journalFile), IO_BUFFER_SIZE)
+        val inputStream: InputStream = BufferedInputStream(FileInputStream(journalFile), IO_BUFFER_SIZE)
         try {
-            val magic = readAsciiLine(`in`)
-            val version = readAsciiLine(`in`)
-            val appVersionString = readAsciiLine(`in`)
-            val valueCountString = readAsciiLine(`in`)
-            val blank = readAsciiLine(`in`)
+            val magic = readAsciiLine(inputStream)
+            val version = readAsciiLine(inputStream)
+            val appVersionString = readAsciiLine(inputStream)
+            val valueCountString = readAsciiLine(inputStream)
+            val blank = readAsciiLine(inputStream)
             if (MAGIC != magic
                 || VERSION_1 != version
                 || Integer.toString(appVersion) != appVersionString
@@ -297,13 +285,13 @@ class DiskLruCache private constructor(
             }
             while (true) {
                 try {
-                    readJournalLine(readAsciiLine(`in`))
+                    readJournalLine(readAsciiLine(inputStream))
                 } catch (endOfJournal: EOFException) {
                     break
                 }
             }
         } finally {
-            closeQuietly(`in`)
+            closeQuietly(inputStream)
         }
     }
 
@@ -473,11 +461,9 @@ class DiskLruCache private constructor(
         writer.write("\n")
         for (entry in lruEntries.values) {
             if (entry!!.currentEditor != null) {
-                writer.write("""$DIRTY ${entry.key}
-""")
+                writer.write("$DIRTY ${entry.key}\n")
             } else {
-                writer.write("""$CLEAN ${entry.key}${entry.getLengths()}
-""")
+                writer.write("$CLEAN ${entry.key}${entry.getLengths()}\n")
             }
         }
         writer.close()
@@ -549,8 +535,7 @@ class DiskLruCache private constructor(
             return null
         }
         redundantOpCount++
-        journalWriter!!.append("""$READ $key
-""")
+        journalWriter!!.append("$READ $key\n")
         if (journalRebuildRequired()) {
             executorService.submit(cleanupCallable)
         }
@@ -625,8 +610,7 @@ class DiskLruCache private constructor(
         entry!!.currentEditor = editor
 
         // flush the journal before creating files to prevent file leaks
-        journalWriter!!.write("""$DIRTY $key
-""")
+        journalWriter!!.write("$DIRTY $key\n")
         journalWriter!!.flush()
         return editor
     }
@@ -740,15 +724,13 @@ class DiskLruCache private constructor(
         entry.currentEditor = null
         if (entry.readable or success) {
             entry.readable = true
-            journalWriter!!.write("""$CLEAN ${entry.key}${entry.getLengths()}
-""")
+            journalWriter!!.write("$CLEAN ${entry.key}${entry.getLengths()}\n")
             if (success) {
                 entry.sequenceNumber = nextSequenceNumber++
             }
         } else {
             lruEntries.remove(entry.key)
-            journalWriter!!.write("""$REMOVE ${entry.key}
-""")
+            journalWriter!!.write("$REMOVE ${entry.key}\n")
         }
         if (size > maxSize || journalRebuildRequired()) {
             executorService.submit(cleanupCallable)
@@ -816,8 +798,7 @@ class DiskLruCache private constructor(
             entry.lengths[i] = 0
         }
         redundantOpCount++
-        journalWriter!!.append("""$REMOVE $key
-""")
+        journalWriter!!.append("$REMOVE $key\n")
         lruEntries.remove(key)
         if (journalRebuildRequired()) {
             executorService.submit(cleanupCallable)
@@ -993,8 +974,8 @@ class DiskLruCache private constructor(
          * `InputStream[] ins`
          */
         override fun close() {
-            for (`in` in ins) {
-                closeQuietly(`in`)
+            for (inputStream in ins) {
+                closeQuietly(inputStream)
             }
         }
     }
@@ -1045,9 +1026,9 @@ class DiskLruCache private constructor(
 
         /**
          * Returns the last committed value as a string, or null if no value has been committed. We
-         * create `InputStream in` to read from the file with index `index`, and if that
-         * is not null we return the string returned by our method `inputStreamToString` when
-         * reading from `in`. If `in` is null we return null to the caller.
+         * create `InputStream inputStream` to read from the file with index `index`, and if that
+         * is not `null` we return the string returned by our method `inputStreamToString` when
+         * reading from `inputStream`. If `inputStream` is `null` we return `null` to the caller.
          *
          * @param index file number of file we are to read from
          * @return the entire contents of the file as a string
@@ -1055,8 +1036,8 @@ class DiskLruCache private constructor(
          */
         @Throws(IOException::class)
         fun getString(index: Int): String? {
-            val `in` = newInputStream(index)
-            return if (`in` != null) inputStreamToString(`in`) else null
+            val inputStream = newInputStream(index)
+            return if (inputStream != null) inputStreamToString(inputStream) else null
         }
 
         /**
@@ -1465,7 +1446,7 @@ class DiskLruCache private constructor(
         /**
          * Returns the ASCII characters up to but not including the next "\r\n", or "\n". First we create
          * `StringBuilder result` with an initial capacity of 80. Then we loop reading the next
-         * character from `in` into `int c`. If `c` is equal to -1 (end of the stream)
+         * character from `inputStream` into `int c`. If `c` is equal to -1 (end of the stream)
          * we throw EOFException, and if `c` is equal to '\n' we break out of the loop. For all
          * other characters we append the char version of `c` to `result`. After we reach a
          * '\n' character and break we set `int length` to the length of `result` and if
@@ -1473,17 +1454,17 @@ class DiskLruCache private constructor(
          * the length of `result` to one less in order to drop the '\r'. Finally we return the
          * string version of `result` to the caller.
          *
-         * @param in `InputStream` to read from
+         * @param inputStream [InputStream] to read from
          * @return string consisting of the next line not including the next "\r\n", or "\n".
          * @throws IOException if the stream is exhausted before the next newline
          * character.
          */
         @Throws(IOException::class)
-        fun readAsciiLine(`in`: InputStream): String {
+        fun readAsciiLine(inputStream: InputStream): String {
             // TODO: support UTF-8 here instead
             val result = StringBuilder(80)
             while (true) {
-                val c = `in`.read()
+                val c = inputStream.read()
                 if (c == -1) {
                     throw EOFException()
                 } else if (c == '\n'.code) {
@@ -1624,18 +1605,18 @@ class DiskLruCache private constructor(
         }
 
         /**
-         * Reads the entire remaining contents of the parameter `InputStream in` into a string and
-         * returns it to the caller. We create an `InputStreamReader` to read from `in` using
+         * Reads the entire remaining contents of the parameter `InputStream inputStream` into a string and
+         * returns it to the caller. We create an `InputStreamReader` to read from [inputStream] using
          * the UTF_8 charset, and return the string returned by our method `readFully` when called
          * with it.
          *
-         * @param in `InputStream` to read from
+         * @param inputStream [InputStream] to read from
          * @return the entire contents of `InputStream in` as a string
          * @throws IOException If an I/O error occurs.
          */
         @Throws(IOException::class)
-        private fun inputStreamToString(`in`: InputStream?): String {
-            return readFully(InputStreamReader(`in`, UTF_8))
+        private fun inputStreamToString(inputStream: InputStream?): String {
+            return readFully(InputStreamReader(inputStream, UTF_8))
         }
     }
 }

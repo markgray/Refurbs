@@ -363,20 +363,20 @@ class ImageGridFragment
          * by our [OnGlobalLayoutListener.onGlobalLayout] override once the dimensions of the
          * [GridView] are known.
          */
-        private var mItemHeight = 0
+        private var mItemHeight: Int = 0
 
         /**
          * Number of columns in our [GridView], set using the [setItemHeight] method by our
          * [OnGlobalLayoutListener.onGlobalLayout] override once the dimensions of the [GridView]
          * are known.
          */
-        var numColumns = 0
+        var numColumns: Int = 0
 
         /**
          * Height of the action bar, used to create a "fake" row to prevent the action bar obscuring
          * the top of the real first row of images in our [GridView]
          */
-        private var mActionBarHeight = 0
+        private var mActionBarHeight: Int = 0
 
         /**
          * [AbsListView.LayoutParams] for a normal image in our [GridView], set to `MATCH_PARENT`
@@ -490,29 +490,29 @@ class ImageGridFragment
          *
          * If it is for one of the main [ImageView] thumbnails we declare [ImageView] `val imageView`,
          * and if `convertViewLocal` is `null` we initialize `imageView` with a new instance of
-         * [RecyclingImageView], set its scale type to CENTER_CROP (Scale the image uniformly
-         * (maintain the image's aspect ratio) so that both dimensions (width and height) of the image
-         * will be equal to or larger than the corresponding dimension of the view (minus padding).
-         * The image is then centered in the view.), and set its layout parameters to our field
-         * `mImageViewLayoutParams`. If `convertView` is not null we set `imageView`
-         * to it. If the height of the layout parameters of `imageView` is not equal to our
-         * field `mItemHeight` we set the layout parameters of `imageView` to our field
-         * `mImageViewLayoutParams`. We then call the `loadImage` method of our field
-         * `ImageFetcher mImageFetcher` to load the image whose url is at index
-         * `position-mNumColumns` in the `Images.imageThumbUrls` array asynchronously
-         * into `ImageView imageView` (this also takes care of setting a placeholder image
-         * while the background thread runs). Finally we return `imageView` to the caller.
+         * [RecyclingImageView], set its scale type to [ImageView.ScaleType.CENTER_CROP] (Scale the
+         * image uniformly (maintain the image's aspect ratio) so that both dimensions (width and
+         * height) of the image will be equal to or larger than the corresponding dimension of the
+         * view (minus padding), the image is then centered in the view.), and set its layout
+         * parameters to our [AbsListView.LayoutParams] field [mImageViewLayoutParams]. If
+         * [convertView] is not `null` we set `imageView` to it. If the height of the layout
+         * parameters of `imageView` is not equal to our [Int] field [mItemHeight] we set the layout
+         * parameters of `imageView` to our [AbsListView.LayoutParams] field [mImageViewLayoutParams].
+         * We then call the [ImageFetcher.loadImage] method of our [ImageFetcher] field [mImageFetcher]
+         * to load the image whose url is at index [position] minus [numColumns] in the
+         * [Images.imageThumbUrls] array asynchronously into [ImageView] variable `imageView` (this
+         * also takes care of setting a placeholder image while the background thread runs). Finally
+         * we return `imageView` to the caller.
          *
-         * @param position    The position of the item within the adapter's data set of the item whose view
-         * we want.
-         * @param convertView The old view to reuse, if possible. Note: You should check that this view
-         * is non-null and of an appropriate type before using. If it is not possible to convert
-         * this view to display the correct data, this method can create a new view.
-         * Heterogeneous lists can specify their number of view types, so that this View is
-         * always of the right type (see [.getViewTypeCount] and
-         * [.getItemViewType]).
-         * @param container   The parent that this view will eventually be attached to
-         * @return A View corresponding to the data at the specified position.
+         * @param position The position of the item within the adapter's data set of the item whose
+         * view we want.
+         * @param convertView The old view to reuse, if possible. Note: You should check that this
+         * view is non-`null` and of an appropriate type before using. If it is not possible to
+         * convert this view to display the correct data, this method can create a new view.
+         * Heterogeneous lists can specify their number of view types, so that this [View] is always
+         * of the right type (see [getViewTypeCount] and [getItemViewType]).
+         * @param container The parent that this view will eventually be attached to
+         * @return A [View] corresponding to the data at the specified position.
          */
         override fun getView(position: Int, convertView: View?, container: ViewGroup): View {
             // First check if this is the top row
@@ -550,13 +550,14 @@ class ImageGridFragment
 
         /**
          * Sets the item height. Useful for when we know the column width so the height can be set
-         * to match. If our parameter `height` is already equal to our field `mItemHeight`
-         * we return having done nothing. Otherwise we set `mItemHeight` to `height`, and
-         * initialize our field `LayoutParams mImageViewLayoutParams` with a new instance whose
-         * width is MATCH_PARENT, and whose height is `mItemHeight`. We call the `setImageSize`
-         * method of `ImageFetcher mImageFetcher` to set its height to `height`, then call
-         * the `notifyDataSetChanged` to notify attached observers that the underlying data has
-         * been changed and any View reflecting the data set should refresh itself.
+         * to match. If our [Int] parameter [height] is already equal to our field [mItemHeight]
+         * we return having done nothing. Otherwise we set [mItemHeight] to [height], and initialize
+         * our [AbsListView.LayoutParams] field [mImageViewLayoutParams] with a new instance whose
+         * width is `MATCH_PARENT`, and whose height is [mItemHeight]. We call the
+         * [ImageFetcher.setImageSize] method of [ImageFetcher] field [mImageFetcher] to set its
+         * height to [height], then call the [notifyDataSetChanged] method to notify attached
+         * observers that the underlying data has been changed and any View reflecting the data set
+         * should refresh itself.
          *
          * @param height height to set the item height to.
          */
@@ -565,7 +566,10 @@ class ImageGridFragment
                 return
             }
             mItemHeight = height
-            mImageViewLayoutParams = AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemHeight)
+            mImageViewLayoutParams = AbsListView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                mItemHeight
+            )
             mImageFetcher!!.setImageSize(height)
             notifyDataSetChanged()
         }
