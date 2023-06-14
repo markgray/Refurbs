@@ -79,16 +79,13 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
 
     /**
      * Set of reusable bitmaps that can be populated into the `inBitmap` field of
-     * `BitmapFactory.Options`
+     * [BitmapFactory.Options]
      */
     private var mReusableBitmaps: MutableSet<SoftReference<Bitmap>>? = null
 
     /**
-     * Create a new ImageCache object using the specified parameters. This should not be
-     * called directly by other classes, instead use `ImageCache.getInstance` to fetch an
-     * ImageCache instance. We just call our `initialize` method with our parameter.
-     *
-     * param cacheParams The cache parameters to use to initialize the cache
+     * Part of the constructor of our `ImageCache`, it just calls our `initialize` method with the
+     * `ImageCacheParams` the constructor was called wiht
      */
     init {
         initialize(cacheParams)
@@ -104,14 +101,16 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
      *  2. If we are running on HONEYCOMB or above, we initialize our [mReusableBitmaps] field with
      *  a "synchronized set wrapped" [HashSet] of soft referenced [Bitmap] objects.
      *
-     *  3. We initialize our field `LruCache<String, BitmapDrawable> mMemoryCache` with a
-     *  new instance of size `mCacheParams.memCacheSize` overriding its `entryRemoved`
-     *  method to notify a `RecyclingBitmapDrawable` that it is no longer cached or to
-     *  add a standard `BitmapDrawable` to the reusable set `mReusableBitmaps`. It also
-     *  overrides the `sizeOf` method to return the size of the bitmap divided by 1024.
+     *  3. We initialize our [LruCache] of [String] to [BitmapDrawable] field [mMemoryCache] with a
+     *  new instance whose size is the [ImageCacheParams.memCacheSize] property of [mCacheParams]
+     *  overriding its [LruCache.entryRemoved]  method to notify a [RecyclingBitmapDrawable] that it
+     *  is no longer cached or to add a standard [BitmapDrawable] to the [MutableSet] of
+     *  [SoftReference]'s to [Bitmap]'s field [mReusableBitmaps] (our Set of reusable bitmaps).
+     *  It also overrides the [LruCache.sizeOf] method to return the size of the bitmap divided by
+     *  1024.
      *
-     * Finally if the `initDiskCacheOnCreate` field of `cacheParams` is true we call the
-     * `initDiskCache` method (it is always false in our case, and the `initDiskCache`
+     * Finally if the [ImageCacheParams.initDiskCacheOnCreate] field of [cacheParams] is `true` we
+     * call the [initDiskCache] method (it is always `false` in our case, and the [initDiskCache]
      * method is called on a background thread instead).
      *
      * @param cacheParams The cache parameters to initialize the cache
@@ -140,26 +139,29 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
             }
             mMemoryCache = object : LruCache<String, BitmapDrawable>(mCacheParams!!.memCacheSize) {
                 /**
-                 * Notify the removed entry that is no longer being cached.
-                 * Called for entries that have been evicted or removed. This method is
-                 * invoked when a value is evicted to make space, removed by a call to
-                 * [.remove], or replaced by a call to [.put]. The default
-                 * implementation does nothing. If the parameter `oldValue` is an
-                 * instance of `RecyclingBitmapDrawable` we call its method
-                 * `setIsCached(false)` to notify it that it is no longer cached,
-                 * otherwise if we are running on HONEYCOMB or above we add the bitmap
-                 * of `oldValue` to the set `mReusableBitmaps` so it can be
-                 * reused.
+                 * Notify the removed entry that is no longer being cached. Called for entries that
+                 * have been evicted or removed. This method is invoked when a value is evicted to
+                 * make space, removed by a call to [remove], or replaced by a call to [put]. The
+                 * default implementation does nothing. If the [BitmapDrawable] parameter [oldValue]
+                 * is an instance of [RecyclingBitmapDrawable] we call its
+                 * [RecyclingBitmapDrawable.setIsCached] method with `false` to notify it that it is
+                 * no longer cached, otherwise if we are running on HONEYCOMB or above we add the
+                 * bitmap of [oldValue] to the [mReusableBitmaps] set so it can be reused.
                  *
-                 * @param evicted true if the entry is being removed to make space, false
-                 * if the removal was caused by a [.put] or [.remove].
+                 * @param evicted `true` if the entry is being removed to make space, `false`
+                 * if the removal was caused by a [put] or [remove].
                  * @param key key of the entry removed
                  * @param oldValue the old value for `key`, if it existed.
-                 * @param newValue the new value for `key`, if it exists. If non-null,
-                 * this removal was caused by a [.put]. Otherwise it was caused by
-                 * an eviction or a [.remove].
+                 * @param newValue the new value for `key`, if it exists. If non-`null`,
+                 * this removal was caused by a [put]. Otherwise it was caused by
+                 * an eviction or a [remove].
                  */
-                override fun entryRemoved(evicted: Boolean, key: String, oldValue: BitmapDrawable, newValue: BitmapDrawable?) {
+                override fun entryRemoved(
+                    evicted: Boolean,
+                    key: String,
+                    oldValue: BitmapDrawable,
+                    newValue: BitmapDrawable?
+                ) {
                     if (RecyclingBitmapDrawable::class.java.isInstance(oldValue)) {
                         // The removed entry is a recycling drawable, so notify it
                         // that it has been removed from the memory cache
@@ -175,11 +177,11 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                 }
 
                 /**
-                 * Measure item size in kilobytes rather than units which is more practical
-                 * for a bitmap cache. We calculate `int bitmapSize` to be the size of
-                 * the bitmap as calculated by our method `getBitmapSize` divided by 1024.
-                 * If `bitmapSize` is 0 we return 1 to the caller, otherwise we return
-                 * `bitmapSize`.
+                 * Measure item size in kilobytes rather than units which is more practical for a
+                 * bitmap cache. We calculate [Int] variable `val bitmapSize` to be the size of
+                 * the [BitmapDrawable] parameter [value] as calculated by our method [getBitmapSize]
+                 * divided by 1024. If `bitmapSize` is 0 we return 1 to the caller, otherwise we
+                 * return `bitmapSize`.
                  *
                  * @param key key of the `Entry` in our cache
                  * @param value the value being cached
@@ -203,33 +205,33 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     }
 
     /**
-     * Initializes the disk cache.  Note that this includes disk access so this should not be
-     * executed on the main/UI thread. By default an ImageCache does not initialize the disk
-     * cache when it is created, instead you should call initDiskCache() to initialize it on a
-     * background thread. Synchronized on our field `Object mDiskCacheLock` we first check
-     * whether `mDiskLruCache` is null or its `isClosed` method returns true (the cache
-     * does not exist, or it is closed), and if so we set `File diskCacheDir` to the
-     * `diskCacheDir` field of `mCacheParams`. If the `diskCacheEnabled` field of
-     * `mCacheParams` is true and `diskCacheDir` is not null we call the `mkdirs`
-     * method of `diskCacheDir` is it does not already exist. We check to see if the usable
-     * space calculated by our method `getUsableSpace` for `diskCacheDir` is greater than
-     * the `diskCacheSize` field of `mCacheParams` and if so we wrap in a try block
-     * intended to catch IOException code which initializes `mDiskLruCache` with an instance
-     * of `DiskLruCache` created to write to `diskCacheDir` using an app version of 1,
-     * a value count of 1 (one file per entry) and a maximum size given by the `diskCacheSize`
-     * field of `mCacheParams` (if we catch an IOException doing this we set the `diskCacheDir`
-     * field of `mCacheParams` to null and log the error).
+     * Initializes the disk cache. Note that this includes disk access so this should not be
+     * executed on the main/UI thread. By default an [ImageCache] does not initialize the disk
+     * cache when it is created, instead you should call [initDiskCache] to initialize it on a
+     * background thread. Synchronized on our [Object] field [mDiskCacheLock] we first check
+     * whether [mDiskLruCache] is `null` or its [DiskLruCache.isClosed] method returns `true`
+     * (the cache does not exist, or it is closed), and if so we set [File] variable
+     * `val diskCacheDir` to the [ImageCacheParams.diskCacheDir] field of [mCacheParams]. If the
+     * [ImageCacheParams.diskCacheEnabled] field of [mCacheParams] is `true` and `diskCacheDir` is
+     * not `null` we call the [File.mkdirs] method of `diskCacheDir` is it does not already exist.
+     * We check to see if the usable space calculated by our method [getUsableSpace] for
+     * `diskCacheDir` is greater than the [ImageCacheParams.diskCacheSize] field of [mCacheParams]
+     * and if so we wrap in a try block intended to catch [IOException], code which initializes
+     * [mDiskLruCache] with an instance of [DiskLruCache] created to write to `diskCacheDir` using
+     * an app version of 1, a value count of 1 (one file per entry) and a maximum size given by the
+     * [ImageCacheParams.diskCacheSize] field of [mCacheParams] (if we catch an [IOException] doing
+     * this we set the [ImageCacheParams.diskCacheDir] field of [mCacheParams] to `null` and log the
+     * error).
      *
-     *
-     * Whether we needed to create the disk cache or it already existed we set our field
-     * `mDiskCacheStarting` to false and wake up all threads that are waiting on the monitor
-     * of `mDiskCacheLock`.
+     * Whether we needed to create the disk cache or it already existed, we set our field
+     * [mDiskCacheStarting] to `false` and wake up all threads that are waiting on the monitor
+     * of [mDiskCacheLock].
      */
     fun initDiskCache() {
         // Set up disk cache
         synchronized(mDiskCacheLock) {
             if (mDiskLruCache == null || mDiskLruCache!!.isClosed) {
-                val diskCacheDir = mCacheParams!!.diskCacheDir
+                val diskCacheDir: File? = mCacheParams!!.diskCacheDir
                 if (mCacheParams!!.diskCacheEnabled && diskCacheDir != null) {
                     if (!diskCacheDir.exists()) {
                         diskCacheDir.mkdirs()
@@ -237,7 +239,9 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                     if (getUsableSpace(diskCacheDir) > mCacheParams!!.diskCacheSize) {
                         try {
                             mDiskLruCache = DiskLruCache.open(
-                                diskCacheDir, 1, 1, mCacheParams!!.diskCacheSize.toLong())
+                                diskCacheDir, 1, 1,
+                                mCacheParams!!.diskCacheSize.toLong()
+                            )
                             if (BuildConfig.DEBUG) {
                                 Log.d(TAG, "Disk cache initialized")
                             }
