@@ -34,6 +34,7 @@ import androidx.fragment.app.FragmentManager
 import com.example.android.common.logger.Log
 import com.example.android.displayingbitmaps.BuildConfig
 import java.io.File
+import java.io.FileDescriptor
 import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -258,28 +259,29 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     }
 
     /**
-     * Adds a bitmap to both memory and disk cache. First if either of our parameters is null we
-     * return having done nothing. If our field `mMemoryCache` is not null we add the bitmap
-     * to the memory cache, calling the `setIsCached(true)` method of our parameter `value`
-     * if it is an instance of `RecyclingBitmapDrawable` first before storing `value` under
-     * the key `data` in `mMemoryCache`.
+     * Adds a bitmap to both memory and disk cache. First if either of our parameters is `null` we
+     * return having done nothing. If our [LruCache] of [String] to [BitmapDrawable] field
+     * [mMemoryCache] is not `null` we add the our [BitmapDrawable] parameter [value] to the memory
+     * cache, calling the [RecyclingBitmapDrawable.setIsCached] method of [value] with `true` if it
+     * is an instance of [RecyclingBitmapDrawable] first before storing [value] using our [String]
+     * parameter [data] a the key in [mMemoryCache].
      *
+     * Then synchronized on [Object] field [mDiskCacheLock] if [mDiskLruCache] is not `null` we
+     * generate [String] variable `val key` by calling [hashKeyForDisk] with our [String] parameter
+     * [data] and initialize [OutputStream] variable `var out` to null. Then wrapped in a `try`
+     * block we fetch a snapshot of the `Entry` with key `key` in [mDiskLruCache] to initialize our
+     * [DiskLruCache.Snapshot] variable `val snapshot`. If this is `null` we open an
+     * [DiskLruCache.Editor] variable `val editor` to edit the entry for `key` and if `editor` is
+     * not `null` we set `out` to be an output stream for the file with index [DISK_CACHE_INDEX] and
+     * then compress the bitmap of `value` using the [ImageCacheParams.compressFormat] field of
+     * [mCacheParams] as the format, its [ImageCacheParams.compressQuality] field as the quality,
+     * and writing the compressed file to `out`. We then call the [DiskLruCache.Editor.commit]
+     * method of `editor` to finalize the edit and close `out`. If `snapshot` was not `null` we
+     * close the file with index [DISK_CACHE_INDEX].
      *
-     * Then synchronized on `mDiskCacheLock` if `mDiskLruCache` is not null we generate
-     * `String key` by calling `hashKeyForDisk(data)` to use as a key and initialize
-     * `OutputStream out` to null. Then wrapped in a try block we fetch a snapshot of the
-     * `Entry` of key `key` to `DiskLruCache.Snapshot snapshot`. If this is null
-     * we open an `DiskLruCache.Editor editor` to edit `key` and if `editor` is not
-     * null we set `out` to be an output stream for the file with index DISK_CACHE_INDEX and
-     * then compress the bitmap of `value` using `mCacheParams.compressFormat` as the format,
-     * `mCacheParams.compressQuality` as the quality, and writing the compressed file to `out`.
-     * We then call the `commit` method of `editor` to finalize the edit and close `out`.
-     * If `snapshot` was not null we close the file with index DISK_CACHE_INDEX.
-     *
-     *
-     * In the catch blocks of the above try block we log the error for both IOException and Exception,
-     * and in its finally block we close `out` if it is not null and ignore any IOException that
-     * occurs when doing this.
+     * In the catch blocks of the above try block we log the error for both [IOException] and
+     * [Exception], and in its `finally` block we close `out` if it is not null and ignore any
+     * [IOException] that occurs when doing this.
      *
      * @param data Unique identifier for the bitmap to store
      * @param value The bitmap drawable to store
@@ -305,13 +307,16 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                 val key = hashKeyForDisk(data)
                 var out: OutputStream? = null
                 try {
-                    val snapshot = mDiskLruCache!![key]
+                    val snapshot: DiskLruCache.Snapshot? = mDiskLruCache!![key]
                     if (snapshot == null) {
-                        val editor = mDiskLruCache!!.edit(key)
+                        val editor: DiskLruCache.Editor? = mDiskLruCache!!.edit(key)
                         if (editor != null) {
                             out = editor.newOutputStream(DISK_CACHE_INDEX)
                             value.bitmap.compress(
-                                mCacheParams!!.compressFormat, mCacheParams!!.compressQuality, out)
+                                mCacheParams!!.compressFormat,
+                                mCacheParams!!.compressQuality,
+                                out
+                            )
                             editor.commit()
                             out.close()
                         }
@@ -334,9 +339,10 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     }
 
     /**
-     * Get from memory cache. We initialize `BitmapDrawable memValue` to null, and if our field
-     * `mMemoryCache` is not null we set `memValue` to the `BitmapDrawable` stored
-     * in it under the key `data`. Finally we return `memValue` to the caller.
+     * Get from memory cache. We initialize [BitmapDrawable] variable `var memValue` to `null`, and
+     * if our field [mMemoryCache] is not `null` we set `memValue` to the [BitmapDrawable] stored
+     * in it using our [String] parameter [data] as the key. Finally we return `memValue` to the
+     * caller.
      *
      * @param data Unique identifier for which item to get
      * @return The bitmap drawable if found in cache, null otherwise
@@ -355,26 +361,26 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     }
 
     /**
-     * Get from disk cache. We generate `String key` from our parameter `data` using the
-     * method `hashKeyForDisk`, and initialize `Bitmap bitmap` to null. Synchronizing on
-     * `mDiskCacheLock` we first loop waiting until `mDiskCacheStarting` goes false (this
-     * will happen after the disk cache is initialized).
+     * Get from disk cache. We generate [String] variable `val key` from our [String] parameter
+     * [data] using our method [hashKeyForDisk], and initialize [Bitmap] variable `var bitmap` to
+     * `null`. Synchronizing on our [Object] field [mDiskCacheLock] we first loop waiting until
+     * our [Boolean] field [mDiskCacheStarting] goes `false` (this will happen after the disk cache
+     * is initialized).
      *
-     *
-     * If `mDiskLruCache` is not null we initialize `InputStream inputStream` to null and
-     * wrapped in a try block intended to catch IOException we fetch a snapshot `snapshot` from
-     * `mDiskLruCache` for the key `key`, and if `snapshot` is not null we set
-     * `inputStream` to an input stream for the file with index DISK_CACHE_INDEX. Then if
-     * `inputStream` is not null we set `FileDescriptor fd` to its file descriptor and
-     * use the method `ImageResizer.decodeSampledBitmapFromDescriptor` to decode the contents
-     * of the file into `Bitmap bitmap`. If we catch IOException we just log the error, and in
-     * the finally block we close `inputStream` if it is not null, ignoring IOException.
-     *
+     * If our [DiskLruCache] field [mDiskLruCache] is not `null` we initialize [InputStream] variable
+     * `var inputStream` to `null` and wrapped in a try block intended to catch [IOException] we
+     * fetch a [DiskLruCache.Snapshot] snapshot to variable `val snapshot` from [mDiskLruCache] for
+     * the key `key`, and if `snapshot` is not `null` we set `inputStream` to an input stream for
+     * the file with index [DISK_CACHE_INDEX]. Then if `inputStream` is not `null` we set
+     * [FileDescriptor] variable `val fd` to its file descriptor and use the method
+     * [ImageResizer.decodeSampledBitmapFromDescriptor] to decode the contents of the file into
+     * [Bitmap] variable `val bitmap`. If we catch [IOException] we just log the error, and in
+     * the finally block we close `inputStream` if it is not `null`, ignoring [IOException].
      *
      * Finally we return `bitmap` to the caller.
      *
      * @param data Unique identifier for which item to get
-     * @return The bitmap if found in cache, null otherwise
+     * @return The [Bitmap] if found in cache, null otherwise
      */
     fun getBitmapFromDiskCache(data: String): Bitmap? {
         //BEGIN_INCLUDE(get_bitmap_from_disk_cache)
@@ -390,19 +396,20 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
             if (mDiskLruCache != null) {
                 var inputStream: InputStream? = null
                 try {
-                    val snapshot = mDiskLruCache!![key]
+                    val snapshot: DiskLruCache.Snapshot? = mDiskLruCache!![key]
                     if (snapshot != null) {
                         if (BuildConfig.DEBUG) {
                             Log.d(TAG, "Disk cache hit")
                         }
                         inputStream = snapshot.getInputStream(DISK_CACHE_INDEX)
                         if (inputStream != null) {
-                            val fd = (inputStream as FileInputStream).fd
+                            val fd: FileDescriptor = (inputStream as FileInputStream).fd
 
                             // Decode bitmap, but we don't want to sample so give
                             // MAX_VALUE as the target dimensions
                             bitmap = ImageResizer.decodeSampledBitmapFromDescriptor(
-                                fd, Int.MAX_VALUE, Int.MAX_VALUE, this)
+                                fd, Int.MAX_VALUE, Int.MAX_VALUE, this
+                            )
                         }
                     }
                 } catch (e: IOException) {
@@ -420,7 +427,8 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     }
 
     /**
-     * Searches our set `mReusableBitmaps` for a bitmap that can be reused by `BitmapFactory`.
+     * Searches our [MutableSet] of [SoftReference] to [Bitmap] field [mReusableBitmaps] for a
+     * [Bitmap] that can be reused by [BitmapFactory].
      * First we initialize `Bitmap bitmap` to null. Then if `mReusableBitmaps` is not null,
      * and is not empty we synchronize on `mReusableBitmaps`, create an iterator `iterator`
      * for `mReusableBitmaps`, and declare `Bitmap item`. Looping over all of the bitmaps
