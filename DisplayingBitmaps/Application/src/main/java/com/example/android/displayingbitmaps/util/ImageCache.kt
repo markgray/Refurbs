@@ -428,33 +428,30 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
 
     /**
      * Searches our [MutableSet] of [SoftReference] to [Bitmap] field [mReusableBitmaps] for a
-     * [Bitmap] that can be reused by [BitmapFactory].
-     * First we initialize `Bitmap bitmap` to null. Then if `mReusableBitmaps` is not null,
-     * and is not empty we synchronize on `mReusableBitmaps`, create an iterator `iterator`
-     * for `mReusableBitmaps`, and declare `Bitmap item`. Looping over all of the bitmaps
-     * available to `iterator` we set `item` to each bitmap and if:
+     * [Bitmap] that can be reused by [BitmapFactory]. First we initialize [Bitmap] variable
+     * `var bitmap` to `null`. Then if [mReusableBitmaps] is not `null`, and is not empty we
+     * synchronize on [mReusableBitmaps], create an [MutableIterator] of [SoftReference] to
+     * [Bitmap] variable `val iterator` for [mReusableBitmaps], and declare [Bitmap] variable
+     * `var item`. Looping over all of the bitmaps available to `iterator` we set `item` to each
+     * bitmap and if:
      *
-     *  *
-     * `item` is not null and is mutable, we call our method `canUseForInBitmap`
-     * to check if `item` can be reused for a bitmap as specified by our `options`
-     * parameter, and if it can we set `bitmap` to `item`, remove it from the
-     * `iterator` then break
+     *  * `item` is not `null` and is mutable, we call our method [canUseForInBitmap] to check if
+     *  `item` can be reused for a bitmap as specified by our [BitmapFactory.Options] parameter
+     *  [options], and if it can we set `bitmap` to `item`, remove it from `iterator` then break.
      *
-     *  *
-     * else: we remove the item from the `mReusableBitmaps` set since it has been cleared.
-     *
+     *  * else: we remove the item from the [mReusableBitmaps] set since it has been cleared.
      *
      * Finally we return `bitmap` to the caller.
      *
-     * @param options - BitmapFactory.Options with out* options populated
-     * @return Bitmap that case be used for inBitmap
+     * @param options - [BitmapFactory.Options] with out* options populated
+     * @return [Bitmap] that case be used for `inBitmap`
      */
     fun getBitmapFromReusableSet(options: BitmapFactory.Options): Bitmap? {
         //BEGIN_INCLUDE(get_bitmap_from_reusable_set)
         var bitmap: Bitmap? = null
         if (mReusableBitmaps != null && mReusableBitmaps!!.isNotEmpty()) {
             synchronized(mReusableBitmaps!!) {
-                val iterator = mReusableBitmaps!!.iterator()
+                val iterator: MutableIterator<SoftReference<Bitmap>> = mReusableBitmaps!!.iterator()
                 var item: Bitmap?
                 while (iterator.hasNext()) {
                     item = iterator.next().get()
@@ -479,14 +476,15 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     }
 
     /**
-     * Clears both the memory and disk cache associated with this ImageCache object. Note that
+     * Clears both the memory and disk cache associated with this [ImageCache] object. Note that
      * this includes disk access so this should not be executed on the main/UI thread. First if
-     * `mMemoryCache` is not null we call its `evictAll` method to clear the cache.
-     * Then synchronized on `mDiskCacheLock` we set `mDiskCacheStarting` to true, and
-     * if `mDiskLruCache` is not null and is not closed we wrap code to call its `delete`
-     * in a try block intended to catch IOException, with the catch block just logging the error.
-     * We then set `mDiskLruCache` to null and call our `initDiskCache` method to create
-     * a new empty cache.
+     * [LruCache] of [String] to [BitmapDrawable] field [mMemoryCache] is not `null` we call its
+     * [LruCache.evictAll] method to clear the cache. Then synchronized on [Object] field
+     * [mDiskCacheLock] we set [Boolean] field [mDiskCacheStarting] to `true`, and if [DiskLruCache]
+     * field [mDiskLruCache] is not `null` and is not closed we wrap code to call its
+     * [DiskLruCache.delete] method in a try block intended to catch [IOException], with the catch
+     * block just logging the error. We then set [mDiskLruCache] to null and call our
+     * [initDiskCache] method to create a new empty cache.
      */
     fun clearCache() {
         if (mMemoryCache != null) {
@@ -513,11 +511,11 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     }
 
     /**
-     * Flushes the disk cache associated with this ImageCache object. Note that this includes
-     * disk access so this should not be executed on the main/UI thread. Synchronized on our field
-     * `mDiskCacheLock` we check that `mDiskLruCache` is not null before calling its
-     * `flush` method wrapped in a try block intended to catch IOException (the catch block
-     * just logs the error).
+     * Flushes the disk cache associated with this [ImageCache] object. Note that this includes
+     * disk access so this should not be executed on the main/UI thread. Synchronized on our
+     * [Object] field [mDiskCacheLock] we check that [DiskLruCache] field [mDiskLruCache] is not
+     * `null` before calling its [DiskLruCache.flush] method wrapped in a try block intended to
+     * catch IOException (the catch block just logs the error).
      */
     fun flush() {
         synchronized(mDiskCacheLock) {
@@ -535,12 +533,12 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     }
 
     /**
-     * Closes the disk cache associated with this ImageCache object. Note that this includes
-     * disk access so this should not be executed on the main/UI thread. Synchronized on our field
-     * `mDiskCacheLock` we check that `mDiskLruCache` is not null before doing anything.
-     * If it is not null, wrapped in a try block intended to catch IOException we make sure that
-     * `mDiskLruCache` is not already closed before calling its `close` method and setting
-     * it to null (the catch block just logs the error).
+     * Closes the disk cache associated with this [ImageCache] object. Note that this includes
+     * disk access so this should not be executed on the main/UI thread. Synchronized on our
+     * [Object] field [mDiskCacheLock] we check that [DiskLruCache] field [mDiskLruCache] is not
+     * `null` before doing anything. If it is not `null`, wrapped in a try block intended to catch
+     * [IOException] we make sure that [mDiskLruCache] is not already closed before calling its
+     * [DiskLruCache.close] method and setting it to `null` (the catch block just logs the error).
      */
     fun close() {
         synchronized(mDiskCacheLock) {
@@ -561,7 +559,14 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     }
 
     /**
-     * A holder class that contains cache parameters.
+     * A holder class that contains cache parameters. It Creates a set of image cache parameters
+     * that can be provided to [ImageCache.getInstance] or `[ImageWorker.addImageCache]. In our
+     * `init` block we initialize our [File] field [diskCacheDir] with the [File] returned by our
+     * method [getDiskCacheDir].
+     *
+     * @param context A [Context] to use.
+     * @param diskCacheDirectoryName A unique subdirectory name that will be appended to the
+     * application cache directory. Usually "cache" or "images" is sufficient.
      */
     class ImageCacheParams(context: Context, diskCacheDirectoryName: String) {
         /** memory cache size in kilobytes  */
@@ -589,8 +594,6 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         var initDiskCacheOnCreate: Boolean = DEFAULT_INIT_DISK_CACHE_ON_CREATE
 
         /**
-         * Create a set of image cache parameters that can be provided to `ImageCache.getInstance`
-         * or `ImageWorker.addImageCache`.
          * We initialize our field `File diskCacheDir` with the `File` returned by our
          * method `getDiskCacheDir`.
          *
@@ -600,25 +603,25 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
          * is sufficient.
          */
         init {
-            diskCacheDir = getDiskCacheDir(context, diskCacheDirectoryName)
+            diskCacheDir = getDiskCacheDir(context = context, uniqueName = diskCacheDirectoryName)
         }
 
         /**
-         * Sets the memory cache size based on a fraction of the max available VM memory.
-         * Eg. setting fraction to 0.2 would set the memory cache to one fifth of the available
-         * memory. Throws [IllegalArgumentException] if fraction is < 0.01 or > .8.
-         * memCacheSize is stored in kilobytes instead of bytes as this will eventually be passed
-         * to construct a LruCache which takes an int in its constructor.
+         * Sets the memory cache size stored in [Int] field [memCacheSize] based on a fraction of
+         * the max available VM memory. Eg. setting fraction to 0.2 would set the memory cache to
+         * one fifth of the available memory.
          *
+         * Throws [IllegalArgumentException] if fraction is < 0.01 or > .8. [memCacheSize] is stored
+         * in kilobytes instead of bytes as this will eventually be passed to construct a [LruCache]
+         * which takes an [Int] in its constructor.
          *
          * This value should be chosen carefully based on a number of factors
          * Refer to the corresponding Android Training class for more discussion:
          * http://developer.android.com/training/displaying-bitmaps/
          *
-         *
-         * First we check that our parameter `fraction` is between 0.01 and 0.8, throwing
-         * IllegalArgumentException if it is not. We then set `memCacheSize` to `fraction`
-         * times the maximum amount of memory that the Java virtual machine will attempt to use divided
+         * First we check that our [Float] parameter [fraction] is between 0.01 and 0.8, throwing
+         * [IllegalArgumentException] if it is not. We then set [memCacheSize] to [fraction] times
+         * the maximum amount of memory that the Java virtual machine will attempt to use divided
          * by 1024 to convert to kilobytes.
          *
          * @param fraction Fraction of available app memory to use to size memory cache
@@ -648,8 +651,8 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
 
         /**
          * Called to do initial creation of a fragment. First we call our super's implementation of
-         * `onCreate`, then we call `setRetainInstance(true)` to make sure this Fragment
-         * is retained over a configuration change.
+         * `onCreate`, then we call [setRetainInstance] with `true` to make sure this [Fragment] is
+         * retained over a configuration change.
          *
          * @param savedInstanceState If the fragment is being re-created from
          * a previous saved state, this is the state, we do not use.
@@ -678,6 +681,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
          * Default disk cache size in bytes
          */
         private const val DEFAULT_DISK_CACHE_SIZE = 1024 * 1024 * 10 // 10MB
+
         // Compression settings when writing images to disk cache using Bitmap.Compress
         /** Format of the compressed image JPEG  */
         private val DEFAULT_COMPRESS_FORMAT = CompressFormat.JPEG
@@ -687,6 +691,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
 
         /** Index of file in cache `Entry`  */
         private const val DISK_CACHE_INDEX = 0
+
         // Constants to easily toggle various caches
         /** Toggle for enabling memory cache  */
         private const val DEFAULT_MEM_CACHE_ENABLED = true
@@ -698,23 +703,26 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         private const val DEFAULT_INIT_DISK_CACHE_ON_CREATE = false
 
         /**
-         * Return an [ImageCache] instance. A [RetainFragment] is used to retain the
-         * ImageCache object across configuration changes such as a change in device orientation.
-         * First we search for, or create an instance of the non-UI `RetainFragment` in order to
-         * initialize our variable `RetainFragment mRetainFragment`. We initialize our variable
-         * `ImageCache imageCache` by calling the `getObject` method of `mRetainFragment`
-         * (`mRetainFragment` exists only to hold an object across configuration changes). If
-         * `imageCache` is null (first time we were called) we set it to a new instance using our
-         * parameter `cacheParams` in the constructor and call the `setObject` method of
-         * `mRetainFragment` to save `imageCache` across configuration changes. Finally we
-         * return `imageCache` to the caller.
+         * Return an [ImageCache] instance. A [RetainFragment] is used to retain the [ImageCache]
+         * object across configuration changes such as a change in device orientation. First we
+         * search for, or create an instance of the non-UI [RetainFragment] in order to initialize
+         * our [RetainFragment] variable `val mRetainFragment`. We initialize our [ImageCache]
+         * variable `var imageCache` by retrieving the [RetainFragment.mObject] property of
+         * [RetainFragment] field `mRetainFragment` (`mRetainFragment` exists only to hold an
+         * object across configuration changes). If `imageCache` is `null` (first time we were
+         * called) we set it to a new instance using our [ImageCacheParams] parameter [cacheParams]
+         * in the constructor and set the [RetainFragment.mObject] property of `mRetainFragment` to
+         * it to save `imageCache` across configuration changes. Finally we return `imageCache` to
+         * the caller.
          *
          * @param fragmentManager The fragment manager to use when dealing with the retained fragment.
-         * @param cacheParams The cache parameters to use if the ImageCache needs instantiation.
-         * @return An existing retained ImageCache object or a new one if one did not exist
+         * @param cacheParams The cache parameters to use if the [ImageCache] needs instantiation.
+         * @return An existing retained [ImageCache] object or a new one if one did not exist
          */
         fun getInstance(
-            fragmentManager: FragmentManager, cacheParams: ImageCacheParams): ImageCache {
+            fragmentManager: FragmentManager,
+            cacheParams: ImageCacheParams
+        ): ImageCache {
 
             // Search for, or create an instance of the non-UI RetainFragment
             val mRetainFragment = findOrCreateRetainFragment(fragmentManager)
@@ -731,30 +739,29 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         }
 
         /**
-         * Checks to see if its parameter `Bitmap candidate` can be reused by `BitmapFactory`
-         * given the options specified in the parameter `BitmapFactory.Options targetOptions`.
+         * Checks to see if its [Bitmap] parameter [candidate] can be reused by [BitmapFactory]
+         * given the options specified in the [BitmapFactory.Options] parameter [targetOptions].
          *
+         * If the device is older than KITKAT the bitmap can only be reused if the width of
+         * [candidate] is equal to the [BitmapFactory.Options.outWidth] field of [targetOptions],
+         * the height is equal to the [BitmapFactory.Options.outHeight] field, and the
+         * [BitmapFactory.Options.inSampleSize] field of [targetOptions] is equal to 1 so we just
+         * return whether this is `true` or not for devices older the KITKAT.
          *
-         * If the device is older than KITKAT the bitmap can only be reused if the width of `candidate`
-         * is equal to the `outWidth` field of `targetOptions`, the height is equal to the
-         * `outHeight` field, and the `inSampleSize` field of `targetOptions` is equal
-         * to 1 so we just return whether this is true or not.
+         * From KITKAT onward we can re-use if the byte size of the new bitmap specified by the
+         * parameter [targetOptions] is smaller than the allocation byte count of [candidate],
+         * so we calculate [Int] variable `val width` by dividing the [BitmapFactory.Options.outWidth]
+         * field of [targetOptions] by its [BitmapFactory.Options.inSampleSize] field and calculate
+         * [Int] variable `val height` by dividing the [BitmapFactory.Options.outHeight] field of
+         * [targetOptions] by its [BitmapFactory.Options.inSampleSize] field. Then [Int] variable
+         * `val byteCount` is obtained by multiplying `width` by `height` by the bytes per pixel
+         * count that our method [getBytesPerPixel] calculates from the [Bitmap.Config] that the
+         * bitmap [candidate] is using. Finally we return `true` if `byteCount` is less than or equal
+         * to the size of the allocated memory used to store the pixels of [candidate].
          *
-         *
-         * From KITKAT onward we can re-use if the byte size of the new bitmap specified by the parameter
-         * `targetOptions` is smaller than the allocation byte count of `candidate`, so we
-         * calculate `int width` by dividing the `outWidth` field of `targetOptions` by
-         * its `inSampleSize` field and calculate `int height` by dividing the `outHeight`
-         * field of `targetOptions` by its `inSampleSize` field. Then `int byteCount`
-         * is obtained by multiplying `width` by `height` by the bytes per pixel count that
-         * our method `getBytesPerPixel` calculates from the `Bitmap.Config` that the bitmap
-         * `candidate` is using. Finally we return true if `byteCount` is less than or equal
-         * to the size of the allocated memory used to store the pixels of `candidate`.
-         *
-         * @param candidate - Bitmap to check
+         * @param candidate - [Bitmap] to check
          * @param targetOptions - Options that have the out* value populated
-         * @return true if `candidate` can be used for inBitmap re-use with
-         * `targetOptions`
+         * @return `true` if [candidate] can be used for `inBitmap` re-use with [targetOptions].
          */
         @SuppressLint("ObsoleteSdkInt")
         @TargetApi(VERSION_CODES.KITKAT)
@@ -762,7 +769,9 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
             candidate: Bitmap, targetOptions: BitmapFactory.Options): Boolean {
             if (!Utils.hasKitKat()) {
                 // On earlier versions, the dimensions must match exactly and the inSampleSize must be 1
-                return candidate.width == targetOptions.outWidth && candidate.height == targetOptions.outHeight && targetOptions.inSampleSize == 1
+                return candidate.width == targetOptions.outWidth &&
+                    candidate.height == targetOptions.outHeight &&
+                    targetOptions.inSampleSize == 1
             }
 
             // From Android 4.4 (KitKat) onward we can re-use if the byte size of the new bitmap
@@ -774,15 +783,14 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         }
 
         /**
-         * Return the byte usage per pixel of a bitmap based on its configuration. We do what amounts to
-         * a switch on the value of our parameter `Config config`:
+         * Return the byte usage per pixel of a [Bitmap] based on its configuration. We do what
+         * amounts to a switch on the value of our [Bitmap.Config] parameter [config]:
          *
          *  * ARGB_8888: we return 4
          *  * RGB_565: we return 2
          *  * ARGB_4444: we return 2
          *  * ALPHA_8: we return 1
          *  * any other value we return 1
-         *
          *
          * @param config The bitmap configuration.
          * @return The byte usage per pixel.
@@ -810,12 +818,12 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         }
 
         /**
-         * Get a usable cache directory (external if available, internal otherwise). We set the variable
-         * `String cachePath` to the path to the path of the external storage if the external storage
-         * is mounted of it is not removable, otherwise we set it to the absolute path to the application
-         * specific cache directory. Finally we return a `File` that uses the pathname formed by
-         * concatenating `cachePath` to the file separator character followed by our parameter
-         * `uniqueName`.
+         * Get a usable cache directory (external if available, internal otherwise). We set the
+         * [String] variable `val cachePath` to the path to the path of the external storage if the
+         * external storage is mounted or it is not removable, otherwise we set it to the absolute
+         * path to the application specific cache directory. Finally we return a [File] that uses
+         * the pathname formed by concatenating `cachePath` to the file separator character followed
+         * by our [String] parameter [uniqueName].
          *
          * @param context The context to use
          * @param uniqueName A unique directory name to append to the cache dir
