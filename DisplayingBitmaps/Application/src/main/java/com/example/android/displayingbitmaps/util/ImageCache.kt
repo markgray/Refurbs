@@ -31,6 +31,7 @@ import android.os.StatFs
 import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.android.common.logger.Log
 import com.example.android.displayingbitmaps.BuildConfig
 import java.io.File
@@ -839,12 +840,13 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
 
         /**
          * A hashing method that changes a string (like a URL) into a hash suitable for using as a
-         * disk filename. First we declare `String cacheKey`, then wrapped in a try block intended
-         * to catch NoSuchAlgorithmException we initialize `MessageDigest mDigest` with a message
-         * digest algorithm that implements the "MD5" digest algorithm. We call its `update` method
-         * with the bytes of `key` to update the digest, then set `cacheKey` to the hex string
-         * version of the completed digest. The catch block sets `cacheKey` the string value of the
-         * hash code of the `key` object. Finally we return `cacheKey` to the caller.
+         * disk filename. First we declare [String] variable `val cacheKey`, then wrapped in a try
+         * block intended to catch [NoSuchAlgorithmException] we initialize [MessageDigest] variable
+         * `val mDigest` with a message digest algorithm that implements the "MD5" digest algorithm.
+         * We call its [MessageDigest.update] method with the bytes of `key` to update the digest,
+         * then set `cacheKey` to the hex string version of the completed digest. The catch block
+         * sets `cacheKey` the string value of the hash code of the `key` object. Finally we return
+         * `cacheKey` to the caller.
          *
          * @param key key that we want to create a hash key for
          * @return String hashed from `key` that is suitable for using as a disk filename (such as
@@ -863,16 +865,16 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         }
 
         /**
-         * Converts an array of bytes into a string representing the hexadecimal values of each byte in
-         * order. First we initialize `StringBuilder sb` with a new instance. Then we loop over
-         * `i` for all of the bytes in `byte[] bytes`. We set `String hex` to the
-         * hex value of `bytes` at index `i` masked with 0xFF (to negate sign extension), and if the
-         * length of `hex` is 1 we append a leading zero to `sb` before appending `hex`.
-         * When done with all of the bytes in `bytes[]` we return the string value of `sb`
-         * to the caller.
+         * Converts an array of bytes into a string representing the hexadecimal values of each byte
+         * in order. First we initialize [StringBuilder] variable `val sb` with a new instance. Then
+         * we loop over `i` for all of the bytes in [ByteArray] parameter [bytes]. We set [String]
+         * variable `val hex` to the hex value of [bytes] masked with 0xFF (to remove sign extension),
+         * and if the length of `hex` is 1 we append a leading zero to `sb` before appending `hex`.
+         * When done with all of the bytes in [bytes] we return the string value of `sb` to the
+         * caller.
          *
          * @param bytes array of bytes to convert to hex characters
-         * @return Hex string version of the `byte[] bytes` array
+         * @return Hex string version of the [ByteArray] parameter [bytes]
          */
         private fun bytesToHexString(bytes: ByteArray): String {
             // http://stackoverflow.com/questions/332079
@@ -888,30 +890,27 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         }
 
         /**
-         * Get the size in bytes of a bitmap in a BitmapDrawable. Note that from Android 4.4 (KitKat)
-         * onward this returns the allocated memory size of the bitmap which can be larger than the
-         * actual bitmap data byte count (in the case it was re-used).
+         * Get the size in bytes of a [Bitmap] in a [BitmapDrawable]. Note that from Android 4.4
+         * (KitKat) onward this returns the allocated memory size of the [Bitmap] which can be larger
+         * than the actual bitmap data byte count (in the case it was re-used).
          *
+         * First we initialize [Bitmap] variable `val bitmap` with the bitmap used by [BitmapDrawable]
+         * parameter [value] to render. If the device is at least KITKAT we return the size of the
+         * allocated memory used to store the pixels in `bitmap`.
          *
-         * First we initialize `Bitmap bitmap` with the bitmap used by `BitmapDrawable value`
-         * to render. If the device is at least KITKAT we return the size of the allocated memory used
-         * to store the pixels in `bitmap`.
+         * If the device is at least HONEYCOMB_MR1 we return the minimum number of bytes that can be
+         * used to store the pixels in `bitmap`.
          *
+         * Otherwise we return the number of bytes between rows in `bitmap` (the value returned by
+         * [Bitmap.getRowBytes], aka kotlin `rowBytes` property) times the height of `bitmap`.
          *
-         * If the device is at least HONEYCOMB_MR1 we return the minimum number of bytes that can be used
-         * to store the pixels in `bitmap`.
-         *
-         *
-         * Otherwise we return the number of bytes between rows in `bitmap` times the height of
-         * `bitmap`.
-         *
-         * @param value `BitmapDrawable`
-         * @return size in bytes
+         * @param value [BitmapDrawable] whose [Bitmap] size we want.
+         * @return [Bitmap] size in bytes.
          */
         @SuppressLint("ObsoleteSdkInt")
         @TargetApi(VERSION_CODES.KITKAT)
         fun getBitmapSize(value: BitmapDrawable): Int {
-            val bitmap = value.bitmap
+            val bitmap: Bitmap = value.bitmap
 
             // From KitKat onward use getAllocationByteCount() as allocated bytes can potentially be
             // larger than bitmap byte count.
@@ -926,11 +925,11 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         }
 
         /**
-         * Check if external storage is built-in or removable. If the device is at least GINGERBREAD we
-         * return the value returned by `Environment.isExternalStorageRemovable()`, otherwise we
+         * Check if external storage is built-in or removable. If the device is at least GINGERBREAD
+         * we return the value returned by [Environment.isExternalStorageRemovable], otherwise we
          * return true.
          *
-         * @return True if external storage is removable (like an SD card), false
+         * @return `true` if external storage is removable (like an SD card), `false`
          * otherwise.
          */
         @get:TargetApi(VERSION_CODES.GINGERBREAD)
@@ -941,13 +940,13 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
 
         /**
          * Get the external app cache directory. If the device is at least FROYO, we return the value
-         * returned by the `getExternalCacheDir()` method of our parameter `Context context`.
-         * Otherwise we initialize `String cacheDir` by concatenating the string "/Android/data/"
-         * followed by our package name followed by the string "/cache/". We then return a new instance
-         * of `File` for the path formed by concatenating the path string name for the external
-         * storage directory `File` to our string `cacheDir`.
+         * returned by the [Context.getExternalCacheDir] method of our parameter [Context] parameter
+         * [context]. Otherwise we initialize [String] variable `val cacheDir` by concatenating the
+         * string "/Android/data/" followed by our package name followed by the string "/cache/". We
+         * then return a new instance of [File] for the path formed by concatenating the path string
+         * name for the external storage directory [File] to our string `cacheDir`.
          *
-         * @param context The context to use
+         * @param context The [Context] to use.
          * @return The external cache dir
          */
         @TargetApi(VERSION_CODES.FROYO)
@@ -962,13 +961,14 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         }
 
         /**
-         * Check how much usable space is available at a given path. If the device is at least GINGERBREAD
-         * we return the value returned by the `getUsableSpace()` method of our parameter `File path`.
-         * Otherwise we initialize `StatFs stats` with a new instance for the path of `path`
-         * (Constructs a new StatFs for looking at the stats of the filesystem at path. Upon construction,
-         * the stat of the file system will be performed, and the values retrieved available from the methods
-         * on this class). Finally we return the the size, in bytes, of a block on the file system times
-         * the number of blocks that are free on the file system and available to applications.
+         * Check how much usable space is available at a given path. If the device is at least
+         * GINGERBREAD we return the value returned by the [File.getUsableSpace] method of our
+         * [File] parameter [path]. Otherwise we initialize [StatFs] variable `val stats` with
+         * a new instance for the path of [path] (Constructs a new StatFs for looking at the stats
+         * of the filesystem at path. Upon construction, the stat of the file system will be performed,
+         * and the values retrieved available from the methods on this class). Finally we return the
+         * size, in bytes, of a block on the file system times the number of blocks that are free on
+         * the file system and available to applications.
          *
          * @param path The path to check
          * @return The space available in bytes
@@ -984,17 +984,17 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         }
 
         /**
-         * Locate an existing instance of this Fragment or if not found, create and add it using
-         * the `FragmentManager fm`. First we use `fm` to search for a fragment with the
-         * tag TAG ("ImageCache") to initialize `RetainFragment mRetainFragment`. Then if
-         * `mRetainFragment` is null we set it to a new instance then use `fm` to create
-         * a `FragmentTransaction` which we chain to add `mRetainFragment` using TAG as its
-         * tag, and chain that to commit it (since `mRetainFragment` has no UI we can allow it to
-         * be committed after an activity's state is saved). Finally we return `mRetainFragment`
-         * to the caller.
+         * Locate an existing instance of this [Fragment] or if not found, create and add it using
+         * the [FragmentManager] parameter [fm]. First we use [fm] to search for a fragment with the
+         * tag [TAG] ("ImageCache") to initialize [RetainFragment] variable `var mRetainFragment`.
+         * Then if `mRetainFragment` is `null` we set it to a new instance then use [fm] to create
+         * a [FragmentTransaction] which we chain to `add` `mRetainFragment` using [TAG] as its tag,
+         * and chain that to `commit` it (since `mRetainFragment` has no UI we can allow it to be
+         * committed after an activity's state is saved). Finally we return `mRetainFragment` to the
+         * caller.
          *
-         * @param fm The FragmentManager manager to use.
-         * @return The existing instance of the Fragment or the new instance if just
+         * @param fm The [FragmentManager] we should use.
+         * @return The existing instance of the [Fragment] or the new instance if just
          * created.
          */
         private fun findOrCreateRetainFragment(fm: FragmentManager): RetainFragment {

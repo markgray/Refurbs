@@ -29,9 +29,8 @@ import com.example.android.displayingbitmaps.BuildConfig
 import java.io.FileDescriptor
 
 /**
- * A simple subclass of [ImageWorker] that resizes images from resources given a target width
- * and height. Useful for when the input images might be too large to simply load directly into
- * memory.
+ * A simple subclass of [ImageWorker] that resizes images from resources given a target width and
+ * height. Useful for when the input images might be too large to simply load directly into memory.
  */
 open class ImageResizer : ImageWorker {
     /**
@@ -46,8 +45,8 @@ open class ImageResizer : ImageWorker {
 
     /**
      * Initialize providing both width and height image size. First we call our super's constructor,
-     * then we call our method `setImageSize` to set our fields `mImageWidth` and
-     * `mImageHeight` to our parameters of the same name.
+     * then we call our method [setImageSize] to set our fields [mImageWidth] and [mImageHeight] to
+     * our [imageWidth] and [imageHeight] parameters respectively
      *
      * @param context `Context` to use to access resources
      * @param imageWidth width of image
