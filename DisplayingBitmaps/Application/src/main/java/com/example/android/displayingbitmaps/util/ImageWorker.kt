@@ -32,6 +32,7 @@ import com.example.android.common.logger.Log
 import com.example.android.displayingbitmaps.BuildConfig
 import com.example.android.displayingbitmaps.util.ImageCache.ImageCacheParams
 import java.lang.ref.WeakReference
+import java.net.URL
 
 /**
  * This class wraps up completing some arbitrary long running work when loading a bitmap to an
@@ -39,11 +40,6 @@ import java.lang.ref.WeakReference
  * thread and setting a placeholder image.
  */
 abstract class ImageWorker protected constructor(context: Context) {
-    /**
-     * Getter for our field `ImageCache mImageCache`.
-     *
-     * @return The [ImageCache] object currently being used by this ImageWorker.
-     */
     /**
      * [ImageCache] used to handle disk and memory bitmap caching.
      */
@@ -56,12 +52,12 @@ abstract class ImageWorker protected constructor(context: Context) {
     private var mImageCacheParams: ImageCacheParams? = null
 
     /**
-     * `Bitmap` used as placeholder while real image is fetched
+     * [Bitmap] used as placeholder while real image is fetched
      */
     private var mLoadingBitmap: Bitmap? = null
 
     /**
-     * If set to true, the image will fade-in once it has been loaded by the background thread.
+     * If set to `true`, the image will fade-in once it has been loaded by the background thread.
      */
     private var mFadeInBitmap = true
 
@@ -71,18 +67,18 @@ abstract class ImageWorker protected constructor(context: Context) {
     private var mExitTasksEarly = false
 
     /**
-     * Flag used to pause the background task when doing so will improve performance, true causes it
-     * to wait on `mPauseWorkLock` and loop until it changes to false
+     * Flag used to pause the background task when doing so will improve performance, `true` causes
+     * it to wait on [mPauseWorkLock] and loop until it changes to `false`
      */
     protected var mPauseWork: Boolean = false
 
     /**
-     * Lock used to synchronize on the changing of the `mExitTasksEarly` flag
+     * Lock used to synchronize on the changing of the [mExitTasksEarly] flag
      */
     private val mPauseWorkLock = Object()
 
     /**
-     * `Resources` object to use to access resources.
+     * [Resources] object to use to access resources.
      */
     @JvmField
     protected var mResources: Resources
@@ -94,36 +90,40 @@ abstract class ImageWorker protected constructor(context: Context) {
     init {
         mResources = context.resources
     }
+
     /**
-     * Load an image specified by the data parameter into an ImageView (override
-     * [ImageWorker.processBitmap] to define the processing logic). A memory and
-     * disk cache will be used if an [ImageCache] has been added using
-     * [ImageWorker.addImageCache]. If the
-     * image is found in the memory cache, it is set immediately, otherwise an [AsyncTask]
-     * will be created to asynchronously load the bitmap.
+     * Load an image specified by the data parameter into an [ImageView] (override
+     * [ImageWorker.processBitmap] to define the processing logic). A memory and disk cache will be
+     * used if an [ImageCache] has been added using [ImageWorker.addImageCache]. If the image is
+     * found in the memory cache, it is set immediately, otherwise an [AsyncTask] will be created
+     * to asynchronously load the bitmap.
      *
+     * If our [Any] parameter [data] is `null` we return having done nothing. We initialize our
+     * [BitmapDrawable] variable `var value` to `null`, and if our [ImageCache] field [imageCache]
+     * is not `null` we try set `value` to a [Bitmap] from our memory cache that would be stored
+     * under the key given by the string value of [data]. If `value` is not `null` we set `value`
+     * as the content of our [ImageView] parameter [imageView] and if our [OnImageLoadedListener]
+     * parameter [listener] is not `null` we call its [OnImageLoadedListener.onImageLoaded] overload
+     * with `true` to notify it that the image was successfully loaded. If `value` is `null` on the
+     * other hand we check if current work has been canceled or if there was no work in progress on
+     * [imageView] before initializing our [BitmapWorkerTask] variable `val task` with a background
+     * task to load from [data] into [imageView] with [listener] as its [OnImageLoadedListener]. We
+     * initialize [AsyncDrawable] variable `val asyncDrawable` to serve as a placeholder using
+     * [Bitmap] field [mLoadingBitmap] as the temporary image while the work is in progress,
+     * specifying `task` as the worker task. We then set `asyncDrawable` as the content of
+     * [ImageView] parameter [imageView]. We then execute `task` on the executor
+     * [AsyncTask.DUAL_THREAD_EXECUTOR].
      *
-     * If our parameter `Object data` is null we return having done nothing. We initialize our
-     * variable `BitmapDrawable value` to null, and if `ImageCache mImageCache` is not null
-     * we try set `value` to a bitmap from our memory cache that would be stored under the key
-     * given by the string value of `data`. If `value` is not null we set `value`
-     * as the content of our parameter `ImageView imageView` and if our parameter `listener`
-     * is not null we call its `onImageLoaded(true)` to notify it that the image was successfully
-     * loaded. If `value` is null on the other hand we check if current work has been canceled
-     * or if there was no work in progress on `imageView` before initializing our variable
-     * `BitmapWorkerTask task` with a background task to load from `data` into
-     * `imageView` with `listener` as its `OnImageLoadedListener`. We initialize
-     * `AsyncDrawable asyncDrawable` to serve as a placeholder using `mLoadingBitmap` as
-     * the temporary image while the work is in progress, specifying `task` as the worker task.
-     * We then set `asyncDrawable` as the content of `imageView`. We then execute `task`
-     * on the executor `AsyncTask.DUAL_THREAD_EXECUTOR`.
-     *
-     * @param data The URL of the image to download.
-     * @param imageView The ImageView to bind the downloaded image to.
+     * @param data The [URL] of the image to download.
+     * @param imageView The [ImageView] to bind the downloaded image to.
      * @param listener A listener that will be called back once the image has been loaded.
      */
     @JvmOverloads
-    fun loadImage(data: Any?, imageView: ImageView, listener: OnImageLoadedListener? = null) {
+    fun loadImage(
+        data: Any?,
+        imageView: ImageView,
+        listener: OnImageLoadedListener? = null
+    ) {
         if (data == null) {
             return
         }
