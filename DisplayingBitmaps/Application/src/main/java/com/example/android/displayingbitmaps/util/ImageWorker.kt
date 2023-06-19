@@ -150,18 +150,19 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * Set placeholder bitmap that shows when the the background thread is running. We just save our
-     * parameter `Bitmap bitmap` in our field `Bitmap mLoadingBitmap`.
+     * Set placeholder [Bitmap] that shows when the the background thread is running. We just save
+     * our [Bitmap] parameter [bitmap] in our [Bitmap] field [mLoadingBitmap].
      *
-     * @param bitmap placeholder bitmap to use
+     * @param bitmap placeholder [Bitmap] to use
      */
     fun setLoadingImage(bitmap: Bitmap?) {
         mLoadingBitmap = bitmap
     }
 
     /**
-     * Set placeholder bitmap that shows when the the background thread is running. We set our field
-     * `Bitmap mLoadingBitmap` to the bitmap decoded from the image with resource id `resId`.
+     * Set placeholder [Bitmap] that shows when the the background thread is running. We set our
+     * [Bitmap] field [mLoadingBitmap] to the [Bitmap] decoded from the image whose resource id
+     * is our [Int] parameter [resId].
      *
      * @param resId resource id of image.
      */
@@ -170,57 +171,64 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * Adds an [ImageCache] to this [ImageWorker] to handle disk and memory bitmap
-     * caching. We save our parameter `ImageCache.ImageCacheParams cacheParams` in our field
-     * `mImageCacheParams` and use `fragmentManager` to set our field `ImageCache mImageCache`
-     * to an `ImageCache` constructed using `mImageCacheParams` as its parameters. We
-     * create a new instance of `CacheAsyncTask` and execute it to initialize the disk cache.
+     * Adds an [ImageCache] to this [ImageWorker] to handle disk and memory [Bitmap] caching. We
+     * save our [ImageCache.ImageCacheParams] parameter [cacheParams] in our field [mImageCacheParams]
+     * and use our [FragmentManager] parameter [fragmentManager] to set our [ImageCache] field
+     * [imageCache] to an [ImageCache] constructed using [mImageCacheParams] as its parameters. We
+     * create a new instance of [CacheAsyncTask] and execute it to initialize the disk cache.
      *
-     * @param fragmentManager `FragmentManager` to use when dealing with the retained fragment.
-     * @param cacheParams The cache parameters to use for the image cache.
+     * @param fragmentManager [FragmentManager] to use when dealing with the retained fragment.
+     * @param cacheParams The cache parameters to use for the [ImageCache].
      */
-    fun addImageCache(fragmentManager: FragmentManager?,
-                      cacheParams: ImageCacheParams?) {
+    fun addImageCache(
+        fragmentManager: FragmentManager?,
+        cacheParams: ImageCacheParams?
+    ) {
         mImageCacheParams = cacheParams
         imageCache = ImageCache.getInstance(fragmentManager!!, mImageCacheParams!!)
         CacheAsyncTask().execute(MESSAGE_INIT_DISK_CACHE)
     }
 
     /**
-     * Adds an [ImageCache] to this [ImageWorker] to handle disk and memory bitmap
-     * caching. We set our field `mImageCacheParams` to an instance that will use the directory
-     * `diskCacheDirectoryName`, and use the `FragmentManager` for interacting with
-     * fragments associated with this activity when creating an instance of `ImageCache` that
-     * uses `mImageCacheParams` as its configuration parameters which we then use to initialize
-     * our field `ImageCache mImageCache`. We create a new instance of `CacheAsyncTask`
+     * Adds an [ImageCache] to this [ImageWorker] to handle disk and memory [Bitmap] caching. We set
+     * our [ImageCacheParams] field [mImageCacheParams] to an instance that will use the directory
+     * of our [String] parameter [diskCacheDirectoryName], and use the [FragmentManager] for
+     * interacting with fragments associated with this activity when creating an instance of
+     * [ImageCache] that uses [mImageCacheParams] as its configuration parameters which we then use
+     * to initialize our [ImageCache] field [imageCache]. We create a new instance of [CacheAsyncTask]
      * and execute it to initialize the disk cache.
      *
-     * @param activity `FragmentActivity` to use for `Context`
-     * @param diskCacheDirectoryName See [ImageCache.ImageCacheParams].
+     * @param activity [FragmentActivity] to use for [Context].
+     * @param diskCacheDirectoryName A unique subdirectory name that will be appended to the
+     * application cache directory.
      */
-    fun addImageCache(activity: FragmentActivity, diskCacheDirectoryName: String?) {
+    fun addImageCache(
+        activity: FragmentActivity,
+        diskCacheDirectoryName: String?
+    ) {
         mImageCacheParams = ImageCacheParams(activity, diskCacheDirectoryName!!)
         imageCache = ImageCache.getInstance(activity.supportFragmentManager, mImageCacheParams!!)
         CacheAsyncTask().execute(MESSAGE_INIT_DISK_CACHE)
     }
 
     /**
-     * If set to true, the image will fade-in once it has been loaded by the background thread. We
-     * just save our parameter `boolean fadeIn` in our field `boolean mFadeInBitmap`.
+     * If set to `true`, the image will fade-in once it has been loaded by the background thread. We
+     * just save our [Boolean] parameter [fadeIn] in our [Boolean] field [mFadeInBitmap].
      *
-     * @param fadeIn true to cause the image to fade-in once it has been loaded by the background thread.
+     * @param fadeIn `true` to cause the image to fade-in once it has been loaded by the background
+     * thread.
      */
     fun setImageFadeIn(fadeIn: Boolean) {
         mFadeInBitmap = fadeIn
     }
 
     /**
-     * Sets our flag `boolean mExitTasksEarly` to our parameter `boolean exitTasksEarly`
+     * Sets our [Boolean] flag field [mExitTasksEarly] to our [Boolean] parameter [exitTasksEarly]
      * so that our background tasks will terminate before completing, and calls our method
-     * `setPauseWork(false)` to un-pause any paused work so that they can read the new value
-     * of `mExitTasksEarly`.
+     * [setPauseWork] with `false` to un-pause any paused work so that they can read the new value
+     * of [mExitTasksEarly].
      *
-     * @param exitTasksEarly true to cause our background tasks to terminate before completing.
+     * @param exitTasksEarly `true` to cause our background tasks to terminate before completing.
      */
     fun setExitTasksEarly(exitTasksEarly: Boolean) {
         mExitTasksEarly = exitTasksEarly
@@ -234,7 +242,7 @@ abstract class ImageWorker protected constructor(context: Context) {
      *
      * @param data The data to identify which image to process, as provided by
      * [ImageWorker.loadImage]
-     * @return The processed bitmap
+     * @return The processed [Bitmap]
      */
     protected abstract fun processBitmap(data: Any?): Bitmap?
 
@@ -243,32 +251,31 @@ abstract class ImageWorker protected constructor(context: Context) {
      */
     private inner class BitmapWorkerTask : AsyncTask<Void?, Void?, BitmapDrawable?> {
         /**
-         * `Object` we are processing in the background by calling the overloaded
-         * `processBitmap(Object)` method of `ImageWorker` subclasses with this
-         * `Object` as the parameter. Its string value is also used to access the
-         * caches. It is set by the constructor.
+         * [Any] object we are processing in the background by calling the overloaded
+         * [processBitmap] method of [ImageWorker] subclasses with this as the argument.
+         * Its string value is also used to access the caches. It is set by the constructor.
          */
         var mData: Any?
 
         /**
-         * `WeakReference` to the `ImageView` we are constructed to load into
+         * [WeakReference] to the [ImageView] we are constructed to load into
          */
         private val imageViewReference: WeakReference<ImageView>
 
         /**
-         * `OnImageLoadedListener` whose `onImageLoaded(success)` callback we are to
-         * in our `onPostExecute` method if it is not null. Set in our constructor.
+         * [OnImageLoadedListener] whose [OnImageLoadedListener.onImageLoaded] callback we are to
+         * call in our [onPostExecute] method if it is not `null`. Set in our constructor.
          */
         private val mOnImageLoadedListener: OnImageLoadedListener?
 
         /**
-         * Our constructor. We save our parameter `Object data` in our field `mData`,
-         * and initialize our field `imageViewReference` with a `WeakReference` to our
-         * parameter `ImageView imageView`, then set our field `mOnImageLoadedListener`
-         * to null.
+         * Our constructor. We save our [Any] parameter [data] in our field [mData], and initialize
+         * our [WeakReference] to an [ImageView] field [imageViewReference] with a [WeakReference]
+         * to our [ImageView] parameter [imageView], then set our [OnImageLoadedListener] field
+         * [mOnImageLoadedListener] to `null`.
          *
-         * @param data `Object` we are to process in the background
-         * @param imageView `ImageView` we are bound to load.
+         * @param data [Any] object we are to process in the background
+         * @param imageView [ImageView] we are bound to load.
          */
         @Suppress("unused")
         constructor(data: Any, imageView: ImageView) {
@@ -278,10 +285,10 @@ abstract class ImageWorker protected constructor(context: Context) {
         }
 
         /**
-         * Our constructor. We save our parameter `Object data` in our field `mData`,
-         * and initialize our field `imageViewReference` with a `WeakReference` to our
-         * parameter `ImageView imageView`, then set our field `mOnImageLoadedListener`
-         * to our parameter `OnImageLoadedListener listener`.
+         * Our constructor. We save our [Any] parameter [data] in our field [mData], and initialize
+         * our [WeakReference] to an [ImageView] field [imageViewReference] with a [WeakReference]
+         * to our [ImageView] parameter [imageView], then set our [OnImageLoadedListener] field
+         * [mOnImageLoadedListener] to our [OnImageLoadedListener] parameter [listener].
          *
          * @param data `Object` we are to process in the background
          * @param imageView `ImageView` we are bound to load.
@@ -299,22 +306,18 @@ abstract class ImageWorker protected constructor(context: Context) {
          * our field `Object mData`, initialize our variables `Bitmap bitmap` to null,
          * and `BitmapDrawable drawable` to null.
          *
-         *
          * Synchronized on `mPauseWorkLock` we loop as long as the `mPauseWork` flag is
          * true and our method `isCancelled()` is false calling the `wait` method of
          * `mPauseWorkLock` in a try block intended to catch and ignore InterruptedException.
          * (Waiting if work is paused and the task is not cancelled).
          *
-         *
          * Then if `mImageCache` is not null, and we are not canceled, and we have an image view
          * attached to this task, and the `mExitTasksEarly` is false we set `bitmap` to
          * the bitmap retrieved from the disk cache using `dataString` as the key.
          *
-         *
          * If `bitmap` is null (our bitmap was not cached), and we are not canceled, and we have
          * an image view attached to this task, and the `mExitTasksEarly` is false we set
          * `bitmap` to the bitmap returned by the overridden method `processBitmap(mData)`.
-         *
          *
          * If `bitmap` is not null we set `drawable` as follows:
          *
