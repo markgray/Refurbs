@@ -123,7 +123,7 @@ class MyCloudProvider : DocumentsProvider() {
      * @return `MatrixCursor` containing all the columns in our parameter `projection`
      * for our root called "MyCloud".
      */
-    override fun queryRoots(projection: Array<String>): Cursor {
+    override fun queryRoots(projection: Array<String>?): Cursor {
         Log.v(TAG, "queryRoots")
 
         // Create a cursor with either the requested fields, or the default projection.  This
@@ -201,7 +201,7 @@ class MyCloudProvider : DocumentsProvider() {
      * @throws FileNotFoundException if a file is not found by our `getFileForDocId` method
      */
     @Throws(FileNotFoundException::class)
-    override fun queryRecentDocuments(rootId: String, projection: Array<String>): Cursor {
+    override fun queryRecentDocuments(rootId: String, projection: Array<String>?): Cursor {
         Log.v(TAG, "queryRecentDocuments")
 
         // This example implementation walks a local file structure to find the most recently
@@ -273,7 +273,7 @@ class MyCloudProvider : DocumentsProvider() {
      * @throws FileNotFoundException if our `getFileForDocId` is unable to access the root
      */
     @Throws(FileNotFoundException::class)
-    override fun querySearchDocuments(rootId: String, query: String, projection: Array<String>): Cursor {
+    override fun querySearchDocuments(rootId: String, query: String, projection: Array<String>?): Cursor {
         Log.v(TAG, "querySearchDocuments")
 
         // Create a cursor with the requested projection, or the default projection.
@@ -349,7 +349,7 @@ class MyCloudProvider : DocumentsProvider() {
      * is unable to find the `documentId` file.
      */
     @Throws(FileNotFoundException::class)
-    override fun queryDocument(documentId: String, projection: Array<String>): Cursor {
+    override fun queryDocument(documentId: String, projection: Array<String>?): Cursor {
         Log.v(TAG, "queryDocument")
 
         // Create a cursor with the requested projection, or the default projection.
@@ -384,7 +384,7 @@ class MyCloudProvider : DocumentsProvider() {
      * the files.
      */
     @Throws(FileNotFoundException::class)
-    override fun queryChildDocuments(parentDocumentId: String, projection: Array<String>,
+    override fun queryChildDocuments(parentDocumentId: String, projection: Array<String>?,
                                      sortOrder: String): Cursor {
         Log.v(TAG, "queryChildDocuments, parentDocumentId: " +
             parentDocumentId +
