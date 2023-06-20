@@ -290,10 +290,10 @@ abstract class ImageWorker protected constructor(context: Context) {
          * to our [ImageView] parameter [imageView], then set our [OnImageLoadedListener] field
          * [mOnImageLoadedListener] to our [OnImageLoadedListener] parameter [listener].
          *
-         * @param data `Object` we are to process in the background
-         * @param imageView `ImageView` we are bound to load.
-         * @param listener `OnImageLoadedListener` whose `onImageLoaded(success)` callback
-         * we are to call when done
+         * @param data [Any] object we are to process in the background
+         * @param imageView [ImageView] we are bound to load.
+         * @param listener [OnImageLoadedListener] whose [OnImageLoadedListener.onImageLoaded]
+         * callback we are to call when done
          */
         constructor(data: Any, imageView: ImageView, listener: OnImageLoadedListener?) {
             mData = data
@@ -302,43 +302,41 @@ abstract class ImageWorker protected constructor(context: Context) {
         }
 
         /**
-         * Background processing. We initialize `String dataString` with the string value of
-         * our field `Object mData`, initialize our variables `Bitmap bitmap` to null,
-         * and `BitmapDrawable drawable` to null.
+         * Background processing. We initialize [String] variable `val dataString` with the string
+         * value of our [Any] field [mData], initialize our [Bitmap] variable `var bitmap` to `null`,
+         * and our [BitmapDrawable] variable `var drawable` to `null`.
          *
-         * Synchronized on `mPauseWorkLock` we loop as long as the `mPauseWork` flag is
-         * true and our method `isCancelled()` is false calling the `wait` method of
-         * `mPauseWorkLock` in a try block intended to catch and ignore InterruptedException.
+         * Synchronized on [Object] field [mPauseWorkLock] we loop as long as the [Boolean] field
+         * [mPauseWork] is `true` and our [isCancelled] property is `false` calling the [Object.wait]
+         * method of [mPauseWorkLock] in a try block intended to catch and ignore [InterruptedException].
          * (Waiting if work is paused and the task is not cancelled).
          *
-         * Then if `mImageCache` is not null, and we are not canceled, and we have an image view
-         * attached to this task, and the `mExitTasksEarly` is false we set `bitmap` to
-         * the bitmap retrieved from the disk cache using `dataString` as the key.
+         * Then if [ImageCache] field [imageCache] is not `null`, and we are not canceled, and we
+         * have an image view attached to this task, and the [Boolean] field [mExitTasksEarly] is
+         * `false` we set `bitmap` to the bitmap retrieved from the disk cache using `dataString`
+         * as the key.
          *
          * If `bitmap` is null (our bitmap was not cached), and we are not canceled, and we have
-         * an image view attached to this task, and the `mExitTasksEarly` is false we set
-         * `bitmap` to the bitmap returned by the overridden method `processBitmap(mData)`.
+         * an image view attached to this task, and the [mExitTasksEarly] field is `false` we set
+         * `bitmap` to the bitmap returned by the overridden method [processBitmap] when passed
+         * [mData] as its `data` argument.
          *
          * If `bitmap` is not null we set `drawable` as follows:
          *
-         *  *
-         * Device is newer than HONEYCOMB: we create a standard `BitmapDrawable` from
-         * `bitmap` to set `drawable`.
+         *  * Device is newer than HONEYCOMB: we create a standard [BitmapDrawable] from `bitmap`
+         *  to set `drawable`.
          *
-         *  *
-         * Older than HONEYCOMB: we wrap `bitmap` in a `RecyclingBitmapDrawable`
-         * to set `drawable`.
+         *  * Older than HONEYCOMB: we wrap `bitmap` in a [RecyclingBitmapDrawable] to set
+         *  `drawable`.
          *
-         *
-         * In either case, if `mImageCache` is not null we add `drawable` to the cache
-         * stored under the key `dataString`.
-         *
+         * In either case, if [ImageCache] field [imageCache] is not `null` we add `drawable` to the
+         * cache stored under the key `dataString`.
          *
          * Finally we return `drawable` to the caller (it will be the parameter passed to the
-         * `onPostExecute` method).
+         * [onPostExecute] method).
          *
          * @param params The parameters of the task, not used.
-         * @return `BitmapDrawable` we downloaded and processed (or found in disk cache).
+         * @return [BitmapDrawable] we downloaded and processed (or found in disk cache).
          */
         override fun doInBackground(vararg params: Void?): BitmapDrawable {
             //BEGIN_INCLUDE(load_bitmap_in_background)
@@ -373,7 +371,7 @@ abstract class ImageWorker protected constructor(context: Context) {
             // bound back to this task and our "exit early" flag is not set, then call the main
             // process method (as implemented by a subclass)
             if (bitmap == null && !isCancelled && attachedImageView != null && !mExitTasksEarly) {
-                bitmap = processBitmap(mData)
+                bitmap = processBitmap(data = mData)
             }
 
             // If the bitmap was processed and the image cache is available, then add the processed
@@ -390,7 +388,7 @@ abstract class ImageWorker protected constructor(context: Context) {
                     RecyclingBitmapDrawable(mResources, bitmap)
                 }
                 if (imageCache != null) {
-                    imageCache!!.addBitmapToCache(dataString, drawable)
+                    imageCache!!.addBitmapToCache(data = dataString, value = drawable)
                 }
             }
             if (BuildConfig.DEBUG) {
@@ -401,19 +399,20 @@ abstract class ImageWorker protected constructor(context: Context) {
         }
 
         /**
-         * Once the image is processed, associates it to the imageView. First we initialize our variable
-         * `boolean success` to false. If cancel was called on this task or the "exit early" flag
-         * is set we set `value` to null (we will not bother to update our image view). We then
-         * initialize `ImageView c` to the image view attached to this task, and if `value`
-         * is not null, and `ImageView imageView` is not null set set `success` to true
-         * and set the drawable that `imageView` displays to `value`.
+         * Once the image is processed, associates it to the imageView. First we initialize our
+         * [BitmapDrawable] variable `var valueLocal` to our [BitmapDrawable] parameter [value], and
+         * our [Boolean] variable `var success` to `false`. If cancel was called on this task or the
+         * [mExitTasksEarly] "exit early" flag is set we set `valueLocal` to `null` (we will not
+         * bother to update our image view). We then initialize [ImageView] variable `val imageView`
+         * to the image view attached to this task (the [attachedImageView] property), and if
+         * `valueLocal` is not `null`, and ` imageView` is not `null` we set `success` to `true`
+         * and set the drawable that `imageView` displays to `valueLocal`.
          *
+         * Finally if [OnImageLoadedListener] field [mOnImageLoadedListener] is not null we call its
+         * [OnImageLoadedListener.onImageLoaded] method with our `success` variable.
          *
-         * Finally if `mOnImageLoadedListener` is not null we call its `onImageLoaded(success)`
-         * method.
-         *
-         * @param value `BitmapDrawable` downloaded by `doInBackground` method (or retrieved
-         * from disk cache).
+         * @param value [BitmapDrawable] downloaded by [doInBackground] method (or retrieved from
+         * disk cache).
          */
         override fun onPostExecute(value: BitmapDrawable?) {
             //BEGIN_INCLUDE(complete_background_work)
@@ -429,20 +428,19 @@ abstract class ImageWorker protected constructor(context: Context) {
                     Log.d(TAG, "onPostExecute - setting bitmap")
                 }
                 success = true
-                setImageDrawable(imageView, valueLocal)
+                setImageDrawable(imageView = imageView, drawable = valueLocal)
             }
             mOnImageLoadedListener?.onImageLoaded(success)
             //END_INCLUDE(complete_background_work)
         }
 
         /**
-         * Runs on the UI thread after [.cancel] is invoked and
-         * {doInBackground(Object[])} has finished. We call our super's
-         * implementation of `onCancelled(value)` then synchronized on
-         * `mPauseWorkLock` we call its `notifyAll()` method to
-         * wake all threads waiting for `mPauseWorkLock`.
+         * Runs on the UI thread after [cancel] is invoked and [doInBackground] has finished. We
+         * call our super's implementation of `onCancelled` then synchronized on [Object] field
+         * [mPauseWorkLock] we call its [Object.notifyAll] method to wake all threads waiting for
+         * [mPauseWorkLock].
          *
-         * @param value `BitmapDrawable` returned from `doInBackground` method.
+         * @param value [BitmapDrawable] returned from [doInBackground] method.
          */
         override fun onCancelled(value: BitmapDrawable?) {
             super.onCancelled(value) // docs say we should not call?
