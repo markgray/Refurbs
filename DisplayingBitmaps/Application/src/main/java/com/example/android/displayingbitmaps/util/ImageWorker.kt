@@ -25,11 +25,15 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
+import android.widget.AbsListView
 import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.example.android.common.logger.Log
 import com.example.android.displayingbitmaps.BuildConfig
+import com.example.android.displayingbitmaps.R
+import com.example.android.displayingbitmaps.ui.ImageDetailActivity
+import com.example.android.displayingbitmaps.ui.ImageGridFragment
 import com.example.android.displayingbitmaps.util.ImageCache.ImageCacheParams
 import java.lang.ref.WeakReference
 import java.net.URL
@@ -59,7 +63,7 @@ abstract class ImageWorker protected constructor(context: Context) {
     /**
      * If set to `true`, the image will fade-in once it has been loaded by the background thread.
      */
-    private var mFadeInBitmap = true
+    private var mFadeInBitmap: Boolean = true
 
     /**
      * Flag used to cancel background tasks when the app is paused
@@ -448,15 +452,16 @@ abstract class ImageWorker protected constructor(context: Context) {
         }
 
         /**
-         * Returns the ImageView associated with this task as long as the ImageView's task still
-         * points to this task as well. Returns null otherwise. We initialize `ImageView imageView`
-         * by retrieving the reference object's referent from `imageViewReference` (will be null
-         * if the garbage collector collected this `WeakReference` or it was cleared by the program).
-         * We initialize `BitmapWorkerTask bitmapWorkerTask` to the `BitmapWorkerTask` returned
-         * by our method `getBitmapWorkerTask` for `imageView`. If this is the same as the
-         * variable `bitmapWorkerTask` we return `imageView`, otherwise we return null.
+         * Returns the [ImageView] associated with this task as long as the [ImageView]'s task still
+         * points to this task as well. Returns `null` otherwise. We initialize [ImageView] variable
+         * `val imageView` by retrieving the reference object's referent from [imageViewReference]
+         * (will be `null` if the garbage collector collected this [WeakReference] or it was
+         * by the program). We initialize [BitmapWorkerTask] variable `val bitmapWorkerTask` to the
+         * [BitmapWorkerTask] returned by our method [getBitmapWorkerTask] for `imageView`. If `this`
+         * is the same as the variable `bitmapWorkerTask` we return `imageView`, otherwise we return
+         * `null`.
          *
-         * @return ImageView associated with this task or null
+         * @return [ImageView] associated with this task or `null`
          */
         private val attachedImageView: ImageView?
             get() {
@@ -475,39 +480,43 @@ abstract class ImageWorker protected constructor(context: Context) {
         /**
          * Called once the image has been loaded.
          *
-         * @param success True if the image was loaded successfully, false if
+         * @param success `true` if the image was loaded successfully, `false` if
          * there was an error.
          */
         fun onImageLoaded(success: Boolean)
     }
 
     /**
-     * A custom Drawable that will be attached to the imageView while the work is in progress.
-     * Contains a reference to the actual worker task, so that it can be stopped if a new binding is
-     * required, and makes sure that only the last started worker process can bind its result,
-     * independently of the finish order.
+     * A custom [BitmapDrawable] that will be attached to the [ImageView] while the work is in
+     * progress. Contains a reference to the actual worker task, so that it can be stopped if a
+     * new binding is required, and makes sure that only the last started worker process can bind
+     * its result, independently of the finish order.
      */
-    private class AsyncDrawable(res: Resources?, bitmap: Bitmap?, bitmapWorkerTask: BitmapWorkerTask) : BitmapDrawable(res, bitmap) {
+    private class AsyncDrawable(
+        res: Resources?,
+        bitmap: Bitmap?,
+        bitmapWorkerTask: BitmapWorkerTask
+    ) : BitmapDrawable(res, bitmap) {
         /**
-         * reference to the actual worker task that is downloading and processing the image
+         * [WeakReference] to the actual worker task that is downloading and processing the image
          */
         private val bitmapWorkerTaskReference: WeakReference<BitmapWorkerTask>
 
         /**
          * Our constructor. We call our super's two parameter constructor which creates a drawable
-         * from our parameter `Bitmap bitmap` using `Resources res` to access resources.
-         * When we initialize our field `bitmapWorkerTaskReference` with a weak reference to
-         * our parameter `BitmapWorkerTask bitmapWorkerTask`.
+         * from our `Bitmap` parameter `bitmap` using `Resources` parameter `res` to access
+         * resources. Then we initialize our field `bitmapWorkerTaskReference` with a weak
+         * reference to our `BitmapWorkerTask` parameter `bitmapWorkerTask`.
          */
         init {
             bitmapWorkerTaskReference = WeakReference(bitmapWorkerTask)
         }
 
         /**
-         * Getter for our field `bitmapWorkerTaskReference`, it dereferences the weak reference
-         * and returns the `BitmapWorkerTask` it points to.
+         * Getter for our field [bitmapWorkerTaskReference], it dereferences the weak reference
+         * and returns the [BitmapWorkerTask] it points to.
          *
-         * @return `BitmapWorkerTask` which is downloading our image, or null if the garbage
+         * @return [BitmapWorkerTask] which is downloading our image, or `null` if the garbage
          * collector or program deleted it.
          */
         val bitmapWorkerTask: BitmapWorkerTask?
@@ -515,21 +524,21 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * Called when the processing is complete and the final drawable should be set on the ImageView.
-     * If the flag `mFadeInBitmap` is true we animate the transition from a transparent drawable
-     * to our parameter `drawable` by creating `TransitionDrawable td` to be a transition
-     * drawable between the two layers composed of a new `ColorDrawable` with the color given
-     * by android.R.color.transparent, and our parameter `drawable`. We then set the background
-     * drawable of `imageView` to a `BitmapDrawable` created from `Bitmap mLoadingBitmap`.
-     * We then set the image drawable of `imageView` to `td` and call the `startTransition`
-     * method of `td` to fade it in over the next FADE_IN_TIME (200) milliseconds.
+     * Called when the processing is complete and the final drawable should be set on the [ImageView].
+     * If the [Boolean] field [mFadeInBitmap] is `true` we animate the transition from a transparent
+     * drawable to our [Drawable] parameter [drawable] by creating [TransitionDrawable] variable
+     * `val td` to be a transition drawable between the two layers composed of a new [ColorDrawable]
+     * with the color given by [android.R.color.transparent], and our parameter [drawable]. We then
+     * set the background drawable of [ImageView] parameter [imageView] to a [BitmapDrawable] created
+     * from [Bitmap] field [mLoadingBitmap]. We then set the image drawable of [imageView] to `td`
+     * and call the [TransitionDrawable.startTransition] method of `td` to fade it in over the next
+     * [FADE_IN_TIME] (200) milliseconds.
      *
+     * If the flag field [mFadeInBitmap] is `false` we just set the image drawable of [imageView]
+     * to [drawable].
      *
-     * If the flag `mFadeInBitmap` is false we just set the image drawable of `imageView`
-     * to `drawable`.
-     *
-     * @param imageView `ImageView` to display the drawable
-     * @param drawable `Drawable` to display on the `ImageView`
+     * @param imageView [ImageView] to display the drawable
+     * @param drawable [Drawable] to display on the [ImageView]
      */
     private fun setImageDrawable(imageView: ImageView, drawable: Drawable) {
         if (mFadeInBitmap) {
@@ -549,24 +558,19 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * Pause any ongoing background work. This can be used as a temporary
-     * measure to improve performance. For example background work could
-     * be paused when a ListView or GridView is being scrolled using a
-     * [android.widget.AbsListView.OnScrollListener] to keep
-     * scrolling smooth.
+     * Pause any ongoing background work. This can be used as a temporary measure to improve
+     * performance. For example background work could be paused when a `ListView` or `GridView` is
+     * being scrolled using a [AbsListView.OnScrollListener] to keep scrolling smooth.
      *
+     * If work is paused, be sure [setPauseWork] is called again with `false` before your fragment
+     * or activity is destroyed (for example during [android.app.Activity.onPause] or there is a
+     * risk the background thread will never finish.
      *
-     * If work is paused, be sure setPauseWork(false) is called again
-     * before your fragment or activity is destroyed (for example during
-     * { android.app.Activity#onPause()}), or there is a risk the
-     * background thread will never finish.
+     * Synchronized on [Object] field [mPauseWorkLock] we save our [Boolean] parameter [pauseWork]
+     * in our field [mPauseWork]. Then if [mPauseWork] is `false` we wake up all threads which are
+     * waiting on [mPauseWorkLock].
      *
-     *
-     * Synchronized on `mPauseWorkLock` we save our parameter `pauseWork` in our field
-     * `mPauseWork`. Then if `mPauseWork` is false we wake up all threads which are
-     * waiting on `mPauseWorkLock`.
-     *
-     * @param pauseWork true to pause the work, false to resume the work.
+     * @param pauseWork `true` to pause the work, `false` to resume the work.
      */
     fun setPauseWork(pauseWork: Boolean) {
         synchronized(mPauseWorkLock) {
@@ -578,33 +582,27 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * `AsyncTask` used to process disk cache maintenance commands in the background.
+     * [AsyncTask] used to process disk cache maintenance commands in the background.
      */
     protected inner class CacheAsyncTask : AsyncTask<Any?, Void?, Void?>() {
         /**
          * Performs disk operations on a background thread. We switch on the integer value of our
          * parameter `params[0]`:
          *
-         *  *
-         * MESSAGE_CLEAR: we call the method `clearCacheInternal()` which clears the
-         * cache stored in `ImageCache mImageCache`.
+         *  * [MESSAGE_CLEAR]: we call the method [clearCacheInternal] which clears the cache stored
+         *  in [ImageCache] field [imageCache].
          *
-         *  *
-         * MESSAGE_INIT_DISK_CACHE: we call the method `initDiskCacheInternal` which
-         * initializes the cache stored in `ImageCache mImageCache`.
+         *  * [MESSAGE_INIT_DISK_CACHE]: we call the method [initDiskCacheInternal] which
+         *  initializes the cache stored in [ImageCache] field [imageCache].
          *
-         *  *
-         * MESSAGE_FLUSH: we call the method `flushCacheInternal()` which flushes the
-         * cache stored in `ImageCache mImageCache` to disk.
+         *  * [MESSAGE_FLUSH]: we call the method [flushCacheInternal] which flushes the cache
+         *  stored in [ImageCache] field [imageCache] to disk.
          *
-         *  *
-         * MESSAGE_CLOSE: we call the method `closeCacheInternal()` which closes the
-         * cache stored in `ImageCache mImageCache` and sets `mImageCache` to null.
-         *
-         *
+         *  * [MESSAGE_CLOSE]: we call the method [closeCacheInternal] which closes the cache stored
+         *  in [ImageCache] field [imageCache] and sets [imageCache] to null.
          *
          * @param params The parameters of the task, we use only `params[0]`
-         * @return null
+         * @return `null`
          */
         override fun doInBackground(vararg params: Any?): Void? {
             when (params[0] as Int) {
@@ -618,7 +616,7 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * If our field `ImageCache mImageCache` is not null we call its `initDiskCache()`
+     * If our [ImageCache] field [imageCache] is not `null` we call its [ImageCache.initDiskCache]
      * method to initialize the disk cache.
      */
     protected open fun initDiskCacheInternal() {
@@ -628,7 +626,7 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * If our field `ImageCache mImageCache` is not null we call its `clearCache()`
+     * If our [ImageCache] field [imageCache] is not `null` we call its [ImageCache.clearCache]
      * method to clear both the memory and the disk cache.
      */
     protected open fun clearCacheInternal() {
@@ -638,8 +636,8 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * If our field `ImageCache mImageCache` is not null we call its `flush()` method to
-     * clear flush the disk cache to disk.
+     * If our [ImageCache] field [imageCache] is not `null` we call its [ImageCache.flush] method to
+     * flush the disk cache to disk.
      */
     protected open fun flushCacheInternal() {
         if (imageCache != null) {
@@ -648,8 +646,8 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * If our field `ImageCache mImageCache` is not null we call its `close()` method to
-     * close both the memory and the disk cache, then set `mImageCache` to null.
+     * If our [ImageCache] field [imageCache] is not `null` we call its [ImageCache.close] method to
+     * close both the memory and the disk cache, then set [imageCache] to null.
      */
     protected open fun closeCacheInternal() {
         if (imageCache != null) {
@@ -659,7 +657,7 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * Creates a new instance of `CacheAsyncTask` and executes it with the command MESSAGE_CLEAR
+     * Creates a new instance of [CacheAsyncTask] and executes it with the command [MESSAGE_CLEAR]
      * to clear both the memory and the disk cache.
      */
     fun clearCache() {
@@ -667,7 +665,7 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * Creates a new instance of `CacheAsyncTask` and executes it with the command MESSAGE_FLUSH
+     * Creates a new instance of [CacheAsyncTask] and executes it with the command [MESSAGE_FLUSH]
      * to flush the disk cache to disk.
      */
     fun flushCache() {
@@ -675,7 +673,7 @@ abstract class ImageWorker protected constructor(context: Context) {
     }
 
     /**
-     * Creates a new instance of `CacheAsyncTask` and executes it with the command MESSAGE_CLOSE
+     * Creates a new instance of [CacheAsyncTask] and executes it with the command [MESSAGE_CLOSE]
      * close both the memory and the disk cache.
      */
     fun closeCache() {
@@ -686,53 +684,55 @@ abstract class ImageWorker protected constructor(context: Context) {
         /**
          * TAG used for logging
          */
-        private const val TAG = "ImageWorker"
+        private const val TAG: String = "ImageWorker"
 
         /**
          * Length of the transition in milliseconds when loading a drawable to an `ImageView`
          */
         private const val FADE_IN_TIME = 200
-        // Parameter used when calling CacheAsyncTask().execute to request specific work in the background
+
+        // Parameters used when calling CacheAsyncTask().execute to request specific work in the background
+
         /**
-         * Causes background thread to execute the `clearCacheInternal()` method, which clears both
-         * the memory and disk cache associated with our ImageCache object. Used by our `clearCache`
-         * method which is called when the user selects the R.id.clear_cache menu item.
+         * Causes background thread to execute the [clearCacheInternal] method, which clears both
+         * the memory and disk cache associated with our [ImageCache] object. Used by our [clearCache]
+         * method which is called when the user selects the [R.id.clear_cache] menu item.
          */
         private const val MESSAGE_CLEAR = 0
 
         /**
-         * Causes background thread to execute the `initDiskCacheInternal()` method, which Initializes
-         * the disk cache. Used by our `addImageCache` method which is called from the `onCreate`
-         * methods of `ImageDetailActivity` and `ImageGridFragment`
+         * Causes background thread to execute the [initDiskCacheInternal] method, which Initializes
+         * the disk cache. Used by our [addImageCache] method which is called from the `onCreate`
+         * methods of [ImageDetailActivity] and [ImageGridFragment].
          */
         private const val MESSAGE_INIT_DISK_CACHE = 1
 
         /**
-         * Causes background thread to execute the `flushCacheInternal()` method, which calls the
-         * `flush` method of our `ImageCache mImageCache` which Flushes the disk cache to
-         * disk. It is used in the `onPause` methods of both `ImageDetailActivity` and
-         * `ImageGridFragment`
+         * Causes background thread to execute the [flushCacheInternal] method, which calls the
+         * [ImageCache.flush] method of our [ImageCache] field [imageCache] which Flushes the disk
+         * cache to disk. It is used in the `onPause` methods of both [ImageDetailActivity] and
+         * [ImageGridFragment].
          */
         private const val MESSAGE_FLUSH = 2
 
         /**
-         * Causes background thread to execute the `closeCacheInternal()` method, which calls the
-         * `close()` method of `ImageCache mImageCache` which closes its `DiskLruCache`.
-         * It is used in the `onDestroy` methods of both `ImageDetailActivity` and
-         * `ImageGridFragment`
+         * Causes background thread to execute the [closeCacheInternal] method, which calls the
+         * [ImageCache.close] method of [ImageCache] field [imageCache] which closes its [DiskLruCache].
+         * It is used in the `onDestroy` methods of both [ImageDetailActivity] and [ImageGridFragment]
          */
         private const val MESSAGE_CLOSE = 3
 
         /**
-         * Cancels any pending work attached to the provided ImageView. We initialize our variable
-         * `BitmapWorkerTask bitmapWorkerTask` by calling the `getBitmapWorkerTask` method
-         * for our parameter `ImageView imageView`. If this is not null we call the `cancel(true)`
-         * method of `bitmapWorkerTask` to attempt to cancel execution of this task.
+         * Cancels any pending work attached to the [ImageView] parameter [imageView]. We initialize
+         * our [BitmapWorkerTask] variable `val bitmapWorkerTask` by calling the [getBitmapWorkerTask]
+         * method for our [ImageView] parameter [imageView]. If this is not `null` we call the
+         * [BitmapWorkerTask.cancel]  method of `bitmapWorkerTask` with `true` to attempt to cancel
+         * execution of this task.
          *
-         * @param imageView `ImageView` whose task we wish to cancel
+         * @param imageView [ImageView] whose task we wish to cancel
          */
         fun cancelWork(imageView: ImageView?) {
-            val bitmapWorkerTask = getBitmapWorkerTask(imageView)
+            val bitmapWorkerTask: BitmapWorkerTask? = getBitmapWorkerTask(imageView)
             if (bitmapWorkerTask != null) {
                 bitmapWorkerTask.cancel(true)
                 if (BuildConfig.DEBUG) {
@@ -743,33 +743,31 @@ abstract class ImageWorker protected constructor(context: Context) {
         }
 
         /**
-         * Cancels any potential work in progress for its parameters and returns true if the current work
-         * has been canceled or if there was no work in progress on this image view. First we initialize
-         * `BitmapWorkerTask bitmapWorkerTask`  by calling the `getBitmapWorkerTask` method
-         * for our parameter `ImageView imageView`. If this is not null we initialize
-         * `Object bitmapData` to the `mData` field of `bitmapWorkerTask`, then if:
+         * Cancels any potential work in progress for its parameters and returns `true` if the
+         * current work has been canceled or if there was no work in progress on the [ImageView]
+         * parameter [imageView]. First we initialize [BitmapWorkerTask] variable `val bitmapWorkerTask`
+         * by calling the [getBitmapWorkerTask] method for our [ImageView] parameter [imageView].
+         * If this is not `null` we initialize [Any] variable `val bitmapData` to the
+         * [BitmapWorkerTask.mData] field of `bitmapWorkerTask`, then if:
          *
-         *  *
-         * `bitmapData` is null, or `bitmapData` is not equal to `data` we
-         * call the `cancel` method of `bitmapWorkerTask` to cancel the work and
-         * return true (by falling through to the null branch of the previous if statement.
+         *  * `bitmapData` is `null`, or `bitmapData` is not equal to our [Any] parameter [data] we
+         * call the [BitmapWorkerTask.cancel] method of `bitmapWorkerTask` to cancel the work and
+         * return `true` (by falling through to the null branch of the previous if statement.
          *
-         *  *
-         * otherwise we return false: The same work is already in progress.
+         *  * otherwise we return `false`: The same work is already in progress.
          *
+         * If `bitmapWorkerTask` is NOT `null` we return true.
          *
-         * If `bitmapWorkerTask` is null we return true whether
-         *
-         * @param data `Object` which is being loaded into `ImageView imageView`
-         * @param imageView `ImageView` that is being loaded into
-         * @return false if the work in progress deals with the same data. The work is not
+         * @param data [Any] which is being loaded into [ImageView] parameter [imageView]
+         * @param imageView [ImageView] that is being loaded into
+         * @return `false` if the work in progress deals with the same data. The work is not
          * stopped in that case.
          */
         fun cancelPotentialWork(data: Any, imageView: ImageView?): Boolean {
             //BEGIN_INCLUDE(cancel_potential_work)
             val bitmapWorkerTask = getBitmapWorkerTask(imageView)
             if (bitmapWorkerTask != null) {
-                val bitmapData = bitmapWorkerTask.mData
+                val bitmapData: Any? = bitmapWorkerTask.mData
                 if (bitmapData == null || bitmapData != data) {
                     bitmapWorkerTask.cancel(true)
                     if (BuildConfig.DEBUG) {
@@ -785,21 +783,20 @@ abstract class ImageWorker protected constructor(context: Context) {
         }
 
         /**
-         * Retrieves the currently active work task (if any) associated with the parameter
-         * `ImageView imageView`. If `imageView` is not null we initialize
-         * `Drawable drawable` with the drawable assigned to `imageView`. If
-         * `drawable` is an instance of `AsyncDrawable` we cast `drawable`
-         * to initialize `AsyncDrawable asyncDrawable` and return the `BitmapWorkerTask`
-         * returned by its `getBitmapWorkerTask()` method to the caller. If `imageView`
-         * is null or `drawable` is not an `AsyncDrawable` we return null to the caller.
+         * Retrieves the currently active work task (if any) associated with the [ImageView]
+         * parameter [imageView]. If [imageView] is not `null` we initialize [Drawable] variable
+         * `val drawable` with the drawable assigned to [imageView]. If `drawable` is an instance
+         * of [AsyncDrawable] we return the [BitmapWorkerTask] returned by its property
+         * [AsyncDrawable.bitmapWorkerTask] to the caller. If [imageView] is `null` or `drawable`
+         * is not an [AsyncDrawable] we return `null` to the caller.
          *
-         * @param imageView Any imageView
-         * @return Retrieve the currently active work task (if any) associated with this imageView.
-         * null if there is no such task.
+         * @param imageView Any [ImageView]
+         * @return Retrieve the currently active work task (if any) associated with [ImageView]
+         * parameter [imageView]. `null` if there is no such task.
          */
         private fun getBitmapWorkerTask(imageView: ImageView?): BitmapWorkerTask? {
             if (imageView != null) {
-                val drawable = imageView.drawable
+                val drawable: Drawable = imageView.drawable
                 if (drawable is AsyncDrawable) {
                     return drawable.bitmapWorkerTask
                 }

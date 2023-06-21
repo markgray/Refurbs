@@ -22,16 +22,16 @@ import com.example.android.common.logger.Log
 import com.example.android.displayingbitmaps.BuildConfig
 
 /**
- * A BitmapDrawable that keeps track of whether it is being displayed or cached.
- * When the drawable is no longer being displayed or cached,
- * [recycle()][android.graphics.Bitmap.recycle] will be called on this drawable's bitmap.
+ * A [BitmapDrawable] that keeps track of whether it is being displayed or cached. When the drawable
+ * is no longer being displayed or cached, [recycle()][android.graphics.Bitmap.recycle] will be
+ * called on this drawable's bitmap.
  */
 class RecyclingBitmapDrawable
 /**
  * Our constructor, we just call our super's constructor.
  *
  * @param res used to access resources for configuration purposes
- * @param bitmap `Bitmap` used by this drawable to render.
+ * @param bitmap [Bitmap] used by this drawable to render.
  */
 (res: Resources?, bitmap: Bitmap?) : BitmapDrawable(res, bitmap) {
     /**
