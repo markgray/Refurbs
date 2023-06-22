@@ -20,6 +20,7 @@ package com.example.android.displayingbitmaps.ui
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -540,6 +541,11 @@ class ImageGridFragment
             // Check the height matches our calculated column width
             if (imageView.layoutParams.height != mItemHeight) {
                 imageView.layoutParams = mImageViewLayoutParams
+            }
+
+            // TODO: markgray kludge to fix nullability kotlin conversion error (argh!)
+            if (imageView.drawable == null) {
+                imageView.setImageDrawable(BitmapDrawable())
             }
 
             // Finally load the image asynchronously into the ImageView, this also takes care of

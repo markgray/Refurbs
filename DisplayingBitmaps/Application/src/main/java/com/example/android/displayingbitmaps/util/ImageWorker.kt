@@ -796,7 +796,7 @@ abstract class ImageWorker protected constructor(context: Context) {
          */
         private fun getBitmapWorkerTask(imageView: ImageView?): BitmapWorkerTask? {
             if (imageView != null) {
-                val drawable: Drawable = imageView.drawable
+                val drawable: Drawable? = imageView.drawable
                 if (drawable is AsyncDrawable) {
                     return drawable.bitmapWorkerTask
                 }
