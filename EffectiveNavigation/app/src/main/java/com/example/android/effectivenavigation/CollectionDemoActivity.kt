@@ -18,6 +18,7 @@
 package com.example.android.effectivenavigation
 
 import android.annotation.SuppressLint
+import android.app.ActionBar
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -40,11 +41,11 @@ import com.example.android.effectivenavigation.CollectionDemoActivity.DemoObject
  */
 class CollectionDemoActivity : FragmentActivity() {
     /**
-     * The [PagerAdapter] that will provide fragments representing
-     * each object in a collection. We use a [FragmentStatePagerAdapter]
-     * derivative, which will destroy and re-create fragments as needed, saving and restoring their
-     * state in the process. This is important to conserve memory and is a best practice when
-     * allowing navigation between objects in a potentially large collection.
+     * The [PagerAdapter] that will provide fragments representing each object in a collection. We
+     * use a [FragmentStatePagerAdapter] derivative, which will destroy and re-create fragments as
+     * needed, saving and restoring their state in the process. This is important to conserve memory
+     * and is a best practice when allowing navigation between objects in a potentially large
+     * collection.
      */
     var mDemoCollectionPagerAdapter: DemoCollectionPagerAdapter? = null
 
@@ -54,14 +55,17 @@ class CollectionDemoActivity : FragmentActivity() {
     var mViewPager: ViewPager? = null
 
     /**
-     * Called when the activity is starting. First we initialize our field `DemoCollectionPagerAdapter mDemoCollectionPagerAdapter`
-     * constructed to use a handle to the `FragmentManager` for interacting with fragments associated with this activity. We then
-     * initialize `ActionBar actionBar` with a reference to our activity's `ActionBar`, and specify that the Home button
-     * should show an "Up" caret, indicating that touching the button will take the user one step up in the application's hierarchy.
-     * We initialize our field `ViewPager mViewPager` by finding the view with id R.id.pager and set its `PagerAdapter`
-     * to `mDemoCollectionPagerAdapter`.
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we set our content view to our layout file [R.layout.activity_collection_demo]. Then we
+     * initialize our [DemoCollectionPagerAdapter] field [mDemoCollectionPagerAdapter] with a new
+     * instance constructed to use a handle to the [FragmentManager] for interacting with fragments
+     * associated with this activity. We then initialize [ActionBar] variable `val actionBar` with a
+     * reference to our activity's [ActionBar], and specify that the Home button should show an "Up"
+     * caret, indicating that touching the button will take the user one step up in the application's
+     * hierarchy. We initialize our field [ViewPager] field [mViewPager] by finding the view with id
+     * [R.id.pager] and set its [PagerAdapter] to [mDemoCollectionPagerAdapter].
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +79,7 @@ class CollectionDemoActivity : FragmentActivity() {
         mDemoCollectionPagerAdapter = DemoCollectionPagerAdapter(supportFragmentManager)
 
         // Set up action bar.
-        val actionBar = actionBar
+        val actionBar: ActionBar? = actionBar
 
         // Specify that the Home button should show an "Up" caret, indicating that touching the
         // button will take the user one step up in the application's hierarchy.

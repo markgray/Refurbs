@@ -197,7 +197,8 @@ class MainActivity : FragmentActivity(), TabListener {
          */
         override fun getItem(i: Int): Fragment {
             return when (i) {
-                0 ->                     // The first section of the app is the most interesting -- it offers
+                0 ->
+                    // The first section of the app is the most interesting -- it offers
                     // a launchpad into the other demonstrations in this example application.
                     LaunchpadSectionFragment()
 
@@ -274,14 +275,14 @@ class MainActivity : FragmentActivity(), TabListener {
 
             // Demonstration of navigating to external activities.
             rootView.findViewById<View>(R.id.demo_external_activity)
-                .setOnClickListener { // Create an intent that asks the user to pick a photo, but using
+                .setOnClickListener {
+                    // Create an intent that asks the user to pick a photo, but using
                     // FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET, ensures that relaunching
                     // the application from the device home screen does not return
                     // to the external activity.
                     val externalActivityIntent = Intent(Intent.ACTION_PICK)
                     externalActivityIntent.type = "image/*"
-                    externalActivityIntent.addFlags(
-                        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+                    externalActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
                     startActivity(externalActivityIntent)
                 }
             return rootView
@@ -315,7 +316,8 @@ class MainActivity : FragmentActivity(), TabListener {
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             val rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false)
             val args = arguments
-            (rootView.findViewById<View>(android.R.id.text1) as TextView).text = getString(R.string.dummy_section_text, args!!.getInt(ARG_SECTION_NUMBER))
+            (rootView.findViewById<View>(android.R.id.text1) as TextView).text =
+                getString(R.string.dummy_section_text, args!!.getInt(ARG_SECTION_NUMBER))
             return rootView
         }
 
