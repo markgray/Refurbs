@@ -31,30 +31,29 @@ import com.example.android.displayingbitmaps.ui.ImageGridActivity
 object Utils {
     /**
      * Enables `StrictMode` logging for debugging purposes. If we do not have at least a
-     * GINGERBREAD device we do nothing. Otherwise we create a new instance to initialize our variable
-     * `StrictMode.ThreadPolicy.Builder threadPolicyBuilder`, configure it to detect all
-     * potentially suspect actions for this thread (slow calls, disk reads, disk writes, network
+     * `GINGERBREAD` device we do nothing. Otherwise we create a new instance to initialize our
+     * [StrictMode.ThreadPolicy.Builder] variable `val threadPolicyBuilder`, configure it to detect
+     * all potentially suspect actions for this thread (slow calls, disk reads, disk writes, network
      * operations, mismatches between defined resource types and getter calls, and unbuffered
      * input/output operations) then set the penalty to Log detected violations to the system log.
-     * We initialize `StrictMode.VmPolicy.Builder vmPolicyBuilder` with a new instance, configure
-     * it to detect all potentially suspect actions for the VM process (on any thread) (leaks of Activity
-     * subclasses, network traffic from the calling app which is not wrapped in SSL/TLS, calling
-     * application sends a content:// Uri to another app without setting FLAG_GRANT_READ_URI_PERMISSION
-     * or FLAG_GRANT_WRITE_URI_PERMISSION, calling application exposes a file:// Uri to another app,
-     * Closeable or other object with an explicit termination method is finalized without having been
-     * closed, BroadcastReceiver or ServiceConnection is leaked during Context teardown, SQLiteCursor
-     * or other SQLite object is finalized without having been closed, and sockets in the calling app
-     * which have not been tagged using TrafficStats) then set the penalty to Log detected violations
-     * to the system log.
+     * We initialize [StrictMode.VmPolicy.Builder] variable `val vmPolicyBuilder` with a new instance,
+     * configure it to detect all potentially suspect actions for the VM process (on any thread)
+     * (leaks of Activity subclasses, network traffic from the calling app which is not wrapped in
+     * SSL/TLS, calling application sends a content:// Uri to another app without setting
+     * FLAG_GRANT_READ_URI_PERMISSION or FLAG_GRANT_WRITE_URI_PERMISSION, calling application
+     * exposes a file:// Uri to another app, Closeable or other object with an explicit termination
+     * method is finalized without having been closed, BroadcastReceiver or ServiceConnection is
+     * leaked during Context teardown, SQLiteCursor or other SQLite object is finalized without
+     * having been closed, and sockets in the calling app which have not been tagged using
+     * TrafficStats) then set the penalty to Log detected violations to the system log.
      *
-     *
-     * If have at least a HONEYCOMB device we add the penalty to flash the screen to `threadPolicyBuilder`,
-     * and set the class instance limit of `vmPolicyBuilder` for both `ImageGridActivity`,
-     * and `ImageDetailActivity` to 1. We not build `threadPolicyBuilder` and set the thread
-     * policy for the current thread to it, and build `vmPolicyBuilder` and set the policy for
-     * actions in the VM process (on any thread) to it.
+     * If we have at least a HONEYCOMB device we add the penalty to flash the screen to
+     * `threadPolicyBuilder`, and set the class instance limit of `vmPolicyBuilder` for both
+     * [ImageGridActivity], and [ImageDetailActivity] to 1. We not build `threadPolicyBuilder` and
+     * set the thread policy for the current thread to it, and build `vmPolicyBuilder` and set the
+     * policy for actions in the VM process (on any thread) to it.
      */
-    @SuppressLint("ObsoleteSdkInt")
+    @SuppressLint("ObsoleteSdkInt") // Obsolete @TargetApi left to remind if code is reused.
     @TargetApi(VERSION_CODES.HONEYCOMB)
     fun enableStrictMode() {
         if (hasGingerbread()) {
@@ -76,9 +75,9 @@ object Utils {
     }
 
     /**
-     * Returns true if our build version is greater than FROYO
+     * Returns `true` if our build version is greater than FROYO
      *
-     * @return true if our build version is greater than FROYO
+     * @return `true` if our build version is greater than FROYO
      */
     @SuppressLint("ObsoleteSdkInt")
     fun hasFroyo(): Boolean {
@@ -88,9 +87,9 @@ object Utils {
     }
 
     /**
-     * Returns true if our build version is greater than GINGERBREAD
+     * Returns `true` if our build version is greater than GINGERBREAD
      *
-     * @return true if our build version is greater than GINGERBREAD
+     * @return `true` if our build version is greater than GINGERBREAD
      */
     @SuppressLint("ObsoleteSdkInt")
     fun hasGingerbread(): Boolean {
@@ -98,9 +97,9 @@ object Utils {
     }
 
     /**
-     * Returns true if our build version is greater than HONEYCOMB
+     * Returns `true` if our build version is greater than HONEYCOMB
      *
-     * @return true if our build version is greater than HONEYCOMB
+     * @return `true` if our build version is greater than HONEYCOMB
      */
     @JvmStatic
     @SuppressLint("ObsoleteSdkInt")
@@ -109,9 +108,9 @@ object Utils {
     }
 
     /**
-     * Returns true if our build version is greater than HONEYCOMB_MR1
+     * Returns `true` if our build version is greater than HONEYCOMB_MR1
      *
-     * @return true if our build version is greater than HONEYCOMB_MR1
+     * @return `true` if our build version is greater than HONEYCOMB_MR1
      */
     @SuppressLint("ObsoleteSdkInt")
     fun hasHoneycombMR1(): Boolean {
@@ -119,9 +118,9 @@ object Utils {
     }
 
     /**
-     * Returns true if our build version is greater than JELLY_BEAN
+     * Returns `true` if our build version is greater than JELLY_BEAN
      *
-     * @return true if our build version is greater than JELLY_BEAN
+     * @return `true` if our build version is greater than JELLY_BEAN
      */
     @SuppressLint("ObsoleteSdkInt")
     fun hasJellyBean(): Boolean {
@@ -129,9 +128,9 @@ object Utils {
     }
 
     /**
-     * Returns true if our build version is greater than KITKAT
+     * Returns `true` if our build version is greater than KITKAT
      *
-     * @return true if our build version is greater than KITKAT
+     * @return `true` if our build version is greater than KITKAT
      */
     @SuppressLint("ObsoleteSdkInt")
     fun hasKitKat(): Boolean {
