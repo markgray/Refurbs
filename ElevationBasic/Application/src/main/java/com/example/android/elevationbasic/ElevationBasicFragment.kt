@@ -28,7 +28,8 @@ import androidx.fragment.app.Fragment
 import com.example.android.common.logger.Log
 
 /**
- * TODO: Add kdoc
+ * This [Fragment] does all the work of the demo, demonstrating two ways to
+ * move a view in the z-axis.
  */
 class ElevationBasicFragment : Fragment() {
     /**
