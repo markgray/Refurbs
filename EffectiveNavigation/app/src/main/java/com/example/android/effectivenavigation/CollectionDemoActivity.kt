@@ -91,30 +91,28 @@ class CollectionDemoActivity : FragmentActivity() {
     }
 
     /**
-     * This hook is called whenever an item in your options menu is selected. We switch on the item
-     * id of our parameter `MenuItem item`:
+     * This hook is called whenever an item in your options menu is selected. We `when` switch on
+     * the value returned by the [MenuItem.getItemId] method (aka kotlin `itemId` property)of our
+     * [MenuItem] parameter [item]:
      *
-     *  *
-     * android.R.id.home: (This is called when the Home (Up) button is pressed in the action
-     * bar) We initialize `Intent upIntent` with a new instance intended to launch our
-     * `MainActivity` activity. If the `shouldUpRecreateTask` method of `NavUtils`
-     * returns true, we need to synthesize a new task stack by using [TaskStackBuilder]
-     * to perform up navigation, which we do adding `upIntent` to the task stack and then
-     * chaining a call to the `startActivities` to the [TaskStackBuilder] in order
-     * to start the task stack constructed by this builder, and we then call `finish` to
-     * end this activity. If the `shouldUpRecreateTask` method of `NavUtils` returns
-     * false this activity is part of the application's task, we so simply navigate up to the
-     * hierarchical parent activity by calling the `navigateUpTo` method of `NavUtils`
-     * to navigate from 'this' up to the activity given in `upIntent` (`MainActivity`)
-     * and to finish 'this' activity. In either case we return true to the caller to consume the
-     * event here.
+     *  * [android.R.id.home]: (This is called when the Home (Up) button is pressed in the action
+     *  bar) We initialize [Intent] variable `val upIntent` with a new instance intended to launch
+     *  our [MainActivity] activity. If the [NavUtils.shouldUpRecreateTask] method returns `true`,
+     *  we need to synthesize a new task stack by using [TaskStackBuilder] to perform up navigation,
+     *  which we do adding `upIntent` to the task stack and then chaining a call to the
+     *  [TaskStackBuilder.startActivities] method to the [TaskStackBuilder] in order to start the
+     *  task stack constructed by this builder, and we then call [finish] to end this activity. If
+     *  the [NavUtils.shouldUpRecreateTask] method returns `false` this activity is part of the
+     *  application's task, we so simply navigate up to the hierarchical parent activity by calling
+     *  the [NavUtils.navigateUpTo] method to navigate from `this` up to the activity given in
+     *  `upIntent` ([MainActivity]) and to finish `this` activity. In either case we return `true`
+     *  to the caller to consume the event here.
      *
+     * If the item selected was not [android.R.id.home] we return the value returned by our super's
+     * implementation of `onOptionsItemSelected`.
      *
-     * If the item selected was not android.R.id.home we return the value returned by our super's implementation
-     * of `onOptionsItemSelected`.
-     *
-     * @param item The menu item that was selected.     *
-     * @return Return false to allow normal menu processing to proceed, true to consume it here.
+     * @param item The [MenuItem] that was selected.     *
+     * @return Return `false` to allow normal menu processing to proceed, `true` to consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -142,26 +140,26 @@ class CollectionDemoActivity : FragmentActivity() {
     }
 
     /**
-     * A [FragmentStatePagerAdapter] that returns a fragment
-     * representing an object in the collection.
+     * A [FragmentStatePagerAdapter] that returns a fragment representing an object in the
+     * collection.
      */
     class DemoCollectionPagerAdapter
     /**
      * Our constructor, we just call our super's constructor.
      *
-     * @param fm a reference to the `FragmentManager` for interacting with fragments
-     * associated with this activity.
+     * @param fm a reference to the [FragmentManager] for interacting with fragments associated
+     * with this activity.
      */
     (fm: FragmentManager?) : FragmentStatePagerAdapter(fm) {
         /**
-         * Return the `Fragment` associated with a specified position. We initialize our variable
-         * `Fragment fragment` with a new instance of `DemoObjectFragment`. We initialize
-         * `Bundle args` with a new instance and store our parameter `i` plus 1 under the
-         * key ARG_OBJECT in it. We then set the argument bundle of `fragment` to `args`
-         * and return `fragment` to the caller.
+         * Return the [Fragment] associated with a specified position. We initialize our [Fragment]
+         * variable `val fragment` with a new instance of [DemoObjectFragment]. We initialize
+         * [Bundle] variable `val args` with a new instance and store our [Int] parameter [i] plus
+         * 1 under the key [DemoObjectFragment.ARG_OBJECT] ("object") in it. We then set the
+         * argument bundle of `fragment` to `args` and return `fragment` to the caller.
          *
-         * @param i the position of the `Fragment` our caller is interested in.
-         * @return the Fragment associated with position `i`.
+         * @param i the position of the [Fragment] our caller is interested in.
+         * @return the Fragment associated with position [i].
          */
         override fun getItem(i: Int): Fragment {
             val fragment: Fragment = DemoObjectFragment()
@@ -182,9 +180,9 @@ class CollectionDemoActivity : FragmentActivity() {
         }
 
         /**
-         * This method may be called by the ViewPager to obtain a title string to describe the specified
-         * page. We just return the string formed by concatenating the string value of our parameter
-         * `i` plus 1 to the end of the string "OBJECT ".
+         * This method may be called by the ViewPager to obtain a title string to describe the
+         * specified page. We just return the string formed by concatenating the string value of
+         * our [Int] parameter [position] plus 1 to the end of the string "OBJECT ".
          *
          * @param position The position of the title requested
          * @return A title for the requested page
@@ -199,28 +197,38 @@ class CollectionDemoActivity : FragmentActivity() {
      */
     class DemoObjectFragment : Fragment() {
         /**
-         * Called to have the fragment instantiate its user interface view. We initialize `View rootView`
-         * by using our parameter `LayoutInflater inflater` to inflate our layout file R.layout.fragment_collection_object
-         * using our parameter `ViewGroup container` for layout params without attaching to it. We then initialize
-         * `Bundle args` by fetching our argument `Bundle`. We find the view in `rootView` with the
-         * id android.R.id.text1 and set its text to the string value of the int stored in `args` under the
-         * key ARG_OBJECT. Finally we return `rootView` to the caller.
+         * Called to have the fragment instantiate its user interface view. We initialize [View]
+         * variable `val rootView` by using our [LayoutInflater] parameter [inflater] to inflate
+         * our layout file [R.layout.fragment_collection_object] using our [ViewGroup] parameter
+         * [container] for layout params without attaching to it. We then initialize [Bundle]
+         * variable `val args` by fetching our argument [Bundle]. We find the view in `rootView`
+         * with the id [android.R.id.text1] and set its text to the string value of the [Int]
+         * stored in `args` under the key [ARG_OBJECT]. Finally we return `rootView` to the caller.
          *
-         * @param inflater The LayoutInflater object that can be used to inflate
-         * any views in the fragment,
-         * @param container If non-null, this is the parent view that the fragment's
-         * UI should be attached to.  The fragment should not add the view itself,
-         * but this can be used to generate the LayoutParams of the view.
-         * @param savedInstanceState If non-null, this fragment is being re-constructed
+         * @param inflater The [LayoutInflater] object that can be used to inflate any
+         * views in the fragment,
+         * @param container If non-`null`, this is the parent view that the fragment's
+         * UI will be attached to. The fragment should not add the view itself, but this
+         * can be used to generate the LayoutParams of the view.
+         * @param savedInstanceState If non-`null`, this fragment is being re-constructed
          * from a previous saved state as given here.
          *
-         * @return Return the View for the fragment's UI, or null.
+         * @return Return the [View] for the fragment's UI, or null.
          */
         @SuppressLint("SetTextI18n")
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            val rootView = inflater.inflate(R.layout.fragment_collection_object, container, false)
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+            val rootView = inflater.inflate(
+                R.layout.fragment_collection_object,
+                container,
+                false
+            )
             val args = arguments
-            (rootView.findViewById<View>(android.R.id.text1) as TextView).text = Integer.toString(args!!.getInt(ARG_OBJECT))
+            (rootView.findViewById<View>(android.R.id.text1) as TextView)
+                .text = Integer.toString(args!!.getInt(ARG_OBJECT))
             return rootView
         }
 
