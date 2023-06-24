@@ -28,17 +28,17 @@ import androidx.fragment.app.Fragment
 import com.example.android.common.logger.Log
 
 /**
- * This [Fragment] does all the work of the demo, demonstrating two ways to
+ * This [Fragment] does all the work of the demo: demonstrating two ways to
  * move a view in the z-axis.
  */
 class ElevationBasicFragment : Fragment() {
     /**
      * Called to do initial creation of a fragment. First we call our super's implementation of
-     * `onCreate`, then we call the `setHasOptionsMenu(true)` method to report that this
+     * `onCreate`, then we call the [setHasOptionsMenu] method with `true` to report that this
      * fragment would like to participate in populating the options menu by receiving a call to
-     * [.onCreateOptionsMenu] and related methods.
+     * [onCreateOptionsMenu] and related methods.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,29 +46,32 @@ class ElevationBasicFragment : Fragment() {
     }
 
     /**
-     * Called to have the fragment instantiate its user interface view. We initialize `View rootView`
-     * with the view that our parameter `LayoutInflater inflater` inflates from our layout file
-     * R.layout.elevation_basic using our parameter `ViewGroup container` for LayoutParams without
-     * attaching to that view. We then initialize `View shape2` by finding the view in `rootView`
-     * with id R.id.floating_shape_2. We set the `OnTouchListener` of `shape2` to an anonymous
-     * class whose `onTouch` override moves the `View` the depth location of this view
-     * relative to its `getElevation()` elevation by 120 on an ACTION_DOWN `MotionEvent`,
-     * or back to 0 on an ACTION_UP `MotionEvent`.
-     *
+     * Called to have the fragment instantiate its user interface view. We initialize [View] variable
+     * `val rootView` with the view that our [LayoutInflater] parameter [inflater] inflates from our
+     * layout file [R.layout.elevation_basic] using our [ViewGroup] parameter [container] for
+     * LayoutParams without attaching to that view. We then initialize [View] variable `val shape2`
+     * by finding the view in `rootView` with id [R.id.floating_shape_2]. We set the [OnTouchListener]
+     * of `shape2` to an anonymous class whose [OnTouchListener.onTouch] override moves the depth
+     * location of this [View] relative to its [View.getElevation] elevation by 120f on an
+     * [MotionEvent.ACTION_DOWN] action, or back to 0f on an [MotionEvent.ACTION_UP] action.
      *
      * Finally we return `rootView` to the caller.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the [View] for the fragment's UI, or null.
      */
     @SuppressLint("ClickableViewAccessibility")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         /*
          * Inflates an XML containing two shapes: the first has a fixed elevation
          * and the second ones raises when tapped.
@@ -79,32 +82,25 @@ class ElevationBasicFragment : Fragment() {
         /*
          * Sets a {@Link View.OnTouchListener} that responds to a touch event on shape2.
          */
-        shape2.setOnTouchListener(OnTouchListener { view, motionEvent ->
-
+        shape2.setOnTouchListener(OnTouchListener { view: View, motionEvent: MotionEvent ->
             /**
              * Called when a touch event is dispatched to a view. This allows listeners to
              * get a chance to respond before the target view. We initialize `int action`
              * with the masked action being performed of our parameter `MotionEvent motionEvent`
              * (pointer index information masked omitted), then switch on `action`:
              *
-             *  *
-             * ACTION_DOWN: We log the action, then set the depth location of our parameter
-             * `View view` relative to its `getElevation()` to 120 (raises it),
-             * then break.
+             *  * ACTION_DOWN: We log the action, then set the depth location of our [View]
+             *  parameter [view] relative to its [View.getElevation] to 120 (raises it).
              *
-             *  *
-             * ACTION_UP: We log the action, then set the depth location of our parameter
-             * `View view` relative to its `getElevation()` to 0 (lowers it),
-             * then break.
+             *  * ACTION_UP: We log the action, then set the depth location of our [View] parameter
+             *  [view] relative to its [View.getElevation] to 0 (lowers it).
              *
-             *  *
-             * default: we return false to the caller.
+             *  * default: we return `false` to the caller.
              *
-             *
-             * We return true to the caller, consuming the event here.
+             * We return `true` to the caller, consuming the event here.
              *
              * param view        The view the touch event has been dispatched to.
-             * param motionEvent The MotionEvent object containing full information about
+             * param motionEvent The [MotionEvent] object containing full information about
              * the event.
              * return True if the listener has consumed the event, false otherwise.
              */
