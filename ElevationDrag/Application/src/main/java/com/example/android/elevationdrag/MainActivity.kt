@@ -19,9 +19,13 @@ package com.example.android.elevationdrag
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ViewAnimator
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.android.common.activities.SampleActivityBase
 import com.example.android.common.logger.Log
 import com.example.android.common.logger.LogFragment
@@ -30,11 +34,9 @@ import com.example.android.common.logger.MessageOnlyLogFilter
 
 /**
  * A simple launcher activity containing a summary sample description, sample log and a custom
- * `Fragment` which can display a view.
- *
- *
- * For devices with displays with a width of 720dp or greater, the sample log is always visible,
- * on other devices it's visibility is controlled by an item on the Action Bar.
+ * [Fragment] which can display a view. For devices with displays with a width of 720dp or greater,
+ * the sample log is always visible, on other devices it's visibility is controlled by an item on
+ * the Action Bar.
  */
 class MainActivity : SampleActivityBase() {
     /**
@@ -44,16 +46,17 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * Called when the activity is starting. We first call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_main. If
-     * our parameter `savedInstanceState` is null, this is the first time we were called so we
-     * use the FragmentManager for interacting with fragments associated with this activity to begin
-     * `FragmentTransaction transaction`, initialize `ElevationDragFragment fragment` with a
-     * new instance and use `transaction` to replace (add) `fragment` to the container view
-     * with ID R.id.sample_content_fragment in our layout. We then commit `transaction`.
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. If
+     * our [Bundle] parameter [savedInstanceState] is `null`, this is the first time we were called
+     * so we use the [FragmentManager] for interacting with fragments associated with this activity
+     * to begin [FragmentTransaction] variable `val transaction`, initialize [ElevationDragFragment]
+     * variable `val fragment` with a new instance and use `transaction` to replace (add) `fragment`
+     * to the container view with ID {R.id.sample_content_fragment} in our layout. We then commit
+     * `transaction`.
      *
-     * @param savedInstanceState If this is null we need to create and add our `ElevationDragFragment`
-     * fragment, if not null we are being recreated after a configuration
-     * change so the fragment already exists
+     * @param savedInstanceState If this is `null` we need to create and add our [ElevationDragFragment]
+     * fragment, if not `null` we are being recreated after a configuration change so the fragment
+     * already exists
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,13 +70,13 @@ class MainActivity : SampleActivityBase() {
     }
 
     /**
-     * Initialize the contents of the Activity's standard options menu. We use a `MenuInflater`
-     * with this context to inflate our menu layout file R.menu.main into our parameter `Menu menu`
-     * and return true so that the menu will be displayed.
+     * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater] with
+     * this context to inflate our menu layout file [R.menu.main] into our [Menu] parameter [menu]
+     * and return `true` so that the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
-     * @return You must return true for the menu to be displayed;
-     * if you return false it will not be shown.
+     * @return You must return `true` for the menu to be displayed;
+     * if you return `false` it will not be shown.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
@@ -81,18 +84,18 @@ class MainActivity : SampleActivityBase() {
     }
 
     /**
-     * Prepare the Screen's standard options menu to be displayed. We initialize `MenuItem logToggle`
-     * by finding the menu item in our parameter `Menu menu` with id R.id.menu_toggle_log, set
-     * it to visible only if the view in our layout with id R.id.sample_output is an instance of
-     * `ViewAnimator`, and set its title to R.string.sample_hide_log ("Hide Log") if our flag
-     * `mLogShown` is true or to R.string.sample_show_log ("Show Log") if it is false. Finally
-     * we return the value returned by our super's implementation of `onPrepareOptionsMenu` to
-     * the caller.
+     * Prepare the Screen's standard options menu to be displayed. We initialize [MenuItem] variable
+     * `val logToggle` by finding the menu item in our [Menu] parameter [menu] with id
+     * [R.id.menu_toggle_log], set it to visible only if the view in our layout with id
+     * [R.id.sample_output] is an instance of [ViewAnimator], and set its title to the string with
+     * resource ID [R.string.sample_hide_log] ("Hide Log") if our flag field [mLogShown] is `true`
+     * or to the string with resource ID [R.string.sample_show_log] ("Show Log") if it is `false`.
+     * Finally we return the value returned by our super's implementation of `onPrepareOptionsMenu`
+     * to the caller.
      *
-     * @param menu The options menu as last shown or first initialized by
-     * onCreateOptionsMenu().
-     * @return You must return true for the menu to be displayed;
-     * if you return false it will not be shown.
+     * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu]
+     * @return You must return `true` for the menu to be displayed;
+     * if you return `false` it will not be shown.
      */
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         val logToggle = menu.findItem(R.id.menu_toggle_log)

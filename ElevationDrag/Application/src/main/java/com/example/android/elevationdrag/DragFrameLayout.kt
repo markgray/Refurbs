@@ -253,11 +253,11 @@ class DragFrameLayout @JvmOverloads constructor(
 
     /**
      * Sets the [DragFrameLayoutController] that will receive the drag events. We just store
-     * our parameter `DragFrameLayoutController dragFrameLayoutController` in our field
-     * `DragFrameLayoutController mDragFrameLayoutController`.
+     * our [DragFrameLayoutController] parameter [dragFrameLayoutController] in our field
+     * [mDragFrameLayoutController].
      *
      * @param dragFrameLayoutController a [DragFrameLayoutController] to use for
-     * `onDragDrop` callbacks.
+     * [DragFrameLayoutController.onDragDrop] callbacks.
      */
     fun setDragFrameController(dragFrameLayoutController: DragFrameLayoutController?) {
         mDragFrameLayoutController = dragFrameLayoutController
@@ -268,13 +268,13 @@ class DragFrameLayout @JvmOverloads constructor(
      */
     interface DragFrameLayoutController {
         /**
-         * Handles `inDragDrop` events for our `ViewDragHelper mDragHelper`, override to
+         * Handles `inDragDrop` events for our [ViewDragHelper] field [mDragHelper], override to
          * do whatever animations you wish to happen when our views are captured or dropped.
          *
-         * @param captured true when called from `onViewCaptured` override of our field
-         * `ViewDragHelper mDragHelper` (Called when a child view is captured
-         * for dragging or settling) false when called from its `onViewReleased`
-         * override (Called when the child view is no longer being actively dragged).
+         * @param captured `true` when called from `onViewCaptured` override of our [ViewDragHelper]
+         * field [mDragHelper] (Called when a child view is captured for dragging or settling)
+         * `false` when called from its `onViewReleased` override (Called when the child view is no
+         * longer being actively dragged).
          */
         fun onDragDrop(captured: Boolean)
     }
