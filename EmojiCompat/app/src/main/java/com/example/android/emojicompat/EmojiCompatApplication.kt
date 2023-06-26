@@ -18,41 +18,41 @@
 package com.example.android.emojicompat
 
 import android.app.Application
+import android.content.res.AssetManager
 import android.util.Log
 import androidx.core.provider.FontRequest
 import androidx.emoji.bundled.BundledEmojiCompatConfig
 import androidx.emoji.text.EmojiCompat
+import androidx.emoji.text.EmojiSpan
 import androidx.emoji.text.FontRequestEmojiCompatConfig
 
 /**
- * This application uses EmojiCompat, it is specified by the android:name attribute of the
+ * This application uses [EmojiCompat], it is specified by the android:name attribute of the
  * application element of app/src/main/AndroidManifest.xml
  */
 class EmojiCompatApplication : Application() {
     /**
      * Called when the application is starting, before any activity, service, or receiver objects
      * (excluding content providers) have been created. First we call our super's implementation of
-     * `onCreate`. We declare `EmojiCompat.Config config` then if our use bundled emoji
-     * flag (USE_BUNDLED_EMOJI) is:
+     * `onCreate`. We declare [EmojiCompat.Config] variable `val config` then if our use bundled
+     * emoji flag ([USE_BUNDLED_EMOJI]) is:
      *
-     *  *
-     * true - we set `config` to a new instance of `BundledEmojiCompatConfig` (this is
-     * a `EmojiCompat.Config` implementation that loads the metadata using `AssetManager`
-     * and bundled resources.
+     *  * `true` - we set `config` to a new instance of [BundledEmojiCompatConfig] (this is a
+     *  [EmojiCompat.Config] implementation that loads the metadata using [AssetManager] and
+     *  bundled resources.
      *
-     *  *
-     * false - We initialize `FontRequest fontRequest` with an instance using "com.google.android.gms.fonts"
-     * as the authority of the Font Provider to be used for the request, "com.google.android.gms"
-     * as the package for the Font Provider to be used for the request,  "Noto Color Emoji Compat"
-     * as the query to be sent over to the provider, and the resource array R.array.com_google_android_gms_fonts_certs
-     * as the list of sets of hashes for the certificates the provider should be signed with. Then we set
-     * `config` to an asynchronous request for `fontRequest`, which we instruct to replace all
-     * emojis found with EmojiSpans, and to which we register an anonymous `InitCallback` class whose
-     * `onInitialized` override logs "EmojiCompat initialized", and whose `onFailed` override
-     * logs the error.
+     *  * `false` - We initialize [FontRequest] variable `val fontRequest` with an instance using
+     *  "com.google.android.gms.fonts" as the authority of the Font Provider to be used for the
+     *  request, "com.google.android.gms" as the package for the Font Provider to be used for the
+     *  request,  "Noto Color Emoji Compat" as the query to be sent over to the provider, and the
+     *  resource array [R.array.com_google_android_gms_fonts_certs] as the list of sets of hashes
+     *  for the certificates the provider should be signed with. Then we set `config` to an
+     *  asynchronous request for `fontRequest`, which we instruct to replace all emojis found with
+     *  [EmojiSpan]'s, and to which we register an anonymous [EmojiCompat.InitCallback] class whose
+     * [EmojiCompat.InitCallback.onInitialized] override logs "EmojiCompat initialized", and whose
+     * [EmojiCompat.InitCallback.onFailed] override logs the error.
      *
-     *
-     * Finally we call the `EmojiCompat.init` method with `config` as the argument.
+     * Finally we call the [EmojiCompat.init] method with `config` as the argument.
      */
     override fun onCreate() {
         super.onCreate()
