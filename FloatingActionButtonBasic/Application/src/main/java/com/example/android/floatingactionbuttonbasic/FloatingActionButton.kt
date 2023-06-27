@@ -27,27 +27,24 @@ import android.widget.Checkable
 import android.widget.FrameLayout
 
 /**
- * A Floating Action Button is a [android.widget.Checkable] view distinguished by a circled
- * icon floating above the UI, with special motion behaviors.
- * Perform inflation from XML and apply a class-specific base style from a theme attribute or
- * style resource. Called by our three other constructors. First we call our super's constructor.
- * In our `init` block:
- * We call the `setClickable(true)` method to make our view clickable. We set the outline
- * provider for this view to an anonymous `ViewOutlineProvider` whose `getOutline`
- * sets our `Outline` to an oval fitting the height and width of our view. Finally we call
- * the `setClipToOutline(true)` method to enable clipping to the outline, using the provider
- * we set above.
+ * A Floating Action Button is a [android.widget.Checkable] view distinguished by a circled icon
+ * floating above the UI, with special motion behaviors. This constructor performs inflation from
+ * XML and applies a class-specific base style from a theme attribute or style resource. Called by
+ * our three other constructors. First we call our super's constructor. In our `init` block:
+ * We call the [setClickable] method with `true` (kotlin sets the `isClickable` property to `true`)
+ * to make our view clickable. We set the [ViewOutlineProvider] for this view to an anonymous
+ * [ViewOutlineProvider] whose [ViewOutlineProvider.getOutline] override sets our [Outline] to an
+ * oval fitting the height and width of our view. Finally we call the [setClipToOutline] method with
+ * `true` to enable clipping to the outline, using the provider we set above.
  *
- * @param context The Context the view is running in, through which it can
- * access the current theme, resources, etc.
+ * @param context The [Context] the view is running in, through which it can access the current
+ * theme, resources, etc.
  * @param attrs The attributes of the XML tag that is inflating the view.
- * @param defStyleAttr An attribute in the current theme that contains a
- * reference to a style resource that supplies default values for
- * the view. Can be 0 to not look for defaults.
- * @param defStyleRes A resource identifier of a style resource that
- * supplies default values for the view, used only if
- * defStyleAttr is 0 or can not be found in the theme. Can be 0
- * to not look for defaults.
+ * @param defStyleAttr An attribute in the current theme that contains a reference to a style
+ * resource that supplies default values for the view. Can be 0 to not look for defaults.
+ * @param defStyleRes A resource identifier of a style resource that supplies default values for the
+ * view, used only if `defStyleAttr` is 0 or can not be found in the theme. Can be 0 to not look for
+ * defaults.
  */
 class FloatingActionButton @JvmOverloads constructor(
     context: Context?,
@@ -63,7 +60,7 @@ class FloatingActionButton @JvmOverloads constructor(
         /**
          * Called when the checked state of a FAB has changed.
          *
-         * @param fabView   The FAB view whose state has changed.
+         * @param fabView The [FloatingActionButton] view whose state has changed.
          * @param isChecked The new checked state of buttonView.
          */
         fun onCheckedChanged(fabView: FloatingActionButton?, isChecked: Boolean)
@@ -75,7 +72,7 @@ class FloatingActionButton @JvmOverloads constructor(
     private var mChecked = false
 
     /**
-     * A listener to communicate to that the FAB has changed it's state
+     * A listener to communicate the fact that the FAB has changed it's state
      */
     private var mOnCheckedChangeListener: OnCheckedChangeListener? = null
 
@@ -89,8 +86,8 @@ class FloatingActionButton @JvmOverloads constructor(
             /**
              * Called to get the provider to populate the Outline. This method will be called by a
              * View when its owned Drawables are invalidated, when the View's size changes, or if
-             * [View.invalidateOutline] is called explicitly. The input outline is empty and
-             * has an alpha of `1.0f`. We set our parameter `Outline outline` to an
+             * [View.invalidateOutline] is called explicitly. The [Outline] parameter [outline] is
+             * empty and has an alpha of `1.0f`. We set our [Outline] parameter [outline] to an
              * oval fitting the height and width of our view.
              *
              * @param view The view building the outline.
@@ -106,13 +103,13 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
     /**
-     * Sets the checked/unchecked state of the FAB, part of the `Checkable` interface. If our
-     * field `mChecked` is already equal to our parameter `checked` we return having
-     * done nothing. Otherwise we set `mChecked` to `checked` and call the method
-     * `refreshDrawableState` to force our view to update its drawable state. This will cause
-     * the `drawableStateChanged` method to be called on this view. If our field
-     * `OnCheckedChangeListener mOnCheckedChangeListener` we call its `onCheckedChanged`
-     * method with this as the FAB view whose state has changed and `checked` as the new checked
+     * Sets the checked/unchecked state of the [FloatingActionButton], part of the [Checkable]
+     * interface. If our [Boolean] field [mChecked] is already equal to our [Boolean] parameter
+     * [checked] we return having done nothing. Otherwise we set [mChecked] to [checked] and call
+     * the method [refreshDrawableState] to force our view to update its drawable state. This will
+     * cause the [drawableStateChanged] method to be called on this view. If our [OnCheckedChangeListener]
+     * field is not `null` we call its [OnCheckedChangeListener.onCheckedChanged] method with this
+     * as the [FloatingActionButton] view whose state has changed and [checked] as the new checked
      * state.
      *
      * @param checked value to set our state to.
@@ -127,13 +124,13 @@ class FloatingActionButton @JvmOverloads constructor(
         // Now refresh the drawable state (so the icon changes)
         refreshDrawableState()
         if (mOnCheckedChangeListener != null) {
-            mOnCheckedChangeListener!!.onCheckedChanged(this, checked)
+            mOnCheckedChangeListener!!.onCheckedChanged(fabView = this, isChecked = checked)
         }
     }
 
     /**
      * Register a callback to be invoked when the checked state of this button changes. We just save
-     * our parameter `OnCheckedChangeListener listener` in our field `mOnCheckedChangeListener`.
+     * our [OnCheckedChangeListener] parameter [listener] in our field [mOnCheckedChangeListener].
      *
      * @param listener the callback to call on checked state change
      */
@@ -142,7 +139,7 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
     /**
-     * Returns the current checked state of the view, which is our field `boolean mChecked`.
+     * Returns the current checked state of the view, which is our [Boolean] field [mChecked].
      *
      * @return The current checked state of the view
      */
@@ -152,7 +149,8 @@ class FloatingActionButton @JvmOverloads constructor(
 
     /**
      * Change the checked state of the view to the inverse of its current state, we just call our
-     * `setChecked` method with the inverse of our field `boolean mChecked`.
+     * [setChecked] method with the inverse of our [Boolean] field [mChecked] (in kotlin we set our
+     * `isChecked` property to the inverse of our [Boolean] field [mChecked].
      */
     override fun toggle() {
         isChecked = !mChecked
