@@ -31,25 +31,21 @@ import android.view.View
 import android.view.ViewGroup
 
 /**
- * The folding layout where the number of folds, the anchor point and the
- * orientation of the fold can be specified. Each of these parameters can
- * be modified individually and updates and resets the fold to a default
- * (unfolded) state. The fold factor varies between 0 (completely unfolded
+ * The folding layout where the number of folds, the anchor point and the orientation of the fold
+ * can be specified. Each of these parameters can be modified individually and updates and resets
+ * the fold to a default (unfolded) state. The fold factor varies between 0 (completely unfolded
  * flat image) to 1.0 (completely folded, non-visible image).
  *
+ * This layout throws an exception if there is more than one child added to the view. For more
+ * complicated view hierarchy's inside the folding layout, the views should all be nested inside
+ * 1 parent layout.
  *
- * This layout throws an exception if there is more than one child added to the view.
- * For more complicated view hierarchy's inside the folding layout, the views should all
- * be nested inside 1 parent layout.
- *
- *
- * This layout folds the contents of its child in real time. By applying matrix
- * transformations when drawing to canvas, the contents of the child may change as
- * the fold takes place. It is important to note that there are jagged edges about
- * the perimeter of the layout as a result of applying transformations to a rectangle.
- * This can be avoided by having the child of this layout wrap its content inside a
- * 1 pixel transparent border. This will cause an anti-aliasing like effect and smoothen
- * out the edges.
+ * This layout folds the contents of its child in real time. By applying matrix transformations when
+ * drawing to canvas, the contents of the child may change as the fold takes place. It is important
+ * to note that there are jagged edges about the perimeter of the layout as a result of applying
+ * transformations to a rectangle. This can be avoided by having the child of this layout wrap its
+ * content inside a 1 pixel transparent border. This will cause an anti-aliasing like effect and
+ * smoothen out the edges.
  */
 class FoldingLayout : ViewGroup {
     /**
@@ -68,24 +64,24 @@ class FoldingLayout : ViewGroup {
     }
 
     /**
-     * Hold the segments of the view that are being folded (each `Rect` is a segment).
+     * Hold the segments of the view that are being folded (each [Rect] is a segment).
      */
     private lateinit var mFoldRectArray: Array<Rect?>
 
     /**
      * Holds the transformation matrices used to "fold" when drawing each of the segments that are
-     * in `Rect[] mFoldRectArray`
+     * in [Array] of [Rect] field [mFoldRectArray].
      */
     private lateinit var mMatrix: Array<Matrix?>
 
     /**
-     * Orientation of our folding, either VERTICAL or HORIZONTAL.
+     * Orientation of our folding, either [Orientation.VERTICAL] or [Orientation.HORIZONTAL].
      */
     private var mOrientation = Orientation.HORIZONTAL
 
     /**
      * Location of the anchor point of our folding as a fraction of either our width or height
-     * depending on our orientation (0.0 to 1.0) , set by our `setAnchorFactor` method
+     * depending on our orientation (0.0 to 1.0) , set by our [anchorFactor] property.
      */
     private var mAnchorFactor = 0f
 
@@ -95,151 +91,151 @@ class FoldingLayout : ViewGroup {
     private var mFoldFactor = 0f
 
     /**
-     * Number of folds, set by our `setNumberOfFolds` method.
+     * Number of folds, set by our [numberOfFolds] property.
      */
     private var mNumberOfFolds = 2
 
     /**
-     * Flag indicating that our folding `mOrientation` orientation is HORIZONTAL.
+     * Flag indicating that our folding [mOrientation] orientation is [Orientation.HORIZONTAL].
      */
     private var mIsHorizontal = true
 
     /**
-     * Width of our view, set by a call to the method `getMeasuredWidth`
-     * in our method `prepareFold`
+     * Width of our view, set by a call to the method [getMeasuredWidth] in our method [prepareFold]
      */
     private var mOriginalWidth = 0
 
     /**
-     * Width of our view, set by a call to the method `getMeasuredHeight`
-     * in our method `prepareFold`.
+     * Height of our view, set by a call to the method [getMeasuredHeight] in our method [prepareFold]
      */
     private var mOriginalHeight = 0
 
     /**
-     * Maximum width of a fold (when the view is totally unfolded), the width of the view in VERTICAL
-     * orientation, and the width of the view divided by the number of folds in HORIZONTAL orientation.
-     * Set in our method `prepareFold`.
+     * Maximum width of a fold (when the view is totally unfolded), the width of the view in
+     * [Orientation.VERTICAL] orientation, and the width of the view divided by the number of
+     * folds in [Orientation.HORIZONTAL orientation. Set in our method [prepareFold].
      */
     private var mFoldMaxWidth = 0f
 
     /**
-     * Maximum height of a fold (when the view is totally unfolded), the height of the view in HORIZONTAL
-     * orientation, and the height of the view divided by the number of folds in VERTICAL orientation.
-     * Set in our method `prepareFold`.
+     * Maximum height of a fold (when the view is totally unfolded), the height of the view in
+     * [Orientation.HORIZONTAL] orientation, and the height of the view divided by the number of
+     * folds in [Orientation.VERTICAL] orientation. Set in our method [prepareFold].
      */
     private var mFoldMaxHeight = 0f
 
     /**
      * Current width of a fold given the amount of folding we have done, calculated in our method
-     * `calculateMatrices`. Starts at `mFoldMaxWidth` and will go down to 0 when our
-     * orientation is HORIZONTAL (always the same for VERTICAL of course).
+     * [calculateMatrices]. Starts at [mFoldMaxWidth] and will go down to 0 when our orientation is
+     * [Orientation.HORIZONTAL] (always the same for [Orientation.VERTICAL] of course).
      */
     private var mFoldDrawWidth = 0f
 
     /**
      * Current height of a fold given the amount of folding we have done, calculated in our method
-     * `calculateMatrices`. Starts at `mFoldMaxHeight` and will go down to 0 when our
-     * orientation is VERTICAL (always the same for HORIZONTAL of course).
+     * [calculateMatrices]. Starts at [mFoldMaxHeight] and will go down to 0 when our orientation is
+     * [Orientation.VERTICAL] (always the same for [Orientation.HORIZONTAL] of course).
      */
     private var mFoldDrawHeight = 0f
 
     /**
-     * Flag to indicate that our `prepareFold` method has completed its initialization of the
-     * data structures needed to draw our view in a folded state. Set to false at the beginning of
-     * the method, and to true at the end. Used in our `dispatchDraw` override to avoid the
-     * custom drawing of our child by passing the call on to our super and returning, and by our
-     * `calculateMatrices` to skip the creation of the transformation matrices.
+     * Flag to indicate that our [prepareFold] method has completed its initialization of the data
+     * structures needed to draw our view in a folded state. Set to `false` at the beginning of the
+     * method, and to `true` at the end. Used in our [dispatchDraw] override to avoid the custom
+     * drawing of our child by passing the call on to our super and returning, and by our
+     * [calculateMatrices] method to skip the creation of the transformation matrices.
      */
     private var mIsFoldPrepared = false
 
     /**
-     * Flag used by our `dispatchDraw` method to determine whether it needs to draw our child
-     * at all (it returns having done nothing if it is false). Set to true at the beginning of our
-     * method `calculateMatrices`, then set to false if the view is totally folded (our field
-     * `mFoldFactor` is 1) and should not be seen (the canvas can be left completely empty),
-     * and set to false if the width or the height of a fold is 0 (the view is essentially completely
+     * Flag used by our [dispatchDraw] method to determine whether it needs to draw our child at all
+     * (it returns having done nothing if it is `false`). Set to `true` at the beginning of our
+     * method [calculateMatrices], then set to `false` if the view is totally folded (our field
+     * [mFoldFactor] is 1) and should not be seen (the canvas can be left completely empty), and set
+     * to `false` if the width or the height of a fold is 0 (the view is essentially completely
      * folded as well).
      */
     private var mShouldDraw = true
 
     /**
-     * The `Paint` used to draw the shadows of even numbered folds, a solid black with an alpha
-     * whose value depends on the value of `mFoldFactor` (goes from 0 to 0.8*255 as we fold up).
+     * The [Paint] used to draw the shadows of even numbered folds, a solid black with an alpha
+     * whose value depends on the value of [mFoldFactor] (goes from 0 to 0.8*255 as we fold up).
      */
     private var mSolidShadow: Paint? = null
 
     /**
-     * The `Paint` used to draw the shadows of odd numbered folds, uses as its gradient our
-     * field `LinearGradient mShadowLinearGradient`.
+     * The [Paint] used to draw the shadows of odd numbered folds, uses as its gradient our
+     * [LinearGradient] field [mShadowLinearGradient].
      */
     private var mGradientShadow: Paint? = null
 
     /**
-     * Gradient used for our field `Paint mGradientShadow`, it is created in our `prepareFold`
-     * method based on our orientation, then has its local matrix calculated and set to scale it according
-     * to the current fold width or height.
+     * Gradient used for our [Paint] field [mGradientShadow], it is created in our [prepareFold]
+     * method based on our orientation, then has its local matrix calculated and set to scale it
+     * according to the current fold width or height.
      */
     private var mShadowLinearGradient: LinearGradient? = null
 
     /**
-     * Local matrix used to scale our `LinearGradient mShadowLinearGradient` based on the orientation
-     * and current width of height of our folding view.
+     * Local matrix used to scale our [LinearGradient] field [mShadowLinearGradient] based on the
+     * orientation and current width or height of our folding view.
      */
     private var mShadowGradientMatrix: Matrix? = null
 
     /**
-     * Source points for our call to `setPolyToPoly` which we use to define the transformation
-     * matrices which twist each of our folds (both the shadow and bitmap). Set to a `mFoldDrawHeight`
-     * by `mFoldDrawWidth` rectangle in our `calculateMatrices` method.
+     * Source points for our call to [Matrix.setPolyToPoly] which we use to define the transformation
+     * matrices which twist each of our folds (both the shadow and bitmap). Set to a [mFoldDrawHeight]
+     * by [mFoldDrawWidth] rectangle in our [calculateMatrices] method.
      */
     private lateinit var mSrc: FloatArray
 
     /**
-     * Destination points for our call to `setPolyToPoly` which we use to define the transformation
-     * matrices which twist each of our folds (both the shadow and bitmap). Set to a parallelogram for
-     * each of our folds in our `calculateMatrices` method with the location of the points calculated
-     * based on the orientation, number of folds, whether it is an even or odd fold, and the current fold factor.
+     * Destination points for our call to [Matrix.setPolyToPoly] which we use to define the
+     * transformation matrices which twist each of our folds (both the shadow and bitmap). Set
+     * to a parallelogram for each of our folds in our [calculateMatrices] method with the location
+     * of the points calculated based on the orientation, number of folds, whether it is an even or
+     * odd fold, and the current fold factor.
      */
     private lateinit var mDst: FloatArray
 
     /**
-     * The `OnFoldListener` whose `onStartFold` override we call in our `calculateMatrices`
-     * method when the fold factor first goes from 0 to non-zero, and whose `onEndFold` override we
-     * call when the fold factor goes from non-zero to zero. Needs to be set by a call to our `setFoldListener`
-     * or we crash (we do not check for null before calling its methods!).
+     * The [OnFoldListener] whose [OnFoldListener.onStartFold] override we call in our
+     * [calculateMatrices] method when the fold factor first goes from 0 to non-zero, and whose
+     * [OnFoldListener.onEndFold] override we call when the fold factor goes from non-zero to zero.
+     * Needs to be set by a call to our [setFoldListener] or we crash (we do not check for `null`
+     * before calling its methods!).
      */
     private var mFoldListener: OnFoldListener? = null
 
     /**
-     * Previous fold factor, set to zero in our `prepareFold` method, and used by our `calculateMatrices`
-     * method to determine if folding has just started or just ended (in order to decide whether we should
-     * call either of the overrides of our `OnFoldListener mFoldListener`) then set to the new fold
-     * factor `mFoldFactor`.
+     * Previous fold factor, set to zero in our [prepareFold] method, and used by our
+     * [calculateMatrices] method to determine if folding has just started or just ended
+     * (in order to decide whether we should call either of the overrides of our [OnFoldListener]
+     * field [mFoldListener]) then set to the new fold factor [mFoldFactor].
      */
     private var mPreviousFoldFactor = 0f
 
     /**
-     * Bitmap used only when `FoldingLayoutActivity.IS_JBMR2` is true (JELLY_BEAN_MR2) ie. never!
+     * [Bitmap] used only when [FoldingLayoutActivity.IS_JBMR2] is `true` (JELLY_BEAN_MR2) ie. never!
      */
     private var mFullBitmap: Bitmap? = null
 
     /**
-     * Destination rectangle used only in call to `drawBitmap` for JELLY_BEAN_MR2 ie. never!
+     * Destination rectangle used only in call to [Canvas.drawBitmap] for JELLY_BEAN_MR2 ie. never!
      */
     private var mDstRect: Rect? = null
 
     /**
      * Our one argument constructor, we just call our super's constructor.
      *
-     * @param context Context to use to access resources.
+     * @param context [Context] to use to access resources.
      */
     constructor(context: Context?) : super(context)
 
     /**
      * Perform inflation from XML. We just call our super's constructor.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
@@ -249,7 +245,7 @@ class FoldingLayout : ViewGroup {
      * Perform inflation from XML and apply a class-specific base style from a theme attribute or
      * style resource. We just call our super's constructor.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      * @param defStyle An attribute in the current theme that contains a
@@ -259,29 +255,34 @@ class FoldingLayout : ViewGroup {
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
 
     /**
-     * Adds a view during layout. This is useful if in your onLayout() method, you need to add more
-     * views (as does the list view for example). We call our method `throwCustomException` with
-     * our current child count (which will throw NumberOfFoldingLayoutChildrenException if we already
-     * have a child. Then we call our super's implementation of `addViewInLayout`.
+     * Adds a view during layout. This is useful if in your [onLayout] method, you need to add more
+     * views (as does the list view for example). We call our method [throwCustomException] with our
+     * current child count (which will throw [NumberOfFoldingLayoutChildrenException] if we already
+     * have a child). Then we call our super's implementation of `addViewInLayout`.
      *
-     * @param child the view to add to the group
+     * @param child the [View] to add to the group
      * @param index the index at which the child must be added or -1 to add last
      * @param params the layout parameters to associate with the child
-     * @param preventRequestLayout if true, calling this method will not trigger a
+     * @param preventRequestLayout if `true`, calling this method will not trigger a
      * layout request on child
-     * @return true if the child was added, false otherwise
+     * @return `true` if the child was added, `false` otherwise
      */
-    override fun addViewInLayout(child: View, index: Int, params: LayoutParams, preventRequestLayout: Boolean): Boolean {
+    override fun addViewInLayout(
+        child: View,
+        index: Int,
+        params: LayoutParams,
+        preventRequestLayout: Boolean
+    ): Boolean {
         throwCustomException(childCount)
         return super.addViewInLayout(child, index, params, preventRequestLayout)
     }
 
     /**
-     * Adds a child view with the specified layout parameters. We call our method `throwCustomException`
-     * with our current child count (which will throw NumberOfFoldingLayoutChildrenException if we already
-     * have a child. Then we call our super's implementation of `addView`.
+     * Adds a child view with the specified layout parameters. We call our method [throwCustomException]
+     * with our current child count (which will throw [NumberOfFoldingLayoutChildrenException] if we
+     * already have a child. Then we call our super's implementation of `addView`.
      *
-     * @param child the child view to add
+     * @param child the child [View] to add
      * @param index the position at which to add the child or -1 to add last
      * @param params the layout parameters to set on the child
      */
@@ -292,16 +293,15 @@ class FoldingLayout : ViewGroup {
 
     /**
      * Measure the view and its content to determine the measured width and the measured height. We
-     * initialize `View child` with our one and only child view, then call the `measureChild`
-     * method to have it measure itself into our parameters `widthMeasureSpec` and `heightMeasureSpec`.
-     * Finally we call the `setMeasuredDimension` to store these measured sizes.
+     * initialize [View] variable `val child` with our one and only child view, then call the
+     * [measureChild] method to have it measure itself into our [Int] parameters [widthMeasureSpec]
+     * and [heightMeasureSpec]. Finally we call the [setMeasuredDimension] to store these measured
+     * sizes.
      *
      * @param widthMeasureSpec horizontal space requirements as imposed by the parent.
-     * The requirements are encoded with
-     * [android.view.View.MeasureSpec].
+     * The requirements are encoded with [android.view.View.MeasureSpec].
      * @param heightMeasureSpec vertical space requirements as imposed by the parent.
-     * The requirements are encoded with
-     * [android.view.View.MeasureSpec].
+     * The requirements are encoded with [android.view.View.MeasureSpec].
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val child = getChildAt(0)
@@ -310,14 +310,14 @@ class FoldingLayout : ViewGroup {
     }
 
     /**
-     * Called from layout when this view should assign a size and position to each of its children.
-     * We initialize `View child` with our one and only child view, then call its `layout`
-     * method to have it position itself at the top left point (0,0) and the right bottom point at
-     * its measured width and height. Finally we call our `updateFold` method to have it call our
-     * `prepareFold` method to update the fold's orientation, anchor point and number of folds,
-     * call our `calculateMatrices` method to calculate the transformation matrices used to draw
-     * each of the separate folding segments from this view, and then call the `invalidate` method
-     * so that we will redraw ourselves.
+     * Called from layout when this [View] should assign a size and position to each of its children.
+     * We initialize [View] variable `val child` with our one and only child view, then call its
+     * [View.layout] method to have it position itself at the top left point (0,0) and the right
+     * bottom point at its measured width and height. Finally we call our [updateFold] method to
+     * have it call our [prepareFold] method to update the fold's orientation, anchor point and
+     * number of folds, call our [calculateMatrices] method to calculate the transformation matrices
+     * used to draw each of the separate folding segments from this view, and then call the
+     * [invalidate] method so that we will redraw ourselves.
      *
      * @param changed This is a new size or position for this view
      * @param l       Left position, relative to parent
@@ -340,7 +340,7 @@ class FoldingLayout : ViewGroup {
      * Our constructor. We just call our super's constructor.
      *
      * @param message the detail message. The detail message is saved for later retrieval by the
-     * [.getMessage] method.
+     * `getMessage` method.
      */
     (message: String?) : RuntimeException(message)
 
@@ -356,11 +356,11 @@ class FoldingLayout : ViewGroup {
     }
 
     /**
-     * Sets our `OnFoldListener mFoldListener` field. We call the `onStartFold` override
-     * when the folding layout begins folding, and the `onEndFold` override when the folding
-     * layout ends folding.
+     * Sets our [OnFoldListener] field [mFoldListener]. We call its [OnFoldListener.onStartFold]
+     * override when the folding layout begins folding, and its [OnFoldListener.onEndFold] override
+     * when the folding layout ends folding.
      *
-     * @param foldListener `OnFoldListener` we are to use to report `onStartFold` and
+     * @param foldListener The [OnFoldListener] we are to use to report `onStartFold` and
      * `onEndFold` events.
      */
     fun setFoldListener(foldListener: OnFoldListener?) {
@@ -368,25 +368,25 @@ class FoldingLayout : ViewGroup {
     }
 
     /**
-     * anchor factor, between 0 (left or top anchor point) and 1.0 (right or
-     * bottom anchor point).
+     * anchor factor, between 0 (left or top anchor point) and 1.0 (right or bottom anchor point).
      */
     var anchorFactor: Float
         /**
-         * Getter for our field `float mAnchorFactor`. Unused
+         * Getter for our [Float] field [mAnchorFactor]. Unused
          *
-         * @return current value of our field `float mAnchorFactor`
+         * @return current value of our [Float] field [mAnchorFactor]
          */
         get() = mAnchorFactor
         /**
-         * Sets our new anchor factor which places our anchor point somewhere between the extremes of our
-         * height and width, then calls our `calculateMatrices` method to have it call our `prepareFold`
-         * method to update the fold's orientation, anchor point and number of folds, call our `calculateMatrices`
-         * method to calculate the transformation matrices used to draw each of the separate folding segments from this
-         * view, and then call the `invalidate` method so that we will redraw ourselves.
+         * Sets our new anchor factor which places our anchor point somewhere between the extremes
+         * of our height and width, and calls our [updateFold] method which then calls our
+         * [prepareFold] method to have update the fold's orientation, anchor point and number of
+         * folds, calls our [calculateMatrices] method to calculate the transformation matrices used
+         * to draw each of the separate folding segments from this view, and then calls the
+         * [invalidate] method so that we will redraw ourselves.
          *
-         * @param anchorFactor new anchor factor, between 0 (left or top anchor point) and 1.0 (right or
-         * bottom anchor point).
+         * @param anchorFactor new anchor factor, between 0 (left or top anchor point) and 1.0
+         * (right or bottom anchor point).
          */
         set(anchorFactor) {
             if (anchorFactor != mAnchorFactor) {
@@ -944,7 +944,8 @@ class FoldingLayout : ViewGroup {
                 }
             }
 
-            /* Sets the shadow and bitmap transformation matrices.*/mMatrix[x]!!.setPolyToPoly(mSrc, 0, mDst, 0, NUM_OF_POLY_POINTS / 2)
+            /* Sets the shadow and bitmap transformation matrices.*/
+            mMatrix[x]!!.setPolyToPoly(mSrc, 0, mDst, 0, NUM_OF_POLY_POINTS / 2)
         }
         /* The shadows on the folds are split into two parts: Solid shadows and gradients.
          * Every other fold has a solid shadow which overlays the whole fold. Similarly,
