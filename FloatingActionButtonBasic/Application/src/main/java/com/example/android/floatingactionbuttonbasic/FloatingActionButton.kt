@@ -157,8 +157,8 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
     /**
-     * Override performClick() so that we can toggle the checked state when the view is clicked, we
-     * call our method `toggle` to change the checked state of the view to the inverse of its
+     * Override `performClick()` so that we can toggle the checked state when the view is clicked, we
+     * call our method [toggle] to change the checked state of the view to the inverse of its
      * current state, then return the value returned by our super's implementation of `performClick`.
      *
      * @return True there was an assigned OnClickListener that was called, false
@@ -172,8 +172,8 @@ class FloatingActionButton @JvmOverloads constructor(
     /**
      * This is called during layout when the size of this view has changed. If you were just added
      * to the view hierarchy, you're called with the old values of 0. We call our super's implementation
-     * of `onSizeChanged`, then call the `invalidateOutline` to rebuild this View's Outline
-     * from its [outline provider][ViewOutlineProvider] so that it corresponds to our new size.
+     * of `onSizeChanged`, then call the [invalidateOutline] method to rebuild this [View]'s Outline
+     * from its [ViewOutlineProvider] so that it corresponds to our new size.
      *
      * @param w Current width of this view.
      * @param h Current height of this view.
@@ -189,21 +189,21 @@ class FloatingActionButton @JvmOverloads constructor(
     }
 
     /**
-     * Generate the new [android.graphics.drawable.Drawable] state for this view. This is called
-     * by the view system when the cached Drawable state is determined to be invalid. To retrieve the
-     * current state, you should use [.getDrawableState]. We initialize `int[] drawableState`
-     * with the array returned by our super's implementation of `onCreateDrawableState` when we
-     * request one more drawable state than our caller requested. If our method `isChecked` returns
-     * true (we are currently checked) we call the `mergeDrawableStates` method to merge our
-     * CHECKED_STATE_SET into `drawableState`. In any case we return `drawableState` to our
+     * Generate the new Drawable state for this view. This is called by the view system when the
+     * cached Drawable state is determined to be invalid. To retrieve the current state, you should
+     * use [getDrawableState]. We initialize [IntArray] variable `val drawableState` with the array
+     * returned by our super's implementation of `onCreateDrawableState` when we call it requesting
+     * one more drawable state than our caller requested. If our method [isChecked] returns `true`
+     * (we are currently checked) we call the [View.mergeDrawableStates] method to merge our
+     * [CHECKED_STATE_SET] into `drawableState`. In any case we return `drawableState` to our
      * caller.
      *
      * @param extraSpace if non-zero, this is the number of extra entries you would like in the
      * returned array in which you can place your own states.
-     * @return Returns an array holding the current `Drawable` state of the view.
+     * @return Returns an [IntArray] holding the current `Drawable` state of the view.
      */
     override fun onCreateDrawableState(extraSpace: Int): IntArray {
-        val drawableState = super.onCreateDrawableState(extraSpace + 1)
+        val drawableState: IntArray = super.onCreateDrawableState(extraSpace + 1)
         if (isChecked) {
             mergeDrawableStates(drawableState, CHECKED_STATE_SET)
         }

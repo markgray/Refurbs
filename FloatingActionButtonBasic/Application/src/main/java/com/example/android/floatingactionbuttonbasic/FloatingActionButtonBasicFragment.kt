@@ -23,32 +23,37 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.android.common.logger.Log
+import com.example.android.floatingactionbuttonbasic.FloatingActionButton.OnCheckedChangeListener
 
 /**
- * This fragment inflates a layout with two Floating Action Buttons and acts as a listener to
+ * This [Fragment] inflates a layout with two Floating Action Buttons and acts as a listener to
  * changes on them.
  */
-class FloatingActionButtonBasicFragment : Fragment(), FloatingActionButton.OnCheckedChangeListener {
+class FloatingActionButtonBasicFragment : Fragment(), OnCheckedChangeListener {
     /**
-     * Called to have the fragment instantiate its user interface view. We initialize `View rootView`
-     * to the view that our parameter `LayoutInflater inflater` inflates from our layout file
-     * R.layout.fab_layout using our parameter `ViewGroup container` for LayoutParams without
-     * attaching to it. We initialize `FloatingActionButton fab1` by finding the view in `rootView`
-     * with id R.id.fab_1 and set its `OnCheckedChangeListener` to this, and we initialize
-     * `FloatingActionButton fab2` by finding the view in `rootView` with id R.id.fab_2
-     * and set its `OnCheckedChangeListener` to this. Finally we return `rootView` to the
-     * caller.
+     * Called to have the [Fragment] instantiate its user interface view. We initialize [View]
+     * variable `val rootView` to the [View] that our [LayoutInflater] parameter [inflater] inflates
+     * from our layout file [R.layout.fab_layout] using our [ViewGroup] parameter [container] for
+     * LayoutParams without attaching to it. We initialize [FloatingActionButton] variable `val fab1`
+     *  with id [R.id.fab_1] and set its [OnCheckedChangeListener] to this, and we initialize
+     * [FloatingActionButton] variable `val fab2` by finding the view in `rootView` with id
+     * [R.id.fab_2] and set its [OnCheckedChangeListener] to this. Finally we return `rootView` to
+     * the caller.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fab_layout, container, false)
 
@@ -61,23 +66,19 @@ class FloatingActionButtonBasicFragment : Fragment(), FloatingActionButton.OnChe
     }
 
     /**
-     * Called when the checked state of a FAB has changed. We switch on the id of our parameter
-     * `FloatingActionButton fabView`:
+     * Called when the checked state of a FAB has changed. We switch on the id of our
+     * [FloatingActionButton] parameter [fabView]:
      *
-     *  *
-     * R.id.fab_1: We log the formatted string "FAB 1 was checked" is our parameter `isChecked`
-     * is true, or the string "FAB 1 was unchecked" is our parameter `isChecked` is false,
-     * then break.
+     *  * [R.id.fab_1]: We log the formatted string "FAB 1 was checked" if our [Boolean] parameter
+     *  [isChecked] is `true`, or the string "FAB 1 was unchecked" is our parameter [isChecked] is
+     *  false.
      *
-     *  *
-     * R.id.fab_2: We log the formatted string "FAB 2 was checked" is our parameter `isChecked`
-     * is true, or the string "FAB 2 was unchecked" is our parameter `isChecked` is false,
-     * then break.
+     *  * [R.id.fab_2]: We log the formatted string "FAB 2 was checked" is our [Boolean] parameter
+     *  [isChecked] is `true`, or the string "FAB 2 was unchecked" is our parameter [isChecked] is
+     *  false.
      *
-     *
-     *
-     * @param fabView   The FAB view whose state has changed.
-     * @param isChecked The new checked state of buttonView.
+     * @param fabView The [FloatingActionButton] view whose state has changed.
+     * @param isChecked The new checked state of [fabView].
      */
     override fun onCheckedChanged(fabView: FloatingActionButton?, isChecked: Boolean) {
         // When a FAB is toggled, log the action.
