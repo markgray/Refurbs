@@ -396,20 +396,22 @@ class FoldingLayout : ViewGroup {
         }
 
     /**
-     * current value of our field `Orientation mOrientation`
+     * current value of our [Orientation] field [mOrientation]
      */
     var orientation: Orientation
         /**
-         * Getter for our field `Orientation mOrientation`. Unused
+         * Getter for our [Orientation] field [mOrientation].
          */
         get() = mOrientation
         /**
-         * Sets our new orientation then calls our `updateFold` method to have it call our `prepareFold`
-         * method to update the fold's orientation, anchor point and number of folds, call our `calculateMatrices`
-         * method to calculate the transformation matrices used to draw each of the separate folding segments from this
-         * view, and then call the `invalidate` method so that we will redraw ourselves.
+         * Sets our new orientation then calls our [updateFold] method to have it call our
+         * [prepareFold] method to update the fold's orientation, anchor point and number of folds,
+         * call our [calculateMatrices] method to calculate the transformation matrices used to draw
+         * each of the separate folding segments from this view, and then call the [invalidate]
+         * method so that we will redraw ourselves.
          *
-         * @param orientation new `Orientation`, either VERTICAL or HORIZONTAL.
+         * @param orientation our new [Orientation], either [Orientation.VERTICAL] or
+         * [Orientation.HORIZONTAL].
          */
         set(orientation) {
             if (orientation != mOrientation) {
@@ -419,15 +421,15 @@ class FoldingLayout : ViewGroup {
         }
 
     /**
-     * Sets the fold factor of the folding view and updates all the corresponding
-     * matrices and values to account for the new fold factor. Once that is complete,
-     * it redraws itself with the new fold.
+     * Sets the fold factor of the folding view and updates all the corresponding matrices and
+     * values to account for the new fold factor. Once that is complete, it redraws itself with
+     * the new fold.
      */
     var foldFactor: Float
         /**
-         * Getter for our field `float mFoldFactor`.
+         * Getter for our [Float] field [mFoldFactor].
          *
-         * @return current value of our field `float mFoldFactor`
+         * @return current value of our [Float] field [mFoldFactor].
          */
         get() = mFoldFactor
         /**
@@ -449,13 +451,18 @@ class FoldingLayout : ViewGroup {
      * the number of folds we fold in.
      */
     var numberOfFolds: Int
+        /**
+         * Getter for our [Int] field [mNumberOfFolds].
+         *
+         * @return current value of our [Int] field [mNumberOfFolds].
+         */
         get() = mNumberOfFolds
         /**
-         * Sets the number of folds we fold in then calls our `calculateMatrices` method to have it
-         * call our `prepareFold` method to update the fold's orientation, anchor point and number
-         * of folds, call our `calculateMatrices` method to calculate the transformation matrices
+         * Sets the number of folds we fold in then calls our [updateFold] method to have it
+         * call our [prepareFold] method to update the fold's orientation, anchor point and number
+         * of folds, call our [calculateMatrices] method to calculate the transformation matrices
          * used to draw each of the separate folding segments from this view, and then call the
-         * `invalidate` method so that we will redraw ourselves.
+         * [invalidate] method so that we will redraw ourselves.
          *
          * @param numberOfFolds new number of folds.
          */
@@ -467,10 +474,10 @@ class FoldingLayout : ViewGroup {
         }
 
     /**
-     * Convenience method to call our `prepareFold` method to update the fold's orientation,
-     * anchor point and number of folds, call our `calculateMatrices` method to calculate the
-     * transformation matrices used to draw each of the separate folding segments from this view, and
-     * then call the `invalidate` method so that we will redraw ourselves.
+     * Convenience method to call our [prepareFold] method to update the fold's orientation,
+     * anchor point and number of folds, call our [calculateMatrices] method to calculate the
+     * transformation matrices used to draw each of the separate folding segments from this view,
+     * and then call the [invalidate] method so that we will redraw ourselves.
      */
     private fun updateFold() {
         prepareFold(mOrientation, mAnchorFactor, mNumberOfFolds)
@@ -479,35 +486,33 @@ class FoldingLayout : ViewGroup {
     }
 
     /**
-     * This method is called in order to update the fold's orientation, anchor
-     * point and number of folds. This creates the necessary setup in order to
-     * prepare the layout for a fold with the specified parameters. Some of the
-     * dimensions required for the folding transformation are also acquired here.
+     * This method is called in order to update the fold's orientation, anchor point and number of
+     * folds. This creates the necessary setup in order to prepare the layout for a fold with the
+     * specified parameters. Some of the dimensions required for the folding transformation are
+     * also acquired here. After this method is called, it will be in a completely unfolded state
+     * by default.
      *
-     *
-     * After this method is called, it will be in a completely unfolded state by default.
-     *
-     *
-     * We allocate NUM_OF_POLY_POINTS (8) floats for both of our fields `float[] mSrc` and
-     * `float[] mDst`, initialize `Rect mDstRect` with a new instance, set our field
-     * `mFoldFactor` to zero (fully unfolded), set the field `mPreviousFoldFactor` to
-     * 0, set our field `boolean mIsFoldPrepared` to false, allocate new instances for our
-     * fields `Paint mSolidShadow` and `Paint mGradientShadow`, set our field
-     * `Orientation mOrientation` to our parameter `Orientation orientation`, and set
-     * our field `boolean mIsHorizontal` to the value of testing for `orientation` being
-     * equal to HORIZONTAL. If `mIsHorizontal` is true we set our field `mShadowLinearGradient`
-     * to a new instance of `LinearGradient` that draws a linear gradient along a line from (0,0)
-     * to (SHADING_FACTOR, 0) (ie. (0.5, 0)) transitioning from the color BLACK to Color.TRANSPARENT,
-     * using a shader tiling mode of TileMode.CLAMP (replicate the edge color if the shader draws outside
-     * of its original bounds), if it is false we initialize it to a new instance of `LinearGradient`
-     * that draws a linear gradient along a line from (0,0) to (0, SHADING_FACTOR) (ie. (0, 0.5))
-     * transitioning from the color BLACK to Color.TRANSPARENT, using a shader tiling mode of TileMode.CLAMP
-     * (replicate the edge color if the shader draws outside of its original bounds). We set the style
-     * of `Paint mGradientShadow` to FILL and set its shader to `mShadowLinearGradient`.
-     * We initialize our field `Matrix mShadowGradientMatrix` with a new instance, set our field
-     * `mAnchorFactor` to our parameter `anchorFactor`, set our field `mNumberOfFolds`
-     * to our parameter `numberOfFolds`, initialize our field `mOriginalWidth` to the width
-     * of our view, and `mOriginalHeight` to our height. We allocate a `mNumberOfFolds`
+     * We allocate [NUM_OF_POLY_POINTS] (8) [Float] for both of our [FloatArray] fields [mSrc] and
+     * [mDst], initialize [Rect] field [mDstRect] with a new instance, set our field [Float] field
+     * [mFoldFactor] to 0f (fully unfolded), set the [Float] field [mPreviousFoldFactor] to 0f, set
+     * our [Boolean] field [mIsFoldPrepared] to `false`, allocate new instances for our [Paint]
+     * fields [mSolidShadow] and [mGradientShadow], set our [Orientation] field [mOrientation] to
+     * our [Orientation] parameter [orientation], and set our [Boolean] field [mIsHorizontal] to the
+     * value of testing for [orientation] being equal to [Orientation.HORIZONTAL]. If [mIsHorizontal]
+     * is `true` we set our [LinearGradient] field [mShadowLinearGradient] to a new instance of
+     * [LinearGradient] that draws a linear gradient along a line from (0,0) to (SHADING_FACTOR, 0)
+     * (ie. (0.5, 0)) transitioning from [Color.BLACK] to [Color.TRANSPARENT], using a shader tiling
+     * mode of [TileMode.CLAMP] (replicate the edge color if the shader draws outside of its original
+     * bounds), if it is false we initialize it to a new instance of [LinearGradient] that draws a
+     * linear gradient along a line from (0,0) to (0, SHADING_FACTOR) (ie. (0, 0.5)) transitioning
+     * from [Color.BLACK] to [Color.TRANSPARENT], using a shader tiling mode of [TileMode.CLAMP]
+     * (replicate the edge color if the shader draws outside of its original bounds). We set the
+     * style of [Paint] field [mGradientShadow] to [Paint.Style.FILL] and set its shader to
+     * [mShadowLinearGradient]. We initialize our [Matrix] field [mShadowGradientMatrix] with a new
+     * instance, set our [Float] field [mAnchorFactor] to our [Float] parameter [anchorFactor], set
+     * our [Int] field [mNumberOfFolds] to our [Int] parameter [numberOfFolds], initialize our [Int]
+     * field [mOriginalWidth] to the measured width of our view, and our [Int] field [mOriginalHeight]
+     * to our measured height. We allocate a `mNumberOfFolds`
      * array for our field `Rect[] mFoldRectArray` and allocate a `mNumberOfFolds` array
      * for our field `Matrix[] mMatrix`. We then loop over `int x` allocating a new instance
      * of `Matrix` for each of `mNumberOfFolds` elements in `mMatrix`.
