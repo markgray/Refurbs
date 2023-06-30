@@ -77,66 +77,66 @@ class FoldingLayout : ViewGroup {
     /**
      * Orientation of our folding, either [Orientation.VERTICAL] or [Orientation.HORIZONTAL].
      */
-    private var mOrientation = Orientation.HORIZONTAL
+    private var mOrientation: Orientation = Orientation.HORIZONTAL
 
     /**
      * Location of the anchor point of our folding as a fraction of either our width or height
      * depending on our orientation (0.0 to 1.0) , set by our [anchorFactor] property.
      */
-    private var mAnchorFactor = 0f
+    private var mAnchorFactor: Float = 0f
 
     /**
      * How much are we folded, from 0 for not folded to 1 for totally folded
      */
-    private var mFoldFactor = 0f
+    private var mFoldFactor: Float = 0f
 
     /**
      * Number of folds, set by our [numberOfFolds] property.
      */
-    private var mNumberOfFolds = 2
+    private var mNumberOfFolds: Int = 2
 
     /**
      * Flag indicating that our folding [mOrientation] orientation is [Orientation.HORIZONTAL].
      */
-    private var mIsHorizontal = true
+    private var mIsHorizontal: Boolean = true
 
     /**
      * Width of our view, set by a call to the method [getMeasuredWidth] in our method [prepareFold]
      */
-    private var mOriginalWidth = 0
+    private var mOriginalWidth: Int = 0
 
     /**
      * Height of our view, set by a call to the method [getMeasuredHeight] in our method [prepareFold]
      */
-    private var mOriginalHeight = 0
+    private var mOriginalHeight: Int = 0
 
     /**
      * Maximum width of a fold (when the view is totally unfolded), the width of the view in
      * [Orientation.VERTICAL] orientation, and the width of the view divided by the number of
      * folds in [Orientation.HORIZONTAL orientation. Set in our method [prepareFold].
      */
-    private var mFoldMaxWidth = 0f
+    private var mFoldMaxWidth: Float = 0f
 
     /**
      * Maximum height of a fold (when the view is totally unfolded), the height of the view in
      * [Orientation.HORIZONTAL] orientation, and the height of the view divided by the number of
      * folds in [Orientation.VERTICAL] orientation. Set in our method [prepareFold].
      */
-    private var mFoldMaxHeight = 0f
+    private var mFoldMaxHeight: Float = 0f
 
     /**
      * Current width of a fold given the amount of folding we have done, calculated in our method
      * [calculateMatrices]. Starts at [mFoldMaxWidth] and will go down to 0 when our orientation is
      * [Orientation.HORIZONTAL] (always the same for [Orientation.VERTICAL] of course).
      */
-    private var mFoldDrawWidth = 0f
+    private var mFoldDrawWidth: Float = 0f
 
     /**
      * Current height of a fold given the amount of folding we have done, calculated in our method
      * [calculateMatrices]. Starts at [mFoldMaxHeight] and will go down to 0 when our orientation is
      * [Orientation.VERTICAL] (always the same for [Orientation.HORIZONTAL] of course).
      */
-    private var mFoldDrawHeight = 0f
+    private var mFoldDrawHeight: Float = 0f
 
     /**
      * Flag to indicate that our [prepareFold] method has completed its initialization of the data
@@ -145,7 +145,7 @@ class FoldingLayout : ViewGroup {
      * drawing of our child by passing the call on to our super and returning, and by our
      * [calculateMatrices] method to skip the creation of the transformation matrices.
      */
-    private var mIsFoldPrepared = false
+    private var mIsFoldPrepared: Boolean = false
 
     /**
      * Flag used by our [dispatchDraw] method to determine whether it needs to draw our child at all
@@ -155,7 +155,7 @@ class FoldingLayout : ViewGroup {
      * to `false` if the width or the height of a fold is 0 (the view is essentially completely
      * folded as well).
      */
-    private var mShouldDraw = true
+    private var mShouldDraw: Boolean = true
 
     /**
      * The [Paint] used to draw the shadows of even numbered folds, a solid black with an alpha
@@ -213,7 +213,7 @@ class FoldingLayout : ViewGroup {
      * (in order to decide whether we should call either of the overrides of our [OnFoldListener]
      * field [mFoldListener]) then set to the new fold factor [mFoldFactor].
      */
-    private var mPreviousFoldFactor = 0f
+    private var mPreviousFoldFactor: Float = 0f
 
     /**
      * [Bitmap] used only when [FoldingLayoutActivity.IS_JBMR2] is `true` (JELLY_BEAN_MR2) ie. never!
@@ -512,64 +512,50 @@ class FoldingLayout : ViewGroup {
      * instance, set our [Float] field [mAnchorFactor] to our [Float] parameter [anchorFactor], set
      * our [Int] field [mNumberOfFolds] to our [Int] parameter [numberOfFolds], initialize our [Int]
      * field [mOriginalWidth] to the measured width of our view, and our [Int] field [mOriginalHeight]
-     * to our measured height. We allocate a `mNumberOfFolds`
-     * array for our field `Rect[] mFoldRectArray` and allocate a `mNumberOfFolds` array
-     * for our field `Matrix[] mMatrix`. We then loop over `int x` allocating a new instance
-     * of `Matrix` for each of `mNumberOfFolds` elements in `mMatrix`.
+     * to our measured height. We allocate a [mNumberOfFolds] array of nulls for our [Array] of [Rect]
+     * field [mFoldRectArray] and allocate a [mNumberOfFolds] array of nulls for our [Array] of
+     * [Matrix] field [mMatrix]. We then loop over `x` allocating a new instance of [Matrix] for
+     * each of the [mNumberOfFolds] elements in [mMatrix].
      *
+     * We initialize our [Int] variable `val h` to our field [mOriginalHeight] and [Int] variable
+     * `val w` to our field [mOriginalWidth]. If [FoldingLayoutActivity.IS_JBMR2] is `true` (our
+     * device is running JELLY_BEAN_MR2) we initialize our [Bitmap] field [mFullBitmap] with a `w`
+     * by `h` ARGB_8888 bitmap, initialize [Canvas] variable `val canvas` with an instance which
+     * will draw into [mFullBitmap] and instruct our (only) child to draw itself into `canvas`.
      *
-     * We initialize our variable `int h` to our field `mOriginalHeight` and `int w`
-     * to our field `mOriginalWidth`. If IS_JBMR2 is true (our device is running JELLY_BEAN_MR2)
-     * we initialize our field `Bitmap mFullBitmap` with a `w` by `h` ARGB_8888
-     * bitmap, initialize `Canvas canvas` with an instance which will draw into `mFullBitmap`
-     * and instruct our child to draw itself into `canvas`.
+     * If [mIsHorizontal] is `true` initialize [Int] variable `vla delta` to the rounded value of
+     * `w` divided by [mNumberOfFolds], if it is `false` we initialize it to the rounded value of
+     * `h` divided by [mNumberOfFolds]. Now we loop over [Int] variable `x` for all of the
+     * [mNumberOfFolds] folds:
      *
+     *  * We branch on the value of `mIsHorizontal`:
      *
-     * If `mIsHorizontal` is true initialize `int delta` to the rounded value of `w`
-     * divided by `mNumberOfFolds`, if it is false we initialize it to the rounded value of
-     * `h` divided by `mNumberOfFolds`. Now we loop over `int x` for all of the
-     * `mNumberOfFolds` folds:
+     *  * `true`: We calculate the value of [Int] variable `val deltap` based on whether there is
+     *  room left in our width `w` for one more segment that is `delta` wide, if there is we set
+     *  `deltap` to `delta` otherwise we set it to the amount of space left which is `w` minus `x`
+     *  times `delta`. We then allocate a new [Rect] instance for [mFoldRectArray] at index `x`
+     *  whose left edge is at `x` times `delta`, whose top is 0, whose right edge is `x` times
+     *  `delta` plus `deltap`, and whose bottom is `h`.
      *
-     *  *
-     * We branch on the value of `mIsHorizontal`:
+     *  * `false`: We calculate the value of [Int] variable `val deltap` based on whether there is
+     *  room left in our height `h` for one more segment that is `delta` wide, if there is we set
+     *  `deltap` to `delta` otherwise we set it to the amount of space left which is `h` minus `x`
+     *  times `delta`. We then allocate a new [Rect] instance for [mFoldRectArray] at index `x`
+     *  whose left edge is at 0, whose top is `x` times `delta`, whose right edge is `w`, and whose
+     *  bottom is `x` times `delta` plus `deltap`.
      *
-     *  *
-     * true: We calculate the value of `int deltap` based on whether there is
-     * room left in our width `w` for one more segment that is `delta`
-     * wide, if there is we set `deltap` to `delta` otherwise we set it
-     * to the amount of space left which is `w` minus `x` times `delta`.
-     * We then allocate a new `Rect` instance for `mFoldRectArray at x` whose
-     * left edge is at `x` times `delta`, whose top is 0, whose right edge
-     * is `x` times `delta` plus `deltap`, and whose bottom is `h`.
+     * When done with all our segments we again branch on the value of [mIsHorizontal]:
      *
-     *  *
-     * false: We calculate the value of `int deltap` based on whether there is
-     * room left in our height `h` for one more segment that is `delta`
-     * wide, if there is we set `deltap` to `delta` otherwise we set it
-     * to the amount of space left which is `h` minus `x` times `delta`.
-     * We then allocate a new `Rect` instance for `mFoldRectArray x` whose
-     * left edge is at 0, whose top is `x` times `delta`, whose right edge
-     * is `w`, and whose bottom is `x` times `delta` plus `deltap`.
+     *  * `true`: we set our field [mFoldMaxHeight] to `h` and our field [mFoldMaxWidth] to `delta`.
      *
+     *  * `false`: we set our field [mFoldMaxHeight] to `delta` and our field [mFoldMaxWidth] to `w`.
      *
+     * Finally we set our field [mIsFoldPrepared] to true.
      *
-     *
-     * When done with all our segments we again branch on the value of `mIsHorizontal`:
-     *
-     *  *
-     * true: we set our field `mFoldMaxHeight` to `h` and our field
-     * `mFoldMaxWidth` to `delta`.
-     *
-     *  *
-     * false: we set our field `mFoldMaxHeight` to `delta` and our field
-     * `mFoldMaxWidth` to `w`.
-     *
-     *
-     * Finally we set our field `mIsFoldPrepared` to true.
-     *
-     * @param orientation   orientation we should fold in, either HORIZONTAL or VERTICAL
-     * @param anchorFactor  fraction from 0 to 1.0 we use to calculate the anchor point that we fold on,
-     * 0 for left or top, and 1.0 for right or bottom.
+     * @param orientation orientation we should fold in, either [Orientation.HORIZONTAL] or
+     * [Orientation.VERTICAL]
+     * @param anchorFactor fraction from 0 to 1.0 we use to calculate the anchor point that we fold
+     * on, 0 for left or top, and 1.0 for right or bottom.
      * @param numberOfFolds number of folds we split our view into
      */
     private fun prepareFold(orientation: Orientation, anchorFactor: Float, numberOfFolds: Int) {
@@ -614,7 +600,8 @@ class FoldingLayout : ViewGroup {
         /* Loops through the number of folds and segments the full layout into a number
          * of smaller equal components. If the number of folds is odd, then one of the
          * components will be smaller than all the rest. Note that deltap below handles
-         * the calculation for an odd number of folds.*/for (x in 0 until mNumberOfFolds) {
+         * the calculation for an odd number of folds.*/
+        for (x in 0 until mNumberOfFolds) {
             if (mIsHorizontal) {
                 val deltap = if ((x + 1) * delta > w) w - x * delta else delta
                 mFoldRectArray[x] = Rect(x * delta, 0, x * delta + deltap, h)
@@ -635,40 +622,40 @@ class FoldingLayout : ViewGroup {
 
     /**
      * Calculates the transformation matrices used to draw each of the separate folding segments of
-     * this view. First we set our flag `mShouldDraw` to true (our `dispatchDraw` override
-     * will return without doing any drawing while this is false). If our flag `mIsFoldPrepared`
-     * is false (`prepareFold` has not been called) we return having done nothing. If our field
-     * `mFoldFactor` is 1 (we are completely folded) we set our flag `mShouldDraw` to false
-     * (we are invisible, so there is no need to draw) and return. If our current fold factor
-     * `mFoldFactor` is 0 and our previous fold factor `mPreviousFoldFactor` is greater than
-     * 0 (we have just become totally unfolded) we call the `onEndFold` override of our field
-     * `OnFoldListener mFoldListener`. If our previous fold factor `mPreviousFoldFactor`
-     * is 0, and our current fold factor `mFoldFactor` is greater than 0 (we have just begun to
-     * fold) we call the `onStartFold` override of our field `OnFoldListener mFoldListener`.
-     * We set our previous fold factor `mPreviousFoldFactor` to our current fold factor `mFoldFactor`.
+     * this view. First we set our [Boolean] flag field [mShouldDraw] to `true` (our [dispatchDraw]
+     * override will return without doing any drawing while this is `false`). If our [Boolean] flag
+     * field [mIsFoldPrepared] is `false` ([prepareFold] has not been called) we return having done
+     * nothing. If our [Float] field [mFoldFactor] is 1f (we are completely folded) we set our flag
+     * [mShouldDraw] to `false` (we are invisible, so there is no need to draw) and return. If our
+     * current fold factor [Float] field [mFoldFactor] is 0f and our previous fold factor [Float]
+     * field [mPreviousFoldFactor] is greater than 0f (we have just become totally unfolded) we call
+     * the [OnFoldListener.onEndFold] override of our [OnFoldListener] field [mFoldListener]. If our
+     * previous fold factor [Float] field [mPreviousFoldFactor] is 0f, and our current fold factor
+     * [Float] field [mFoldFactor] is greater than 0f (we have just begun to fold) we call the
+     * [OnFoldListener.onStartFold] override of our [OnFoldListener] field [mFoldListener]. We set
+     * our previous fold factor [Float] field [mPreviousFoldFactor] to our current fold factor
+     * [Float] field [mFoldFactor].
      *
+     * We now loop over [Int] variable `x` calling the [Matrix.reset] method of each [Matrix] in our
+     * [Array] of [Matrix] field [mMatrix] to set the matrix to the identity matrix.
      *
-     * We now loop over `int x` calling the `reset` method of each `Matrix` in our
-     * field `Matrix[] mMatrix` to set the matrix to the identity matrix.
-     *
-     *
-     * We initialize `float cTranslationFactor` to 1 minus our fold factor `mFoldFactor`.
-     * If `mIsHorizontal` is true we initialize `float translatedDistance` to the value
-     * `mOriginalWidth` times `cTranslationFactor` (the current width of our folded
-     * horizontal view), it is false we use `mOriginalHeight` times `cTranslationFactor`
-     * (the current height of our folded vertical view). We then initialize  `translatedDistancePerFold`
-     * to the rounded value of `translatedDistance` divided by `mNumberOfFolds`. Then if
-     * `mFoldMaxWidth` is less than `translatedDistancePerFold` we set `mFoldDrawWidth`
-     * to `translatedDistancePerFold`, otherwise we set it to `mFoldMaxWidth` (preventing
-     * rounding error from making it from exceeding `mFoldMaxWidth`). Similarly if `mFoldMaxHeight`
-     * is less than `translatedDistancePerFold` we set `mFoldDrawHeight` to `translatedDistancePerFold`,
-     * otherwise we set it to `mFoldMaxHeight`. We initialize `translatedDistanceFoldSquared`
-     * to `translatedDistancePerFold` times `translatedDistancePerFold`, and use it to calculate
-     * the depth of the fold into the screen `float depth` by applying the pythagorean theorem.
-     * If `mIsHorizontal` is true this is the square root of `mFoldDrawWidth` times `mFoldDrawWidth`
-     * minus `translatedDistanceFoldSquared`, and if false it is the square root of `mFoldDrawHeight`
-     * times `mFoldDrawHeight` minus `translatedDistanceFoldSquared`.
-     *
+     * We initialize [Float] variable `val cTranslationFactor` to 1f minus our fold factor [Float]
+     * field [mFoldFactor]. If [Boolean] field [mIsHorizontal] is `true` we initialize [Float]
+     * variable `val translatedDistance` to the value [mOriginalWidth] times `cTranslationFactor`
+     * (the current width of our folded horizontal view), if it is `false` we use [mOriginalHeight]
+     * times `cTranslationFactor` (the current height of our folded vertical view). We then
+     * initialize [Float] variable `val translatedDistancePerFold` to the rounded value of
+     * `translatedDistance` divided by `mNumberOfFolds`. Then if [mFoldMaxWidth] is less than
+     * `translatedDistancePerFold` we set [Float] field [mFoldDrawWidth] to `translatedDistancePerFold`,
+     * otherwise we set it to [mFoldMaxWidth] (preventing rounding error from making it from exceeding
+     * [mFoldMaxWidth]). Similarly if [mFoldMaxHeight] is less than `translatedDistancePerFold` we
+     * set [Float] field [mFoldDrawHeight] to `translatedDistancePerFold`, otherwise we set it to
+     * [mFoldMaxHeight]. We initialize [Float] variable `val translatedDistanceFoldSquared` to
+     * `translatedDistancePerFold` times `translatedDistancePerFold`, and use it to calculate the
+     * depth of the fold into the screen [Float] variable `val depth` by applying the pythagorean
+     * theorem. If [Boolean] field [mIsHorizontal] is `true` this is the square root of [mFoldDrawWidth]
+     * times [mFoldDrawWidth] minus `translatedDistanceFoldSquared`, and if `false` it is the square
+     * root of [mFoldDrawHeight] times [mFoldDrawHeight] minus `translatedDistanceFoldSquared`.
      *
      * In order to introduce perspective into our drawing we calculate `float scaleFactor` to be
      * DEPTH_CONSTANT (1500) divided by DEPTH_CONSTANT times `depth`. We then declare the `float`
@@ -829,35 +816,54 @@ class FoldingLayout : ViewGroup {
         }
 
         /* If the fold factor is 1 than the folding view should not be seen
-         * and the canvas can be left completely empty. */if (mFoldFactor == 1f) {
+         * and the canvas can be left completely empty. */
+        if (mFoldFactor == 1f) {
             mShouldDraw = false
             return
         }
-        if (mFoldFactor == 0f && mPreviousFoldFactor > 0) {
+        if (mFoldFactor == 0f && mPreviousFoldFactor > 0f) {
             mFoldListener!!.onEndFold()
         }
-        if (mPreviousFoldFactor == 0f && mFoldFactor > 0) {
+        if (mPreviousFoldFactor == 0f && mFoldFactor > 0f) {
             mFoldListener!!.onStartFold()
         }
         mPreviousFoldFactor = mFoldFactor
 
         /* Reset all the transformation matrices back to identity before computing
-         * the new transformation */for (x in 0 until mNumberOfFolds) {
+         * the new transformation */
+        for (x in 0 until mNumberOfFolds) {
             mMatrix[x]!!.reset()
         }
-        val cTranslationFactor = 1 - mFoldFactor
-        val translatedDistance = if (mIsHorizontal) mOriginalWidth * cTranslationFactor else mOriginalHeight * cTranslationFactor
+        val cTranslationFactor: Float = 1f - mFoldFactor
+        val translatedDistance: Float = if (mIsHorizontal) {
+            mOriginalWidth * cTranslationFactor
+        } else {
+            mOriginalHeight * cTranslationFactor
+        }
         val translatedDistancePerFold = Math.round(translatedDistance / mNumberOfFolds).toFloat()
 
         /* For an odd number of folds, the rounding error may cause the
-         * translatedDistancePerFold to be greater than the max fold width or height. */mFoldDrawWidth = if (mFoldMaxWidth < translatedDistancePerFold) translatedDistancePerFold else mFoldMaxWidth
-        mFoldDrawHeight = if (mFoldMaxHeight < translatedDistancePerFold) translatedDistancePerFold else mFoldMaxHeight
-        val translatedDistanceFoldSquared = translatedDistancePerFold * translatedDistancePerFold
+         * translatedDistancePerFold to be greater than the max fold width or height. */
+        mFoldDrawWidth = if (mFoldMaxWidth < translatedDistancePerFold) {
+            translatedDistancePerFold
+        } else {
+            mFoldMaxWidth
+        }
+        mFoldDrawHeight = if (mFoldMaxHeight < translatedDistancePerFold) {
+            translatedDistancePerFold
+        } else {
+            mFoldMaxHeight
+        }
+        val translatedDistanceFoldSquared: Float = translatedDistancePerFold * translatedDistancePerFold
 
         /* Calculate the depth of the fold into the screen using pythagorean theorem. */
-        val depth = if (mIsHorizontal) Math.sqrt((mFoldDrawWidth * mFoldDrawWidth -
-            translatedDistanceFoldSquared).toDouble()).toFloat() else Math.sqrt((mFoldDrawHeight * mFoldDrawHeight -
-            translatedDistanceFoldSquared).toDouble()).toFloat()
+        val depth = if (mIsHorizontal) {
+            Math.sqrt((mFoldDrawWidth * mFoldDrawWidth -
+                translatedDistanceFoldSquared).toDouble()).toFloat()
+        } else {
+            Math.sqrt((mFoldDrawHeight * mFoldDrawHeight -
+                translatedDistanceFoldSquared).toDouble()).toFloat()
+        }
 
         /* The size of some object is always inversely proportional to the distance
         *  it is away from the viewpoint. The constant can be varied to to affect the
@@ -880,11 +886,18 @@ class FoldingLayout : ViewGroup {
         bottomScaledPoint = topScaledPoint + scaledHeight
         leftScaledPoint = (mFoldDrawWidth - scaledWidth) / 2.0f
         rightScaledPoint = leftScaledPoint + scaledWidth
-        val anchorPoint = if (mIsHorizontal) mAnchorFactor * mOriginalWidth else mAnchorFactor * mOriginalHeight
+        val anchorPoint = if (mIsHorizontal) {
+            mAnchorFactor * mOriginalWidth
+        } else {
+            mAnchorFactor * mOriginalHeight
+        }
 
         /* The fold along which the anchor point is located. */
-        val midFold = if (mIsHorizontal) anchorPoint / mFoldDrawWidth else anchorPoint /
-            mFoldDrawHeight
+        val midFold = if (mIsHorizontal) {
+            anchorPoint / mFoldDrawWidth
+        } else {
+            anchorPoint / mFoldDrawHeight
+        }
         mSrc[0] = 0f
         mSrc[1] = 0f
         mSrc[2] = 0f
@@ -894,11 +907,15 @@ class FoldingLayout : ViewGroup {
         mSrc[6] = mFoldDrawWidth
         mSrc[7] = mFoldDrawHeight
 
-        /* Computes the transformation matrix for each fold using the values calculated above. */for (x in 0 until mNumberOfFolds) {
+        /* Computes the transformation matrix for each fold using the values calculated above. */
+        for (x in 0 until mNumberOfFolds) {
             val isEven = x % 2 == 0
             if (mIsHorizontal) {
-                mDst[0] = if (anchorPoint > x * mFoldDrawWidth) anchorPoint + (x - midFold) *
-                    scaledWidth else anchorPoint - (midFold - x) * scaledWidth
+                mDst[0] = if (anchorPoint > x * mFoldDrawWidth) {
+                    anchorPoint + (x - midFold) * scaledWidth
+                } else {
+                    anchorPoint - (midFold - x) * scaledWidth
+                }
                 mDst[1] = if (isEven) 0f else topScaledPoint
                 mDst[2] = mDst[0]
                 mDst[3] = if (isEven) mFoldDrawHeight else bottomScaledPoint
@@ -930,14 +947,16 @@ class FoldingLayout : ViewGroup {
             }
 
             /* Pixel fractions are present for odd number of folds which need to be
-             * rounded off here.*/for (y in 0..7) {
+             * rounded off here.*/
+            for (y in 0..7) {
                 mDst[y] = Math.round(mDst[y]).toFloat()
             }
 
             /* If it so happens that any of the folds have reached a point where
             *  the width or height of that fold is 0, then nothing needs to be
             *  drawn onto the canvas because the view is essentially completely
-            *  folded.*/if (mIsHorizontal) {
+            *  folded.*/
+            if (mIsHorizontal) {
                 if (mDst[4] <= mDst[0] || mDst[6] <= mDst[2]) {
                     mShouldDraw = false
                     return
@@ -950,7 +969,13 @@ class FoldingLayout : ViewGroup {
             }
 
             /* Sets the shadow and bitmap transformation matrices.*/
-            mMatrix[x]!!.setPolyToPoly(mSrc, 0, mDst, 0, NUM_OF_POLY_POINTS / 2)
+            mMatrix[x]!!.setPolyToPoly(
+                mSrc,
+                0,
+                mDst,
+                0,
+                NUM_OF_POLY_POINTS / 2
+            )
         }
         /* The shadows on the folds are split into two parts: Solid shadows and gradients.
          * Every other fold has a solid shadow which overlays the whole fold. Similarly,
@@ -1043,7 +1068,8 @@ class FoldingLayout : ViewGroup {
             return
         }
         var src: Rect?
-        /* Draws the bitmaps and shadows on the canvas with the appropriate transformations. */for (x in 0 until mNumberOfFolds) {
+        /* Draws the bitmaps and shadows on the canvas with the appropriate transformations. */
+        for (x in 0 until mNumberOfFolds) {
             src = mFoldRectArray[x]
             /* The canvas is saved and restored for every individual fold*/canvas.save()
 
@@ -1071,7 +1097,8 @@ class FoldingLayout : ViewGroup {
                     canvas.translate(0f, src.top.toFloat())
                 }
             }
-            /* Draws the shadows corresponding to this specific fold. */if (x % 2 == 0) {
+            /* Draws the shadows corresponding to this specific fold. */
+            if (x % 2 == 0) {
                 canvas.drawRect(0f, 0f, mFoldDrawWidth, mFoldDrawHeight, mSolidShadow!!)
             } else {
                 canvas.drawRect(0f, 0f, mFoldDrawWidth, mFoldDrawHeight, mGradientShadow!!)
