@@ -43,6 +43,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
@@ -50,119 +51,115 @@ import android.widget.Spinner
 import java.io.IOException
 
 /**
- * This application creates  a paper like folding effect of some view.
- * The number of folds, orientation (vertical or horizontal) of the fold, and the
- * anchor point about which the view will fold can be set to achieve different
- * folding effects.
+ * This application creates  a paper like folding effect of some view. The number of folds,
+ * orientation (vertical or horizontal) of the fold, and the anchor point about which the view
+ * will fold can be set to achieve different folding effects.
  *
+ * Using bitmap and canvas scaling techniques, the [FoldingLayout] can be scaled so as to depict
+ * a paper-like folding effect. The addition of shadows on the separate folds adds a sense of
+ * realism to the visual effect.
  *
- * Using bitmap and canvas scaling techniques, the foldingLayout can be scaled so as
- * to depict a paper-like folding effect. The addition of shadows on the separate folds
- * adds a sense of realism to the visual effect.
- *
- *
- * This application shows folding of a TextureView containing a live camera feed,
- * as well as the folding of an ImageView with a static image. The TextureView experiences
- * jagged edges as a result of scaling operations on rectangles. The ImageView however
- * contains a 1 pixel transparent border around its contents which can be used to avoid
- * this unwanted artifact.
+ * This application shows folding of a [TextureView] containing a live camera feed, as well as the
+ * folding of an [ImageView] with a static image. The [TextureView] experiences jagged edges as a
+ * result of scaling operations on rectangles. The [ImageView] however contains a 1 pixel transparent
+ * border around its contents which can be used to avoid this unwanted artifact.
  */
 class FoldingLayoutActivity : Activity() {
     /**
      * Permissions we need to ask for.
      */
-    var permissions: Array<String> = arrayOf(
-        Manifest.permission.CAMERA)
+    var permissions: Array<String> = arrayOf(Manifest.permission.CAMERA)
 
     /**
-     * The instance of `FoldingLayout` in our layout with id R.id.fold_view
+     * The instance of [FoldingLayout] in our layout with id [R.id.fold_view]
      */
     private var mFoldLayout: FoldingLayout? = null
 
     /**
-     * The `SeekBar` in our layout with id R.id.anchor_seek_bar, used to move the anchor point
-     * of the `FoldingLayout`
+     * The [SeekBar] in our layout with id [R.id.anchor_seek_bar], used to move the anchor point
+     * of the [FoldingLayout].
      */
     private var mAnchorSeekBar: SeekBar? = null
 
     /**
-     * Orientation of our `FoldingLayout`, toggled by the menu item with id R.id.toggle_orientation
+     * Orientation of our [FoldingLayout], toggled by the menu item with id [R.id.toggle_orientation]
      * (labeled either "Horizontal" or "Vertical" depending on the current orientation).
      */
     private var mOrientation = FoldingLayout.Orientation.HORIZONTAL
 
     /**
-     * Used to set the fold factor of our `FoldingLayout` using "scrolling" of its view.
+     * Used to set the fold factor of our [FoldingLayout] using "scrolling" of its view.
      */
-    private var mTranslation = 0
+    private var mTranslation: Int = 0
 
     /**
-     * Number of folds that our `FoldingLayout` creates, set by the `Spinner` in our
-     * options menu whose id is R.id.num_of_folds
+     * Number of folds that our [FoldingLayout] creates, set by the [Spinner] in our
+     * options menu whose id is [R.id.num_of_folds]
      */
-    private var mNumberOfFolds = 2
+    private var mNumberOfFolds: Int = 2
 
     /**
-     * Top location or our `FoldingLayout` on the screen, set in our `onWindowFocusChanged`
-     * override by calling the `View.getLocationOnScreen` method of `mFoldLayout`.
+     * Top location or our [FoldingLayout] on the screen, set in our [onWindowFocusChanged]
+     * override by calling the [View.getLocationOnScreen] method of [mFoldLayout].
      */
-    private var mParentPositionY = -1
+    private var mParentPositionY: Int = -1
 
     /**
-     * Distance in pixels a touch can wander before we think the user is scrolling, set in `onCreate`
-     * by calling the `getScaledTouchSlop` method of our `ViewConfiguration` (which contains
-     * methods to access standard constants used in the UI for timeouts, sizes, and distances for our device).
+     * Distance in pixels a touch can wander before we think the user is scrolling, set in [onCreate]
+     * by calling the [ViewConfiguration.getScaledTouchSlop] method of our [ViewConfiguration] (which
+     * contains methods to access standard constants used in the UI for timeouts, sizes, and distances
+     * for our device).
      */
-    private var mTouchSlop = -1
+    private var mTouchSlop: Int = -1
 
     /**
-     * Anchor factor, set by the `SeekBar mAnchorSeekBar` to a value between 0 and 1, used
-     * to locate the anchor point of the `FoldingLayout`
+     * Anchor factor, set by the [SeekBar] field [mAnchorSeekBar] to a value between 0f and 1f, used
+     * to locate the anchor point of the [FoldingLayout]
      */
-    private var mAnchorFactor = 0f
+    private var mAnchorFactor: Float = 0f
 
     /**
-     * A flag to indicate that the our `onItemSelected` override for the spinner with id
-     * R.id.num_of_folds has been called once already (during its creation) and all further calls
-     * are in response to user input.
+     * A flag to indicate that our [OnItemSelectedListener.onItemSelected] override for the spinner
+     * with id [R.id.num_of_folds] has been called once already (during its creation) and all further
+     * calls are in response to user input.
      */
-    private var mDidLoadSpinner = true
+    private var mDidLoadSpinner: Boolean = true
 
     /**
      * Flag to indicate that we are not in the middle of reacting to the user scrolling our view.
      */
-    private var mDidNotStartScroll = true
+    private var mDidNotStartScroll: Boolean = true
 
     /**
      * Flag to indicate that we are folding a live camera feed instead of a still image, toggled by
-     * the `CheckBox` with id R.id.camera_feed ("Camera Feed") in our options menu
+     * the [CheckBox] with id [R.id.camera_feed] ("Camera Feed") in our options menu
      */
-    private var mIsCameraFeed = false
+    private var mIsCameraFeed: Boolean = false
 
     /**
-     * Flag to indicate that our `FoldingLayout` should use sepia mode (use a `Paint`
-     * with a saturation value of 0, mapping colors to gray-scale) for the folds while it is folding,
-     * toggled by the checkbox with id R.id.sepia ("Sepia Off") in our options menu.
+     * Flag to indicate that our [FoldingLayout] should use sepia mode (use a [Paint] with a
+     * saturation value of 0, mapping colors to gray-scale) for the folds while it is folding,
+     * toggled by the checkbox with id [R.id.sepia] ("Sepia Off") in our options menu.
      */
-    private var mIsSepiaOn = true
+    private var mIsSepiaOn: Boolean = true
 
     /**
-     * The `GestureDetector` we create to interpret scrolling gestures using an instance of our
-     * class `ScrollGestureDetector`.
+     * The [GestureDetector] we create to interpret scrolling gestures using an instance of our
+     * class [ScrollGestureDetector].
      */
     private var mScrollGestureDetector: GestureDetector? = null
 
     /**
-     * The `ItemSelectedListener` (subclass of `OnItemSelectedListener`) we use to react
-     * to items selected in the `Spinner` with id R.id.num_of_folds in our options menu (used
-     * to select the number of folds to use when folding our `FoldingLayout`).
+     * The [ItemSelectedListener] (subclass of [OnItemSelectedListener]) we use to react to items
+     * selected in the [Spinner] with id [R.id.num_of_folds] in our options menu (used to select
+     * the number of folds to use when folding our [FoldingLayout]).
      */
     private var mItemSelectedListener: ItemSelectedListener? = null
 
     /**
-     * The camera instance we use as the content of our `TextureView mTextureView` when the
-     * camera source is selected by the `CheckBox` with id R.id.camera_feed ("Camera Feed")
-     * in our options menu is selected.
+     * The camera instance we use as the content of our [TextureView] field [mTextureView] when the
+     * camera source is selected by checking the [CheckBox] with id [R.id.camera_feed] ("Camera Feed")
+     * in our options menu.
      */
     private var mCamera: Camera? = null
 
@@ -172,18 +169,18 @@ class FoldingLayoutActivity : Activity() {
     private var mTextureView: TextureView? = null
 
     /**
-     * The `ImageView` that holds our still image, the jpg with resource id R.drawable.image.
+     * The [ImageView] that holds our still image, the jpg with resource id [R.drawable.image].
      */
     private var mImageView: ImageView? = null
 
     /**
-     * `Paint` whose saturation is set to 0 (gray scale for all colors), used while the view
-     * is folding if the `CheckBox` with id R.id.sepia ("Sepia Off") is not checked.
+     * [Paint] whose saturation is set to 0 (gray scale for all colors), used while the view is
+     * folding if the [CheckBox] with id [R.id.sepia] ("Sepia Off") is not checked.
      */
     private var mSepiaPaint: Paint? = null
 
     /**
-     * Default `Paint` used while the view is folding if the `CheckBox` with id R.id.sepia
+     * Default [Paint] used while the view is folding if the [CheckBox] with id [R.id.sepia]
      * ("Sepia Off") is checked.
      */
     private var mDefaultPaint: Paint? = null

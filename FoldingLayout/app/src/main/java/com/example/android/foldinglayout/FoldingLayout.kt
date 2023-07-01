@@ -657,156 +657,127 @@ class FoldingLayout : ViewGroup {
      * times [mFoldDrawWidth] minus `translatedDistanceFoldSquared`, and if `false` it is the square
      * root of [mFoldDrawHeight] times [mFoldDrawHeight] minus `translatedDistanceFoldSquared`.
      *
-     * In order to introduce perspective into our drawing we calculate `float scaleFactor` to be
-     * DEPTH_CONSTANT (1500) divided by DEPTH_CONSTANT times `depth`. We then declare the `float`
-     * variables `scaledWidth`, `scaledHeight`, `bottomScaledPoint`, `topScaledPoint`,
-     * `rightScaledPoint` and `leftScaledPoint`. If `mIsHorizontal` is true we set
-     * `scaledWidth` to `mFoldDrawWidth` times `cTranslationFactor`, and `scaledHeight`
-     * to `mFoldDrawHeight` times `scaleFactor`, and if false we set `scaledWidth` to
-     * `mFoldDrawWidth` times `scaleFactor`, and `scaledHeight` to `mFoldDrawHeight`
-     * times `cTranslationFactor`.
+     * In order to introduce perspective into our drawing we calculate [Float] variable
+     * `val scaleFactor` to be [DEPTH_CONSTANT] (1500) divided by [DEPTH_CONSTANT] plus `depth`.
+     * We then declare the `[Float] variables `val scaledWidth`, `val scaledHeight`,
+     * `val bottomScaledPoint`, `val topScaledPoint`, `val rightScaledPoint` and
+     * `val leftScaledPoint`. If [Boolean] flag field [mIsHorizontal] is `true` we set
+     * `scaledWidth` to [Float] field [mFoldDrawWidth] times `cTranslationFactor`, and
+     * `scaledHeight` to [Float] field [mFoldDrawHeight] times `scaleFactor`, and if `false`
+     * we set `scaledWidth` to [Float] field [mFoldDrawWidth] times `scaleFactor`, and
+     * `scaledHeight` to [Float] field [mFoldDrawHeight] times `cTranslationFactor`.
      *
-     *
-     * We then set `topScaledPoint` to `mFoldDrawHeight` minus `scaledHeight` divided
+     * We then set `topScaledPoint` to [Float] field [mFoldDrawHeight] minus `scaledHeight` divided
      * by 2.0, `bottomScaledPoint` to `topScaledPoint` times `scaledHeight`, `leftScaledPoint`
-     * to `mFoldDrawWidth` minus `scaledWidth` divided by 2.0, and `rightScaledPoint`
+     * to [Float] field [mFoldDrawWidth] minus `scaledWidth` divided by 2.0f, and `rightScaledPoint`
      * to `leftScaledPoint` plus `scaledWidth`.
      *
+     * If [Boolean] flag field [mIsHorizontal] is `true` then we initialize [Float] variable
+     * `val anchorPoint` to be [Float] field [mAnchorFactor] times [Float] field [mOriginalWidth],
+     * if `false` to [Float] field [mAnchorFactor] times [Float] field [mOriginalHeight]. If
+     * [Boolean] flag field [mIsHorizontal] is `true` then we initialize [Float] variable
+     * `val midFold` to `anchorPoint` divided by [Float] field [mFoldDrawWidth], if `false` to
+     * `anchorPoint` divided by [Float] field [mFoldDrawHeight] (this is the fold along which the
+     * anchor point is located).
      *
-     * If `mIsHorizontal` is true then we initialize `float anchorPoint` to be `mAnchorFactor`
-     * times `mOriginalWidth`, if false to `mAnchorFactor` times `mOriginalHeight`.
-     * If `mIsHorizontal` is true then we initialize `float midFold` to `anchorPoint`
-     * divided by `mFoldDrawWidth`, if false to `anchorPoint` divided by `mFoldDrawHeight`
-     * (this is the fold along which the anchor point is located).
+     * We now initialize the source polygon for our `setPolyToPoly` transformation, [FloatArray]
+     * field [mSrc]:
      *
+     *  * left top corner (0, 0)
      *
-     * We now initialize the source polygon for our `setPolyToPoly` transformation `float[] mSrc`:
+     *  * left bottom corner (0, [mFoldDrawHeight])
      *
-     *  *
-     * left top corner (0, 0)
+     *  * right top corner ([mFoldDrawWidth], 0)
      *
-     *  *
-     * left bottom corner (0, `mFoldDrawHeight`)
+     *  * left bottom corner ([mFoldDrawWidth], [])
      *
-     *  *
-     * right top corner (`mFoldDrawWidth`, 0)
+     * We then compute the transformation matrix for each fold by looping over [Int] variable
+     * `x` for all the [mNumberOfFolds] folds:
      *
-     *  *
-     * left bottom corner (`mFoldDrawWidth`, `mFoldDrawHeight`)
+     *  * We initialize [Boolean] variable `val isEven` by testing whether `x` is even, then branch
+     * on the value of [Boolean] flag field [mIsHorizontal]:
      *
+     *  * true:
      *
-     * We then compute the transformation matrix for each fold by looping over `int x` for all
-     * the `mNumberOfFolds` folds:
+     * `mDst[0]`: if `anchorPoint` is greater than `x` times [Float] field [mFoldDrawWidth] (the
+     * anchor point is to the right of our fold) we set `mDst[0]` to `anchorPoint` plus `x` minus
+     * `midFold` times `scaledWidth`, if it is to the left of our fold we set it to `anchorPoint`
+     * minus the quantity `midFold` minus `x` times `scaledWidth`.
      *
-     *  *
-     * We initialize `boolean isEven` by testing whether `x` is even, then branch
-     * on the value of `mIsHorizontal`:
-     *
-     *  *
-     * true:
-     *
-     *
-     * `mDst[0]`: if `anchorPoint` is greater than `x` times `mFoldDrawWidth`
-     * (the anchor point is to the right of our fold) we set `mDst[0]` to `anchorPoint`
-     * plus `x` minus `midFold` times `scaledWidth`, if it is to the left of our
-     * fold we set it to `anchorPoint` minus the quantity `midFold` minus `x`
-     * times `scaledWidth`.
-     *
-     *
-     * `mDst[1]`: if `isEven` is true we set it to 0, if odd we set it to
-     * `topScaledPoint`
-     *
+     * `mDst[1]`: if `isEven` is `true` we set it to 0f, if odd we set it to `topScaledPoint`
      *
      * `mDst[2]`: we set to `mDst[0]`
      *
+     * `mDst[3]`: if `isEven` is `true` we set to [Float] field [mFoldDrawHeight] if odd we set to
+     * `bottomScaledPoint`
      *
-     * `mDst[3]`: if `isEven` is true we set to `mFoldDrawHeight`
-     * if odd we set to `bottomScaledPoint`
+     * `mDst[4]`: if `anchorPoint` is to the left of the end or our fold we set to `anchorPoint`
+     * plus the quantity `x` plus 1 minus `midFold` times `scaledWidth`, if to the right we set to
+     * `anchorPoint` minus the quantity `midFold` minus `x` minus 1 times `scaledWidth`.
      *
-     *
-     * `mDst[4]`: if `anchorPoint` is to the left of the end or our fold we
-     * set to `anchorPoint` plus the quantity `x` plus 1 minus `midFold`
-     * times `scaledWidth`, if to the right we set to `anchorPoint` minus the
-     * quantity `midFold` minus `x` minus 1 times `scaledWidth`.
-     *
-     *
-     * `mDst[5]`: if `isEven` is true we set `topScaledPoint`, to 0 if it is odd.
-     *
+     * `mDst[5]`: if `isEven` is `true` we set `topScaledPoint`, to 0f if it is odd.
      *
      * `mDst[6]`: we set to `mDst[4]`
      *
+     * `mDst[7]`: if `isEven` is `true` we set to `bottomScaledPoint`, and to [Float] field
+     * [mFoldDrawHeight] if odd.
      *
-     * `mDst[7]`: if `isEven` is true we set to `bottomScaledPoint`, and to
-     * `mFoldDrawHeight` if odd.
+     *  * `false`: (ie it's VERTICAL)
      *
-     *  *
-     * false: (ie it's VERTICAL)
+     * `mDst[0]`: if `isEven` is `true` we set to 0, if odd we set to `leftScaledPoint`
      *
-     *
-     * `mDst[0]`: if `isEven` is true we set to 0, if odd we set to`leftScaledPoint`
-     *
-     *
-     * `mDst[1]`: if `anchorPoint` is greater than `x` times `mFoldDrawHeight`
+     * `mDst[1]`: if `anchorPoint` is greater than `x` times [Float] field [mFoldDrawHeight]
      * (we are above the anchor point) we set to `anchorPoint` plus the quantity `x`  minus
-     * `midFold` times `scaledHeight`, and to `anchorPoint` minus the quantity `x` minus
-     * the quantity `midFold` minus `x` times `scaledHeight`.
+     * `midFold` times `scaledHeight`, and if below the anchor point to `anchorPoint` minus
+     * the quantity `x` minus the quantity `midFold` minus `x` times `scaledHeight`.
      *
+     * `mDst[2]`: if `isEven` is `true` we set to `leftScaledPoint`, to 0 if odd.
      *
-     * `mDst[2]`: if `isEven` is true we set to `leftScaledPoint`, to 0 if odd.
-     *
-     *
-     * `mDst[3]`: if `anchorPoint` is greater than `x` plus 1 times `mFoldDrawHeight`
-     * (the anchor point is below the bottom of our fold) we set to `anchorPoint` plus the quantity
-     * `x` plus 1 minus `midFold` times `scaledHeight`, above the bottom to `anchorPoint`
+     * `mDst[3]`: if `anchorPoint` is greater than `x` plus 1 times `mFoldDrawHeight` (the anchor
+     * point is below the bottom of our fold) we set to `anchorPoint` plus the quantity `x` plus 1
+     * minus `midFold` times `scaledHeight`, and if above the bottom of our fold to `anchorPoint`
      * minus the quantity `midFold` minus `x` minus 1 times `scaledHeight`
      *
-     *
-     * `mDst[4]`: if `isEven` is true we set to `mFoldDrawWidth`, to `rightScaledPoint` if odd.
-     *
+     * `mDst[4]`: if `isEven` is `true` we set to [Float] field [mFoldDrawWidth], and to
+     * `rightScaledPoint` if odd.
      *
      * `mDst[5]`: we set to `mDst[1]`
      *
-     *
-     * `mDst[6]`: if `isEven` is true we set to `rightScaledPoint`, to `mFoldDrawWidth` if odd.
-     *
+     * `mDst[6]`: if `isEven` is `true` we set to `rightScaledPoint`, to [Float] field
+     * [mFoldDrawWidth] if odd.
      *
      * `mDst[7]`: we set to `mDst[3]`
      *
+     *  * Since pixel fractions are present for odd number of folds, we loop through all the [Float]
+     *  in [FloatArray] field [mDst] rounding them off.
      *
+     *  * If any of the folds have reached a point where the width or height of that fold is 0f,
+     *  then nothing needs to be drawn onto the canvas because the view is essentially completely
+     *  folded, so for HORIZONTAL orientation if `mDst[4]` is less than or equal to `mDst[0]` or
+     *  `mDst[6]` is less than or equal to `mDst[2]` we set [Boolean] flag field [mShouldDraw] to
+     *  `false` and return. Similarly for VERTICAL orientation if `mDst[3]` is less than or equal to
+     *  `mDst[1]` or `mDst[7]` is less than or equal to `mDst[5]` we do likewise.
      *
-     *  *
-     * Since pixel fractions are present for odd number of folds, we loop through all the `float[] mDst`
-     * rounding them off.
+     *  * We now set the transformation matrix of fold `x` (the `x` entry in [Array] of [Matrix]
+     *  field [mMatrix]) to a poly to poly matrix mapping [FloatArray] field [mSrc] to [FloatArray]
+     *  field [mDst].
      *
-     *  *
-     * If any of the folds have reached a point where the width or height of that fold is 0, then nothing needs to be
-     * drawn onto the canvas because the view is essentially completely folded, so for HORIZONTAL orientation is
-     * `mDst[4]` is less than or equal to `mDst[0]` or `mDst[6]` is less than or equal to `mDst[2]`
-     * we set `mShouldDraw` to false and return. Similarly for VERTICAL orientation if `mDst[3]` is less than
-     * or equal to `mDst[1]`  or `mDst[7]` is less than or equal to `mDst[5]` we do likewise.
+     *  * and now we loop back for the next `x + 1` fold.
      *
-     *  *
-     * We now set the transformation matrix of fold `x` (`mMatrix x`) to a poly to poly matrix mapping
-     * `float[] mSrc` to `float[] mDst`.
+     * We next initialize the [Paint] that we use for the shadows, initialize [Int] variable
+     * `val alpha` to the current fold factor [Float] field [mFoldFactor] times 255 times
+     * [SHADING_ALPHA], and we then set the color of [Paint] field [mSolidShadow] to black with
+     * an alpha of `alpha`. We now branch on the value of [Boolean] flag field [mIsHorizontal]:
      *
+     *  * `true`: (HORIZONTAL folding orientation) we set [Matrix] field [mShadowGradientMatrix] to
+     *  scale X by [Float] field [mFoldDrawWidth] and Y by 1f, then set the local matrix of the
+     *  shader [LinearGradient] field [mShadowLinearGradient] to it.
      *
-     * We now initialize the `Paint` that we use for the shadows, initialize `int alpha` to
-     * the current fold factor `mFoldFactor` times 255 times `SHADING_ALPHA`, and we then
-     * set the color of `Paint mSolidShadow` to black with an alpha of `alpha`. We now branch
-     * on the value of `mIsHorizontal`:
+     *  * `false`: (VERTICAL folding orientation) we set [Matrix] field [mShadowGradientMatrix] to
+     *  scale X by 1 and Y by [Float] field [mFoldDrawHeight], then set the local matrix of the
+     *  shader [LinearGradient] field [mShadowLinearGradient] to it.
      *
-     *  *
-     * true: (HORIZONTAL folding orientation) we set `Matrix mShadowGradientMatrix` to scale
-     * X by `mFoldDrawWidth` and Y by 1, then set the local matrix of the shader
-     * `LinearGradient mShadowLinearGradient` to it.
-     *
-     *  *
-     * false: (VERTICAL folding orientation) we set `Matrix mShadowGradientMatrix` to scale
-     * X by 1 and Y by `mFoldDrawHeight`, then set the local matrix of the shader
-     * `LinearGradient mShadowLinearGradient` to it.
-     *
-     *
-     * We then set the shader of `Paint mGradientShadow` to `mShadowLinearGradient` and set
+     * We then set the shader of [Paint] field [mGradientShadow] to [mShadowLinearGradient] and set
      * its alpha to `alpha`.
      */
     private fun calculateMatrices() {
@@ -866,7 +837,7 @@ class FoldingLayout : ViewGroup {
         }
 
         /* The size of some object is always inversely proportional to the distance
-        *  it is away from the viewpoint. The constant can be varied to to affect the
+        *  it is away from the viewpoint. The constant can be varied to affect the
         *  amount of perspective. */
         val scaleFactor = DEPTH_CONSTANT / (DEPTH_CONSTANT + depth)
         val scaledWidth: Float
@@ -886,14 +857,14 @@ class FoldingLayout : ViewGroup {
         bottomScaledPoint = topScaledPoint + scaledHeight
         leftScaledPoint = (mFoldDrawWidth - scaledWidth) / 2.0f
         rightScaledPoint = leftScaledPoint + scaledWidth
-        val anchorPoint = if (mIsHorizontal) {
+        val anchorPoint: Float = if (mIsHorizontal) {
             mAnchorFactor * mOriginalWidth
         } else {
             mAnchorFactor * mOriginalHeight
         }
 
         /* The fold along which the anchor point is located. */
-        val midFold = if (mIsHorizontal) {
+        val midFold: Float = if (mIsHorizontal) {
             anchorPoint / mFoldDrawWidth
         } else {
             anchorPoint / mFoldDrawHeight
@@ -909,7 +880,7 @@ class FoldingLayout : ViewGroup {
 
         /* Computes the transformation matrix for each fold using the values calculated above. */
         for (x in 0 until mNumberOfFolds) {
-            val isEven = x % 2 == 0
+            val isEven: Boolean = x % 2 == 0
             if (mIsHorizontal) {
                 mDst[0] = if (anchorPoint > x * mFoldDrawWidth) {
                     anchorPoint + (x - midFold) * scaledWidth
@@ -984,7 +955,7 @@ class FoldingLayout : ViewGroup {
          * shadow overlaying the whole fold.*/
 
         /* Solid shadow paint object. */
-        val alpha = (mFoldFactor * 255 * SHADING_ALPHA).toInt()
+        val alpha: Int = (mFoldFactor * 255 * SHADING_ALPHA).toInt()
         mSolidShadow!!.color = Color.argb(alpha, 0, 0, 0)
         if (mIsHorizontal) {
             mShadowGradientMatrix!!.setScale(mFoldDrawWidth, 1f)
@@ -1000,61 +971,48 @@ class FoldingLayout : ViewGroup {
     /**
      * Called by draw to draw the child views. This may be overridden by derived classes to gain
      * control just before its children are drawn (but after its own view has been drawn). If our
-     * method `prepareFold` has not been called (`mIsFoldPrepared` is false) or our
-     * field `mFoldFactor` is 0 (we are totally unfolded) we just call our super's implementation
-     * of `dispatchDraw` and return. If our `mShouldDraw` is false we return with even
-     * passing the call on to our super.
+     * method [prepareFold] has not been called ([Boolean] flag field [mIsFoldPrepared] is `false`)
+     * or our [Float] field [mFoldFactor] is 0f (we are totally unfolded) we just call our super's
+     * implementation of `dispatchDraw` and return. If our [Boolean] flag field [mShouldDraw] is
+     * `false` we return without even passing the call on to our super.
      *
+     * Otherwise we declare [Rect] variable `var src` then loop over [Int] `var x` for all of [Int]
+     * field [mNumberOfFolds] folds:
      *
-     * Otherwise we declare `Rect src` then loop over `int x` for all `mNumberOfFolds`
-     * folds:
+     *  * We set `src` to entry `x` in [Array] of [Rect] field [mFoldRectArray] and have [Canvas]
+     *  parameter [canvas] save its current matrix and clip onto a private stack. We pre-concatenate
+     *  the transformation matrix of fold `x` (the `x` entry in [Array] of [Matrix] field [mMatrix])
+     *  onto the current matrix of [canvas]. (We then do some nonsense for JELLY_BEAN_MR2 which I
+     *  will skip). We set the clipping rectangle of [canvas] to a rectangle whose left top is at
+     *  (0,0) and whose right bottom is at the `right` field of `src` minus its `left` field, and
+     *  `bottom` field minus the `top` field (the width and height of our source [Rect] in other
+     *  words).
      *
-     *  *
-     * We set `src` to `mFoldRectArray at x` and have `canvas` save its current
-     * matrix and clip onto a private stack. We pre-concatenate the transformation matrix of fold
-     * `x` (`mMatrix at x`) onto the current matrix of `canvas`. (We then do some
-     * nonsense for JELLY_BEAN_MR2 which I will skip). We set the clipping rectangle of `canvas`
-     * to a rectangle whose left top is at (0,0) and whose right bottom is at the `right`
-     * field of `src` minus its `left` field, and `bottom` field minus the
-     * `top` field (the width and height of our source `Rect` in other words).
+     *  * If [Boolean] flag field [mIsHorizontal] is `true` we translate [canvas] by minus the value
+     *  of the `left` field of `src` in the X direction, if our orientation is VERTICAL we translate
+     *  [canvas] by minus the value of the `top` field of `src` in the Y direction.
      *
-     *  *
-     * If `mIsHorizontal` is true we translate `canvas` by minus the value of the
-     * `left` field of `src` in the X direction, if our orientation is VERTICAL we
-     * translate `canvas` by minus the value of the `top` field of `src` in
-     * the Y direction.
+     *  * We call our super's implementation of `dispatchDraw`.
      *
-     *  *
-     * We call our super's implementation of `dispatchDraw`.
+     *  * If [Boolean] flag field [mIsHorizontal] is `true` we translate [canvas] by the value of
+     *  the `left` field of `src` in the X direction, if our orientation is VERTICAL we translate
+     *  [canvas] by the value of the `top` field of `src` in the Y direction (back to where it
+     *  started?)
      *
-     *  *
-     * If `mIsHorizontal` is true we translate `canvas` by the value of the
-     * `left` field of `src` in the X direction, if our orientation is VERTICAL we
-     * translate `canvas` by the value of the `top` field of `src` in
-     * the Y direction (back to where it started?)
+     *  * We now branch on whether `x` is even or odd:
      *
-     *  *
-     * We now branch on whether `x` is even or odd:
+     *  * even: We have [canvas] draw a rectangle whose left top corner is at (0,0) and whose right
+     *  bottom corner is at ([mFoldDrawWidth], [mFoldDrawHeight]) using [Paint] field [mSolidShadow]
+     *  as its [Paint].
      *
-     *  *
-     * even: We have `canvas` draw a rectangle whose left top corner is at
-     * (0,0) and whose right bottom corner is at (`mFoldDrawWidth`,`mFoldDrawHeight`)
-     * using `Paint mSolidShadow` as its paint
+     *  * odd: We have [canvas] draw a rectangle whose left top corner is at (0,0) and whose right
+     *  bottom corner is at ([mFoldDrawWidth], [mFoldDrawHeight]) using [Paint] field [mGradientShadow]
+     *  as its [Paint].
      *
-     *  *
-     * odd: We have `canvas` draw a rectangle whose left top corner is at
-     * (0,0) and whose right bottom corner is at (`mFoldDrawWidth`,`mFoldDrawHeight`)
-     * using `Paint mGradientShadow` as its paint
+     *  * We have [canvas] remove all modifications to the matrix/clip state since the last save
+     *  call, and loop around to process the next fold.
      *
-     *
-     *
-     *  *
-     * We have `canvas` remove all modifications to the matrix/clip state since the last
-     * save call, and loop around to process the next fold.
-     *
-     *
-     *
-     * @param canvas the canvas on which to draw the view
+     * @param canvas the [Canvas] on which to draw the view
      */
     override fun dispatchDraw(canvas: Canvas) {
         /* If prepareFold has not been called or if preparation has not completed yet,
@@ -1109,8 +1067,8 @@ class FoldingLayout : ViewGroup {
 
     companion object {
         /**
-         * detail message for the NumberOfFoldingLayoutChildrenException that our `throwCustomException`
-         * throws if there are more than 1 child view added to us.
+         * detail message for the NumberOfFoldingLayoutChildrenException that our method
+         * [throwCustomException] throws if there are more than 1 child view added to us.
          */
         private const val FOLDING_VIEW_EXCEPTION_MESSAGE = "Folding Layout can only have 1 child at most"
 
@@ -1120,8 +1078,9 @@ class FoldingLayout : ViewGroup {
         private const val SHADING_ALPHA = 0.8f
 
         /**
-         * Used for the x-coordinate for the end of the gradient line of the shadow gradient (for HORIZONTAL
-         * folding) or the y-coordinate for the end of the gradient line of the shadow gradient (for VERTICAL),
+         * Used for the x-coordinate for the end of the gradient line of the shadow gradient (for
+         * HORIZONTAL folding) or the y-coordinate for the end of the gradient line of the shadow
+         * gradient (for VERTICAL),
          */
         private const val SHADING_FACTOR = 0.5f
 
