@@ -25,6 +25,7 @@ import android.app.Activity
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.SurfaceTexture
 import android.hardware.Camera
@@ -187,39 +188,43 @@ class FoldingLayoutActivity : Activity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_fold. We initialize our field
-     * `ImageView mImageView` by finding the view with id R.id.image_view, set its padding to
-     * ANTIALIAS_PADDING on all sides, set its scale type (how the image should be resized or moved
-     * to match the size of the `ImageView`) to FIT_XY (Scale the image using Matrix.ScaleToFit.FILL
-     * (scale in X and Y independently, so that src matches dst exactly)), and then set its content to
-     * the jpg with resource id R.drawable.image. We then initialize our field `TextureView mTextureView`
-     * with a new instance, and set its `SurfaceTextureListener` to our field `mSurfaceTextureListener`
-     * (its `onSurfaceTextureAvailable` override opens the `Camera` and sets the `SurfaceTexture`
-     * to be used for live preview of the camera. We then initialize our field `SeekBar mAnchorSeekBar`
-     * by finding the view with id R.id.anchor_seek_bar. We initialize our field `FoldingLayout mFoldLayout`
-     * by finding the view with id R.id.fold_view, set its background color to BLACK, and set its
-     * `OnFoldListener` to our field `mOnFoldListener`. We initialize our field `mTouchSlop`
-     * to the standard constant for the UI on this device for the distance in pixels a touch can wander
-     * before we think the user is scrolling. We set the `OnSeekBarChangeListener` or our field
-     * `SeekBar mAnchorSeekBar` to our field `mSeekBarChangeListener` (its `onStopTrackingTouch`
-     * override sets the anchor factor (relative location of the anchor point for the folding) of our
-     * field `FoldingLayout mFoldLayout` to its current progress divided by 100). We initialize
-     * our fields `Paint mDefaultPaint` and `Paint mSepiaPaint` with new instances. We then
-     * initialize our variables `ColorMatrix m1` and `ColorMatrix m2` with new instances.
-     * We set the saturation of `m1` to 0 (gray scale) and set `m2` scale RED by 1.0, GREEN
-     * by .95, BLUE by .82 and ALPHA by 1.0, then set `m1` to the concatenation of `m2` and
-     * `m1` (which will have the same effect as applying `m1` and then applying `m2`).
-     * We then set the color filter of `mSepiaPaint` to a `ColorMatrixColorFilter` created
-     * from `m1`
+     * then we set our content view to our layout file [R.layout.activity_fold]. We initialize our
+     * [ImageView] field [mImageView] by finding the view with id [R.id.image_view], set its padding
+     * to [ANTIALIAS_PADDING] on all sides, set its scale type (how the image should be resized or
+     * moved to match the size of the [ImageView]) to [ImageView.ScaleType.FIT_XY] (Scale the image
+     * using [Matrix.ScaleToFit.FILL] (scale in X and Y independently, so that src matches dst
+     * exactly)), and then set its content to the jpg with resource id [R.drawable.image]. We then
+     * initialize our [TextureView] field [mTextureView] with a new instance, and set its
+     * [SurfaceTextureListener] to our [SurfaceTextureListener] field [mSurfaceTextureListener]
+     * (its [SurfaceTextureListener.onSurfaceTextureAvailable] override opens the [Camera] and sets
+     * the [SurfaceTexture] to be used for live preview of the camera). We then initialize our
+     * [SeekBar] field [mAnchorSeekBar] by finding the view with id [R.id.anchor_seek_bar]. We
+     * initialize our [FoldingLayout] field [mFoldLayout] by finding the view with id [R.id.fold_view],
+     * set its background color to [Color.BLACK], and set its [OnFoldListener] to our [OnFoldListener]
+     * field [mOnFoldListener]. We initialize our [Int] field [mTouchSlop] to the standard constant
+     * for the UI on this device for the distance in pixels a touch can wander before we think the
+     * user is scrolling. We set the [OnSeekBarChangeListener] of our [SeekBar] field [mAnchorSeekBar]
+     * to our [OnSeekBarChangeListener] field [mSeekBarChangeListener] (its
+     * [OnSeekBarChangeListener.onStopTrackingTouch] override sets the anchor factor (relative
+     * location of the anchor point for the folding) of our [FoldingLayout] field [mFoldLayout] to
+     * its current progress divided by 100). We initialize our [Paint] fields [mDefaultPaint] and
+     * [mSepiaPaint] with new instances. We then initialize our [ColorMatrix] variables `var m1`
+     * and `val m2` with new instances. We set the saturation of `m1` to 0 (gray scale) and set
+     * `m2` to scale RED by 1.0, GREEN by .95, BLUE by .82 and ALPHA by 1.0, then set `m1` to the
+     * concatenation of `m2` and `m1` (which will have the same effect as applying `m1` and then
+     * applying `m2`). We then set the color filter of [Paint] field [mSepiaPaint] to a
+     * [ColorMatrixColorFilter] created from `m1`
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fold)
         mImageView = findViewById(R.id.image_view)
-        mImageView!!.setPadding(ANTIALIAS_PADDING, ANTIALIAS_PADDING, ANTIALIAS_PADDING,
-            ANTIALIAS_PADDING)
+        mImageView!!.setPadding(
+            ANTIALIAS_PADDING, ANTIALIAS_PADDING,
+            ANTIALIAS_PADDING, ANTIALIAS_PADDING
+        )
         mImageView!!.scaleType = ImageView.ScaleType.FIT_XY
         mImageView!!.setImageDrawable(resources.getDrawable(R.drawable.image))
         mTextureView = TextureView(this)
@@ -245,7 +250,7 @@ class FoldingLayoutActivity : Activity() {
     /**
      * Called when the main window associated with the activity has been attached to the window
      * manager. First we call our super's implementation of `onAttachedToWindow`, then we
-     * ask the user for the required permissions by calling `requestPermissions`.
+     * ask the user for the required permissions by calling [requestPermissions].
      */
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -253,20 +258,20 @@ class FoldingLayoutActivity : Activity() {
     }
 
     /**
-     * This listener, along with the setSepiaLayer method below, show a possible use case
-     * of the OnFoldListener provided with the FoldingLayout. This is a fun extra addition
+     * This listener, along with the [setSepiaLayer] method below, show a possible use case
+     * of the [OnFoldListener] provided with the [FoldingLayout]. This is a fun extra addition
      * to the demo showing what kind of visual effects can be applied to the child of the
-     * FoldingLayout by setting the layer type to hardware. With a hardware layer type
+     * [FoldingLayout] by setting the layer type to hardware. With a hardware layer type
      * applied to the child, a paint object can also be applied to the same layer. Using
      * the concatenation of two different color matrices (above), a color filter was created
      * which simulates a sepia effect on the layer.
      */
     private val mOnFoldListener: OnFoldListener = object : OnFoldListener {
         /**
-         * Called when the `FoldingLayout` we are a `OnFoldListener` for is starting its
-         * folding. If our flag `mIsSepiaOn` is true we call our `setSepiaLayer` method
-         * to place the child of our `FoldingLayout` into "sepia" mode, ie. using hardware layer
-         * with the sepia colored `Paint mSepiaPaint` as its paint.
+         * Called when the [FoldingLayout] we are a [OnFoldListener] for is starting its folding.
+         * If our [Boolean] flag field [mIsSepiaOn] is `true` we call our [setSepiaLayer] method
+         * to place the child of our [FoldingLayout] into "sepia" mode, ie. using hardware layer
+         * with the sepia colored [Paint] field [mSepiaPaint] as its paint.
          */
         override fun onStartFold() {
             if (mIsSepiaOn) {
@@ -275,16 +280,34 @@ class FoldingLayoutActivity : Activity() {
         }
 
         /**
-         * Called when the `FoldingLayout` we are a `OnFoldListener` for is ending its
-         * folding. We call our `setSepiaLayer` method to place the child of our
-         * `FoldingLayout` into "non-sepia" mode (whether it was that way or not) by setting
-         * the paint of its hardware layer to `Paint mDefaultPaint`.
+         * Called when the [FoldingLayout] we are a [OnFoldListener] for is ending its folding. We
+         * call our [setSepiaLayer] method to place the child of our [FoldingLayout] into "non-sepia"
+         * mode (whether it was that way already or not) by setting the paint of its hardware layer
+         * to [Paint] field [mDefaultPaint].
          */
         override fun onEndFold() {
             setSepiaLayer(mFoldLayout!!.getChildAt(0), false)
         }
     }
 
+    /**
+     * Called to set the [Paint] of the the current layer of its [View] parameter [view] to the
+     * [Paint] selected by its [Boolean] parmameter [isSepiaLayerOn]. If [IS_JBMR2] is `true` we
+     * return without doing anything ([Build.VERSION_CODES.JELLY_BEAN_MR2] has a bug which makes
+     * our code not work correctly). Other wise we branch on the value of [isSepiaLayerOn]:
+     *
+     *  * `true`: We call the [View.setLayerType] method of [view] to set the type of layer backing
+     *  this view to [View.LAYER_TYPE_HARDWARE] (Indicates that the view has a hardware layer. A
+     *  hardware layer is backed by a hardware specific texture (generally Frame Buffer Objects or
+     *  FBO on OpenGL hardware) and causes the view to be rendered using Android's hardware rendering
+     *  pipeline, but only if hardware acceleration is turned on for the view hierarchy. When
+     *  hardware acceleration is turned off, hardware layers behave exactly as software layers.)
+     *  We then call the [View.setLayerPaint] method of [view] to update the Paint object used with
+     *  the current layer to be [Paint] field [mSepiaPaint].
+     *
+     *  * `false`: we call the [View.setLayerPaint] method of [view] to update the Paint object used
+     *  with the current layer to be [Paint] field [mDefaultPaint].
+     */
     private fun setSepiaLayer(view: View, isSepiaLayerOn: Boolean) {
         if (!IS_JBMR2) {
             if (isSepiaLayerOn) {
@@ -297,12 +320,12 @@ class FoldingLayoutActivity : Activity() {
     }
 
     /**
-     * Creates a SurfaceTextureListener in order to prepare a TextureView
+     * Creates a [SurfaceTextureListener] in order to prepare a [TextureView]
      * which displays a live, and continuously updated, feed from the Camera.
      */
     private val mSurfaceTextureListener: SurfaceTextureListener = object : SurfaceTextureListener {
         /**
-         * Invoked when a [TextureView]'s SurfaceTexture is ready for use. We initialize our field
+         * Invoked when a [TextureView]'s [SurfaceTexture] is ready for use. We initialize our field
          * `Camera mCamera` with the `Camera` object created by the method `Camera.open()`.
          * If `mCamera` is null and the `getNumberOfCameras` method of `Camera` tells us
          * that there are more than 1 camera we set `mCamera` to the `Camera` object created
