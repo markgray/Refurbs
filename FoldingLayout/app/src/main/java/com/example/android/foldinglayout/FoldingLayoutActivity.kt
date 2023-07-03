@@ -325,18 +325,18 @@ class FoldingLayoutActivity : Activity() {
      */
     private val mSurfaceTextureListener: SurfaceTextureListener = object : SurfaceTextureListener {
         /**
-         * Invoked when a [TextureView]'s [SurfaceTexture] is ready for use. We initialize our field
-         * `Camera mCamera` with the `Camera` object created by the method `Camera.open()`.
-         * If `mCamera` is null and the `getNumberOfCameras` method of `Camera` tells us
-         * that there are more than 1 camera we set `mCamera` to the `Camera` object created
-         * by the method `Camera.open` for the camera id CAMERA_FACING_FRONT. If `mCamera`
-         * is still null we return having done nothing. Then wrapped in a try block intended to catch
-         * IOException (in order to print a stack trace) we set the preview texture of `mCamera`
-         * to our parameter `surfaceTexture`, set its display orientation to 90 degrees (portrait),
-         * and finally we call its `startPreview` method to start capturing and drawing preview
-         * frames to the screen.
+         * Invoked when a [TextureView]'s [SurfaceTexture] is ready for use. We initialize our
+         * [Camera] field [mCamera] with the [Camera] object created by the method [Camera.open].
+         * If [mCamera] is `null` and the [Camera.getNumberOfCameras] method tells us that there
+         * are more than 1 camera we set [mCamera] to the [Camera] object created by the method
+         * [Camera.open] for the camera id [Camera.CameraInfo.CAMERA_FACING_FRONT]. If [mCamera]
+         * is still `null` we return having done nothing. Otherwise wrapped in a try block intended
+         * to catch [IOException] (in order to print a stack trace) we set the preview texture of
+         * [mCamera] to our [SurfaceTexture] parameter [surfaceTexture], set its display orientation
+         * to 90 degrees (portrait), and finally we call the [Camera.startPreview] method of [mCamera]
+         * to start capturing and drawing preview frames to the screen.
          *
-         * @param surfaceTexture The surface returned by [android.view.TextureView.getSurfaceTexture]
+         * @param surfaceTexture The surface returned by [TextureView.getSurfaceTexture]
          * @param i              The width of the surface
          * @param i2             The height of the surface
          */
@@ -358,10 +358,10 @@ class FoldingLayoutActivity : Activity() {
         }
 
         /**
-         * Invoked when the [SurfaceTexture]'s buffers size changed. We ignore this since
-         * `Camera` does all the work for us.
+         * Invoked when the [SurfaceTexture]'s buffers size changed. We ignore this since [Camera]
+         * does all the work for us.
          *
-         * @param surfaceTexture The surface returned by [android.view.TextureView.getSurfaceTexture]
+         * @param surfaceTexture The surface returned by [TextureView.getSurfaceTexture]
          * @param i              The new width of the surface
          * @param i2             The new height of the surface
          */
@@ -370,11 +370,11 @@ class FoldingLayoutActivity : Activity() {
         }
 
         /**
-         * Invoked when the specified [SurfaceTexture] is about to be destroyed. If our field
-         * `Camera mCamera` is not null we call its `stopPreview` method to have it stop
-         * capturing and drawing preview frames to the surface, then call its `release` method
-         * to disconnect and release its resources. Finally we return true to indicate that no further
-         * rendering should happen inside the surface texture.
+         * Invoked when the specified [SurfaceTexture] is about to be destroyed. If our [Camera]
+         * field [mCamera] is not `null` we call its [Camera.stopPreview] method to have it stop
+         * capturing and drawing preview frames to the surface, then call its [Camera.release]
+         * method to disconnect and release its resources. Finally we return `true` to indicate
+         * that no further rendering should happen inside the surface texture.
          *
          * @param surfaceTexture The surface about to be destroyed
          */
@@ -398,17 +398,17 @@ class FoldingLayoutActivity : Activity() {
     }
 
     /**
-     * A listener for scrolling changes in the seekbar. The anchor point of the folding
-     * view is updated every time the seekbar stops tracking touch events. Every time the
-     * anchor point is updated, the folding view is restored to a default unfolded state.
+     * A listener for scrolling changes in the seekbar. The anchor point of the folding view is
+     * updated every time the seekbar stops tracking touch events. Every time the anchor point
+     * is updated, the folding view is restored to a default unfolded state.
      */
     private val mSeekBarChangeListener: OnSeekBarChangeListener = object : OnSeekBarChangeListener {
         /**
          * Notification that the progress level has changed. We ignore.
          *
-         * @param seekBar The SeekBar whose progress has changed
+         * @param seekBar The [SeekBar] whose progress has changed
          * @param i       The current progress level, between 0 and 100.
-         * @param b       True if the progress change was initiated by the user.
+         * @param b       `true` if the progress change was initiated by the user.
          */
         override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {}
 
@@ -420,14 +420,14 @@ class FoldingLayoutActivity : Activity() {
         override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
         /**
-         * Notification that the user has finished a touch gesture. First we set our field `mTranslation`
-         * to 0 (the user has not been scrolling the child of our `FoldingLayout`). Then we set the
-         * field `mAnchorFactor` to the current level of progress of `mAnchorSeekBar` divided
-         * by 100. Finally we call the `setAnchorFactor` method of `FoldingLayout mFoldLayout`
-         * to have it adjust the anchor point of its folding to the location corresponding to our field
-         * `mAnchorFactor`.
+         * Notification that the user has finished a touch gesture. First we set our [Int] field
+         * [mTranslation] to 0 (the user has not been scrolling the child of our [FoldingLayout]).
+         * Then we set the [Float] field [mAnchorFactor] to the current level of progress of
+         * [mAnchorSeekBar] divided by 100f. Finally we set the [FoldingLayout.anchorFactor]
+         * property of [FoldingLayout] field [mFoldLayout] to [mAnchorFactor] to have it adjust
+         * the anchor point of its folding to the location corresponding to it.
          *
-         * @param seekBar The SeekBar in which the touch gesture began
+         * @param seekBar The [SeekBar] in which the touch gesture began
          */
         override fun onStopTrackingTouch(seekBar: SeekBar) {
             mTranslation = 0
