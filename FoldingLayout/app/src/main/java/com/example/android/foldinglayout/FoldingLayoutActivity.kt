@@ -34,6 +34,7 @@ import android.os.Bundle
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.TextureView
@@ -437,18 +438,18 @@ class FoldingLayoutActivity : Activity() {
     }
 
     /**
-     * Initialize the contents of the Activity's standard options menu. If our IS_JBMR2 flag indicates
-     * that our device is running the buggy JELLY_BEAN_MR2 release we fetch a `MenuInflater` for
-     * our context and use it to inflate the options menu R.menu.fold_with_bug into menu (it lacks the
-     * option items for the camera). Otherwise we fetch a `MenuInflater` for our context and use
-     * it to inflate the options menu R.menu.fold into menu (full featured option menu). We initialize
-     * our variable `Spinner s` by finding the item in `menu` with id R.id.num_of_folds and
-     * retrieving its action view. We then set the `OnItemSelectedListener` of `s` to our
-     * field `ItemSelectedListener mItemSelectedListener` and return true to the caller so that
-     * our menu will be displayed.
+     * Initialize the contents of the Activity's standard options menu. If our [Boolean] flag field
+     * [IS_JBMR2] indicates that our device is running the buggy `JELLY_BEAN_MR2` release we fetch
+     * a [MenuInflater] for our context and use it to inflate the options menu [R.menu.fold_with_bug]
+     * into [Menu] parameter [menu] (it lacks the option items for the camera). Otherwise we fetch a
+     * [MenuInflater] for our context and use it to inflate the options menu [R.menu.fold] into [menu]
+     * (full featured option menu). We initialize our [Spinner] variable `val s` by finding the item
+     * in [menu] with id [R.id.num_of_folds] and retrieving its action view. We then set the
+     * [OnItemSelectedListener] of `s` to our [ItemSelectedListener] field [mItemSelectedListener]
+     * and return `true` to the caller so that our menu will be displayed.
      *
-     * @param menu The options menu in which we place our items.
-     * @return You must return true for the menu to be displayed.
+     * @param menu The options [Menu] in which we place our items.
+     * @return You must return `true` for the menu to be displayed.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         if (IS_JBMR2) {
