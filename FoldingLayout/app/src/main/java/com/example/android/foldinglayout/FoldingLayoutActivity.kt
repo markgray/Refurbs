@@ -42,6 +42,7 @@ import android.view.TextureView.SurfaceTextureListener
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.view.Window
 import android.view.animation.AccelerateInterpolator
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -50,6 +51,9 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Spinner
+import com.example.android.foldinglayout.FoldingLayout.Orientation
+import com.example.android.foldinglayout.FoldingLayout.Orientation.HORIZONTAL
+import com.example.android.foldinglayout.FoldingLayout.Orientation.VERTICAL
 import java.io.IOException
 
 /**
@@ -87,7 +91,7 @@ class FoldingLayoutActivity : Activity() {
      * Orientation of our [FoldingLayout], toggled by the menu item with id [R.id.toggle_orientation]
      * (labeled either "Horizontal" or "Vertical" depending on the current orientation).
      */
-    private var mOrientation = FoldingLayout.Orientation.HORIZONTAL
+    private var mOrientation: Orientation = HORIZONTAL
 
     /**
      * Used to set the fold factor of our [FoldingLayout] using "scrolling" of its view.
@@ -463,11 +467,11 @@ class FoldingLayoutActivity : Activity() {
     }
 
     /**
-     * Called when the current `Window` of the activity gains or loses focus. First we call our
-     * super's implementation of `onWindowFocusChanged`. Then we allocate 2 ints for our variable
-     * `int[] loc` and call the `getLocationOnScreen` method of `FoldingLayout mFoldLayout`
-     * to have it load `loc` with its window location. We then set our field `mParentPositionY`
-     * to the Y coordinate stored in `loc[1]`.
+     * Called when the current [Window] of the activity gains or loses focus. First we call our
+     * super's implementation of `onWindowFocusChanged`. Then we allocate 2 [Int]s for our [IntArray]
+     * variable `val loc` and call the [View.getLocationOnScreen] method of [FoldingLayout] field
+     * [mFoldLayout] to have it load `loc` with its window location. We then set our [Int] field
+     * [mParentPositionY] to the Y coordinate stored in `loc[1]`.
      *
      * @param hasFocus Whether the window of this activity has focus.
      */
@@ -480,79 +484,69 @@ class FoldingLayoutActivity : Activity() {
 
     /**
      * Called when a touch screen event was not handled by any of the views under it. We return the
-     * value returned by the `onTouchEvent` method of our field `mScrollGestureDetector`.
+     * value returned by the [GestureDetector.onTouchEvent] method of our [GestureDetector] field
+     * [mScrollGestureDetector].
      *
-     * @param me The touch screen event being processed.
-     * @return Return true if you have consumed the event, false if you haven't.
+     * @param me The touch screen [MotionEvent] being processed.
+     * @return Return `true` if you have consumed the event, `false` if you haven't.
      */
     override fun onTouchEvent(me: MotionEvent): Boolean {
         return mScrollGestureDetector!!.onTouchEvent(me)
     }
 
     /**
-     * This hook is called whenever an item in your options menu is selected. We switch on the id of
-     * our parameter `MenuItem item`:
+     * This hook is called whenever an item in your options menu is selected. We `when` switch on
+     * the `itemId` of our [MenuItem] parameter [item]:
      *
-     *  *
-     * R.id.animate_fold: ("Animate") we call our method `animateFold` to animate the
-     * folding view inwards (to a completely folded state) from its current state and then
-     * back out to its original state. We then break.
+     *  * [R.id.animate_fold]: ("Animate") we call our method [animateFold] to animate the folding
+     *  view inwards (to a completely folded state) from its current state and then back out to its
+     *  original state.
      *
-     *  *
-     * R.id.toggle_orientation: ("Vertical" or "Horizontal" depending on the state of the
-     * current orientation) we toggle our field `Orientation mOrientation` between
-     * VERTICAL or HORIZONTAL, then set the title of our parameter `item` to "Vertical"
-     * if the new state is HORIZONTAL or to "Horizontal" if it is VERTICAL. We then set our
-     * field `mTranslation` to 0 and call the `setOrientation` method of our field
-     * `FoldingLayout mFoldLayout` to set the orientation it folds in to `mOrientation`.
-     * We then break.
+     *  * [R.id.toggle_orientation]: ("Vertical" or "Horizontal" depending on the state of the
+     *  current orientation) we toggle our [Orientation] field [mOrientation] between [VERTICAL]
+     *  or [HORIZONTAL], then set the title of our [MenuItem] parameter [item] to "Vertical" if
+     *  the new state is [HORIZONTAL] or to "Horizontal" if it is [VERTICAL]. We then set our [Int]
+     *  field [mTranslation] to 0 and set the [FoldingLayout.orientation] property of our
+     *  [FoldingLayout] field [mFoldLayout] to set the orientation it folds in to [mOrientation].
      *
-     *  *
-     * R.id.camera_feed: ("Camera Feed" or "Static Image" depending on the current image source)
-     * we toggle our field `mIsCameraFeed`, and if the new value is true we set the title
-     * of our parameter `MenuItem item` to "Static Image", if it is false we set the title
-     * to "Camera Feed". We then set the checked state of our item's `CheckBox` to the value
-     * of `mIsCameraFeed`. We now branch on the value of `mIsCameraFeed`:
+     *  * [R.id.camera_feed]: ("Camera Feed" or "Static Image" depending on the current image
+     *  source) we toggle our [Boolean] field [mIsCameraFeed], and if the new value is `true` we
+     *  set the title of our [MenuItem] parameter [item] to "Static Image", if it is `false` we
+     *  set the title to "Camera Feed". We then set the checked state of our item's [CheckBox] to
+     *  the value of [mIsCameraFeed]. We now branch on the value of [mIsCameraFeed]:
      *
-     *  *
-     * true: we call the `removeView` of `FoldingLayout mFoldLayout` to remove
-     * `ImageView mImageView`, then call its `addView` method to add the view
-     * `TextureView mTextureView` using the height and width of `mFoldLayout`
-     * as its layout parameters.
+     *  * `true`: we call the [FoldingLayout.removeView] method of [FoldingLayout] field [mFoldLayout]
+     *  to remove [ImageView] field [mImageView], then call its [FoldingLayout.addView] method to add
+     *  the [TextureView] field [mTextureView] using the height and width of [mFoldLayout] as its
+     *  layout parameters.
      *
-     *  *
-     * false: we call the `removeView` of `FoldingLayout mFoldLayout` to remove
-     * `TextureView mTextureView`, then call its `addView` method to add the view
-     * `ImageView mImageView` using the height and width of `mFoldLayout`
-     * as its layout parameters.
+     *  * `false`: we call the [FoldingLayout.removeView] method of [FoldingLayout] field
+     *  [mFoldLayout] to remove [TextureView] field [mTextureView], then call its
+     *  [FoldingLayout.addView] method to add the [ImageView] field [mImageView] using the height
+     *  and width of [mFoldLayout] as its layout parameters.
      *
+     *  * [R.id.sepia]: ("Sepia Off") we toggle the value of our [Boolean] field [mIsSepiaOn], then
+     *  set the checked state of our item's [CheckBox] to the inverse of [mIsSepiaOn]. Then if
+     *  [mIsSepiaOn] is now `true` and the current fold factor of [mFoldLayout] is not 0 (it is
+     *  partially folded) we call our method [setSepiaLayer] to set the sepia layer mode of the
+     *  one and only child of [mFoldLayout], otherwise we call the method to clear its sepia layer
+     *  mode.
      *
-     * We then break.
-     *
-     *  *
-     * R.id.sepia: ("Sepia Off") we toggle the value of our field `boolean mIsSepiaOn`,
-     * then set the checked state of our item's `CheckBox` to `!mIsSepiaOn`. Then
-     * if `mIsSepiaOn` is now true and the current fold factor of `mFoldLayout` is
-     * not 0 (it is partially folded) we call our method `setSepiaLayer` to set the sepia
-     * layer mode of the one and only child of `mFoldLayout`, otherwise we call the method
-     * to clear its sepia layer mode. We then break.
-     *
-     *  *
-     * default: we break.
-     *
+     *  * default: we do nothing.
      *
      * Finally we return the value returned by our super's implementation of `onOptionsItemSelected`
      * to the caller.
      *
-     * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to proceed, true to consume it here.
+     * @param item The [MenuItem] that was selected.
+     * @return [Boolean] Return `false` to allow normal menu processing to proceed, `true` to
+     * consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.animate_fold -> animateFold()
             R.id.toggle_orientation -> {
-                mOrientation = if (mOrientation == FoldingLayout.Orientation.HORIZONTAL) FoldingLayout.Orientation.VERTICAL else FoldingLayout.Orientation.HORIZONTAL
-                item.setTitle(if (mOrientation == FoldingLayout.Orientation.HORIZONTAL) R.string.vertical else R.string.horizontal)
+                mOrientation = if (mOrientation == HORIZONTAL) VERTICAL else HORIZONTAL
+                item.setTitle(if (mOrientation == HORIZONTAL) R.string.vertical else R.string.horizontal)
                 mTranslation = 0
                 mFoldLayout!!.orientation = mOrientation
             }
@@ -758,7 +752,7 @@ class FoldingLayoutActivity : Activity() {
         override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             val touchSlop: Int
             val factor: Float
-            if (mOrientation == FoldingLayout.Orientation.VERTICAL) {
+            if (mOrientation == VERTICAL) {
                 factor = Math.abs(mTranslation.toFloat() / mFoldLayout!!.height.toFloat())
                 if (e2.y - mParentPositionY <= mFoldLayout!!.height
                     && e2.y - mParentPositionY >= 0) {
