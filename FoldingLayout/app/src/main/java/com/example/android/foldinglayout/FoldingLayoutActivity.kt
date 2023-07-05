@@ -584,14 +584,15 @@ class FoldingLayoutActivity : Activity() {
 
     /**
      * Animates the folding view inwards (to a completely folded state) from its current state and
-     * then back out to its original state. We initialize our variable `float foldFactor` with
-     * the current fold factor of our field `FoldingLayout mFoldLayout` (a value between 0 (not
-     * folded) and 1 (fully folded)). We create `ObjectAnimator animator` to animate the property
-     * "foldFactor" of `mFoldLayout` between `foldFactor` and 1 (the `setFoldFactor`
-     * method of `mFoldLayout` will be called for each step of the animation). We set the repeat
-     * mode of `animator` to REVERSE, its repeat count to 1, its duration to FOLD_ANIMATION_DURATION
-     * (1000 milliseconds), and its interpolator to a new instance of `AccelerateInterpolator`.
-     * Finally we start `animator` running.
+     * then back out to its original state. We initialize our [Float] variable `val foldFactor` with
+     * the current fold factor of our [FoldingLayout] field [mFoldLayout] (the value of its
+     * [FoldingLayout.foldFactor] property, a value between 0 (not folded) and 1 (fully folded)).
+     * We create [ObjectAnimator] variable `val animator` to animate the [FoldingLayout.foldFactor]
+     * property of [mFoldLayout] between `foldFactor` and 1 (the [FoldingLayout.foldFactor] property
+     * of [mFoldLayout] will be called for each step of the animation). We set the repeat mode of
+     * `animator` to [ValueAnimator.REVERSE], its repeat count to 1, its duration to our [Int] field
+     * [FOLD_ANIMATION_DURATION] (1000 milliseconds), and its interpolator to a new instance of
+     * [AccelerateInterpolator]. Finally we start `animator` running.
      */
     @SuppressLint("ObjectAnimatorBinding")
     fun animateFold() {
@@ -612,13 +613,16 @@ class FoldingLayoutActivity : Activity() {
     private inner class ItemSelectedListener : OnItemSelectedListener {
         /**
          * Callback method to be invoked when an item in this view has been selected. We initialize
-         * our field `int mNumberOfFolds` by parsing as an integer the string value of item at
-         * position `pos` in the `parent` AdapterView (the string value of an `Item`
-         * is the title of it). If our field `mDidLoadSpinner` is true we set it to false (we
-         * are just being called when our `Spinner` is created, not as the result of a user
-         * action), otherwise we set our field `mTranslation` to 0 (undoes any current folding
-         * due to the user's scrolling (folding) of the view), and set the number of folds that
-         * `FoldingLayout mFoldLayout` will fold in to `mNumberOfFolds`.
+         * our [Int] field [mNumberOfFolds] by parsing as an integer the string value of item at
+         * position `pos` in the `parent` [AdapterView] (the string value of an `Item` is the title
+         * of it, and the titles of the items in our [Spinner] are taken from the "string-array" in
+         * our resources whose ID is [R.array.num_of_folds_array] which is a list of the strings
+         * "2", "3", "4", "5", "6", "7", "8", and "1" so applying the [String.toInt] returns their
+         * [Int] value). If our [Boolean] field [mDidLoadSpinner] is `true` we set it to `false` (we
+         * are just being called when our [Spinner] is created, not as the result of a user action),
+         * otherwise we set our [Int] field [mTranslation] to 0 (undoes any current folding due to
+         * the user's scrolling (folding) of the view), and set the number of folds that our
+         * [FoldingLayout] field [mFoldLayout] will fold in to [mNumberOfFolds].
          *
          * @param parent The AdapterView where the selection happened
          * @param view The view within the AdapterView that was clicked
@@ -638,7 +642,7 @@ class FoldingLayoutActivity : Activity() {
         /**
          * Callback method to be invoked when the selection disappears from this view. We ignore.
          *
-         * @param arg0 The AdapterView that now contains no selected item.
+         * @param arg0 The [AdapterView] that now contains no selected item.
          */
         override fun onNothingSelected(arg0: AdapterView<*>?) {}
     }
@@ -648,10 +652,10 @@ class FoldingLayoutActivity : Activity() {
      */
     private inner class ScrollGestureDetector : SimpleOnGestureListener() {
         /**
-         * Notified when a tap occurs with the down [MotionEvent] that triggered it. This will
-         * be triggered immediately for every down event. All other events should be preceded by this.
-         * We just set our field `boolean mDidNotStartScroll` to true (we are not yet in the
-         * middle of a scroll gesture), and return true to the caller.
+         * Notified when a tap occurs with the down [MotionEvent] that triggered it. This will be
+         * triggered immediately for every down event. All other events should be preceded by this.
+         * We just set our [Boolean] field [mDidNotStartScroll] to `true` (we are not yet in the
+         * middle of a scroll gesture), and return `true` to the caller.
          *
          * @param e The down motion event.
          * @return true (no hint why? false works just as well)
@@ -665,62 +669,52 @@ class FoldingLayoutActivity : Activity() {
          * Notified when a scroll occurs with the initial on down [MotionEvent] and the current
          * move [MotionEvent]. The distance in x and y is also supplied for convenience.
          *
-         *
          * All the logic here is used to determine by what factor the paper view should be folded in
          * response to the user's touch events. The logic here uses vertical scrolling to fold a
          * vertically oriented view and horizontal scrolling to fold a horizontally oriented fold.
          * Depending on where the anchor point of the fold is, movements towards or away from the
          * anchor point will either fold or unfold the paper respectively.
          *
-         *
          * The translation logic here also accounts for the touch slop when a new user touch
          * begins, but before a scroll event is first invoked.
          *
+         * We declare our [Int] variable `val touchSlop` and [Float] variable `val factor`, then
+         * branch on the value of our [Orientation] field [mOrientation]:
          *
-         * We declare our two variables `int touchSlop` and `float factor`, then branch
-         * on the value of our field `mOrientation`:
+         *  * [VERTICAL]: we set `factor` to the absolute value of the result of dividing our [Int]
+         *  field [mTranslation] by the height of our [FoldingLayout] field [mFoldLayout]. If the Y
+         *  coordinate of [MotionEvent] parameter [e2] (coordinate of the move motion that triggered
+         *  the current call) minus our [Int] field [mParentPositionY] is less than or equal to the
+         *  height of [mFoldLayout] and its Y coordinate minus [mParentPositionY] is greater than 0
+         *  (the scroll started occurring over [mFoldLayout]) we want to update the value of
+         *  [mTranslation] (while less than 0 it represents the total distance that the user has
+         *  scrolled) and to do this we branch based on whether the [mFoldLayout] is folded less
+         *  than the value the current Y position would order it to be or greater:
          *
-         *  *
-         * VERTICAL: we set `factor` to the absolute value of the result of dividing our
-         * field `mTranslation` by the height of our field `FoldingLayout mFoldLayout`.
-         * If the Y coordinate of `MotionEvent e2` (coordinate of the move motion that
-         * triggered the current call) minus `mParentPositionY` is less than or equal
-         * to the height of `mFoldLayout` and its Y coordinate minus `mParentPositionY`
-         * is greater than 0 (the scroll started occurring over `mFoldLayout`) we want to
-         * update the value of `mTranslation` (while less than 0 it represents the total
-         * distance that the user has scrolled) and to do this we branch based on whether the
-         * `mFoldLayout` is folded less than the value the current Y position would order
-         * it to be or greater:
+         *  * Greater: (the user is folding it more) we subtract [Float] parameter [distanceY] (the
+         *  distance the user has scrolled since we were last called) from the accumulated scroll in
+         *  [mTranslation], and if [distanceY] is less than 0 we set `touchSlop` to minus
+         *  `mTouchSlop`, if greater than or equal to 0 we set it to `mTouchSlop`.
          *
-         *  *
-         * Greater: (the user is folding it more) we subtract `distanceY` (the distance
-         * the user has scrolled since we were last called) from the accumulated scroll in
-         * `mTranslation`, and if `distanceY` is less than 0 we set `touchSlop`
-         * to minus `mTouchSlop`, if greater than or equal to 0 we set it to `mTouchSlop`.
+         *  * Less than or equal to: (the user is unfolding it) we add `distanceY` (the distance
+         *  the user has scrolled since we were last called) to the accumulated scroll in
+         *  `mTranslation`, and if `distanceY` is less than 0 we set `touchSlop` to [Int] field
+         *  [mTouchSlop], if greater than or equal to 0 we set it to minus [mTouchSlop].
          *
-         *  *
-         * Less than or equal to: (the user is unfolding it) we add `distanceY` (the distance
-         * the user has scrolled since we were last called) to the accumulated scroll in
-         * `mTranslation`, and if `distanceY` is less than 0 we set `touchSlop`
-         * to `mTouchSlop`, if greater than or equal to 0 we set it to minus `mTouchSlop`.
+         *  * If our [Boolean] field [mDidNotStartScroll] is true we set [mTranslation] to
+         *  [mTranslation] plus `touchSlop`. If [mTranslation] is less than minus the height of
+         *  [mFoldLayout] we set it to minus the height of [mFoldLayout] (it is now totally folded).
          *
+         *  * [HORIZONTAL]: we set `factor` to the absolute value of the result of dividing our
+         *  [Int] field [mTranslation] by the width of our [FoldingLayout] field [mFoldLayout].
+         *  We branch based on whether the raw X coordinate of [MotionEvent] parameter [e2]
+         *  (coordinate of the move motion that triggered the current call) is greater than the
+         *  with of [mFoldLayout] times our [Float] field [mAnchorFactor]:
          *
-         * If `mDidNotStartScroll` is true we set `mTranslation` to `mTranslation`
-         * plus `touchSlop`. If `mTranslation` is less than minus the height of `mFoldLayout`
-         * we set it to minus the height of `mFoldLayout` (it is now totally folded).
-         *
-         *  *
-         * HORIZONTAL: we set `factor` to the absolute value of the result of dividing our
-         * field `mTranslation` by the width of our field `FoldingLayout mFoldLayout`.
-         * We branch based on whether the raw X coordinate of `MotionEvent e2` (coordinate
-         * of the move motion that triggered the current call) is greater than the `mFoldLayout`
-         * times our field `mAnchorFactor`:
-         *
-         *  *
-         * Greater: (the user is folding it more) we subtract `distanceY` (the distance
-         * the user has scrolled since we were last called) from the accumulated scroll in
-         * `mTranslation`, and if `distanceX` is less than 0 we set `touchSlop`
-         * to minus `mTouchSlop`, if greater than or equal to 0 we set it to `mTouchSlop`.
+         *  * Greater: (the user is folding it more) we subtract [Float] parameter [distanceX] (the
+         *  distance the user has scrolled since we were last called) from the accumulated scroll in
+         *  [mTranslation], and if [distanceX] is less than 0 we set `touchSlop` to minus [Int]
+         *  field [mTouchSlop], if greater than or equal to 0 we set it to [mTouchSlop].
          *
          *  *
          * Less than or equal to: (the user is unfolding it) we add `distanceX` (the distance
@@ -808,11 +802,11 @@ class FoldingLayoutActivity : Activity() {
         /**
          * Padding used for our `ImageView mImageView`
          */
-        private const val ANTIALIAS_PADDING = 1
+        private const val ANTIALIAS_PADDING: Int = 1
 
         /**
          * Duration of the animation of the "foldFactor" property of `FoldingLayout mFoldLayout`
          */
-        private const val FOLD_ANIMATION_DURATION = 1000
+        private const val FOLD_ANIMATION_DURATION: Int = 1000
     }
 }
