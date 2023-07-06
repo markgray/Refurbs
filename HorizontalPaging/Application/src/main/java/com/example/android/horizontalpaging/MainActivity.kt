@@ -23,11 +23,9 @@ import java.util.Locale
  */
 class MainActivity : FragmentActivity(), ActionBar.TabListener {
     /**
-     * The [PagerAdapter] that will provide
-     * fragments for each of the sections. We use a
-     * [FragmentPagerAdapter] derivative, which
-     * will keep every loaded fragment in memory. If this becomes too memory
-     * intensive, it may be best to switch to a
+     * The [PagerAdapter] that will provide fragments for each of the sections. We use a
+     * [FragmentPagerAdapter] derivative, which will keep every loaded fragment in memory.
+     * If this becomes too memory intensive, it may be best to switch to a
      * [FragmentStatePagerAdapter].
      */
     var mSectionsPagerAdapter: SectionsPagerAdapter? = null
@@ -38,21 +36,18 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
     var mViewPager: ViewPager? = null
 
     /**
-     * Create the activity. Sets up an [android.app.ActionBar] with tabs, and then configures the
-     * [ViewPager] contained inside R.layout.activity_main.
-     *
-     *
-     * A [SectionsPagerAdapter] will be instantiated to hold the different pages of
-     * fragments that are to be displayed. A
-     * [ViewPager.SimpleOnPageChangeListener] will also be configured
-     * to receive callbacks when the user swipes between pages in the ViewPager.
-     *
+     * Called when the activity is starting and creates the activity. Sets up an [ActionBar] with
+     * tabs, and then configures the [ViewPager] contained inside [R.layout.activity_main]. A
+     * [SectionsPagerAdapter] will be instantiated to hold the different pages of fragments that
+     * are to be displayed. A [ViewPager.SimpleOnPageChangeListener] will also be configured to
+     * receive callbacks when the user swipes between pages in the ViewPager.
      *
      * First we call our super's implementation of `onCreate`, then we set our content view to
-     * our layout file R.layout.sample_main (it holds only a android.support.v4.view.ViewPager widget).
-     * We initialize `ActionBar actionBar` with the Activity's ActionBar, and set its navigation
-     * mode to NAVIGATION_MODE_TABS (tab navigation mode, instead of static title text this mode
-     * presents a series of tabs for navigation within the activity). We initialize our field
+     * our layout file [R.layout.sample_main] (it holds only a [androidx.viewpager.widget.ViewPager]
+     * widget). We initialize [ActionBar] variable `val actionBar` with the [Activity]'s [ActionBar],
+     * and set its navigation mode to [ActionBar.NAVIGATION_MODE_TABS] (tab navigation mode, instead
+     * of static title text this mode presents a series of tabs for navigation within the activity).
+     * We initialize our field
      * `SectionsPagerAdapter mSectionsPagerAdapter` with a new instance constructed using the
      * FragmentManager for interacting with fragments associated with this activity for the various
      * `FragmentTransaction` operations it uses to swap fragments. We initialize our field
