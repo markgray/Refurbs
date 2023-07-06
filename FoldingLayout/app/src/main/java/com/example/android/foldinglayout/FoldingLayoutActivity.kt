@@ -716,34 +716,35 @@ class FoldingLayoutActivity : Activity() {
          *  [mTranslation], and if [distanceX] is less than 0 we set `touchSlop` to minus [Int]
          *  field [mTouchSlop], if greater than or equal to 0 we set it to [mTouchSlop].
          *
-         *  *
-         * Less than or equal to: (the user is unfolding it) we add `distanceX` (the distance
-         * the user has scrolled since we were last called) to the accumulated scroll in
-         * `mTranslation`, and if `distanceX` is less than 0 we set `touchSlop`
-         * to `mTouchSlop`, if greater than or equal to 0 we set it to minus `mTouchSlop`.
+         *  * Less than or equal to: (the user is unfolding it) we add [Float] parameter [distanceX]
+         *  (the distance the user has scrolled since we were last called) to the accumulated scroll
+         *  in [mTranslation], and if [distanceX] is less than 0 we set `touchSlop` to [mTouchSlop],
+         *  if greater than or equal to 0 we set it to minus [mTouchSlop].
          *
+         *  * If [mDidNotStartScroll] is `true` we set [mTranslation] to [mTranslation] plus
+         *  `touchSlop`. If [mTranslation] is less than minus the width of [mFoldLayout] we set it
+         *  to minus the width of [mFoldLayout] (it is now totally folded).
          *
-         * If `mDidNotStartScroll` is true we set `mTranslation` to `mTranslation`
-         * plus `touchSlop`. If `mTranslation` is less than minus the width of `mFoldLayout`
-         * we set it to minus the width of `mFoldLayout` (it is now totally folded).
+         * We now set our [Boolean] field [mDidNotStartScroll] to `false` (we have started scrolling).
+         * If our [Int] field [mTranslation] is greater than 0 we set it to 0 (we do not try to unfold
+         * more than fully unfolded). Finally we call the [FoldingLayout.foldFactor] property of
+         * [FoldingLayout] field [mFoldLayout] to have it fold to the value of [Float] variable
+         * `factor`, and return `true` to the caller (`false` works too).
          *
-         *
-         * We now set our field `mDidNotStartScroll` to false (we have started scrolling). If our
-         * field `mTranslation` is greater than 0 we set it to 0 (we do not try to unfold more than
-         * fully unfolded). Finally we call the `setFoldFactor` method of `mFoldLayout` to
-         * have it fold to the value of `factor`, and return true to the caller (false works too).
-         *
-         * @param e1 The first down motion event that started the scrolling.
-         * @param e2 The move motion event that triggered the current onScroll.
+         * @param e1 The first down [MotionEvent] that started the scrolling.
+         * @param e2 The move [MotionEvent] that triggered the current onScroll.
          * @param distanceX The distance along the X axis that has been scrolled since the last
-         * call to onScroll. This is NOT the distance between `e1`
-         * and `e2`.
+         * call to [onScroll]. This is NOT the distance between [e1] and [e2].
          * @param distanceY The distance along the Y axis that has been scrolled since the last
-         * call to onScroll. This is NOT the distance between `e1`
-         * and `e2`.
-         * @return true if the event is consumed, else false
+         * call to [onScroll]. This is NOT the distance between [e1] and [e2].
+         * @return `true` if the event is consumed, else `false`
          */
-        override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+        override fun onScroll(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
             val touchSlop: Int
             val factor: Float
             if (mOrientation == VERTICAL) {
@@ -786,7 +787,8 @@ class FoldingLayoutActivity : Activity() {
     }
 
     companion object {
-        /** A bug was introduced in Android 4.3 that ignores changes to the Canvas state
+        /**
+         * A bug was introduced in Android 4.3 that ignores changes to the Canvas state
          * between multiple calls to super.dispatchDraw() when running with hardware acceleration.
          * To account for this bug, a slightly different approach was taken to fold a
          * static image whereby a bitmap of the original contents is captured and drawn
