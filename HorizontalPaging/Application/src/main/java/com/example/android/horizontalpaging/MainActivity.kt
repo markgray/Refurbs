@@ -47,20 +47,20 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
      * widget). We initialize [ActionBar] variable `val actionBar` with the [Activity]'s [ActionBar],
      * and set its navigation mode to [ActionBar.NAVIGATION_MODE_TABS] (tab navigation mode, instead
      * of static title text this mode presents a series of tabs for navigation within the activity).
-     * We initialize our field
-     * `SectionsPagerAdapter mSectionsPagerAdapter` with a new instance constructed using the
-     * FragmentManager for interacting with fragments associated with this activity for the various
-     * `FragmentTransaction` operations it uses to swap fragments. We initialize our field
-     * `ViewPager mViewPager` by finding the view in our layout file with id R.id.pager set its
-     * adapter to `mSectionsPagerAdapter`, and set its `OnPageChangeListener` to an anonymous
-     * `SimpleOnPageChangeListener` whose `onPageSelected` override calls the `setSelectedNavigationItem`
-     * method of `ActionBar actionBar` with the Position index of the newly selected page `position`
-     * in order to set its selected tab to the selected page. Finally we loop over `int i` for all of
-     * the pages in the data set of `SectionsPagerAdapter mSectionsPagerAdapter` adding a new tab
-     * to `actionBar` whose text consists of the page title for `i`, and whose `TabListener`
-     * is this.
+     * We initialize our [SectionsPagerAdapter] field [mSectionsPagerAdapter] with a new instance
+     * constructed using the [FragmentManager] for interacting with fragments associated with this
+     * activity for the various [FragmentTransaction] operations it uses to swap fragments. We
+     * initialize our [ViewPager] field [mViewPager] by finding the view in our layout file with id
+     * [R.id.pager] set its adapter to [mSectionsPagerAdapter], and set its [OnPageChangeListener]
+     * to an anonymous [SimpleOnPageChangeListener] whose [SimpleOnPageChangeListener.onPageSelected]
+     * override calls the [setSelectedNavigationItem] method of [ActionBar] variable `actionBar`
+     * with the Position index of the newly selected page `position` in order to set its selected
+     * tab to the selected page. Finally we loop over [Int] variable `var i` for all of the pages
+     * in the data set of [SectionsPagerAdapter] field [mSectionsPagerAdapter] adding a new tab
+     * to `actionBar` whose text consists of the page title for `i`, and whose [TabListener]
+     * is `this`.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,15 +111,15 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
     }
 
     /**
-     * Update [ViewPager] after a tab has been selected in the ActionBar. We just call the
-     * `setCurrentItem` method of our field `ViewPager mViewPager` to set the currently
-     * selected page to the current position of our parameter `ActionBar.Tab tab` in the action
+     * Update [ViewPager] after a tab has been selected in the [ActionBar]. We just call the
+     * [ViewPager.setCurrentItem] method of our [ViewPager] field [mViewPager] to set the currently
+     * selected page to the current position of our [ActionBar.Tab] parameter [tab] in the action
      * bar.
      *
      * @param tab                 Tab that was selected.
-     * @param fragmentTransaction A [android.app.FragmentTransaction] for queuing fragment operations to
-     * execute once this method returns. This FragmentTransaction does
-     * not support being added to the back stack.
+     * @param fragmentTransaction A [FragmentTransaction] for queuing fragment operations to execute
+     * once this method returns. This [FragmentTransaction] does not support being added to the back
+     * stack.
      */
     @Deprecated("Deprecated in Java", ReplaceWith("mViewPager!!.currentItem = tab.position"))
     override fun onTabSelected(tab: ActionBar.Tab, fragmentTransaction: FragmentTransaction) {
@@ -128,26 +128,24 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
     }
 
     /**
-     * Called when a tab exits the selected state. Unused. Required for the interface
-     * [android.app.ActionBar.TabListener].
+     * Called when a tab exits the selected state. Unused. Required for the [TabListener] interface.
      *
      * @param tab The tab that was unselected
      * @param fragmentTransaction A [FragmentTransaction] for queuing fragment operations
      * to execute during a tab switch. This tab's unselect and the newly selected tab's
-     * select will be executed in a single transaction. This FragmentTransaction does not
+     * select will be executed in a single transaction. This [FragmentTransaction] does not
      * support being added to the back stack.
      */
     @Deprecated("Deprecated in Java")
     override fun onTabUnselected(tab: ActionBar.Tab, fragmentTransaction: FragmentTransaction) {}
 
     /**
-     * Called when a tab that is already selected is chosen again by the user.
-     * Some applications may use this action to return to the top level of a category.
-     * Unused. Required for [android.app.ActionBar.TabListener].
+     * Called when a tab that is already selected is chosen again by the user. Some applications may
+     * use this action to return to the top level of a category. Unused. Required for [TabListener].
      *
      * @param tab The tab that was reselected.
      * @param fragmentTransaction A [FragmentTransaction] for queuing fragment operations to
-     * execute once this method returns. This FragmentTransaction does not support being added
+     * execute once this method returns. This [FragmentTransaction] does not support being added
      * to the back stack.
      */
     @Deprecated("Deprecated in Java")
@@ -161,19 +159,19 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
     /**
      * Our constructor, we just call our super's constructor.
      *
-     * @param fm `FragmentManager` to use to perform any `FragmentTransaction` needed
+     * @param fm [FragmentManager] to use to perform any [FragmentTransaction] needed
      */
     (fm: FragmentManager?) : FragmentPagerAdapter(fm!!) {
         /**
          * Get fragment corresponding to a specific position. This will be used to populate the
-         * contents of the [ViewPager]. We initialize `Fragment fragment` with a new
-         * instance of `DummySectionFragment`. We initialize `Bundle args` with a new
-         * instance, store the int formed by adding one to our parameter `position` in it
-         * under the key ARG_SECTION_NUMBER, and set it to be the argument bundle of `fragment`.
+         * contents of the [ViewPager]. We initialize [Fragment] variable `val fragment` with a new
+         * instance of [DummySectionFragment]. We initialize [Bundle] variable `val args` with a new
+         * instance, store the [Int] formed by adding one to our [Int] parameter [position] in it
+         * under the key [ARG_SECTION_NUMBER], and set it to be the argument bundle of `fragment`.
          * Finally we return `fragment` to the caller.
          *
          * @param position Position to fetch fragment for.
-         * @return Fragment for specified position.
+         * @return [Fragment] for specified position.
          */
         override fun getItem(position: Int): Fragment {
             // getItem is called to instantiate the fragment for the given page.
@@ -198,26 +196,23 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
 
         /**
          * Get title for each of the pages. This will be displayed on each of the tabs. We initialize
-         * `Locale l` with the current value of the default locale for this instance of the
-         * Java Virtual Machine, Then we switch on the value of our parameter `position`:
+         * [Locale] variable `val l` with the current value of the default locale for this instance
+         * of the Java Virtual Machine, Then we `when` switch on the value of our [Int] parameter
+         * [position]:
          *
-         *  *
-         * 0: we return the string with resource id R.string.title_section1 ("Section 1") with
-         * all of the characters in this `String` converted to upper case using the rules
-         * of `Locale l`.
+         *  * 0: we return the string with resource id [R.string.title_section1] ("Section 1")
+         *  with all of the characters in this [String] converted to upper case using the rules
+         *  of [Locale] `l`.
          *
-         *  *
-         * 1: we return the string with resource id R.string.title_section2 ("Section 2") with
-         * all of the characters in this `String` converted to upper case using the rules
-         * of `Locale l`.
+         *  * 1: we return the string with resource id [R.string.title_section2] ("Section 2")
+         *  with all of the characters in this [String] converted to upper case using the rules
+         * of [Locale] `l`.
          *
-         *  *
-         * 2: we return the string with resource id R.string.title_section3 ("Section 3") with
-         * all of the characters in this `String` converted to upper case using the rules
-         * of `Locale l`.
+         *  * 2: we return the string with resource id [R.string.title_section3] ("Section 3")
+         *  with all of the characters in this [String] converted to upper case using the rules
+         * of [Locale] `l`.
          *
-         *
-         * If it is not a position we use, we return null.
+         * If it is not a position we use, we return `null`.
          *
          * @param position Page to fetch title for.
          * @return Title for specified page.
@@ -243,25 +238,29 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
      */
         : Fragment() {
         /**
-         * Called to have the fragment instantiate its user interface view. We initialize our variable
-         * `View rootView` with the view that our parameter `LayoutInflater inflater` inflates
-         * from our layout file R.layout.fragment_main_dummy using our parameter `ViewGroup container`
-         * for `LayoutParams` with attaching to it. We initialize `TextView dummyTextView`
-         * by finding the view in `rootView` with id R.id.section_label, then set its text to the
-         * string formed by converting the int stored in our argument bundle under the key ARG_SECTION_NUMBER
-         * to a string. Finally we return `rootView` to the caller.
+         * Called to have the fragment instantiate its user interface view. We initialize our [View]
+         * variable `val rootView` with the view that our [LayoutInflater] parameter [inflater]
+         * inflates from our layout file [R.layout.fragment_main_dummy] using our [ViewGroup]
+         * parameter [container] for `LayoutParams` without attaching to it. We initialize [TextView]
+         * variable `val dummyTextView` by finding the view in `rootView` with id [R.id.section_label],
+         * then set its text to the string formed by converting the [Int] stored in our argument
+         * [Bundle] under the key [ARG_SECTION_NUMBER] to a string. Finally we return `rootView` to the caller.
          *
-         * @param inflater The LayoutInflater object that can be used to inflate
-         * any views in the fragment,
-         * @param container If non-null, this is the parent view that the fragment's
-         * UI should be attached to.  The fragment should not add the view itself,
-         * but this can be used to generate the LayoutParams of the view.
-         * @param savedInstanceState If non-null, this fragment is being re-constructed
+         * @param inflater The [LayoutInflater] object that can be used to inflate any views
+         * in the fragment,
+         * @param container If non-`null`, this is the parent view that the fragment's UI will be
+         * attached to. The fragment should not add the view itself, but this can be used to
+         * generate the LayoutParams of the view.
+         * @param savedInstanceState If non-`null`, this fragment is being re-constructed
          * from a previous saved state as given here.
-         * @return Return the View for the fragment's UI, or null.
+         * @return Return the [View] for the fragment's UI, or `null`.
          */
         @SuppressLint("SetTextI18n")
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
             val rootView = inflater.inflate(R.layout.fragment_main_dummy, container, false)
             val dummyTextView = rootView.findViewById<TextView>(R.id.section_label)
             dummyTextView.text = Integer.toString(requireArguments().getInt(ARG_SECTION_NUMBER))
