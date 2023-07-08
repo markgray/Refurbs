@@ -18,6 +18,7 @@
 package com.example.android.imagepixelization
 
 import android.animation.ObjectAnimator
+import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Bitmap
@@ -28,6 +29,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.animation.LinearInterpolator
 import android.widget.CheckBox
@@ -125,11 +127,12 @@ class ImagePixelization : Activity() {
      */
     private val mOnSeekBarChangeListener: OnSeekBarChangeListener = object : OnSeekBarChangeListener {
         /**
-         * Notification that the user has finished a touch gesture. If the new position of our `SeekBar`
-         * is SEEKBAR_STOP_CHANGE_DELTA (5) different than the last position we pixilated for we call our
-         * method `invokePixelization` to update the level of pixilation of our image.
+         * Notification that the user has finished a touch gesture. If the new position of our
+         * [SeekBar] is [SEEKBAR_STOP_CHANGE_DELTA] (5) different than the last position we
+         * pixilated for we call our method [invokePixelization] to update the level of pixilation
+         * of our image.
          *
-         * @param seekBar The SeekBar in which the touch gesture began
+         * @param seekBar The [SeekBar] in which the touch gesture began
          */
         override fun onStopTrackingTouch(seekBar: SeekBar) {
             if (Math.abs(mSeekBar!!.progress - mLastProgress) > SEEKBAR_STOP_CHANGE_DELTA) {
@@ -140,19 +143,19 @@ class ImagePixelization : Activity() {
         /**
          * Notification that the user has started a touch gesture. We ignore.
          *
-         * @param seekBar The SeekBar in which the touch gesture began
+         * @param seekBar The [SeekBar] in which the touch gesture began
          */
         override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
         /**
-         * Notification that the progress level has changed. We just call our method `checkIfShouldPixelize`
-         * to first check if enough time has elapsed since the last pixelization call was invoked, and
-         * if it has it calls our method `invokePixelization` to update the level of pixilation of
-         * our image.
+         * Notification that the progress level has changed. We just call our method
+         * [checkIfShouldPixelize] to first check if enough time has elapsed since the
+         * last pixelization call was invoked, and if it has it calls our method
+         * `invokePixelization` to update the level of pixilation of our image.
          *
-         * @param seekBar The SeekBar whose progress has changed
+         * @param seekBar The [SeekBar] whose progress has changed
          * @param progress The current progress level.
-         * @param fromUser True if the progress change was initiated by the user.
+         * @param fromUser `true` if the progress change was initiated by the user.
          */
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
             checkIfShouldPixelize()
@@ -162,9 +165,9 @@ class ImagePixelization : Activity() {
     /**
      * Checks if enough time has elapsed since the last pixelization call was invoked. This prevents
      * too many pixelization processes from being invoked at the same time while previous ones have
-     * not yet completed. We check if the current system time is TIME_BETWEEN_TASKS (400) later than
-     * our field `mLastTime` and if it is we call our method `invokePixelization` to update
-     * the level of pixilation of our image.
+     * not yet completed. We check if the current system time is [TIME_BETWEEN_TASKS] (400) later
+     * than our [Long] field [mLastTime] and if it is we call our method `invokePixelization` to
+     * update the level of pixilation of our image.
      */
     fun checkIfShouldPixelize() {
         if (System.currentTimeMillis() - mLastTime > TIME_BETWEEN_TASKS) {
@@ -173,12 +176,12 @@ class ImagePixelization : Activity() {
     }
 
     /**
-     * Initialize the contents of the Activity's standard options menu. We fetch a `MenuInflater`
-     * for this context and use it to inflate our menu layout R.menu.image_pixelization into our
-     * parameter `Menu menu`.
+     * Initialize the contents of the Activity's standard options menu. We fetch a [MenuInflater]
+     * for this context and use it to inflate our menu layout file [R.menu.image_pixelization] into
+     * our [Menu] parameter [menu].
      *
      * @param menu The options menu in which you place your items.
-     * @return You must return true for the menu to be displayed
+     * @return You must return `true` for the menu to be displayed
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.image_pixelization, menu)
@@ -187,40 +190,39 @@ class ImagePixelization : Activity() {
 
     /**
      * This hook is called whenever an item in your options menu is selected. We switch on the item
-     * id of our parameter `MenuItem item`:
+     * id of our [MenuItem] parameter [item]:
      *
-     *  *
-     * R.id.animate: ("Animate") We initialize `ObjectAnimator animator` with an instance
-     * configured to animate the int "progress" property of `SeekBar mSeekBar` from 0 to
-     * the upper limit its range. We set its `TimeInterpolator` to a new instance of
-     * `LinearInterpolator` (interpolator where the rate of change is constant), set its
-     * duration to SEEKBAR_ANIMATION_DURATION (10_000), start it running and then break.
+     *  * [R.id.animate]: ("Animate") We initialize [ObjectAnimator] variable `val animator` with an
+     *  instance configured to animate the [Int] "progress" property of [SeekBar] field [mSeekBar]
+     *  from 0 to the upper limit its range. We set its [TimeInterpolator] to a new instance of
+     * [LinearInterpolator] (interpolator where the rate of change is constant), set its
+     * duration to SEEKBAR_ANIMATION_DURATION (10_000), and start it running.
      *
-     *  *
-     * R.id.checkbox: ("Using AsyncTask") If our field `mIsChecked` is true we set the
-     * checked state of `item` to false and set `mIsChecked` to false, if it is
-     * currently false we set the checked state of `item` to true and set `mIsChecked`
-     * to true. In either case we then break.
+     *  * [R.id.checkbox]: ("Using AsyncTask") If our [Boolean] field [mIsChecked] is `true` we set
+     *  the checked state of [MenuItem] parameter [item] to `false` and set [Boolean] field
+     *  [mIsChecked] to `false`, if it is currently `false` we set the checked state of [item] to
+     *  `true` and set [mIsChecked] to true.
      *
-     *  *
-     * R.id.builtin_pixelation_checkbox: ("Built-in Pixelization") We toggle the value of our
-     * field `mIsBuiltinPixelizationChecked`, set the checked state of `item` to
-     * it, and then break.
+     *  * [R.id.builtin_pixelation_checkbox]: ("Built-in Pixelization") We toggle the value of our
+     *  [Boolean] field [mIsBuiltinPixelizationChecked], and set the checked state of [item] to it.
      *
-     *  *
-     * default: we just break.
+     *  * default: we ignore.
      *
+     * We then return `true` to the caller to consume the event.
      *
-     * We then return true to the caller to consume the event.
-     *
-     * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to proceed, true to consume it here.
+     * @param item The [MenuItem] that was selected.
+     * @return [Boolean] Return `false` to allow normal menu processing to proceed, `true` to
+     * consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.animate -> {
-                val animator = ObjectAnimator.ofInt(mSeekBar, "progress", 0,
-                    mSeekBar!!.max)
+                val animator = ObjectAnimator.ofInt(
+                    mSeekBar,
+                    "progress",
+                    0,
+                    mSeekBar!!.max
+                )
                 animator.interpolator = LinearInterpolator()
                 animator.duration = SEEKBAR_ANIMATION_DURATION.toLong()
                 animator.start()
@@ -251,13 +253,11 @@ class ImagePixelization : Activity() {
      * greater size. Similarly, a smaller pixelization factor imposes a larger number of regions of
      * smaller size.
      *
-     *
-     * We initialize `int width` with the width of our parameter `Bitmap bitmap` and
-     * `int height` with its height. If our field `Bitmap mPixelatedBitmap` is null or
-     * has a different width of height than `bitmap` we set `mPixelatedBitmap` to a
+     * We initialize [Int] variable `val width` with the width of our [Bitmap] parameter [bitmap]
+     * and [Int] variable `val height` with its height. If our [Bitmap] field [mPixelatedBitmap] is
+     * `null` or has a different width or height than [bitmap] we set [mPixelatedBitmap] to a
      * `width` by `height` instance created to use ARGB_8888 config (each RGB and alpha
      * component occupies 1 byte).
-     *
      *
      * We initialize `int xPixels` to our parameter `pixelizationFactor` times `width`
      * truncated to int, and if this is 0 we set it to 1. We initialize `int yPixels` to our
@@ -267,7 +267,6 @@ class ImagePixelization : Activity() {
      * for `int[] bitmapPixels`, and load a copy of the data in `bitmap` into it. We allocate
      * a `yPixels` times `xPixels` array for `int[] pixels`, and declare `int maxX`
      * and `int maxY`.
-     *
      *
      * Now we loop over `int y` for `y` less then `height` incrementing by `yPixels`
      * and over `int x` for `x` less then `width` incrementing by `xPixels`:
@@ -307,8 +306,9 @@ class ImagePixelization : Activity() {
     fun customImagePixelization(pixelizationFactor: Float, bitmap: Bitmap?): BitmapDrawable {
         val width = bitmap!!.width
         val height = bitmap.height
-        if (mPixelatedBitmap == null || !(width == mPixelatedBitmap!!.width && height ==
-                mPixelatedBitmap!!.height)) {
+        if (mPixelatedBitmap == null ||
+            !(width == mPixelatedBitmap!!.width && height == mPixelatedBitmap!!.height)
+        ) {
             mPixelatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         }
         var xPixels = (pixelizationFactor * width.toFloat()).toInt()
