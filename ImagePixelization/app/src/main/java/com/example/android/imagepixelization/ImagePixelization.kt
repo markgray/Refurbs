@@ -259,49 +259,42 @@ class ImagePixelization : Activity() {
      * `width` by `height` instance created to use ARGB_8888 config (each RGB and alpha
      * component occupies 1 byte).
      *
-     * We initialize `int xPixels` to our parameter `pixelizationFactor` times `width`
+     * We initialize [Int] variable `var xPixels` to our parameter `pixelizationFactor` times `width`
      * truncated to int, and if this is 0 we set it to 1. We initialize `int yPixels` to our
-     * parameter `pixelizationFactor` times `height` truncated to int, and if this is 0
-     * we set it to 1. We declare `int pixel`, `int red`, `int green`, `int blue`,
-     * and `numPixels` setting them to 0. We allocate a `width` times `height` array
-     * for `int[] bitmapPixels`, and load a copy of the data in `bitmap` into it. We allocate
-     * a `yPixels` times `xPixels` array for `int[] pixels`, and declare `int maxX`
-     * and `int maxY`.
+     * [Float] parameter [pixelizationFactor] times `height` truncated to [Int], and if this is 0
+     * we set it to 1. We declare [Int] variable `var pixel`, [Int] variable `var red`, [Int] variable
+     * `var green`, [Int] variable `var blue`, and [Int] variable `var numPixels` setting them to 0.
+     * We allocate a `width` times `height` [IntArray] for `val bitmapPixels`, and load a copy of
+     * the data in [Bitmap] parameter [bitmap] into it. We allocate a `yPixels` times `xPixels`
+     * [IntArray] for `val pixels`, and declare [Int] variable `var maxX` and [Int] variable
+     * `var maxY`.
      *
-     * Now we loop over `int y` for `y` less then `height` incrementing by `yPixels`
-     * and over `int x` for `x` less then `width` incrementing by `xPixels`:
+     * Now we loop over [Int] variable `y` while `y` is less then `height` incrementing by `yPixels`
+     * and over [Int] variable `x` for `x` less then `width` incrementing by `xPixels`:
      *
-     *  *
-     * We set `numPixels`, `red`, `green`, and `blue` all to 0. We set
-     * `maxX` to the minimum of `x+xPixels` and `width` (ie to the end point
-     * of the square we are considering) and `maxY` to the minimum of `y+yPixels`
-     * and `height` (the bottom of our square).
+     *  * We set `numPixels`, `red`, `green`, and `blue` all to 0. We set `maxX` to the minimum of
+     *  `x + xPixels` and `width` (ie to the end point of the square we are considering) and `maxY`
+     *  to the minimum of `y + yPixels` and `height` (the bottom of our square).
      *
-     *  *
-     * We now loop over `int i` from `x` to `maxX` and `int j` from `y`
-     * to `maxY` setting `pixel` to the pixel at `j` times `width` plus
-     * `i` in `bitmapPixels`, then adding the red component of `pixel` to `red`,
-     * the green component to `green`, the blue component to `blue` and incrementing
-     * `numPixels`.
+     *  * We now loop over [Int] `var i` from `x` until `maxX` and [Int] `var j` from `y` to `maxY`
+     *  setting `pixel` to the pixel at `j` times `width` plus `i` in `bitmapPixels`, then adding
+     *  the red component of `pixel` to `red`, the green component to `green`, the blue component
+     *  to `blue` and incrementing `numPixels`.
      *
-     *  *
-     * When done adding up the color components in our square we set `pixel` to an RGB
-     * color formed by dividing each component by `numPixels`. We then fill all elements
-     * of `int[] pixels` with `pixel`.
+     *  * When done adding up the color components in our square we set `pixel` to an RGB color
+     *  formed by dividing each component by `numPixels`. We then fill all elements of [IntArray]
+     *  `pixels` with `pixel`.
      *
-     *  *
-     * We then initialize `int w` with the minimum of `xPixels` and `width`
-     * minus `x` and `int h` with the minimum of `yPixels` and `height`
-     * minus `y`. We then set the pixels in `Bitmap mPixelatedBitmap` from `x`
-     * to `x+w` and from `y` to `y+h` to `pixels` using a stride of
-     * `w` and loop around to consider the next square.
+     *  * We then initialize [Int] variable `val w` with the minimum of `xPixels` and `width` minus
+     *  `x` and [Int] variable `val h` with the minimum of `yPixels` and `height` minus `y`. We then
+     *  set the pixels in [Bitmap] field [mPixelatedBitmap] from `x` to `x + w` and from `y` to
+     *  `y + h` to `pixels` using a stride of `w` and loop around to consider the next square.
      *
-     *
-     * When done we return a `BitmapDrawable` created from `Bitmap mPixelatedBitmap`.
+     * When done we return a [BitmapDrawable] created from [Bitmap] field [mPixelatedBitmap].
      *
      * @param pixelizationFactor pixelization factor to achieve.
-     * @param bitmap original `Bitmap` to pixilatize.
-     * @return a pixelated `BitmapDrawable` version of our parameter `Bitmap bitmap`.
+     * @param bitmap original [Bitmap] to pixilatize.
+     * @return a pixelated [BitmapDrawable] version of our [Bitmap] parameter [bitmap].
      */
     fun customImagePixelization(pixelizationFactor: Float, bitmap: Bitmap?): BitmapDrawable {
         val width = bitmap!!.width
@@ -346,8 +339,8 @@ class ImagePixelization : Activity() {
                 }
                 pixel = Color.rgb(red / numPixels, green / numPixels, blue / numPixels)
                 Arrays.fill(pixels, pixel)
-                val w = Math.min(xPixels, width - x)
-                val h = Math.min(yPixels, height - y)
+                val w: Int = Math.min(xPixels, width - x)
+                val h: Int = Math.min(yPixels, height - y)
                 mPixelatedBitmap!!.setPixels(pixels, 0, w, x, y, w, h)
                 x += xPixels
             }
@@ -362,15 +355,14 @@ class ImagePixelization : Activity() {
      * setting the filter flag to false), the same effect can be achieved with much better
      * performance.
      *
-     *
-     * We initialize `int width` to the width of our parameter `Bitmap bitmap` and
-     * `int height` to its height. We initialize `int downScaleFactorWidth` to our
-     * parameter `pixelizationFactor` times `width` truncated to int, and if this is
-     * 0 we set it to 1. We initialize `int downScaleFactorHeight` to our parameter
-     * `pixelizationFactor` times `height` truncated to int, and if this is 0 we set
-     * it to 1. We initialize `int downScaledWidth` to `width` divided by
-     * `downScaleFactorWidth` and `int downScaledHeight` to `height` divided by
-     * `downScaleFactorHeight`.
+     * We initialize [Int] variable `val width` to the width of our [Bitmap] parameter [bitmap] and
+     * [Int] variable `val height` to its height. We initialize [Int] variable
+     * `var downScaleFactorWidth` to our [Float] parameter [pixelizationFactor] times `width`
+     * truncated to [Int], and if this is 0 we set it to 1. We initialize [Int] variable
+     * `var downScaleFactorHeight` to our [Float] parameter [pixelizationFactor] times `height`
+     * truncated to [Int], and if this is 0 we set it to 1. We initialize [Int] variable
+     * `val downScaledWidth` to `width` divided by `downScaleFactorWidth` and [Int] variable
+     * `val downScaledHeight` to `height` divided by `downScaleFactorHeight`.
      *
      *
      * We create `Bitmap pixelatedBitmap` from our parameter `Bitmap bitmap` using the
