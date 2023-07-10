@@ -364,25 +364,19 @@ class ImagePixelization : Activity() {
      * `val downScaledWidth` to `width` divided by `downScaleFactorWidth` and [Int] variable
      * `val downScaledHeight` to `height` divided by `downScaleFactorHeight`.
      *
-     *
-     * We create `Bitmap pixelatedBitmap` from our parameter `Bitmap bitmap` using the
-     * `createScaledBitmap` of `Bitmap` to scale `bitmap` to `downScaledWidth`
-     * by `downScaledHeight` without filtering.
-     *
+     * We create [Bitmap] variable `val pixelatedBitmap` from our [Bitmap] parameter [bitmap] using
+     * the [Bitmap.createScaledBitmap] method to scale [bitmap] to `downScaledWidth` by
+     * `downScaledHeight` without filtering.
      *
      * Now we branch on whether we are running on a JELLY_BEAN_MR1 or newer device:
      *
-     *  *
-     * JELLY_BEAN_MR1 or newer: We initialize `BitmapDrawable bitmapDrawable` with an
-     * instance created from `pixelatedBitmap`, disable its drawable filter, and return
-     * it to the caller.
+     *  * JELLY_BEAN_MR1 or newer: We initialize [BitmapDrawable] variable `val bitmapDrawable` with
+     *  an instance created from `pixelatedBitmap`, disable its drawable filter, and return it to
+     *  the caller.
      *
-     *  *
-     * Older than JELLY_BEAN_MR1: We initialize `Bitmap upscaled` with an instance
-     * created from `pixelatedBitmap` scaled to be `width` by `height`
-     * without a filter and return a `BitmapDrawable` created from it to our caller.
-     *
-     *
+     *  * Older than JELLY_BEAN_MR1: We initialize [Bitmap] variable `val upscaled` with an instance
+     *  created from `pixelatedBitmap` scaled to be `width` by `height` without a filter and return
+     *  a [BitmapDrawable] created from it to our caller.
      *
      * @param pixelizationFactor pixelization factor to achieve.
      * @param bitmap original `Bitmap` to pixilatize.
@@ -415,7 +409,7 @@ class ImagePixelization : Activity() {
          * can be created corresponding to the downscaled bitmap such that when it is
          * up-scaled to fit the ImageView, the upscaling operation is a lot faster since
          * it uses internal optimizations to fit the ImageView.
-         * */
+         */
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             val bitmapDrawable = BitmapDrawable(resources, pixelatedBitmap)
             bitmapDrawable.isFilterBitmap = false
@@ -428,20 +422,19 @@ class ImagePixelization : Activity() {
 
     /**
      * Invokes pixelization either on the main thread or on a background thread depending on whether
-     * or not the checkbox with id R.id.checkbox ("Using AsyncTask") was checked. We set our field
-     * `mLastTime` to the current system time, set our field `mLastProgress` to the current
-     * progress of `SeekBar mSeekBar`, then branch on the value of `mIsChecked`:
+     * or not the checkbox with id [R.id.checkbox] ("Using AsyncTask") was checked. We set our [Long]
+     * field [mLastTime] to the current system time, set our [Int] field [mLastProgress] to the current
+     * progress of [SeekBar] field [], then branch on the value of [Boolean] field [mIsChecked]:
      *
-     *  *
-     * true: (background thread) We initialize `PixelizeImageAsyncTask asyncPixelateTask`
-     * with a new instance and start it running with the value of the current progress of
-     * `SeekBar mSeekBar` divided by PROGRESS_TO_PIXELIZATION_FACTOR, and `Bitmap mImageBitmap`
-     * as its two arguments.
+     *  * `true`: (background thread) We initialize [PixelizeImageAsyncTask] variable
+     *  `val asyncPixelateTask` with a new instance and start it running with the value of the
+     *  current progress of [SeekBar] field [mSeekBar] divided by [PROGRESS_TO_PIXELIZATION_FACTOR],
+     *  and [Bitmap] field [mImageBitmap] as its two arguments.
      *
-     *  *
-     * false: (main thread) We set the content of `ImageView mImageView` to the `BitmapDrawable`
-     * that our method `pixelizeImage` creates from `mImageBitmap` for a pixelization factor
-     * of the current progress of `SeekBar mSeekBar` divided by PROGRESS_TO_PIXELIZATION_FACTOR.
+     *  * `false`: (main thread) We set the content of [ImageView] field [mImageView] to the
+     *  [BitmapDrawable] that our method [pixelizeImage] creates from [Bitmap] field [mImageBitmap]
+     *  for a pixelization factorof the current progress of [SeekBar] field [mSeekBar] divided by
+     *  [PROGRESS_TO_PIXELIZATION_FACTOR].
      *
      *
      */
@@ -450,34 +443,36 @@ class ImagePixelization : Activity() {
         mLastProgress = mSeekBar!!.progress
         if (mIsChecked) {
             val asyncPixelateTask = PixelizeImageAsyncTask()
-            asyncPixelateTask.execute(mSeekBar!!.progress / PROGRESS_TO_PIXELIZATION_FACTOR,
-                mImageBitmap)
+            asyncPixelateTask.execute(
+                mSeekBar!!.progress / PROGRESS_TO_PIXELIZATION_FACTOR,
+                mImageBitmap
+            )
         } else {
-            mImageView!!.setImageDrawable(pixelizeImage(mSeekBar!!.progress
-                / PROGRESS_TO_PIXELIZATION_FACTOR, mImageBitmap))
+            mImageView!!.setImageDrawable(
+                pixelizeImage(
+                    pixelizationFactor = mSeekBar!!.progress / PROGRESS_TO_PIXELIZATION_FACTOR,
+                    bitmap = mImageBitmap
+                )
+            )
         }
     }
 
     /**
      * Selects either the custom pixelization algorithm that sets and gets bitmap pixels manually or
-     * the one that uses built-in bitmap operations. We branch on the value of our field
-     * `mIsBuiltinPixelizationChecked`:
+     * the one that uses built-in bitmap operations. We branch on the value of our [Boolean] field
+     * [mIsBuiltinPixelizationChecked]:
      *
-     *  *
-     * true: (built-in bitmap operations) We return the `BitmapDrawable` created by our
-     * method `builtInPixelization` from `Bitmap bitmap` for a pixelization factor
-     * of our parameter `float pixelizationFactor`
+     *  * `true`: (built-in bitmap operations) We return the [BitmapDrawable] created by our method
+     *  [builtInPixelization] from [Bitmap] parameter [bitmap] for a pixelization factor of our
+     *  [Float] parameter [pixelizationFactor]
      *
-     *  *
-     * false: (custom manual pixelization) We return the `BitmapDrawable` created by our
-     * method `customImagePixelization` from `Bitmap bitmap` for a pixelization factor
-     * of our parameter `float pixelizationFactor`
-     *
-     *
+     *  * `false`: (custom manual pixelization) We return the [BitmapDrawable] created by our method
+     *  [customImagePixelization] from [Bitmap] parameter [bitmap] for a pixelization factor of our
+     *  [Float] parameter [pixelizationFactor]
      *
      * @param pixelizationFactor pixelization factor to achieve.
-     * @param bitmap original `Bitmap` to pixilatize.
-     * @return a pixelated `BitmapDrawable` version of our parameter `Bitmap bitmap`.
+     * @param bitmap original [Bitmap] to pixilatize.
+     * @return a pixelated [BitmapDrawable] version of our [Bitmap] parameter [bitmap].
      */
     fun pixelizeImage(pixelizationFactor: Float, bitmap: Bitmap?): BitmapDrawable {
         return if (mIsBuiltinPixelizationChecked) {
@@ -496,15 +491,15 @@ class ImagePixelization : Activity() {
     private inner class PixelizeImageAsyncTask : AsyncTask<Any?, Void?, BitmapDrawable>() {
         /**
          * We override this method to perform a computation on a background thread. We initialize
-         * `float pixelizationFactor` by casting `params[0]` to `Float` and
-         * `Bitmap originalBitmap` by casting `params[1]` to `Bitmap`. We then
-         * return the `BitmapDrawable` returned by our method `pixelizeImage` for the
-         * arguments `pixelizationFactor` and `originalBitmap` to the caller (which will
-         * then be passed to our `onPostExecute` override on the UI thread).
+         * [Float] variable `val pixelizationFactor` by casting `params[0]` to `Float` and [Bitmap]
+         * variable `val originalBitmap` by casting `params[1]` to [Bitmap]. We then return the
+         * [BitmapDrawable] returned by our method [pixelizeImage] for the arguments `pixelizationFactor`
+         * and `originalBitmap` to the caller (which will then be passed to our [onPostExecute]
+         * override on the UI thread).
          *
-         * @param params The parameters of the task, a `float pixelizationFactor` and a
-         * `Bitmap originalBitmap`
-         * @return a `BitmapDrawable` created from `originalBitmap` for a pixelization
+         * @param params The parameters of the task, a [Float] `pixelizationFactor` and a [Bitmap]
+         * `originalBitmap`
+         * @return a [BitmapDrawable] created from `originalBitmap` for a pixelization
          * factor of `pixelizationFactor`
          */
         @Deprecated("Deprecated in Java")
@@ -515,11 +510,11 @@ class ImagePixelization : Activity() {
         }
 
         /**
-         * Runs on the UI thread after [.doInBackground]. The specified result is the value
-         * returned by [.doInBackground]. We set the content of our field `ImageView mImageView`
-         * to our parameter `BitmapDrawable result`.
+         * Runs on the UI thread after [doInBackground]. The specified result is the value
+         * returned by [doInBackground]. We set the content of our [ImageView] field [mImageView]
+         * to our [BitmapDrawable] parameter [result].
          *
-         * @param result The result of the operation computed by [.doInBackground].
+         * @param result The result of the operation computed by [doInBackground].
          */
         @Deprecated("Deprecated in Java", ReplaceWith("mImageView!!.setImageDrawable(result)"))
         override fun onPostExecute(result: BitmapDrawable) {
