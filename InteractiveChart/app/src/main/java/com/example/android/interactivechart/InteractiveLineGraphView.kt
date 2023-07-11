@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Paint.FontMetrics
 import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.Rect
@@ -45,51 +46,47 @@ import androidx.core.widget.EdgeEffectCompat
 /**
  * A view representing a simple yet interactive line chart for the function `x^3 - x/4`.
  *
- *
  * This view isn't all that useful on its own; rather it serves as an example of how to correctly
  * implement these types of gestures to perform zooming and scrolling with interesting content
  * types.
  *
- *
- * The view is interactive in that it can be zoomed and panned using
- * typical [gestures](http://developer.android.com/design/patterns/gestures.html) such
+ * The view is interactive in that it can be zoomed and panned using typical
+ * [gestures](http://developer.android.com/design/patterns/gestures.html) such
  * as double-touch, drag, pinch-open, and pinch-close. This is done using the
- * [ScaleGestureDetector], [GestureDetector], and [OverScroller] classes. Note
- * that the platform-provided view scrolling behavior (e.g. [View.scrollBy] is NOT
- * used.
- *
+ * [ScaleGestureDetector], [GestureDetector], and [OverScroller] classes. Note that
+ * the platform-provided view scrolling behavior (e.g. [View.scrollBy] is NOT used.
  *
  * The view also demonstrates the correct use of
- * [touch feedback](http://developer.android.com/design/style/touch-feedback.html) to
- * indicate to users that they've reached the content edges after a pan or fling gesture. This
- * is done using the `EdgeEffectCompat` class.
- *
+ * [touch feedback](http://developer.android.com/design/style/touch-feedback.html) to indicate to
+ * users that they've reached the content edges after a pan or fling gesture. This is done using
+ * the [EdgeEffectCompat] class.
  *
  * Finally, this class demonstrates the basics of creating a custom view, including support for
- * custom attributes (see the constructors), a simple implementation for
- * [.onMeasure], an implementation for [.onSaveInstanceState] and a fairly
- * straightforward [Canvas]-based rendering implementation in
- * [.onDraw].
- *
+ * custom attributes (see the constructors), a simple implementation for [onMeasure], an
+ * implementation for [onSaveInstanceState] and a fairly straightforward [Canvas]-based rendering
+ * implementation in [onDraw].
  *
  * Note that this view doesn't automatically support directional navigation or other accessibility
  * methods. Activities using this view should generally provide alternate navigation controls.
  * Activities using this view should also present an alternate, text-based representation of this
  * view's content for vision-impaired users.
  */
-open class InteractiveLineGraphView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : View(context, attrs, defStyle) {
+open class InteractiveLineGraphView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : View(context, attrs, defStyle) {
     /**
-     * The current viewport. This rectangle represents the currently visible chart domain
-     * and range. The currently visible chart X values are from this rectangle's left to its right.
+     * The current viewport. This rectangle represents the currently visible chart domain and range.
+     * The currently visible chart X values are from this rectangle's left to its right.
      * The currently visible chart Y values are from this rectangle's top to its bottom.
-     *
      *
      * Note that this rectangle's top is actually the smaller Y value, and its bottom is the larger
      * Y value. Since the chart is drawn onscreen in such a way that chart Y values increase
      * towards the top of the screen (decreasing pixel Y positions), this rectangle's "top" is drawn
      * above this rectangle's "bottom" value.
      *
-     * @see .mContentRect
+     * @see [mContentRect]
      */
     private var mCurrentViewport: RectF? = RectF(AXIS_X_MIN, AXIS_Y_MIN, AXIS_X_MAX, AXIS_Y_MAX)
 
@@ -97,16 +94,57 @@ open class InteractiveLineGraphView @JvmOverloads constructor(context: Context, 
      * The current destination rectangle (in pixel coordinates) into which the chart data should
      * be drawn. Chart labels are drawn outside this area.
      *
-     * @see .mCurrentViewport
+     * @see [mCurrentViewport]
      */
     private val mContentRect = Rect()
 
     // Current attribute values and Paints.
+
+    /**
+     * The size of the text drawn by [Paint] field [mLabelTextPaint], it is used in the call to
+     * its [Paint.setTextSize] method (kotlin `textSize` property) in our [initPaints] method.
+     * It is set by the attribute [R.styleable.InteractiveLineGraphView_labelTextSize] of
+     * [R.styleable.InteractiveLineGraphView] to app:labelTextSize="14sp" in the layout file
+     * `activity_main.xml`
+     */
     private var mLabelTextSize = 0f
+
+    /**
+     * The separation between axis labels, it is used by the [drawAxes] method. It is set by the
+     * attribute [R.styleable.InteractiveLineGraphView_labelSeparation] of
+     * [R.styleable.InteractiveLineGraphView] to app:labelSeparation="10dp" in the layout file
+     * `activity_main.xml`
+     */
     private var mLabelSeparation = 0
+
+    /**
+     * The color of the text drawn by [Paint] field [mLabelTextPaint], it is used in the call to
+     * its [Paint.setColor] method (kotlin `color` property) in our [initPaints] method. It is set
+     * by the attribute [R.styleable.InteractiveLineGraphView_labelTextColor] of
+     * [R.styleable.InteractiveLineGraphView] to app:labelTextColor="#d000" in the layout file
+     * `activity_main.xml`
+     */
     private var mLabelTextColor = 0
+
+    /**
+     * The [Paint] used by our [drawAxes] method to draw text. It is constructed and configured in
+     * our [initPaints] method.
+     */
     private var mLabelTextPaint: Paint? = null
+
+    /**
+     * Maximum length of a label, used when an estimated size for is needed, it is set in our
+     * [initPaints] method to the value that the [Paint.measureText] method of [mLabelTextPaint]
+     * returns for the text "0000" converted to an [Int].
+     */
     private var mMaxLabelWidth = 0
+
+    /**
+     * Absolute value of the value returned for the [FontMetrics.top] field of the [FontMetrics]
+     * returned by the [Paint.getFontMetrics] method (kotlin `fontMetrics` property) of [Paint]
+     * field [mLabelTextPaint] converted to [Int]. It is used as the height of the text drawn by
+     * [mLabelTextPaint] when size estimates are needed.
+     */
     private var mLabelHeight = 0
     private var mGridThickness = 0f
     private var mGridColor = 0
@@ -322,20 +360,26 @@ open class InteractiveLineGraphView @JvmOverloads constructor(context: Context, 
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        mContentRect[paddingLeft + mMaxLabelWidth + mLabelSeparation, paddingTop, width - paddingRight] = height - paddingBottom - mLabelHeight - mLabelSeparation
+        mContentRect[paddingLeft + mMaxLabelWidth + mLabelSeparation, paddingTop, width - paddingRight] =
+            height - paddingBottom - mLabelHeight - mLabelSeparation
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val minChartSize = resources.getDimensionPixelSize(R.dimen.min_chart_size)
         setMeasuredDimension(
             Math.max(suggestedMinimumWidth,
-                resolveSize(minChartSize + paddingLeft + mMaxLabelWidth
-                    + mLabelSeparation + paddingRight,
-                    widthMeasureSpec)),
+                resolveSize(
+                    minChartSize + paddingLeft + mMaxLabelWidth + mLabelSeparation + paddingRight,
+                    widthMeasureSpec
+                )
+            ),
             Math.max(suggestedMinimumHeight,
-                resolveSize(minChartSize + paddingTop + mLabelHeight
-                    + mLabelSeparation + paddingBottom,
-                    heightMeasureSpec)))
+                resolveSize(
+                    minChartSize + paddingTop + mLabelHeight + mLabelSeparation + paddingBottom,
+                    heightMeasureSpec
+                )
+            )
+        )
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -372,12 +416,14 @@ open class InteractiveLineGraphView @JvmOverloads constructor(context: Context, 
             mCurrentViewport!!.left,
             mCurrentViewport!!.right,
             mContentRect.width() / mMaxLabelWidth / 2,
-            mXStopsBuffer)
+            mXStopsBuffer
+        )
         computeAxisStops(
             mCurrentViewport!!.top,
             mCurrentViewport!!.bottom,
             mContentRect.height() / mLabelHeight / 2,
-            mYStopsBuffer)
+            mYStopsBuffer
+        )
 
         // Avoid unnecessary allocations during drawing. Re-use allocated
         // arrays and only reallocate if the number of stops grows.
@@ -439,9 +485,9 @@ open class InteractiveLineGraphView @JvmOverloads constructor(context: Context, 
             canvas.drawText(
                 mLabelBuffer, labelOffset, labelLength,
                 mAxisXPositionsBuffer[i],
-                (
-                    mContentRect.bottom + mLabelHeight + mLabelSeparation).toFloat(),
-                mLabelTextPaint!!)
+                (mContentRect.bottom + mLabelHeight + mLabelSeparation).toFloat(),
+                mLabelTextPaint!!
+            )
             i++
         }
 
@@ -455,10 +501,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(context: Context, 
             labelOffset = mLabelBuffer.size - labelLength
             canvas.drawText(
                 mLabelBuffer, labelOffset, labelLength,
-                (
-                    mContentRect.left - mLabelSeparation).toFloat(),
+                (mContentRect.left - mLabelSeparation).toFloat(),
                 mAxisYPositionsBuffer[i] + mLabelHeight / 2,
-                mLabelTextPaint!!)
+                mLabelTextPaint!!
+            )
             i++
         }
     }
@@ -482,8 +528,9 @@ open class InteractiveLineGraphView @JvmOverloads constructor(context: Context, 
     }
 
     /**
-     * Draws the currently visible portion of the data series defined by [.fun] to the
-     * canvas. This method does not clip its drawing, so users should call [ before calling this method.][Canvas.clipRect]
+     * Draws the currently visible portion of the data series defined by [fun] to the
+     * canvas. This method does not clip its drawing, so users should call [Canvas.clipRect]
+     * before calling this method.
      */
     private fun drawDataSeriesUnclipped(canvas: Canvas) {
         mSeriesLinesBuffer[0] = mContentRect.left.toFloat()
