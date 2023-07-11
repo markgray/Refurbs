@@ -522,14 +522,14 @@ class ImagePixelization : Activity() {
         }
 
         /**
-         * Runs on the UI thread before [.doInBackground]. We ignore.
+         * Runs on the UI thread before [doInBackground]. We ignore.
          */
         @Deprecated("Deprecated in Java")
         override fun onPreExecute() {}
 
         /**
-         * Runs on the UI thread after [.publishProgress] is invoked. The specified values are
-         * the values passed to [.publishProgress]. We ignore.
+         * Runs on the UI thread after [publishProgress] is invoked. The specified values are
+         * the values passed to [publishProgress]. We ignore.
          *
          * @param values The values indicating progress.
          */
@@ -539,23 +539,24 @@ class ImagePixelization : Activity() {
 
     companion object {
         /**
-         * Duration of the animation of the "progress" property of our `SeekBar mSeekBar` (10 seconds)
+         * Duration of the animation of the "progress" property of our [SeekBar] field [mSeekBar]
+         * (10 seconds)
          */
-        private const val SEEKBAR_ANIMATION_DURATION = 10000
+        private const val SEEKBAR_ANIMATION_DURATION = 10_000
 
         /**
-         * Delay between successive calls to `invokePixelization` in milliseconds.
+         * Delay between successive calls to [invokePixelization] in milliseconds.
          */
         private const val TIME_BETWEEN_TASKS = 400
 
         /**
-         * Change in `SeekBar` position necessary before we decide to call `invokePixelization`.
+         * Change in [SeekBar] position necessary before we decide to call [invokePixelization].
          */
         private const val SEEKBAR_STOP_CHANGE_DELTA = 5
 
         /**
-         * Conversion factor between `SeekBar` position and the amount of pixelization we produce
-         * (ie the pixelization is the `SeekBar` position divided by PROGRESS_TO_PIXELIZATION_FACTOR)
+         * Conversion factor between [SeekBar] position and the amount of pixelization we produce
+         * (ie the pixelization is the [SeekBar] position divided by [PROGRESS_TO_PIXELIZATION_FACTOR])
          */
         private const val PROGRESS_TO_PIXELIZATION_FACTOR = 4000.0f
     }
