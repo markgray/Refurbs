@@ -146,17 +146,76 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * [mLabelTextPaint] when size estimates are needed.
      */
     private var mLabelHeight = 0
+
+    /**
+     * This is used in a call to the [Paint.setStrokeWidth] method of [Paint] field [mGridPaint]
+     * (aka kotlin `strokeWidth` property) to set the width for stroking. It is set by the attribute
+     * [R.styleable.InteractiveLineGraphView_gridThickness] of [R.styleable.InteractiveLineGraphView]
+     * to app:gridThickness="1dp" in the layout file `activity_main.xml`
+     */
     private var mGridThickness = 0f
+
+    /**
+     * This is used in a call to the [Paint.setColor] method of [Paint] field [mGridPaint]
+     * (aka kotlin `color` property) to set the paint's color.  It is set by the attribute
+     * [R.styleable.InteractiveLineGraphView_gridColor] of [R.styleable.InteractiveLineGraphView]
+     * to app:gridColor="#2000" in the layout file `activity_main.xml`
+     */
     private var mGridColor = 0
+
+    /**
+     * Used as the [Paint] in the calls to [Canvas.drawLines] that draw the horozontal and vertical
+     * grid lines of the graph.
+     */
     private var mGridPaint: Paint? = null
+
+    /**
+     * This is used in a call to the [Paint.setStrokeWidth] method of [Paint] field [mAxisPaint]
+     * (aka kotlin `strokeWidth` property) to set the width for stroking. It is set by the attribute
+     * [R.styleable.InteractiveLineGraphView_axisThickness] of [R.styleable.InteractiveLineGraphView]
+     * to app:axisThickness="2dp" in the layout file `activity_main.xml`
+     */
     private var mAxisThickness = 0f
+
+    /**
+     * This is used in a call to the [Paint.setColor] method of [Paint] field [mAxisPaint]
+     * (aka kotlin `color` property) to set the paint's color.  It is set by the attribute
+     * [R.styleable.InteractiveLineGraphView_axisColor] of [R.styleable.InteractiveLineGraphView]
+     * to app:axisColor="#d000" in the layout file `activity_main.xml`
+     */
     private var mAxisColor = 0
+
+    /**
+     * This is the [Paint] used in the call to [Canvas.drawRect] that draws the chart container,
+     * [Rect] field [mContentRect]
+     */
     private var mAxisPaint: Paint? = null
+
+    /**
+     * This is used in a call to the [Paint.setStrokeWidth] method of [Paint] field [mDataPaint]
+     * (aka kotlin `strokeWidth` property) to set the width for stroking. It is set by the attribute
+     * [R.styleable.InteractiveLineGraphView_dataThickness] of [R.styleable.InteractiveLineGraphView]
+     * to app:dataThickness="8dp" in the layout file `activity_main.xml`
+     */
     var dataThickness = 0f
+
+    /**
+     * This is used in a call to the [Paint.setColor] method of [Paint] field [mDataPaint]
+     * (aka kotlin `color` property) to set the paint's color.  It is set by the attribute
+     * [R.styleable.InteractiveLineGraphView_dataColor] of [R.styleable.InteractiveLineGraphView]
+     * to app:dataColor="#a6c" in the layout file `activity_main.xml`
+     */
     var dataColor = 0
+
+    /**
+     * Used as the [Paint] in the call to [Canvas.drawLines] that draws the data on the graph.
+     */
     private var mDataPaint: Paint? = null
 
-    // State objects and values related to gesture tracking.
+    //////////////////////////////////////////////////////////
+    // State objects and values related to gesture tracking.//
+    //////////////////////////////////////////////////////////
+
     private val mScaleGestureDetector: ScaleGestureDetector
     private val mGestureDetector: GestureDetectorCompat
     private val mScroller: OverScroller =OverScroller(context)
@@ -528,13 +587,13 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     }
 
     /**
-     * Draws the currently visible portion of the data series defined by [fun] to the
+     * Draws the currently visible portion of the data series defined by [`fun`] to the
      * canvas. This method does not clip its drawing, so users should call [Canvas.clipRect]
      * before calling this method.
      */
     private fun drawDataSeriesUnclipped(canvas: Canvas) {
         mSeriesLinesBuffer[0] = mContentRect.left.toFloat()
-        mSeriesLinesBuffer[1] = getDrawY(`fun`(mCurrentViewport!!.left))
+        mSeriesLinesBuffer[1] = getDrawY(fofX(mCurrentViewport!!.left))
         mSeriesLinesBuffer[2] = mSeriesLinesBuffer[0]
         mSeriesLinesBuffer[3] = mSeriesLinesBuffer[1]
         var x: Float
@@ -543,7 +602,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             mSeriesLinesBuffer[i * 4 + 1] = mSeriesLinesBuffer[(i - 1) * 4 + 3]
             x = mCurrentViewport!!.left + mCurrentViewport!!.width() / DRAW_STEPS * i
             mSeriesLinesBuffer[i * 4 + 2] = getDrawX(x)
-            mSeriesLinesBuffer[i * 4 + 3] = getDrawY(`fun`(x))
+            mSeriesLinesBuffer[i * 4 + 3] = getDrawY(fofX(x))
         }
         canvas.drawLines(mSeriesLinesBuffer, mDataPaint!!)
     }
@@ -1005,7 +1064,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
          * @param x The X value
          * @return The Y value
          */
-        private fun `fun`(x: Float): Float {
+        private fun fofX(x: Float): Float {
             return Math.pow(x.toDouble(), 3.0).toFloat() - x / 4
         }
 
