@@ -98,7 +98,9 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      */
     private val mContentRect = Rect()
 
-    // Current attribute values and Paints.
+    /////////////////////////////////////////
+    // Current attribute values and Paints.//
+    /////////////////////////////////////////
 
     /**
      * The size of the text drawn by [Paint] field [mLabelTextPaint], it is used in the call to
@@ -216,14 +218,46 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     // State objects and values related to gesture tracking.//
     //////////////////////////////////////////////////////////
 
+    /**
+     * Detects scaling transformation gestures using the supplied [MotionEvent]'s. Its
+     * [ScaleGestureDetector.OnScaleGestureListener] callback will notify users when a
+     * particular gesture event has occurred.
+     */
     private val mScaleGestureDetector: ScaleGestureDetector
+
+    /**
+     * Detects various gestures and events using the supplied [MotionEvent]'s. Its
+     * [GestureDetector.OnGestureListener] callback will notify users when a particular
+     * motion event has occurred.
+     */
     private val mGestureDetector: GestureDetectorCompat
-    private val mScroller: OverScroller =OverScroller(context)
+
+    /**
+     * Creates an [OverScroller] with a viscous fluid scroll interpolator and flywheel. This class
+     * encapsulates scrolling with the ability to overshoot the bounds of a scrolling operation.
+     * This class is a drop-in replacement for `Scroller` in most cases.
+     */
+    private val mScroller: OverScroller = OverScroller(context)
+
+    /**
+     * Animates double-touch zoom gestures.
+     */
     private val mZoomer: Zoomer = Zoomer(context)
-    private val mZoomFocalPoint = PointF()
+
+    /**
+     * The point in the viewport which is the center of the zoom being performed
+     */
+    private val mZoomFocalPoint: PointF = PointF()
+
+    /**
+     * Used to hold the current value of [RectF] field [mCurrentViewport] during zooms and flings.
+     */
     private val mScrollerStartViewport = RectF() // Used only for zooms and flings.
 
-    // Edge effect / overscroll tracking objects.
+    ///////////////////////////////////////////////
+    // Edge effect / overscroll tracking objects.//
+    ///////////////////////////////////////////////
+
     private val mEdgeEffectTop: EdgeEffectCompat = EdgeEffectCompat(context)
     private val mEdgeEffectBottom: EdgeEffectCompat = EdgeEffectCompat(context)
     private val mEdgeEffectLeft: EdgeEffectCompat = EdgeEffectCompat(context)
@@ -233,12 +267,18 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     private var mEdgeEffectLeftActive = false
     private var mEdgeEffectRightActive = false
 
-    // Buffers for storing current X and Y stops. See the computeAxisStops method for more details.
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // Buffers for storing current X and Y stops. See the computeAxisStops method for more details.//
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+
     private val mXStopsBuffer = AxisStops()
     private val mYStopsBuffer = AxisStops()
 
-    // Buffers used during drawing. These are defined as fields to avoid allocation during
-    // draw calls.
+    /////////////////////////////////////////////////////
+    // Buffers used during drawing. These are defined  //
+    // as fields to avoid allocation during draw calls.//
+    /////////////////////////////////////////////////////
+
     private var mAxisXPositionsBuffer = floatArrayOf()
     private var mAxisYPositionsBuffer = floatArrayOf()
     private var mAxisXLinesBuffer = floatArrayOf()
@@ -387,7 +427,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
         initPaints()
 
-        // Sets up interactions
+        //////////////////////////
+        // Sets up interactions //
+        //////////////////////////
+
         mScaleGestureDetector = ScaleGestureDetector(context, mScaleGestureListener)
         mGestureDetector = GestureDetectorCompat(context, mGestureListener)
     }
@@ -665,6 +708,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     //     Methods and objects related to gesture handling
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Finds the chart point (i.e. within the chart's domain and range) represented by the
      * given pixel coordinates, if that pixel is within the chart region described by
@@ -703,7 +747,6 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         mCurrentViewport!!.right = Math.max(Math.nextUp(mCurrentViewport!!.left),
             Math.min(AXIS_X_MAX, mCurrentViewport!!.right))
     }
-
 
     private fun releaseEdgeEffects() {
         mEdgeEffectBottomActive = false
@@ -800,7 +843,11 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
                 / mScrollerStartViewport.width())
             val pointWithinViewportY = ((mZoomFocalPoint.y - mScrollerStartViewport.top)
                 / mScrollerStartViewport.height())
-            mCurrentViewport!![mZoomFocalPoint.x - newWidth * pointWithinViewportX, mZoomFocalPoint.y - newHeight * pointWithinViewportY, mZoomFocalPoint.x + newWidth * (1 - pointWithinViewportX)] = mZoomFocalPoint.y + newHeight * (1 - pointWithinViewportY)
+            mCurrentViewport!![
+                mZoomFocalPoint.x - newWidth * pointWithinViewportX, mZoomFocalPoint.y -
+                    newHeight * pointWithinViewportY, mZoomFocalPoint.x +
+                    newWidth * (1 - pointWithinViewportX)] =
+                mZoomFocalPoint.y + newHeight * (1 - pointWithinViewportY)
             constrainViewport()
             needsInvalidate = true
         }
@@ -835,6 +882,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     //     Methods for programmatically changing the viewport
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Returns the current viewport (visible extremes for the chart domain and range.)
      */
@@ -858,7 +906,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         mScrollerStartViewport.set(mCurrentViewport!!)
         mZoomer.forceFinished(true)
         mZoomer.startZoom(ZOOM_AMOUNT)
-        mZoomFocalPoint[(mCurrentViewport!!.right + mCurrentViewport!!.left) / 2] = (mCurrentViewport!!.bottom + mCurrentViewport!!.top) / 2
+        mZoomFocalPoint[(mCurrentViewport!!.right + mCurrentViewport!!.left) / 2] =
+            (mCurrentViewport!!.bottom + mCurrentViewport!!.top) / 2
         ViewCompat.postInvalidateOnAnimation(this)
     }
 
@@ -869,7 +918,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         mScrollerStartViewport.set(mCurrentViewport!!)
         mZoomer.forceFinished(true)
         mZoomer.startZoom(-ZOOM_AMOUNT)
-        mZoomFocalPoint[(mCurrentViewport!!.right + mCurrentViewport!!.left) / 2] = (mCurrentViewport!!.bottom + mCurrentViewport!!.top) / 2
+        mZoomFocalPoint[(mCurrentViewport!!.right + mCurrentViewport!!.left) / 2] =
+            (mCurrentViewport!!.bottom + mCurrentViewport!!.top) / 2
         ViewCompat.postInvalidateOnAnimation(this)
     }
 
@@ -906,6 +956,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     //     Methods related to custom attributes
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
     var labelTextSize: Float
         get() = mLabelTextSize
         set(labelTextSize) {
@@ -954,6 +1005,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     //     Methods and classes related to view state persistence.
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
     public override fun onSaveInstanceState(): Parcelable? {
         val superState = super.onSaveInstanceState()
         val ss = SavedState(superState)
@@ -994,8 +1046,13 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
                 + " viewport=" + viewport.toString() + "}")
         }
 
-        internal constructor(`in`: Parcel) : super(`in`) {
-            viewport = RectF(`in`.readFloat(), `in`.readFloat(), `in`.readFloat(), `in`.readFloat())
+        internal constructor(inParcel: Parcel) : super(inParcel) {
+            viewport = RectF(
+                inParcel.readFloat(),
+                inParcel.readFloat(),
+                inParcel.readFloat(),
+                inParcel.readFloat()
+            )
         }
 
         companion object {
@@ -1005,8 +1062,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             @Suppress("RedundantNullableReturnType")
             @JvmField
             val CREATOR = ParcelableCompat.newCreator(object : ParcelableCompatCreatorCallbacks<SavedState?> {
-                override fun createFromParcel(`in`: Parcel, loader: ClassLoader): SavedState? {
-                    return SavedState(`in`)
+                override fun createFromParcel(inParcel: Parcel, loader: ClassLoader): SavedState? {
+                    return SavedState(inParcel)
                 }
 
                 override fun newArray(size: Int): Array<SavedState?> {
