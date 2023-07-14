@@ -258,20 +258,62 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     // Edge effect / overscroll tracking objects.//
     ///////////////////////////////////////////////
 
+    /**
+     * Used to produce the overscroll "glow" at the Top of the scrollable widget when the user
+     * scrolls beyond the content bounds in 2D space.
+     */
     private val mEdgeEffectTop: EdgeEffectCompat = EdgeEffectCompat(context)
+
+    /**
+     * Used to produce the overscroll "glow" at the Bottom of the scrollable widget when the user
+     * scrolls beyond the content bounds in 2D space.
+     */
     private val mEdgeEffectBottom: EdgeEffectCompat = EdgeEffectCompat(context)
+
+    /**
+     * Used to produce the overscroll "glow" at the Left of the scrollable widget when the user
+     * scrolls beyond the content bounds in 2D space.
+     */
     private val mEdgeEffectLeft: EdgeEffectCompat = EdgeEffectCompat(context)
+
+    /**
+     * Used to produce the overscroll "glow" at the Right of the scrollable widget when the user
+     * scrolls beyond the content bounds in 2D space.
+     */
     private val mEdgeEffectRight: EdgeEffectCompat = EdgeEffectCompat(context)
+
+    /**
+     * Flag used to inidicate that the [EdgeEffectCompat] field [mEdgeEffectTop] is currently running.
+     */
     private var mEdgeEffectTopActive = false
+
+    /**
+     * Flag used to inidicate that the [EdgeEffectCompat] field [mEdgeEffectBottom] is currently running.
+     */
     private var mEdgeEffectBottomActive = false
+
+    /**
+     * Flag used to inidicate that the [EdgeEffectCompat] field [mEdgeEffectLeft] is currently running.
+     */
     private var mEdgeEffectLeftActive = false
+
+    /**
+     * Flag used to inidicate that the [EdgeEffectCompat] field [mEdgeEffectRight] is currently running.
+     */
     private var mEdgeEffectRightActive = false
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     // Buffers for storing current X and Y stops. See the computeAxisStops method for more details.//
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Holds the X axis label values.
+     */
     private val mXStopsBuffer = AxisStops()
+
+    /**
+     * Holds the Y axis label values.
+     */
     private val mYStopsBuffer = AxisStops()
 
     /////////////////////////////////////////////////////
@@ -750,12 +792,9 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
 
     private fun releaseEdgeEffects() {
         mEdgeEffectBottomActive = false
-        @Suppress("KotlinConstantConditions")
-        mEdgeEffectRightActive = mEdgeEffectBottomActive
-        @Suppress("KotlinConstantConditions")
-        mEdgeEffectTopActive = mEdgeEffectRightActive
-        @Suppress("KotlinConstantConditions")
-        mEdgeEffectLeftActive = mEdgeEffectTopActive
+        mEdgeEffectRightActive = false
+        mEdgeEffectTopActive = false
+        mEdgeEffectLeftActive = false
         mEdgeEffectLeft.onRelease()
         mEdgeEffectTop.onRelease()
         mEdgeEffectRight.onRelease()
@@ -789,9 +828,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * and vertically.
      */
     private fun computeScrollSurfaceSize(out: Point) {
-        out[(mContentRect.width() * (AXIS_X_MAX - AXIS_X_MIN)
-            / mCurrentViewport!!.width()).toInt()] = (mContentRect.height() * (AXIS_Y_MAX - AXIS_Y_MIN)
-            / mCurrentViewport!!.height()).toInt()
+        out[(mContentRect.width() * (AXIS_X_MAX - AXIS_X_MIN) / mCurrentViewport!!.width()).toInt()] =
+            (mContentRect.height() * (AXIS_Y_MAX - AXIS_Y_MIN) / mCurrentViewport!!.height()).toInt()
     }
 
     override fun computeScroll() {
@@ -819,12 +857,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
                 mEdgeEffectRightActive = true
                 needsInvalidate = true
             }
-            if (canScrollY && currY < 0 && mEdgeEffectTop.isFinished
-                && !mEdgeEffectTopActive) {
+            if (canScrollY && currY < 0 && mEdgeEffectTop.isFinished && !mEdgeEffectTopActive) {
                 mEdgeEffectTop.onAbsorb(OverScrollerCompat.getCurrVelocity(mScroller).toInt())
                 mEdgeEffectTopActive = true
                 needsInvalidate = true
-            } else if (canScrollY && currY > mSurfaceSizeBuffer.y - mContentRect.height() && mEdgeEffectBottom.isFinished
+            } else if (canScrollY && currY > mSurfaceSizeBuffer.y - mContentRect.height()
+                && mEdgeEffectBottom.isFinished
                 && !mEdgeEffectBottomActive) {
                 mEdgeEffectBottom.onAbsorb(OverScrollerCompat.getCurrVelocity(mScroller).toInt())
                 mEdgeEffectBottomActive = true
@@ -1180,13 +1218,13 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
 
         /**
-         * Computes the set of axis labels to show given start and stop boundaries and an ideal number
-         * of stops between these boundaries.
+         * Computes the set of axis labels to show given start and stop boundaries and an ideal
+         * number of stops between these boundaries.
          *
          * @param start The minimum extreme (e.g. the left edge) for the axis.
          * @param stop The maximum extreme (e.g. the right edge) for the axis.
-         * @param steps The ideal number of stops to create. This should be based on available screen
-         * space; the more space there is, the more stops should be shown.
+         * @param steps The ideal number of stops to create. This should be based on available
+         * screen space; the more space there is, the more stops should be shown.
          * @param outStops The destination [AxisStops] object to populate.
          */
         private fun computeAxisStops(start: Float, stop: Float, steps: Int, outStops: AxisStops) {
