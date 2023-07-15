@@ -321,12 +321,48 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     // as fields to avoid allocation during draw calls.//
     /////////////////////////////////////////////////////
 
+    /**
+     * This buffer holds all of the X coordinates of the vertical grid lines.
+     */
     private var mAxisXPositionsBuffer = floatArrayOf()
+
+    /**
+     * This buffer holds all of the Y coordinates of the horizontal grid lines.
+     */
     private var mAxisYPositionsBuffer = floatArrayOf()
+
+    /**
+     * This buffer holds the (x,y) end points of all of the X axis verical grid lines (4 values per
+     * line), it is used by our [drawAxes] method in its call to [Canvas.drawLines] to draw all the
+     * lines at once.
+     */
     private var mAxisXLinesBuffer = floatArrayOf()
+
+    /**
+     * This buffer holds the (x,y) end points of all of the Y axis horizontal grid lines (4 values
+     * per line), it is used by our [drawAxes] method in its call to [Canvas.drawLines] to draw all
+     * the lines at once.
+     */
     private var mAxisYLinesBuffer = floatArrayOf()
+
+    /**
+     * This buffer holds the (x,y) end points of all of the lines that are used to draw the curve
+     * produced by our [fofX] method, it is used by our [drawDataSeriesUnclipped] method in its call
+     * to [Canvas.drawLines] to draw all the lines at once.
+     */
     private val mSeriesLinesBuffer = FloatArray((DRAW_STEPS + 1) * 4)
+
+    /**
+     * Holds the text that is used to hold that labels for the values of points along both axis.
+     */
     private val mLabelBuffer = CharArray(100)
+
+    /**
+     * Holds the current scrollable surface size, in pixels computed by [computeScrollSurfaceSize].
+     * If the entire chart area is visible, this is simply the current size of [mContentRect]. If
+     * the chart is zoomed in 200% in both directions, the returned size will be twice as large
+     * horizontally and vertically.
+     */
     private val mSurfaceSizeBuffer = Point()
 
     /**
@@ -338,14 +374,49 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
          * variable but kept here to minimize per-frame allocations.
          */
         private val viewportFocus = PointF()
-        private var lastSpanX = 0f
-        private var lastSpanY = 0f
+
+        /**
+         * The average X distance in pixels between each of the pointers forming the gesture in
+         * progress through the focal point.
+         */
+        private var lastSpanX: Float = 0f
+
+        /**
+         * The average Y distance in pixels between each of the pointers forming the gesture in
+         * progress through the focal point.
+         */
+        private var lastSpanY: Float = 0f
+
+        /**
+         * Responds to the beginning of a scaling gesture. Reported by new pointers going down.
+         * We set our [Float] variable [lastSpanX] to the value of the average X distance in pixels
+         * between each of the pointers forming the gesture in progress through the focal point, and
+         * our [Float] variable [lastSpanY] to the value of the average Y distance in pixels between
+         * each of the pointers forming the gesture in progress through the focal point
+         *
+         * @param scaleGestureDetector The detector reporting the event - use this to retrieve
+         * extended info about event state.
+         * @return Whether or not the detector should continue recognizing this gesture. For
+         * example, if a gesture is beginning with a focal point outside of a region where it
+         * makes sense, onScaleBegin() may return `false` to ignore the rest of the gesture. We
+         * always return `true`.
+         */
         override fun onScaleBegin(scaleGestureDetector: ScaleGestureDetector): Boolean {
             lastSpanX = ScaleGestureDetectorCompat.getCurrentSpanX(scaleGestureDetector)
             lastSpanY = ScaleGestureDetectorCompat.getCurrentSpanY(scaleGestureDetector)
             return true
         }
 
+        /**
+         * Responds to scaling events for a gesture in progress. Reported by pointer motion.
+         *
+         * @param scaleGestureDetector The detector reporting the event - use this to retrieve
+         * extended info about event state.
+         * @return Whether or not the detector should consider this event as handled. If an event
+         * was not handled, the detector will continue to accumulate movement until an event is
+         * handled. This can be useful if an application, for example, only wants to update scaling
+         * factors if the change is greater than 0.01. We always return `true`
+         */
         override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
             val spanX = ScaleGestureDetectorCompat.getCurrentSpanX(scaleGestureDetector)
             val spanY = ScaleGestureDetectorCompat.getCurrentSpanY(scaleGestureDetector)
@@ -823,7 +894,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
 
     /**
      * Computes the current scrollable surface size, in pixels. For example, if the entire chart
-     * area is visible, this is simply the current size of [.mContentRect]. If the chart
+     * area is visible, this is simply the current size of [mContentRect]. If the chart
      * is zoomed in 200% in both directions, the returned size will be twice as large horizontally
      * and vertically.
      */
