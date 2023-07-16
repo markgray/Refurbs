@@ -408,7 +408,30 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
 
         /**
-         * Responds to scaling events for a gesture in progress. Reported by pointer motion.
+         * Responds to scaling events for a gesture in progress. Reported by pointer motion. We
+         * initialize our [Float] variable `val spanX` to the average X distance between each of
+         * the pointers forming the gesture in progress through the focal point that our
+         * [ScaleGestureDetectorCompat.getCurrentSpanX] method returns when passed our
+         * [ScaleGestureDetector] parameter [scaleGestureDetector], and initialize our [Float]
+         * variable `val spanY` to the average Y distance between each of the pointers forming the
+         * gesture in progress through the focal point that our [ScaleGestureDetectorCompat.getCurrentSpanX]
+         * method returns when passed our [ScaleGestureDetector] parameter [scaleGestureDetector].
+         * We initialize our [Float] variable `val newWidth` to our [Float] field [lastSpanX] divided
+         * by `spanX` times the `width` of our [RectF] field [mCurrentViewport], and we initialize
+         * our [Float] variable `val newHeight` to our [Float] field [lastSpanY] divided
+         * by `spanY` times the `height` of our [RectF] field [mCurrentViewport]. We initialize our
+         * [Float] variable `val focusX` to the X coordinate of the current gesture's focal point,
+         * and our [Float] variable `val focusY` to the Y coordinate of the current gesture's focal
+         * point. We then call our [hitTest] method to check if the point (`focusX`,`focusY`) is
+         * contained in [mContentRect] and if it is it will set [PointF] field [viewportFocus] to
+         * the point. We then update the value of [RectF] field [mCurrentViewport] based on the
+         * resulting scaling requested by the gesture, and call our [constrainViewport] method to
+         * have it ensure that the viewport size requested for [mCurrentViewport] is inside the
+         * viewport extremes defined by [AXIS_X_MIN], [AXIS_X_MAX], [AXIS_Y_MIN] and [AXIS_Y_MAX].
+         * We then call the [ViewCompat.postInvalidateOnAnimation] method to cause an invalidate
+         * of `this` [View] to happen on the next animation time step, typically the next display
+         * frame. We then set our [lastSpanX] field to `spanX` and our [lastSpanY] field to `spanY`
+         * and return `true` so that the detector will consider this event as handled.
          *
          * @param scaleGestureDetector The detector reporting the event - use this to retrieve
          * extended info about event state.
@@ -418,12 +441,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
          * factors if the change is greater than 0.01. We always return `true`
          */
         override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
-            val spanX = ScaleGestureDetectorCompat.getCurrentSpanX(scaleGestureDetector)
-            val spanY = ScaleGestureDetectorCompat.getCurrentSpanY(scaleGestureDetector)
-            val newWidth = lastSpanX / spanX * mCurrentViewport!!.width()
-            val newHeight = lastSpanY / spanY * mCurrentViewport!!.height()
-            val focusX = scaleGestureDetector.focusX
-            val focusY = scaleGestureDetector.focusY
+            val spanX: Float = ScaleGestureDetectorCompat.getCurrentSpanX(scaleGestureDetector)
+            val spanY: Float = ScaleGestureDetectorCompat.getCurrentSpanY(scaleGestureDetector)
+            val newWidth: Float = lastSpanX / spanX * mCurrentViewport!!.width()
+            val newHeight: Float = lastSpanY / spanY * mCurrentViewport!!.height()
+            val focusX: Float = scaleGestureDetector.focusX
+            val focusY: Float = scaleGestureDetector.focusY
             hitTest(focusX, focusY, viewportFocus)
             mCurrentViewport!![viewportFocus.x
                 - newWidth * (focusX - mContentRect.left)
@@ -439,11 +462,27 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             return true
         }
     }
+
     /**
      * The gesture listener, used for handling simple gestures such as double touches, scrolls,
      * and flings.
      */
     private val mGestureListener: SimpleOnGestureListener = object : SimpleOnGestureListener() {
+        /**
+         * Notified when a tap occurs with the down [MotionEvent] that triggered it. This will be
+         * triggered immediately for every down event. All other events should be preceded by this.
+         * First we call our [releaseEdgeEffects] method to have it terminate all [EdgeEffectCompat]
+         * that may be in progress. Next we set our [RectF] field [mScrollerStartViewport] to the
+         * current value of [mCurrentViewport], and call the [OverScroller.forceFinished] method
+         * method of our [OverScroller] field [mScroller] to force its finished field to `true`.
+         * We then call the [ViewCompat.postInvalidateOnAnimation] method to cause an invalidate
+         * of `this` [View] to happen on the next animation time step, typically the next display
+         * frame, and finally we return `true` to make sure we get matching events for this down
+         * event.
+         *
+         * @param e The down motion event.
+         * @return Must return `true` to get matching events for this down event.
+         */
         override fun onDown(e: MotionEvent): Boolean {
             releaseEdgeEffects()
             mScrollerStartViewport.set(mCurrentViewport!!)
@@ -823,10 +862,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Finds the chart point (i.e. within the chart's domain and range) represented by the
-     * given pixel coordinates, if that pixel is within the chart region described by
-     * [.mContentRect]. If the point is found, the "dest" argument is set to the point and
-     * this function returns true. Otherwise, this function returns false and "dest" is unchanged.
+     * Finds the chart point (i.e. within the chart's domain and range) represented by the given
+     * pixel coordinates, if that pixel is within the chart region described by [mContentRect]. If
+     * the point is found, the "dest" argument is set to the point and this function returns `true`.
+     * Otherwise, this function returns `false` and "dest" is unchanged.
      */
     private fun hitTest(x: Float, y: Float, dest: PointF): Boolean {
         if (!mContentRect.contains(x.toInt(), y.toInt())) {
@@ -837,7 +876,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             * (x - mContentRect.left) / mContentRect.width()] = (
             mCurrentViewport!!.top
                 + mCurrentViewport!!.height()
-                * (y - mContentRect.bottom) / -mContentRect.height())
+                * (y - mContentRect.bottom) / -mContentRect.height()
+            )
         return true
     }
 
@@ -849,8 +889,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     }
 
     /**
-     * Ensures that current viewport is inside the viewport extremes defined by [.AXIS_X_MIN],
-     * [.AXIS_X_MAX], [.AXIS_Y_MIN] and [.AXIS_Y_MAX].
+     * Ensures that current viewport is inside the viewport extremes defined by [AXIS_X_MIN],
+     * [AXIS_X_MAX], [AXIS_Y_MIN] and [AXIS_Y_MAX].
      */
     private fun constrainViewport() {
         mCurrentViewport!!.left = Math.max(AXIS_X_MIN, mCurrentViewport!!.left)
