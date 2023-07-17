@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate")
 
 package com.example.android.interactivechart
 
@@ -69,7 +69,7 @@ class Zoomer(context: Context) {
     }
 
     /**
-     * Forces the zoom finished state to the given value. Unlike [.abortAnimation], the
+     * Forces the zoom finished state to the given value. Unlike [abortAnimation], the
      * current zoom value isn't set to the ending value.
      *
      * @see android.widget.Scroller.forceFinished
@@ -90,7 +90,7 @@ class Zoomer(context: Context) {
 
     /**
      * Starts a zoom from 1.0 to (1.0 + endZoom). That is, to zoom from 100% to 125%, endZoom should
-     * by 0.25f.
+     * be 0.25f.
      *
      * @see android.widget.Scroller.startScroll
      */

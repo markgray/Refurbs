@@ -491,16 +491,58 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             return true
         }
 
+        /**
+         * Notified when a double-tap occurs. Triggered on the down event of second tap. We call the
+         * [Zoomer.forceFinished] method of [Zoomer] field [mZoomer] with `true` to force the zoom
+         * finished state to `true`, then is our [hitTest] method returns `true` indicating that the
+         * (`x`,`y`) of [MotionEvent] parameter [e] is inside [Rect] field [mContentRect] we call
+         * the [Zoomer.startZoom] method of [mZoomer] with its `endZoom` argument [ZOOM_AMOUNT]
+         * (0.25f) (note that the call to [hitTest] sets [PointF] field [mZoomFocalPoint] to the
+         * appropriate value). We then call the [ViewCompat.postInvalidateOnAnimation] method to
+         * cause an invalidate of `this` [View] to happen on the next animation time step, typically
+         * the next display frame, and finally we return `true` to consume the event.
+         *
+         * @param e The down motion event of the first tap of the double-tap.
+         * @return `true` if the event is consumed, else `false`, we always return `true`
+         */
         override fun onDoubleTap(e: MotionEvent): Boolean {
-            mZoomer.forceFinished(true)
-            if (hitTest(e.x, e.y, mZoomFocalPoint)) {
-                mZoomer.startZoom(ZOOM_AMOUNT)
+            mZoomer.forceFinished(finished = true)
+            if (hitTest(x = e.x, y = e.y, dest = mZoomFocalPoint)) {
+                mZoomer.startZoom(endZoom = ZOOM_AMOUNT)
             }
             ViewCompat.postInvalidateOnAnimation(this@InteractiveLineGraphView)
             return true
         }
 
-        override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+        /**
+         * Notified when a scroll occurs with the initial on down [MotionEvent] and the current move
+         * [MotionEvent]. The distance in x and y is also supplied for convenience. We initialize
+         * our [Float] variable `val viewportOffsetX` to our [Float] parameter [distanceX] times the
+         * `width` of our [RectF] field [mCurrentViewport] divided by the `width` of our [Rect] field
+         * [mContentRect], and our [Float] variable `val viewportOffsetY` to minus our [Float]
+         * parameter [distanceY] times the `height` of our [RectF] field [mCurrentViewport] divided
+         * by the `height` of our [Rect] field [mContentRect]. We then call our [computeScrollSurfaceSize]
+         * method to have it compute the current scrollable surface size, in pixels and store the
+         * value in our [Point] field [mSurfaceSizeBuffer]. We then initialize our [Int] variable
+         * `val scrolledX` to the [Point.x] value of [mSurfaceSizeBuffer] times the quantity of the
+         * [RectF.left] value of [mCurrentViewport] plus `viewportOffsetX` minus [AXIS_X_MIN] (-1f)
+         * divided by the quantity [AXIS_X_MAX] (1f) minus [AXIS_X_MIN] with the result converted to
+         * an [Int].
+         *
+         * @param e1 The first down [MotionEvent] that started the scrolling.
+         * @param e2 The move [MotionEvent] that triggered the current [onScroll].
+         * @param distanceX The distance along the X axis that has been scrolled since the last call
+         * to onScroll. This is NOT the distance between [e1] and [e2].
+         * @param distanceY The distance along the Y axis that has been scrolled since the last call
+         * to onScroll. This is NOT the distance between [e1] and [e2].
+         * @return `true` if the event is consumed, else `false`, we always return `true`
+         */
+        override fun onScroll(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            distanceX: Float,
+            distanceY: Float
+        ): Boolean {
             // Scrolling uses math based on the viewport (as opposed to math using pixels).
             /**
              * Pixel offset is the offset in screen pixels, while viewport offset is the
@@ -509,22 +551,23 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
              * additional information about the viewport, see the comments for
              * [mCurrentViewport].
              */
-            val viewportOffsetX = distanceX * mCurrentViewport!!.width() / mContentRect.width()
-            val viewportOffsetY = -distanceY * mCurrentViewport!!.height() / mContentRect.height()
-            computeScrollSurfaceSize(mSurfaceSizeBuffer)
-            val scrolledX = (mSurfaceSizeBuffer.x
+            val viewportOffsetX: Float = distanceX * mCurrentViewport!!.width() / mContentRect.width()
+            val viewportOffsetY: Float = -distanceY * mCurrentViewport!!.height() / mContentRect.height()
+            computeScrollSurfaceSize(out = mSurfaceSizeBuffer)
+            val scrolledX: Int = (mSurfaceSizeBuffer.x
                 * (mCurrentViewport!!.left + viewportOffsetX - AXIS_X_MIN)
                 / (AXIS_X_MAX - AXIS_X_MIN)).toInt()
-            val scrolledY = (mSurfaceSizeBuffer.y
+            val scrolledY: Int = (mSurfaceSizeBuffer.y
                 * (AXIS_Y_MAX - mCurrentViewport!!.bottom - viewportOffsetY)
                 / (AXIS_Y_MAX - AXIS_Y_MIN)).toInt()
-            val canScrollX = (mCurrentViewport!!.left > AXIS_X_MIN
+            val canScrollX: Boolean = (mCurrentViewport!!.left > AXIS_X_MIN
                 || mCurrentViewport!!.right < AXIS_X_MAX)
-            val canScrollY = (mCurrentViewport!!.top > AXIS_Y_MIN
+            val canScrollY: Boolean = (mCurrentViewport!!.top > AXIS_Y_MIN
                 || mCurrentViewport!!.bottom < AXIS_Y_MAX)
             setViewportBottomLeft(
-                mCurrentViewport!!.left + viewportOffsetX,
-                mCurrentViewport!!.bottom + viewportOffsetY)
+                x = mCurrentViewport!!.left + viewportOffsetX,
+                y = mCurrentViewport!!.bottom + viewportOffsetY
+            )
             if (canScrollX && scrolledX < 0) {
                 mEdgeEffectLeft.onPull(scrolledX / mContentRect.width().toFloat())
                 mEdgeEffectLeftActive = true
@@ -534,19 +577,28 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
                 mEdgeEffectTopActive = true
             }
             if (canScrollX && scrolledX > mSurfaceSizeBuffer.x - mContentRect.width()) {
-                mEdgeEffectRight.onPull((scrolledX - mSurfaceSizeBuffer.x + mContentRect.width())
-                    / mContentRect.width().toFloat())
+                mEdgeEffectRight.onPull(
+                    (scrolledX - mSurfaceSizeBuffer.x + mContentRect.width())
+                    / mContentRect.width().toFloat()
+                )
                 mEdgeEffectRightActive = true
             }
             if (canScrollY && scrolledY > mSurfaceSizeBuffer.y - mContentRect.height()) {
-                mEdgeEffectBottom.onPull((scrolledY - mSurfaceSizeBuffer.y + mContentRect.height())
-                    / mContentRect.height().toFloat())
+                mEdgeEffectBottom.onPull(
+                    (scrolledY - mSurfaceSizeBuffer.y + mContentRect.height())
+                    / mContentRect.height().toFloat()
+                )
                 mEdgeEffectBottomActive = true
             }
             return true
         }
 
-        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
             fling(-velocityX.toInt(), -velocityY.toInt())
             return true
         }
@@ -1006,10 +1058,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     }
 
     /**
-     * Sets the current viewport (defined by [.mCurrentViewport]) to the given
+     * Sets the current viewport (defined by [mCurrentViewport]) to the given
      * X and Y positions. Note that the Y value represents the topmost pixel position, and thus
-     * the bottom of the [.mCurrentViewport] rectangle. For more details on why top and
-     * bottom are flipped, see [.mCurrentViewport].
+     * the bottom of the [mCurrentViewport] rectangle. For more details on why top and
+     * bottom are flipped, see [mCurrentViewport].
      */
     private fun setViewportBottomLeft(x: Float, y: Float) {
         /**
