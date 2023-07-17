@@ -547,7 +547,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             /**
              * Pixel offset is the offset in screen pixels, while viewport offset is the
              * offset within the current viewport. For additional information on surface sizes
-             * and pixel offsets, see the docs for []. For
+             * and pixel offsets, see the docs for [computeScrollSurfaceSize]. For
              * additional information about the viewport, see the comments for
              * [mCurrentViewport].
              */
