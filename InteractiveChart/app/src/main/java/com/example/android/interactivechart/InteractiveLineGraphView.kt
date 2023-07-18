@@ -19,6 +19,7 @@ package com.example.android.interactivechart
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Paint.FontMetrics
@@ -527,7 +528,43 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
          * `val scrolledX` to the [Point.x] value of [mSurfaceSizeBuffer] times the quantity of the
          * [RectF.left] value of [mCurrentViewport] plus `viewportOffsetX` minus [AXIS_X_MIN] (-1f)
          * divided by the quantity [AXIS_X_MAX] (1f) minus [AXIS_X_MIN] with the result converted to
-         * an [Int].
+         * an [Int]. We initialize our [Int] variable `val scrolledY` to the [Point.y] value of
+         * [mSurfaceSizeBuffer] times the quantity of [AXIS_Y_MAX] minus the [RectF.bottom] value of
+         * [mCurrentViewport] minus `viewportOffsetY` divided by the quantity [AXIS_Y_MAX] (1f) minus
+         * [AXIS_Y_MIN (-1f) with the result converted to an [Int]. We initialize [Boolean] variable
+         * `val canScrollX` to `true` if the [RectF.left] value of [mCurrentViewport] is greater
+         * than [AXIS_X_MIN] or the [RectF.right] value of [mCurrentViewport] is less than [AXIS_X_MAX].
+         * We initialize [Boolean] variable `val canScrollY` to `true` if the [RectF.top] value of
+         * [mCurrentViewport] is greater than [AXIS_Y_MIN] or the [RectF.bottom] value of
+         * [mCurrentViewport] is less than [AXIS_Y_MAX]. We call our method [setViewportBottomLeft]
+         * to set the current viewport's bottom left point to the `x` coordinate formed by adding
+         * `viewportOffsetX` to the [RectF.left] of [mCurrentViewport] and `y` coordinate formed by
+         * adding `viewportOffsetY` to the [RectF.bottom] of [mCurrentViewport]. If `canScrollX` is
+         * `true` and `scrolledX` is less than 0 we call the [EdgeEffectCompat.onPull] method of
+         * [mEdgeEffectLeft] with the `deltaDistance` (Change in distance since the last call) the
+         * [Float] value of `scrolledX` divided by the [Rect.width] of [mContentRect] and set our
+         * [Boolean] field [mEdgeEffectLeftActive] to `true` to indicate that a "left edge" overscroll
+         * animation is in progress. If `canScrollY` is `true` and `scrolledY` is less than 0 we call
+         * the [EdgeEffectCompat.onPull] method of [mEdgeEffectTop] with the `deltaDistance` (Change
+         * in distance since the last call) the [Float] value of `scrolledY` divided by the [Rect.height]
+         * of [mContentRect] and set our [Boolean] field [mEdgeEffectTopActive] to `true` to indicate
+         * that a "top edge" overscroll animation is in progress. If `canScrollX` is `true` and
+         * `scrolledX` is greater than the [Point.x] value of [Point] field [mSurfaceSizeBuffer]
+         * minus the [Rect.width] of [Rect] field [mContentRect] we call the [EdgeEffectCompat.onPull]
+         * method of [mEdgeEffectRight] with the `deltaDistance` (Change in distance since the last
+         * call) the [Float] value of `scrolledX` minus the [Point.x] value of [Point] field
+         * [mSurfaceSizeBuffer] plus the [Rect.width] of [Rect] field [mContentRect] divided by the
+         * [Rect.width] value of [mContentRect] and set our [Boolean] field [mEdgeEffectRightActive]
+         * to `true` to indicate that a "right edge" overscroll animation is in progress. If
+         * `canScrollY` is `true` and `scrolledY` is greater than the [Point.y] value of [Point]
+         * field [mSurfaceSizeBuffer] minus the [Rect.height] value of [Rect] field [mContentRect]
+         * we call the [EdgeEffectCompat.onPull] method of [mEdgeEffectBottom] with the `deltaDistance`
+         * (Change in distance since the last call) the [Float] value of `scrolledY` minus the
+         * [Point.y] value of [Point] field [mSurfaceSizeBuffer] plus the [Rect.height] value of
+         * [Rect] field [mContentRect] divided by the [Rect.height] of [mContentRect] and set our
+         * [Boolean] field [mEdgeEffectBottomActive] to `true` to indicate that a "bottom edge"
+         * overscroll animation is in progress. Finally we return `true` to indicate that we have
+         * consumed the event.
          *
          * @param e1 The first down [MotionEvent] that started the scrolling.
          * @param e2 The move [MotionEvent] that triggered the current [onScroll].
@@ -593,6 +630,9 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             return true
         }
 
+        /**
+         *
+         */
         override fun onFling(
             e1: MotionEvent,
             e2: MotionEvent,
@@ -605,27 +645,48 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     }
 
     init {
-        val a = context.theme.obtainStyledAttributes(
-            attrs, R.styleable.InteractiveLineGraphView, defStyle, defStyle)
+        val a: TypedArray = context.theme.obtainStyledAttributes(
+            attrs, R.styleable.InteractiveLineGraphView,
+            defStyle,
+            defStyle
+        )
         try {
             mLabelTextColor = a.getColor(
-                R.styleable.InteractiveLineGraphView_labelTextColor, mLabelTextColor)
+                R.styleable.InteractiveLineGraphView_labelTextColor,
+                mLabelTextColor
+            )
             mLabelTextSize = a.getDimension(
-                R.styleable.InteractiveLineGraphView_labelTextSize, mLabelTextSize)
+                R.styleable.InteractiveLineGraphView_labelTextSize,
+                mLabelTextSize
+            )
             mLabelSeparation = a.getDimensionPixelSize(
-                R.styleable.InteractiveLineGraphView_labelSeparation, mLabelSeparation)
+                R.styleable.InteractiveLineGraphView_labelSeparation,
+                mLabelSeparation
+            )
             mGridThickness = a.getDimension(
-                R.styleable.InteractiveLineGraphView_gridThickness, mGridThickness)
+                R.styleable.InteractiveLineGraphView_gridThickness,
+                mGridThickness
+            )
             mGridColor = a.getColor(
-                R.styleable.InteractiveLineGraphView_gridColor, mGridColor)
+                R.styleable.InteractiveLineGraphView_gridColor,
+                mGridColor
+            )
             mAxisThickness = a.getDimension(
-                R.styleable.InteractiveLineGraphView_axisThickness, mAxisThickness)
+                R.styleable.InteractiveLineGraphView_axisThickness,
+                mAxisThickness
+            )
             mAxisColor = a.getColor(
-                R.styleable.InteractiveLineGraphView_axisColor, mAxisColor)
+                R.styleable.InteractiveLineGraphView_axisColor,
+                mAxisColor
+            )
             dataThickness = a.getDimension(
-                R.styleable.InteractiveLineGraphView_dataThickness, dataThickness)
+                R.styleable.InteractiveLineGraphView_dataThickness,
+                dataThickness
+            )
             dataColor = a.getColor(
-                R.styleable.InteractiveLineGraphView_dataColor, dataColor)
+                R.styleable.InteractiveLineGraphView_dataColor,
+                dataColor
+            )
         } finally {
             a.recycle()
         }
