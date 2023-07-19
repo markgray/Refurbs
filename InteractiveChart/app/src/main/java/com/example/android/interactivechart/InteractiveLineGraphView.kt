@@ -631,7 +631,18 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
 
         /**
+         * Called when a fling event occurs with the initial down [MotionEvent] and the matching up
+         * [MotionEvent]. The calculated velocity is supplied along the x and y axis in pixels per
+         * second. We just call our [fling] method with minus the [Int] value of our [Float]
+         * parameter [velocityX], and minus the [Int] value of our [Float] parameter [velocityY].
          *
+         * @param e1 The first down motion event that started the fling.
+         * @param e2 The move motion event that triggered the current [onFling].
+         * @param velocityX The velocity of this fling measured in pixels per second
+         * along the x axis.
+         * @param velocityY The velocity of this fling measured in pixels per second
+         * along the y axis.
+         * @return `true` if the event is consumed, else `false`, we always return `true`
          */
         override fun onFling(
             e1: MotionEvent,
@@ -725,14 +736,55 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         mDataPaint!!.isAntiAlias = true
     }
 
+    /**
+     * This is called during layout when the size of this [View] has changed. If you were just added
+     * to the view hierarchy, you're called with the old values of 0. First we call our super's
+     * implementation of `onSizeChanged`. Then we use the [Rect.set] method of our [Rect] field
+     * [mContentRect] to set its `left` coordinate to the left padding of this view (the value
+     * returned by [getPaddingLeft], aka kotlin `paddingLeft` property) plus our [Int] field
+     * [mMaxLabelWidth] (Maximum length of a label) plus our [Int] field [mLabelSeparation]
+     * (separation between axis labels), and set its `top` coordinate to the top padding of this
+     * view (the value returned by [getPaddingTop], aka kotlin `paddingTop` property), and set its
+     * `right` coordinate to the width of our view (the value returned by [getWidth], aka kotlin
+     * `width` property) minus the right padding of this view (the value returned by [getPaddingRight],
+     * aka kotlin `paddingRight` property), and set its `bottom` coordinate to the height of our
+     * view (the value returned by [getHeight], aka kotlin `height` property) minus the bottom
+     * padding of this view (the value returned by [getPaddingBottom], aka kotlin `paddingBottom`
+     * property) minus the height of the text (our [Int] field [mLabelHeight]), minus the separation
+     * between axis labels (our [Int] field [mLabelSeparation])
+     *
+     * @param w Current width of this [View].
+     * @param h Current height of this [View].
+     * @param oldw Old width of this [View].
+     * @param oldh Old height of this [View].
+     */
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        mContentRect[paddingLeft + mMaxLabelWidth + mLabelSeparation, paddingTop, width - paddingRight] =
-            height - paddingBottom - mLabelHeight - mLabelSeparation
+        mContentRect.set(
+            /* left = */ paddingLeft + mMaxLabelWidth + mLabelSeparation,
+            /* top = */ paddingTop,
+            /* right = */ width - paddingRight,
+            /* bottom = */ height - paddingBottom - mLabelHeight - mLabelSeparation
+        )
+
     }
 
+    /**
+     * Measure the view and its content to determine the measured width and the measured height.
+     * This method is invoked by [measure] and should be overridden by subclasses to provide
+     * accurate and efficient measurement of their contents. When overriding this method, you
+     * *must* call [setMeasuredDimension] to store the measured width and height of this view.
+     * We initialize our [Int] variable `val minChartSize` to the value stored in our resources
+     * for the dimension with resource ID [R.dimen.min_chart_size] (this is set to 100dp in the
+     * file values/dimens.xml).
+     *
+     * @param widthMeasureSpec horizontal space requirements as imposed by the parent. The
+     * requirements are encoded with [android.view.View.MeasureSpec].
+     * @param heightMeasureSpec vertical space requirements as imposed by the parent. The
+     * requirements are encoded with [android.view.View.MeasureSpec].
+     */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val minChartSize = resources.getDimensionPixelSize(R.dimen.min_chart_size)
+        val minChartSize: Int = resources.getDimensionPixelSize(R.dimen.min_chart_size)
         setMeasuredDimension(
             Math.max(suggestedMinimumWidth,
                 resolveSize(
