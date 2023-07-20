@@ -777,7 +777,19 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * *must* call [setMeasuredDimension] to store the measured width and height of this view.
      * We initialize our [Int] variable `val minChartSize` to the value stored in our resources
      * for the dimension with resource ID [R.dimen.min_chart_size] (this is set to 100dp in the
-     * file values/dimens.xml).
+     * file values/dimens.xml). Then we call [setMeasuredDimension] with the `measuredWidth`
+     * argument the maximum of the value returned by the [getSuggestedMinimumWidth] method (aka
+     * kotlin `suggestedMinimumWidth` property) and the value returned by the [View.resolveSize]
+     * method when passed the quantity `minChartSize` plus the value returned by [getPaddingLeft]
+     * (kotlin `paddingLeft` property) plus [mMaxLabelWidth] plus [mLabelSeparation] plus the value
+     * returned by [getPaddingRight] (kotlin `paddingRight` property) and our [Int] parameter
+     * [widthMeasureSpec]. The `measuredHeight` argument of [setMeasuredDimension] is the maximum
+     * of the value returned by the [getSuggestedMinimumHeight] method (aka kotlin
+     * `suggestedMinimumHeight` property) and the value returned by the [View.resolveSize]
+     * method when passed the quantity `minChartSize` plus the value returned by [getPaddingTop]
+     * (kotlin `paddingTop` property) plus [mLabelHeight] plus [mLabelSeparation] plus the value
+     * returned by [getPaddingBottom] (kotlin `paddingBottom` property) and our [Int] parameter
+     * [heightMeasureSpec].
      *
      * @param widthMeasureSpec horizontal space requirements as imposed by the parent. The
      * requirements are encoded with [android.view.View.MeasureSpec].
@@ -787,13 +799,15 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val minChartSize: Int = resources.getDimensionPixelSize(R.dimen.min_chart_size)
         setMeasuredDimension(
-            Math.max(suggestedMinimumWidth,
+            /* measuredWidth = */ Math.max(
+                suggestedMinimumWidth,
                 resolveSize(
                     minChartSize + paddingLeft + mMaxLabelWidth + mLabelSeparation + paddingRight,
                     widthMeasureSpec
                 )
             ),
-            Math.max(suggestedMinimumHeight,
+            /* measuredHeight = */ Math.max(
+                suggestedMinimumHeight,
                 resolveSize(
                     minChartSize + paddingTop + mLabelHeight + mLabelSeparation + paddingBottom,
                     heightMeasureSpec
@@ -807,6 +821,24 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     //     Methods and objects related to drawing
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * We implement this to do our drawing. First we call our super's implementation of `onDraw`.
+     * Next we call our [drawAxes] method with our [Canvas] parameter [canvas] to have it draw the
+     * axes and text labels of our graph. Next we initialize our [Int] variable `val clipRestoreCount`
+     * to the value returned when we call the [Canvas.save] method of our [Canvas] parameter [canvas]
+     * to save its current matrix and clip onto a private stack. We then call our method
+     * [drawDataSeriesUnclipped] with [canvas] as its argument to have it draw the currently visible
+     * portion of the data series defined by [fofX] to the [Canvas] parameter [canvas], followed by
+     * a call to our [drawEdgeEffectsUnclipped] metod to have it draw the overscroll "glow" at the
+     * four edges of the chart region, if necessary. Now that we have finished drawing our contents
+     * we call the [Canvas.restoreToCount] method of [canvas] to have it restore its state to the
+     * one it hqd before our call to [Canvas.save]. Finally we call the [Canvas.drawRect] method
+     * of [canvas] to have it draw the [Rect] field [mContentRect] on [canvas] using [Paint] field
+     * [mAxisPaint] as the [Paint].
+     *
+     * @param canvas the [Canvas] on which the background will be drawn
+     */
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
@@ -814,7 +846,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         drawAxes(canvas)
 
         // Clips the next few drawing operations to the content area
-        val clipRestoreCount = canvas.save()
+        val clipRestoreCount: Int = canvas.save()
         canvas.clipRect(mContentRect)
         drawDataSeriesUnclipped(canvas)
         drawEdgeEffectsUnclipped(canvas)
@@ -948,7 +980,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     }
 
     /**
-     * Draws the currently visible portion of the data series defined by [`fun`] to the
+     * Draws the currently visible portion of the data series defined by [fofX] to the
      * canvas. This method does not clip its drawing, so users should call [Canvas.clipRect]
      * before calling this method.
      */
