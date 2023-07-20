@@ -449,11 +449,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             val focusX: Float = scaleGestureDetector.focusX
             val focusY: Float = scaleGestureDetector.focusY
             hitTest(focusX, focusY, viewportFocus)
-            mCurrentViewport!![viewportFocus.x
-                - newWidth * (focusX - mContentRect.left)
-                / mContentRect.width(), viewportFocus.y
-                - newHeight * (mContentRect.bottom - focusY)
-                / mContentRect.height(), 0f] = 0f
+            mCurrentViewport!!.set(
+                viewportFocus.x - newWidth * (focusX - mContentRect.left) / mContentRect.width(),
+                viewportFocus.y - newHeight * (mContentRect.bottom - focusY) / mContentRect.height(),
+                0f,
+                0f
+            )
             mCurrentViewport!!.right = mCurrentViewport!!.left + newWidth
             mCurrentViewport!!.bottom = mCurrentViewport!!.top + newHeight
             constrainViewport()
@@ -969,7 +970,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
 
     /**
      * Draws the overscroll "glow" at the four edges of the chart region, if necessary. The edges
-     * of the chart region are stored in [.mContentRect].
+     * of the chart region are stored in [mContentRect].
      *
      * @see EdgeEffectCompat
      */
@@ -1036,13 +1037,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         if (!mContentRect.contains(x.toInt(), y.toInt())) {
             return false
         }
-        dest[mCurrentViewport!!.left
-            + mCurrentViewport!!.width()
-            * (x - mContentRect.left) / mContentRect.width()] = (
-            mCurrentViewport!!.top
-                + mCurrentViewport!!.height()
-                * (y - mContentRect.bottom) / -mContentRect.height()
-            )
+        dest.set(
+            mCurrentViewport!!.left + mCurrentViewport!!.width() * (x - mContentRect.left) / mContentRect.width(),
+            mCurrentViewport!!.top+ mCurrentViewport!!.height() * (y - mContentRect.bottom) / -mContentRect.height()
+        )
         return true
     }
 
@@ -1104,8 +1102,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * and vertically.
      */
     private fun computeScrollSurfaceSize(out: Point) {
-        out[(mContentRect.width() * (AXIS_X_MAX - AXIS_X_MIN) / mCurrentViewport!!.width()).toInt()] =
+        out.set(
+            (mContentRect.width() * (AXIS_X_MAX - AXIS_X_MIN) / mCurrentViewport!!.width()).toInt(),
             (mContentRect.height() * (AXIS_Y_MAX - AXIS_Y_MIN) / mCurrentViewport!!.height()).toInt()
+        )
     }
 
     override fun computeScroll() {
@@ -1157,11 +1157,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
                 / mScrollerStartViewport.width())
             val pointWithinViewportY = ((mZoomFocalPoint.y - mScrollerStartViewport.top)
                 / mScrollerStartViewport.height())
-            mCurrentViewport!![
-                mZoomFocalPoint.x - newWidth * pointWithinViewportX, mZoomFocalPoint.y -
-                    newHeight * pointWithinViewportY, mZoomFocalPoint.x +
-                    newWidth * (1 - pointWithinViewportX)] =
+            mCurrentViewport!!.set(
+                mZoomFocalPoint.x - newWidth * pointWithinViewportX,
+                mZoomFocalPoint.y - newHeight * pointWithinViewportY,
+                mZoomFocalPoint.x + newWidth * (1 - pointWithinViewportX),
                 mZoomFocalPoint.y + newHeight * (1 - pointWithinViewportY)
+            )
             constrainViewport()
             needsInvalidate = true
         }
@@ -1188,7 +1189,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         val curHeight = mCurrentViewport!!.height()
         xLocal = Math.max(AXIS_X_MIN, Math.min(xLocal, AXIS_X_MAX - curWidth))
         yLocal = Math.max(AXIS_Y_MIN + curHeight, Math.min(yLocal, AXIS_Y_MAX))
-        mCurrentViewport!![xLocal, yLocal - curHeight, xLocal + curWidth] = yLocal
+        mCurrentViewport!!.set(
+            xLocal,
+            yLocal - curHeight,
+            xLocal + curWidth,
+            yLocal
+        )
         ViewCompat.postInvalidateOnAnimation(this)
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1220,8 +1226,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         mScrollerStartViewport.set(mCurrentViewport!!)
         mZoomer.forceFinished(true)
         mZoomer.startZoom(ZOOM_AMOUNT)
-        mZoomFocalPoint[(mCurrentViewport!!.right + mCurrentViewport!!.left) / 2] =
+        mZoomFocalPoint.set(
+            (mCurrentViewport!!.right + mCurrentViewport!!.left) / 2,
             (mCurrentViewport!!.bottom + mCurrentViewport!!.top) / 2
+        )
         ViewCompat.postInvalidateOnAnimation(this)
     }
 
@@ -1232,8 +1240,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         mScrollerStartViewport.set(mCurrentViewport!!)
         mZoomer.forceFinished(true)
         mZoomer.startZoom(-ZOOM_AMOUNT)
-        mZoomFocalPoint[(mCurrentViewport!!.right + mCurrentViewport!!.left) / 2] =
+        mZoomFocalPoint.set(
+            (mCurrentViewport!!.right + mCurrentViewport!!.left) / 2,
             (mCurrentViewport!!.bottom + mCurrentViewport!!.top) / 2
+        )
         ViewCompat.postInvalidateOnAnimation(this)
     }
 
