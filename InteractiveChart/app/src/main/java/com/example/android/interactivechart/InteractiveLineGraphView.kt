@@ -859,48 +859,86 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     }
 
     /**
-     * Draws the chart axes and labels onto the canvas.
+     * Draws the chart axes and labels onto the canvas. First we calculate the "stops" along the X
+     * axis by calling our [computeAxisStops] method with the `start` argument the [RectF.left]
+     * coordinate of [RectF] field [mCurrentViewport] (left side of the currently visible chart),
+     * with the `stop` argument the [RectF.right] coordinate of [RectF] field [mCurrentViewport]
+     * (right side of the currently visible chart), the `steps` argument the [Rect.width] of our
+     * [Rect] field [mContentRect] (current destination rectangle into which the chart data should
+     * be drawn) divided by our [Int] field [mMaxLabelWidth] (Maximum length of a label), divided
+     * by 2 (ideal number of stops to create). The `outStops` argument (destination AxisStops object
+     * to populate) is our [AxisStops] field [mXStopsBuffer] (Holds the X axis label values). Next
+     * we calculate the "stops" along the Y axis by calling our [computeAxisStops] method with the
+     * `start` argument the [RectF.top] coordinate of [RectF] field [mCurrentViewport] (top side of
+     * the currently visible chart), with the `stop` argument the [RectF.bottom] coordinate of
+     * [RectF] field [mCurrentViewport] (bottom side of the currently visible chart), the `steps`
+     * argument the [Rect.height] of our [Rect] field [mContentRect] (current destination rectangle
+     * into which the chart data should be drawn) divided by our [Int] field [mLabelHeight] (height
+     * of the text drawn), divided by 2 (ideal number of stops to create). The `outStops` argument
+     * (destination [AxisStops] object to populate) is our [AxisStops] field [mYStopsBuffer] (Holds
+     * the Y axis label values).
+     *
+     * Next we check to see if we need to allocate larger [FloatArray]s for our four [FloatArray]
+     * fields: [mAxisXPositionsBuffer] (holds all of the X coordinates of the vertical grid lines,
+     * it needs to be at least the size of the [AxisStops.numStops] property of [mXStopsBuffer]),
+     * [mAxisYPositionsBuffer] (holds all of the Y coordinates of the horizontal grid lines,
+     * it needs to be at least the size of the [AxisStops.numStops] property of [mYStopsBuffer]),
+     * [mAxisXLinesBuffer] (holds the (x,y) end points of all of the X axis verical grid lines,
+     * four values per line, so it needs to be at least 4 times the size of the [AxisStops.numStops]
+     * property of [mXStopsBuffer]), and [mAxisYLinesBuffer] (holds the (x,y) end points of all of
+     * the Y axis horizontal grid lines, four values per line, so it needs to be at least 4 times
+     * the size of the [AxisStops.numStops] property of [mYStopsBuffer]).
+     *
+     * Next we loop over [Int] variable `i` for all of the [AxisStops.numStops] of [mXStopsBuffer]
+     * setting the `i`'th entry in [mAxisXPositionsBuffer] to the value returned by our [getDrawX]
+     * method for the `x` argument the `i`'th entry in the [AxisStops.stops] array of [mXStopsBuffer].
+     * After this we loop over [Int] variable `i` for all of the [AxisStops.numStops] of [mYStopsBuffer]
+     * setting the `i`'th entry in [mAxisYPositionsBuffer] to the value returned by our [getDrawY]
+     * method for the `y` argument the `i`'th entry in the [AxisStops.stops] array of [mYStopsBuffer].
+     *
+     *
+     * @param canvas the [Canvas] on which we are to draw our chart axes and labels
      */
     private fun drawAxes(canvas: Canvas) {
         // Computes axis stops (in terms of numerical value and position on screen)
         var i: Int
         computeAxisStops(
-            mCurrentViewport!!.left,
-            mCurrentViewport!!.right,
-            mContentRect.width() / mMaxLabelWidth / 2,
-            mXStopsBuffer
+            start = mCurrentViewport!!.left,
+            stop = mCurrentViewport!!.right,
+            steps = mContentRect.width() / mMaxLabelWidth / 2,
+            outStops = mXStopsBuffer
         )
         computeAxisStops(
-            mCurrentViewport!!.top,
-            mCurrentViewport!!.bottom,
-            mContentRect.height() / mLabelHeight / 2,
-            mYStopsBuffer
+            start = mCurrentViewport!!.top,
+            stop = mCurrentViewport!!.bottom,
+            steps = mContentRect.height() / mLabelHeight / 2,
+            outStops = mYStopsBuffer
         )
 
         // Avoid unnecessary allocations during drawing. Re-use allocated
         // arrays and only reallocate if the number of stops grows.
         if (mAxisXPositionsBuffer.size < mXStopsBuffer.numStops) {
-            mAxisXPositionsBuffer = FloatArray(mXStopsBuffer.numStops)
+            mAxisXPositionsBuffer = FloatArray(size = mXStopsBuffer.numStops)
         }
         if (mAxisYPositionsBuffer.size < mYStopsBuffer.numStops) {
-            mAxisYPositionsBuffer = FloatArray(mYStopsBuffer.numStops)
+            mAxisYPositionsBuffer = FloatArray(size = mYStopsBuffer.numStops)
         }
         if (mAxisXLinesBuffer.size < mXStopsBuffer.numStops * 4) {
-            mAxisXLinesBuffer = FloatArray(mXStopsBuffer.numStops * 4)
+            mAxisXLinesBuffer = FloatArray(size = mXStopsBuffer.numStops * 4)
         }
         if (mAxisYLinesBuffer.size < mYStopsBuffer.numStops * 4) {
-            mAxisYLinesBuffer = FloatArray(mYStopsBuffer.numStops * 4)
+            mAxisYLinesBuffer = FloatArray(size = mYStopsBuffer.numStops * 4)
         }
 
         // Compute positions
         i = 0
         while (i < mXStopsBuffer.numStops) {
-            mAxisXPositionsBuffer[i] = getDrawX(mXStopsBuffer.stops[i])
+            mAxisXPositionsBuffer[i] = getDrawX(x = mXStopsBuffer.stops[i])
             i++
         }
         i = 0
         while (i < mYStopsBuffer.numStops) {
-            mAxisYPositionsBuffer[i] = getDrawY(mYStopsBuffer.stops[i])
+            mAxisYPositionsBuffer[i] = getDrawY(y = mYStopsBuffer.stops[i])
             i++
         }
 
@@ -1546,22 +1584,22 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
          * @param outStops The destination [AxisStops] object to populate.
          */
         private fun computeAxisStops(start: Float, stop: Float, steps: Int, outStops: AxisStops) {
-            val range = (stop - start).toDouble()
+            val range: Double = (stop - start).toDouble()
             if (steps == 0 || range <= 0) {
                 outStops.stops = floatArrayOf()
                 outStops.numStops = 0
                 return
             }
-            val rawInterval = range / steps
-            var interval = roundToOneSignificantFigure(rawInterval).toDouble()
-            val intervalMagnitude = Math.pow(10.0, Math.log10(interval).toInt().toDouble())
-            val intervalSigDigit = (interval / intervalMagnitude).toInt()
+            val rawInterval: Double = range / steps
+            var interval: Double = roundToOneSignificantFigure(rawInterval).toDouble()
+            val intervalMagnitude: Double = Math.pow(10.0, Math.log10(interval).toInt().toDouble())
+            val intervalSigDigit: Int = (interval / intervalMagnitude).toInt()
             if (intervalSigDigit > 5) {
                 // Use one order of magnitude higher, to avoid intervals like 0.9 or 90
                 interval = Math.floor(10 * intervalMagnitude)
             }
-            val first = Math.ceil(start / interval) * interval
-            val last = Math.nextUp(Math.floor(stop / interval) * interval)
+            val first: Double = Math.ceil(start / interval) * interval
+            val last: Double = Math.nextUp(Math.floor(stop / interval) * interval)
             var f: Double
             var i: Int
             var n = 0
