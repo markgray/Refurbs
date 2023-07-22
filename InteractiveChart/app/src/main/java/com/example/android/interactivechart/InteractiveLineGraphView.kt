@@ -310,12 +310,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * Holds the X axis label values.
      */
-    private val mXStopsBuffer = AxisStops()
+    private val mXStopsBuffer: AxisStops = AxisStops()
 
     /**
      * Holds the Y axis label values.
      */
-    private val mYStopsBuffer = AxisStops()
+    private val mYStopsBuffer: AxisStops = AxisStops()
 
     /////////////////////////////////////////////////////
     // Buffers used during drawing. These are defined  //
@@ -325,38 +325,38 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * This buffer holds all of the X coordinates of the vertical grid lines.
      */
-    private var mAxisXPositionsBuffer = floatArrayOf()
+    private var mAxisXPositionsBuffer: FloatArray = floatArrayOf()
 
     /**
      * This buffer holds all of the Y coordinates of the horizontal grid lines.
      */
-    private var mAxisYPositionsBuffer = floatArrayOf()
+    private var mAxisYPositionsBuffer: FloatArray = floatArrayOf()
 
     /**
      * This buffer holds the (x,y) end points of all of the X axis verical grid lines (4 values per
      * line), it is used by our [drawAxes] method in its call to [Canvas.drawLines] to draw all the
      * lines at once.
      */
-    private var mAxisXLinesBuffer = floatArrayOf()
+    private var mAxisXLinesBuffer: FloatArray = floatArrayOf()
 
     /**
      * This buffer holds the (x,y) end points of all of the Y axis horizontal grid lines (4 values
      * per line), it is used by our [drawAxes] method in its call to [Canvas.drawLines] to draw all
      * the lines at once.
      */
-    private var mAxisYLinesBuffer = floatArrayOf()
+    private var mAxisYLinesBuffer: FloatArray = floatArrayOf()
 
     /**
      * This buffer holds the (x,y) end points of all of the lines that are used to draw the curve
      * produced by our [fofX] method, it is used by our [drawDataSeriesUnclipped] method in its call
      * to [Canvas.drawLines] to draw all the lines at once.
      */
-    private val mSeriesLinesBuffer = FloatArray((DRAW_STEPS + 1) * 4)
+    private val mSeriesLinesBuffer: FloatArray = FloatArray((DRAW_STEPS + 1) * 4)
 
     /**
      * Holds the text that is used to hold that labels for the values of points along both axis.
      */
-    private val mLabelBuffer = CharArray(100)
+    private val mLabelBuffer: CharArray = CharArray(100)
 
     /**
      * Holds the current scrollable surface size, in pixels computed by [computeScrollSurfaceSize].
@@ -364,7 +364,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * the chart is zoomed in 200% in both directions, the returned size will be twice as large
      * horizontally and vertically.
      */
-    private val mSurfaceSizeBuffer = Point()
+    private val mSurfaceSizeBuffer: Point = Point()
 
     /**
      * The scale listener, used for handling multi-finger scale gestures.
@@ -374,7 +374,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
          * This is the active focal point in terms of the viewport. Could be a local
          * variable but kept here to minimize per-frame allocations.
          */
-        private val viewportFocus = PointF()
+        private val viewportFocus: PointF = PointF()
 
         /**
          * The average X distance in pixels between each of the pointers forming the gesture in
@@ -896,6 +896,51 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * setting the `i`'th entry in [mAxisYPositionsBuffer] to the value returned by our [getDrawY]
      * method for the `y` argument the `i`'th entry in the [AxisStops.stops] array of [mYStopsBuffer].
      *
+     * Next we have to fill our [FloatArray] field [mAxisXLinesBuffer] with four values for each of
+     * the [AxisStops.numStops] entries in our [mXStopsBuffer] field:
+     *
+     *  0: The X coordinate of the start of the line is the [Math.floor] of the `i`'th entry in
+     *  [FloatArray] field [mAxisXPositionsBuffer].
+     *
+     *  1: The Y coordinate of the start of the line is the [Rect.top] of [mContentRect].
+     *
+     *  2: The X coordinate of the end of the line is the [Math.floor] of the `i`'th entry in
+     *  [FloatArray] field [mAxisXPositionsBuffer].
+     *
+     *  3: The Y coordinate of the end of the line is the [Rect.top] of [mContentRect].
+     *
+     * Having filled [mAxisXLinesBuffer] with the coordinates of the grid lines to be drawn we call
+     * the [Canvas.drawLines] method of our [Canvas] parameter [canvas] to draw all the lines at
+     * once using [Paint] field [mGridPaint] as the [Paint].
+     *
+     * Next we have to fill our [FloatArray] field [mAxisYLinesBuffer] with four values for each of
+     * the [AxisStops.numStops] entries in our [mYStopsBuffer] field:
+     *
+     *  0: The X coordinate of the start of the line is the [Rect.left] of [mContentRect].
+     *
+     *  1: The Y coordinate of the start of the line is the [Math.floor] of the `i`'th entry in
+     *  [FloatArray] field [mAxisYPositionsBuffer].
+     *
+     *  2: The X coordinate of the end of the line is the [Rect.right] of [mContentRect].
+     *
+     *  3: The Y coordinate of the end of the line is the [Math.floor] of the `i`'th entry in
+     *  [FloatArray] field [mAxisYPositionsBuffer].
+     *
+     * Having filled [mAxisYLinesBuffer] with the coordinates of the grid lines to be drawn we call
+     * the [Canvas.drawLines] method of our [Canvas] parameter [canvas] to draw all the lines at
+     * once using [Paint] field [mGridPaint] as the [Paint].
+     *
+     * Now we want to draw all the labels. We start by declaring our [Int] variables `var labelOffset`
+     * and `var labelLength`. We use the [Paint.setTextAlign] method (aka kotlin `textAlign` property)
+     * to set the text alignment or [Paint] field [mLabelTextPaint] to [Paint.Align.CENTER] (text is
+     * drawn centered horizontally on the x,y origin). We set `i` to 0 and loop over `i` while `i`
+     * is less than the [AxisStops.numStops] property of [mXStopsBuffer]:
+     *
+     *  - We set `labelLength` to the value returned by our [formatFloat] method (the length of the
+     *  string it created) when we call it with its `out` argument our [CharArray] field [mLabelBuffer]
+     *  (destination of the formatted result), its `value` argument the `i`'th entry in the
+     *  [AxisStops.stops] array of [mXStopsBuffer], and its `digits` argument the [AxisStops.decimals]
+     *  field of [mXStopsBuffer].
      *
      * @param canvas the [Canvas] on which we are to draw our chart axes and labels
      */
@@ -970,7 +1015,11 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         while (i < mXStopsBuffer.numStops) {
 
             // Do not use String.format in high-performance code such as onDraw code.
-            labelLength = formatFloat(mLabelBuffer, mXStopsBuffer.stops[i], mXStopsBuffer.decimals)
+            labelLength = formatFloat(
+                out = mLabelBuffer,
+                value = mXStopsBuffer.stops[i],
+                digits = mXStopsBuffer.decimals
+            )
             labelOffset = mLabelBuffer.size - labelLength
             canvas.drawText(
                 mLabelBuffer, labelOffset, labelLength,
@@ -1531,14 +1580,19 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             return shifted / magnitude
         }
 
-        private val POW10 = intArrayOf(1, 10, 100, 1000, 10000, 100000, 1000000)
+        private val POW10: IntArray = intArrayOf(1, 10, 100, 1000, 10000, 100000, 1000000)
 
         /**
          * Formats a float value to the given number of decimals. Returns the length of the string.
-         * The string begins at out.length - [return value].
+         * The string begins at out.length - (return value).
+         *
+         * @param out the [CharArray] into which we write the formatted string of [Float] parameter
+         * [value]
+         * @param value the [Float] that we should format into its string value
+         * @param digits the number of digits to use in the string.
          */
         private fun formatFloat(out: CharArray, value: Float, digits: Int): Int {
-            var valueLocal = `value`
+            var valueLocal = value
             var digitsLocal = digits
             var negative = false
             if (valueLocal == 0f) {
