@@ -941,6 +941,33 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      *  (destination of the formatted result), its `value` argument the `i`'th entry in the
      *  [AxisStops.stops] array of [mXStopsBuffer], and its `digits` argument the [AxisStops.decimals]
      *  field of [mXStopsBuffer].
+     *  - We set `labelOffset` to the [CharArray.size] of [mLabelBuffer] minus `labelLength`
+     *  - We call the [Canvas.drawText] method of [Canvas] parameter [canvas] to draw the text in
+     *  [mLabelBuffer] from `index` starting at `labelOffset`, `count` of character `labelLength`,
+     *  `x` coordinate the `i`'th entry in [FloatArray] field [mAxisXPositionsBuffer], `y` coordinate
+     *  the [Rect.bottom] of [Rect] field [mContentRect] plus our [Int] field [mLabelHeight] plus
+     *  our [Int] field [mLabelSeparation], and with our [Paint] field [mLabelTextPaint] used as the
+     *  [Paint].
+     *  - We then increment `i` and loop around for the next entry in [AxisStops] field [mXStopsBuffer].
+     *
+     * To draw the Y labels we first use the [Paint.setTextAlign] method (aka kotlin `textAlign`
+     * property) to set the text alignment or [Paint] field [mLabelTextPaint] to [Paint.Align.RIGHT]
+     * (text is drawn to the left of the x,y origin). We set `i` to 0 and loop over `i` while `i`
+     * is less than the [AxisStops.numStops] property of [mYStopsBuffer]:
+     *
+     *  - We set `labelLength` to the value returned by our [formatFloat] method (the length of the
+     *  string it created) when we call it with its `out` argument our [CharArray] field [mLabelBuffer]
+     *  (destination of the formatted result), its `value` argument the `i`'th entry in the
+     *  [AxisStops.stops] array of [mYStopsBuffer], and its `digits` argument the [AxisStops.decimals]
+     *  field of [mYStopsBuffer].
+     *  - We set `labelOffset` to the [CharArray.size] of [mLabelBuffer] minus `labelLength`
+     *  - We call the [Canvas.drawText] method of [Canvas] parameter [canvas] to draw the text in
+     *  [mLabelBuffer] from `index` starting at `labelOffset`, `count` of character `labelLength`,
+     *  `x` coordinate the [Rect.left] of [Rect] field [mContentRect] minus [Int] field
+     *  [mLabelSeparation], `y` coordinate the `i`'th entry in [FloatArray] field [mAxisYPositionsBuffer]
+     *  plus half of [Int] field [mLabelHeight], and with our [Paint] field [mLabelTextPaint] used
+     *  as the [Paint].
+     *  - We then increment `i` and loop around for the next entry in [AxisStops] field [mYStopsBuffer].
      *
      * @param canvas the [Canvas] on which we are to draw our chart axes and labels
      */
@@ -1022,10 +1049,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             )
             labelOffset = mLabelBuffer.size - labelLength
             canvas.drawText(
-                mLabelBuffer, labelOffset, labelLength,
-                mAxisXPositionsBuffer[i],
-                (mContentRect.bottom + mLabelHeight + mLabelSeparation).toFloat(),
-                mLabelTextPaint!!
+                /* text = */ mLabelBuffer,
+                /* index = */ labelOffset,
+                /* count = */ labelLength,
+                /* x = */ mAxisXPositionsBuffer[i],
+                /* y = */ (mContentRect.bottom + mLabelHeight + mLabelSeparation).toFloat(),
+                /* paint = */ mLabelTextPaint!!
             )
             i++
         }
@@ -1039,10 +1068,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             labelLength = formatFloat(mLabelBuffer, mYStopsBuffer.stops[i], mYStopsBuffer.decimals)
             labelOffset = mLabelBuffer.size - labelLength
             canvas.drawText(
-                mLabelBuffer, labelOffset, labelLength,
-                (mContentRect.left - mLabelSeparation).toFloat(),
-                mAxisYPositionsBuffer[i] + mLabelHeight / 2,
-                mLabelTextPaint!!
+                /* text = */ mLabelBuffer,
+                /* index = */ labelOffset,
+                /* count = */ labelLength,
+                /* x = */ (mContentRect.left - mLabelSeparation).toFloat(),
+                /* y = */ mAxisYPositionsBuffer[i] + mLabelHeight / 2,
+                /* paint = */ mLabelTextPaint!!
             )
             i++
         }
@@ -1050,30 +1081,64 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
 
     /**
      * Computes the pixel offset for the given X chart value. This may be outside the view bounds.
+     * We initialize our [Float] variable `val offset` to our [Float] parameter [x] minus the
+     * [RectF.left] property of [RectF] field [mCurrentViewport], with that quantity divided by
+     * the [RectF.width] property of [mCurrentViewport]. We add the [Rect.left] property of [Rect]
+     * field [mContentRect] to the [Rect.width] of [mContentRect] times `offset` and return this
+     * value to the caller.
+     *
+     * @param x the X coordinate of a point in chart space.
+     * @return the X coordinate in the device screen space.
      */
     private fun getDrawX(x: Float): Float {
-        return (mContentRect.left
-            + mContentRect.width()
-            * (x - mCurrentViewport!!.left) / mCurrentViewport!!.width())
+        val offset: Float = (x - mCurrentViewport!!.left) / mCurrentViewport!!.width()
+        return (mContentRect.left + mContentRect.width() * offset)
     }
 
     /**
      * Computes the pixel offset for the given Y chart value. This may be outside the view bounds.
+     * We initialize our [Float] variable `val offset` to our [Float] parameter [y] minus the
+     * [RectF.top] property of [RectF] field [mCurrentViewport], with that quantity divided by the
+     * [RectF.height] property of [mCurrentViewport]. We subtract from the [Rect.bottom] property of
+     * [Rect] field [mContentRect] the [Rect.height] of [mContentRect] times `offset` and return this
+     * value to the caller.
+     *
+     * @param y the Y coordinate of a point in chart space.
+     * @return the Y coordinate in the device screen space.
      */
     private fun getDrawY(y: Float): Float {
-        return (mContentRect.bottom
-            - mContentRect.height()
-            * (y - mCurrentViewport!!.top) / mCurrentViewport!!.height())
+        val offset: Float = (y - mCurrentViewport!!.top) / mCurrentViewport!!.height()
+        return (mContentRect.bottom - mContentRect.height() * offset)
     }
 
     /**
      * Draws the currently visible portion of the data series defined by [fofX] to the
      * canvas. This method does not clip its drawing, so users should call [Canvas.clipRect]
-     * before calling this method.
+     * before calling this method. Our [FloatArray] field [mSeriesLinesBuffer] has four entries
+     * for each line of the curve we draw: the X coordinate of the start of the line, the Y
+     * coordinate of the start of the line, the X coordinate of the end of the line, and the Y
+     * coordinate of the end of the line. We start by setting the values for the first line:
+     *  0: X coordinate of the start of the line is the [Rect.left] of [mContentRect] as a [Float]
+     *  1: Y coordinate of the start of the line is the value returned by [getDrawY] when passed
+     *  the results of calling [fofX] with the [RectF.left] property of [mCurrentViewport]
+     *  2: is a copy of the 0'th  entry in [mSeriesLinesBuffer].
+     *  3: is a copy of the 1'th  entry in [mSeriesLinesBuffer].
+     *
+     * We then declare [Float] variable `var x`, and loop over `i` from 1 until [DRAW_STEPS]:
+     *  - we set the X coordinate of the start of the line to the X coordinate of the end of the
+     *  line of the previous (`i` minus 1) line.
+     *  - we set the Y coordinate of the start of the line to the Y coordinate of the end of the
+     *  line of the previous (`i` minus 1) line.
+     *  - we set our [Float] variable `x` to the value of the [RectF.left] property of [mCurrentViewport]
+     *  plus the [RectF.width] of [mCurrentViewport] divided by [DRAW_STEPS] times `i`.
+     *  - we set the X coordinate of the end of the line to
+     *
+     *
+     * @param canvas the [Canvas] we should draw on.
      */
     private fun drawDataSeriesUnclipped(canvas: Canvas) {
         mSeriesLinesBuffer[0] = mContentRect.left.toFloat()
-        mSeriesLinesBuffer[1] = getDrawY(fofX(mCurrentViewport!!.left))
+        mSeriesLinesBuffer[1] = getDrawY(y = fofX(x = mCurrentViewport!!.left))
         mSeriesLinesBuffer[2] = mSeriesLinesBuffer[0]
         mSeriesLinesBuffer[3] = mSeriesLinesBuffer[1]
         var x: Float
