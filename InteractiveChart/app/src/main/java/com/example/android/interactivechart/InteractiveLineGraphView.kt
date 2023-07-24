@@ -1131,8 +1131,14 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      *  line of the previous (`i` minus 1) line.
      *  - we set our [Float] variable `x` to the value of the [RectF.left] property of [mCurrentViewport]
      *  plus the [RectF.width] of [mCurrentViewport] divided by [DRAW_STEPS] times `i`.
-     *  - we set the X coordinate of the end of the line to
+     *  - we set the X coordinate of the end of the line to the value returned by [getDrawX] when
+     *  passed `x`
+     *  - we set the Y coordinate of the end of the line to the value returned by [getDrawY] when
+     *  passed the results of calling [fofX] with `x` as its argument.
      *
+     * Having filled [mSeriesLinesBuffer] with all of the line coordinates needed, we call the
+     * [Canvas.drawLines] method of [canvas] with [mSeriesLinesBuffer] as it `pts` argument and
+     * [Paint] field [mDataPaint] as the [Paint] to use.
      *
      * @param canvas the [Canvas] we should draw on.
      */
@@ -1154,8 +1160,68 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
 
     /**
      * Draws the overscroll "glow" at the four edges of the chart region, if necessary. The edges
-     * of the chart region are stored in [mContentRect].
+     * of the chart region are stored in [mContentRect]. We start by initializing our [Boolean]
+     * variable `var needsInvalidate` to `false`. We then check each of our four [EdgeEffectCompat]
+     * to see if they need drawing:
+     *  - [mEdgeEffectTop] if its [EdgeEffectCompat.isFinished] returns `false` we initialize our
+     *  [Int] variable `val restoreCount` to the value returned by the [Canvas.save] method of
+     *  [canvas] (saves the current matrix and clip onto a private stack, and returns the value to
+     *  use when calling [Canvas.restoreToCount] to restore the [Canvas] to its previous state).
+     *  Then we call the [Canvas.translate] method of [canvas] to translate the [Canvas] to X
+     *  coordinate [Rect.left] of [Rect] field [mContentRect] and Y coordinate [Rect.top]. We call
+     *  the [EdgeEffectCompat.setSize] method of [mEdgeEffectTop] to set its size to [Rect.width]
+     *  of [mContentRect] by its [Rect.height]. We then call the [EdgeEffectCompat.draw] method of
+     *  [mEdgeEffectTop] with [canvas] and if it returns `true` we set `needsInvalidate` to `true`.
+     *  Finally we call the [Canvas.restoreToCount] method of [canvas] with `restoreCount` to
+     *  restore its state to the state it had before we called its [Canvas.save] method.
      *
+     *  - [mEdgeEffectBottom] if its [EdgeEffectCompat.isFinished] returns `false` we initialize our
+     *  [Int] variable `val restoreCount` to the value returned by the [Canvas.save] method of
+     *  [canvas] (saves the current matrix and clip onto a private stack, and returns the value to
+     *  use when calling [Canvas.restoreToCount] to restore the [Canvas] to its previous state).
+     *  Then we call the [Canvas.translate] method of [canvas] to translate the [Canvas] to X
+     *  coordinate [Rect.left] of [Rect] field [mContentRect] and Y coordinate [Rect.top]. Next we
+     *  call the [Canvas.rotate] method of [canvas] to rotate the canvas 180 degrees with the pivot
+     *  point X coordinate the [Rect.width] of  [mContentRect] and the Y coordinate 0. Then we call
+     *  the [EdgeEffectCompat.setSize] method of [mEdgeEffectBottom] to set its size to [Rect.width]
+     *  of [mContentRect] by its [Rect.height]. We then call the [EdgeEffectCompat.draw] method of
+     *  [mEdgeEffectBottom] with [canvas] and if it returns `true` we set `needsInvalidate` to `true`.
+     *  Finally we call the [Canvas.restoreToCount] method of [canvas] with `restoreCount` to
+     *  restore its state to the state it had before we called its [Canvas.save] method.
+     *
+     *  - [mEdgeEffectLeft] if its [EdgeEffectCompat.isFinished] returns `false` we initialize our
+     *  [Int] variable `val restoreCount` to the value returned by the [Canvas.save] method of
+     *  [canvas] (saves the current matrix and clip onto a private stack, and returns the value to
+     *  use when calling [Canvas.restoreToCount] to restore the [Canvas] to its previous state).
+     *  Then we call the [Canvas.translate] method of [canvas] to translate the [Canvas] to X
+     *  coordinate [Rect.left] of [Rect] field [mContentRect] and Y coordinate [Rect.bottom]. Next
+     *  we call the [Canvas.rotate] method of [canvas] to rotate the canvas 90 degrees with the
+     *  pivot point X coordinate 0f and the Y coordinate 0f. Then we call the [EdgeEffectCompat.setSize]
+     *  method of [mEdgeEffectLeft] to set its size to [Rect.height] of [mContentRect] by its
+     *  [Rect.width]. We then call the [EdgeEffectCompat.draw] method of [mEdgeEffectLeft] with
+     *  [canvas] and if it returns `true` we set `needsInvalidate` to `true`. Finally we call the
+     *  [Canvas.restoreToCount] method of [canvas] with `restoreCount` to restore its state to the
+     *  state it had before we called its [Canvas.save] method.
+     *
+     *  - [mEdgeEffectRight] if its [EdgeEffectCompat.isFinished] returns `false` we initialize our
+     *  [Int] variable `val restoreCount` to the value returned by the [Canvas.save] method of
+     *  [canvas] (saves the current matrix and clip onto a private stack, and returns the value to
+     *  use when calling [Canvas.restoreToCount] to restore the [Canvas] to its previous state).
+     *  Then we call the [Canvas.translate] method of [canvas] to translate the [Canvas] to X
+     *  coordinate [Rect.right] of [Rect] field [mContentRect] and Y coordinate [Rect.top]. Next
+     *  we call the [Canvas.rotate] method of [canvas] to rotate the canvas 90 degrees with the
+     *  pivot point X coordinate 0f and the Y coordinate 0f. Then we call the [EdgeEffectCompat.setSize]
+     *  method of [mEdgeEffectRight] to set its size to [Rect.height] of [mContentRect] by its
+     *  [Rect.width]. We then call the [EdgeEffectCompat.draw] method of [mEdgeEffectRight] with
+     *  [canvas] and if it returns `true` we set `needsInvalidate` to `true`. Finally we call the
+     *  [Canvas.restoreToCount] method of [canvas] with `restoreCount` to restore its state to the
+     *  state it had before we called its [Canvas.save] method.
+     *
+     * Finally if `needsInvalidate` is `true` we call the [ViewCompat.postInvalidateOnAnimation]
+     * method to cause an invalidate to happen for `this` [View] on the next animation time step,
+     * typically the next display frame.
+     *
+     * @param canvas the [Canvas] we should draw on.
      * @see EdgeEffectCompat
      */
     private fun drawEdgeEffectsUnclipped(canvas: Canvas) {
@@ -1163,8 +1229,11 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         // since EdgeEffectCompat always draws a top-glow at 0,0.
         var needsInvalidate = false
         if (!mEdgeEffectTop.isFinished) {
-            val restoreCount = canvas.save()
-            canvas.translate(mContentRect.left.toFloat(), mContentRect.top.toFloat())
+            val restoreCount: Int = canvas.save()
+            canvas.translate(
+                mContentRect.left.toFloat(),
+                mContentRect.top.toFloat()
+            )
             mEdgeEffectTop.setSize(mContentRect.width(), mContentRect.height())
             if (mEdgeEffectTop.draw(canvas)) {
                 needsInvalidate = true
@@ -1173,7 +1242,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
         if (!mEdgeEffectBottom.isFinished) {
             val restoreCount = canvas.save()
-            canvas.translate((2 * mContentRect.left - mContentRect.right).toFloat(), mContentRect.bottom.toFloat())
+            canvas.translate(
+                (2 * mContentRect.left - mContentRect.right).toFloat(),
+                mContentRect.bottom.toFloat()
+            )
             canvas.rotate(180f, mContentRect.width().toFloat(), 0f)
             mEdgeEffectBottom.setSize(mContentRect.width(), mContentRect.height())
             if (mEdgeEffectBottom.draw(canvas)) {
@@ -1183,7 +1255,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
         if (!mEdgeEffectLeft.isFinished) {
             val restoreCount = canvas.save()
-            canvas.translate(mContentRect.left.toFloat(), mContentRect.bottom.toFloat())
+            canvas.translate(
+                mContentRect.left.toFloat(),
+                mContentRect.bottom.toFloat()
+            )
             canvas.rotate(-90f, 0f, 0f)
             mEdgeEffectLeft.setSize(mContentRect.height(), mContentRect.width())
             if (mEdgeEffectLeft.draw(canvas)) {
@@ -1193,7 +1268,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
         if (!mEdgeEffectRight.isFinished) {
             val restoreCount = canvas.save()
-            canvas.translate(mContentRect.right.toFloat(), mContentRect.top.toFloat())
+            canvas.translate(
+                mContentRect.right.toFloat(),
+                mContentRect.top.toFloat()
+            )
             canvas.rotate(90f, 0f, 0f)
             mEdgeEffectRight.setSize(mContentRect.height(), mContentRect.width())
             if (mEdgeEffectRight.draw(canvas)) {
@@ -1216,6 +1294,20 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * pixel coordinates, if that pixel is within the chart region described by [mContentRect]. If
      * the point is found, the "dest" argument is set to the point and this function returns `true`.
      * Otherwise, this function returns `false` and "dest" is unchanged.
+     *
+     * If ([x], [y]) is not in [mContentRect] we return `false`, otherwise we call the [PointF.set]
+     * method of [PointF] parameter [dest] to set its `x` coordinate to the [RectF.left] of [RectF]
+     * field [mCurrentViewport] plus the quantity [RectF.width] of [mCurrentViewport] times [x] minus
+     * [Rect.left] of [mContentRect] divided by the [Rect.width] of [mContentRect], and we set the
+     * [PointF.y] of [dest] to the [RectF.top] of [RectF] field [mCurrentViewport] plus the quantity
+     * [RectF.height] of [mCurrentViewport] times [y] minus [Rect.bottom] of [mContentRect] divided
+     * by minus the [Rect.height] of [mContentRect].
+     *
+     * @param x the X coordinate of the point within [Rect] field [mContentRect].
+     * @param y the Y coordinate of the point within [Rect] field [mContentRect].
+     * @param dest the [PointF] within [mCurrentViewport] for ([x], [y]) if ([x], [y]) is within
+     * [mContentRect].
+     * @return `true` if the point is found in [mContentRect], `false` otherwise.
      */
     private fun hitTest(x: Float, y: Float, dest: PointF): Boolean {
         if (!mContentRect.contains(x.toInt(), y.toInt())) {
@@ -1228,9 +1320,15 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         return true
     }
 
+    /**
+     * We implement this method to handle touch screen motion events.
+     *
+     * @param event The motion event.
+     * @return `true` if the event was handled, `false` otherwise.
+     */
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        var retVal = mScaleGestureDetector.onTouchEvent(event)
+        var retVal: Boolean = mScaleGestureDetector.onTouchEvent(event)
         retVal = mGestureDetector.onTouchEvent(event) || retVal
         return retVal || super.onTouchEvent(event)
     }
