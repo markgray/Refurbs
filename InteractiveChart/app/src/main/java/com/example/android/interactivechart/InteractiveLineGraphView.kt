@@ -1321,7 +1321,16 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     }
 
     /**
-     * We implement this method to handle touch screen motion events.
+     * We implement this method to handle touch screen motion events. We initialize our [Boolean]
+     * variable `var retVal` to the value returned by the [ScaleGestureDetector.onTouchEvent] of
+     * our [ScaleGestureDetector] field [mScaleGestureDetector] (its [OnScaleGestureListener]
+     * Detects scaling transformation, and returns `true` if the event was processed). Then we set
+     * `retVal` to the inclusive `or` of `retVal` and the value returned by the
+     * [GestureDetectorCompat.onTouchEvent] method of [GestureDetectorCompat] field [mGestureDetector]
+     * (its [SimpleOnGestureListener] is used for handling simple gestures such as double touches,
+     * scrolls, and flings, `true` if it consumed the event, else `false`). If `retVal` is `true`
+     * we return it to the caller, otherwise we return the value returned by our super's implementation
+     * of `onTouchEvent`.
      *
      * @param event The motion event.
      * @return `true` if the event was handled, `false` otherwise.
@@ -1346,6 +1355,9 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             Math.min(AXIS_X_MAX, mCurrentViewport!!.right))
     }
 
+    /**
+     * Terminates all [EdgeEffectCompat] animations that may be in progress.
+     */
     private fun releaseEdgeEffects() {
         mEdgeEffectBottomActive = false
         mEdgeEffectRightActive = false
@@ -1357,13 +1369,27 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         mEdgeEffectBottom.onRelease()
     }
 
+    /**
+     * Does the actual call to [OverScroller.fling] of [OverScroller] field [mScroller] in response
+     * to a `fling` gesture. First we call our [releaseEdgeEffects] method to have it terminate all
+     * [EdgeEffectCompat] animations that may be in progress. Then we call our [computeScrollSurfaceSize]
+     * method to have it compute the current scrollable surface size in pixels and store the result
+     * in [Point] field [mSurfaceSizeBuffer]. We call the [RectF.set] method of [RectF] field
+     * [mScrollerStartViewport] to set it to [RectF] field [mCurrentViewport] (the currently visible
+     * chart domain and range). We initialize [Int] variable `val startX`
+     *
+     * @param velocityX The velocity of this fling measured in pixels per second
+     * along the x axis.
+     * @param velocityY The velocity of this fling measured in pixels per second
+     * along the y axis.
+     */
     private fun fling(velocityX: Int, velocityY: Int) {
         releaseEdgeEffects()
         // Flings use math in pixels (as opposed to math based on the viewport).
         computeScrollSurfaceSize(mSurfaceSizeBuffer)
         mScrollerStartViewport.set(mCurrentViewport!!)
-        val startX = (mSurfaceSizeBuffer.x * (mScrollerStartViewport.left - AXIS_X_MIN) / (AXIS_X_MAX - AXIS_X_MIN)).toInt()
-        val startY = (mSurfaceSizeBuffer.y * (AXIS_Y_MAX - mScrollerStartViewport.bottom) / (AXIS_Y_MAX - AXIS_Y_MIN)).toInt()
+        val startX: Int = (mSurfaceSizeBuffer.x * (mScrollerStartViewport.left - AXIS_X_MIN) / (AXIS_X_MAX - AXIS_X_MIN)).toInt()
+        val startY: Int = (mSurfaceSizeBuffer.y * (AXIS_Y_MAX - mScrollerStartViewport.bottom) / (AXIS_Y_MAX - AXIS_Y_MIN)).toInt()
         mScroller.forceFinished(true)
         mScroller.fling(
             startX,
@@ -1373,7 +1399,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             0, mSurfaceSizeBuffer.x - mContentRect.width(),
             0, mSurfaceSizeBuffer.y - mContentRect.height(),
             mContentRect.width() / 2,
-            mContentRect.height() / 2)
+            mContentRect.height() / 2
+        )
         ViewCompat.postInvalidateOnAnimation(this)
     }
 
