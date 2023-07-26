@@ -1376,7 +1376,26 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * method to have it compute the current scrollable surface size in pixels and store the result
      * in [Point] field [mSurfaceSizeBuffer]. We call the [RectF.set] method of [RectF] field
      * [mScrollerStartViewport] to set it to [RectF] field [mCurrentViewport] (the currently visible
-     * chart domain and range). We initialize [Int] variable `val startX`
+     * chart domain and range). We initialize [Int] variable `val startX` to the [Point.x] property
+     * of [Point] field [mSurfaceSizeBuffer] times the quantity of the [RectF.left] property of
+     * [RectF] field [mScrollerStartViewport] minus [AXIS_X_MIN] (-1f) all divided by the quantity
+     * [AXIS_X_MAX] (1f) minus [AXIS_X_MIN], and we initialize our [Int] variable `val startY` to
+     * the [Point.y] property of [Point] field [mSurfaceSizeBuffer] times the quantity of [AXIS_Y_MAX]
+     * (1f) minus the [RectF.bottom] property of [RectF] field [mScrollerStartViewport] all divided
+     * by [AXIS_Y_MAX] minus [AXIS_Y_MIN] (-1f).
+     *
+     * We call the [OverScroller.forceFinished] method of [OverScroller] field [mScroller] with
+     * `true` to force it to be "finished", then we call the [OverScroller.fling] method of
+     * [mScroller] to fling it from starting X value `startX`, starting Y value `startY`, with an
+     * initial velocity in the X direction of our [Int] parameter [velocityX] and an initial
+     * velocity in the Y direction of our [Int] parameter [velocityY]. Its `minX` value is 0,
+     * its `maxX` value is the [Point.x] property of [Point] field [mSurfaceSizeBuffer] minus the
+     * [Rect.width] property of [Rect] field [mContentRect], its `minY` value is 0, its `maxY` value
+     * is the [Point.y] property of [Point] field [mSurfaceSizeBuffer] minus the [Rect.height]
+     * property of [Rect] field [mContentRect]. Its `overX` (Overfling range) is the [Rect.width]
+     * of [mContentRect] divided by 2, and its `overY` (Overfling range) is the [Rect.height] of
+     * [mContentRect] divided by 2. Finally we call the [ViewCompat.postInvalidateOnAnimation] method
+     * to cause an invalidate of our view to happen on the next animation time step.
      *
      * @param velocityX The velocity of this fling measured in pixels per second
      * along the x axis.
@@ -1408,7 +1427,15 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * Computes the current scrollable surface size, in pixels. For example, if the entire chart
      * area is visible, this is simply the current size of [mContentRect]. If the chart
      * is zoomed in 200% in both directions, the returned size will be twice as large horizontally
-     * and vertically.
+     * and vertically. We set the [Point.x] property of [Point] parameter [out] to the [Rect.width]
+     * of [Rect] field [mContentRect] times the quantity [AXIS_X_MAX] (1f) minus [AXIS_X_MIN] (-1f)
+     * all divided by the [RectF.width] property of of [RectF] field [mCurrentViewport], and we set
+     * the [Point.y] property of [Point] parameter [out] to the [Rect.height] property of [Rect]
+     * field [mContentRect] times the quantity [AXIS_Y_MAX] (1f) minus [AXIS_Y_MIN] (-1f) all
+     * divided by the [RectF.height] property of of [RectF] field [mCurrentViewport]
+     *
+     * @param out the [Point] which we should use to return the current scrollable surface size,
+     * in pixels.
      */
     private fun computeScrollSurfaceSize(out: Point) {
         out.set(
@@ -1417,6 +1444,11 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         )
     }
 
+    /**
+     * Called by a parent to request that a child update its values for `mScrollX` and `mScrollY`
+     * if necessary. This will typically be done if the child is animating a scroll using a
+     * [OverScroller].
+     */
     override fun computeScroll() {
         super.computeScroll()
         var needsInvalidate = false
