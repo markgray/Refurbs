@@ -1447,7 +1447,39 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * Called by a parent to request that a child update its values for `mScrollX` and `mScrollY`
      * if necessary. This will typically be done if the child is animating a scroll using a
-     * [OverScroller].
+     * [OverScroller]. First we call our super's implementation of `computeScroll`, then we
+     * initialize our [Boolean] variable `var needsInvalidate` to `false` (if our code does
+     * anything that requires a re-draw of our view, it will be set to `true` and the method
+     * [ViewCompat.postInvalidateOnAnimation] will be called before returning). Then we call the
+     * [OverScroller.computeScrollOffset] method of [OverScroller] field [mScroller] and if it
+     * returns `true` indicating that the current animation is not yet finished we:
+     *  - Call our [computeScrollSurfaceSize] method to have it compute the current scrollable
+     *  surface size and store that value in our [Point] field [mSurfaceSizeBuffer].
+     *  - We initialize our [Int] variable `val currX` to the value returned by the method
+     *  [OverScroller.getCurrX] of [mScroller] (kotlin `currX` property), and our [Int] variable
+     *  `val currY` to the value returned by the method [OverScroller.getCurrY] of [mScroller]
+     *  (kotlin `currY` property).
+     *  - We initialize our [Boolean] variable `val canScrollX` to `true` if the [RectF.left]
+     *  property of [RectF] field [mCurrentViewport] is greater than [AXIS_X_MIN], or if the
+     *  [RectF.right] property of [RectF] field [mCurrentViewport] is less than [AXIS_X_MAX]
+     *  - We initialize our [Boolean] variable `val canScrollY` to `true` if the [RectF.top]
+     *  property of [RectF] field [mCurrentViewport] is greater than [AXIS_Y_MIN], or if the
+     *  [RectF.bottom] property of [RectF] field [mCurrentViewport] is less than [AXIS_Y_MAX].
+     *  - Then if `canScrollX` is `true` and `currX` is less than 0, and the method
+     *  [EdgeEffectCompat.isFinished] of [EdgeEffectCompat] field [mEdgeEffectLeft] and our
+     *  [Boolean] field [mEdgeEffectLeftActive] is `false` (the [EdgeEffectCompat] field
+     *  [mEdgeEffectLeft] is not running) we call the [EdgeEffectCompat.onAbsorb] method of
+     *  [mEdgeEffectLeft] with the value that the [OverScrollerCompat.getCurrVelocity] method
+     *  returns for [OverScroller] field [mScroller]. We then set [Boolean] field
+     *  [mEdgeEffectLeftActive] and [Boolean] variable `needsInvalidate` both to `true`. If the
+     *  conditions of the `if` are not met we check if `canScrollX` is `true` and `currX` is
+     *  greater than the [Point.x] property of [mSurfaceSizeBuffer] minus the [Rect.width] of
+     *  [Rect] field [mContentRect] and the [EdgeEffectCompat.isFinished] of [EdgeEffectCompat]
+     *  field [mEdgeEffectRight] and our [Boolean] field [mEdgeEffectRightActive] is `false`,
+     *  we call the [EdgeEffectCompat.onAbsorb] method of [mEdgeEffectRight] with the value that
+     *  the [OverScrollerCompat.getCurrVelocity] method returns for [OverScroller] field [mScroller].
+     *  We then set [Boolean] field [mEdgeEffectRightActive] and [Boolean] variable `needsInvalidate`
+     *  both to `true`.
      */
     override fun computeScroll() {
         super.computeScroll()
@@ -1455,12 +1487,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         if (mScroller.computeScrollOffset()) {
             // The scroller isn't finished, meaning a fling or programmatic pan operation is
             // currently active.
-            computeScrollSurfaceSize(mSurfaceSizeBuffer)
-            val currX = mScroller.currX
-            val currY = mScroller.currY
-            val canScrollX = (mCurrentViewport!!.left > AXIS_X_MIN
+            computeScrollSurfaceSize(out = mSurfaceSizeBuffer)
+            val currX: Int = mScroller.currX
+            val currY: Int = mScroller.currY
+            val canScrollX: Boolean = (mCurrentViewport!!.left > AXIS_X_MIN
                 || mCurrentViewport!!.right < AXIS_X_MAX)
-            val canScrollY = (mCurrentViewport!!.top > AXIS_Y_MIN
+            val canScrollY: Boolean = (mCurrentViewport!!.top > AXIS_Y_MIN
                 || mCurrentViewport!!.bottom < AXIS_Y_MAX)
             if (canScrollX && currX < 0 && mEdgeEffectLeft.isFinished
                 && !mEdgeEffectLeftActive) {
