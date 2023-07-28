@@ -1480,6 +1480,61 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      *  the [OverScrollerCompat.getCurrVelocity] method returns for [OverScroller] field [mScroller].
      *  We then set [Boolean] field [mEdgeEffectRightActive] and [Boolean] variable `needsInvalidate`
      *  both to `true`.
+     *
+     * Next we deal with Y axis scrolling:
+     *   - If `canScrollY` is `true` and `currY` is less than 0, and the method
+     *   [EdgeEffectCompat.isFinished] of [EdgeEffectCompat] field [mEdgeEffectTop] and our
+     *   [Boolean] field [mEdgeEffectTopActive] is `false` (the [EdgeEffectCompat] field
+     *   [mEdgeEffectTop] is not running) we call the [EdgeEffectCompat.onAbsorb] method of
+     *   [mEdgeEffectTop] with the value that the [OverScrollerCompat.getCurrVelocity] method
+     *   returns for [OverScroller] field [mScroller]. We then set [Boolean] field
+     *   [mEdgeEffectTopActive] and [Boolean] variable `needsInvalidate` both to `true`.  If the
+     *   conditions of the `if` are not met we check if `canScrollY` is `true` and `currY` is greater
+     *   than the [Point.y] property of [mSurfaceSizeBuffer] minus the [Rect.height] of [Rect] field
+     *   [mContentRect] and the [EdgeEffectCompat.isFinished] of [EdgeEffectCompat] field
+     *   [mEdgeEffectBottom] and our [Boolean] field [mEdgeEffectBottomActive] is `false`, we call
+     *   the [EdgeEffectCompat.onAbsorb] method of [mEdgeEffectBottom] with the value that the
+     *   [OverScrollerCompat.getCurrVelocity] method returns for [OverScroller] field [mScroller].
+     *   We then set [Boolean] field [mEdgeEffectBottomActive] and [Boolean] variable `needsInvalidate`
+     *   both to `true`.
+     *   - Having dealt with both X and Y scrolling we initialize our [Float] variable `val currXRange`
+     *   to [AXIS_X_MIN] plus the quantity [AXIS_X_MAX] minus [AXIS_X_MIN] times `currX` divided by
+     *   the [Point.x] property of [Point] field [mSurfaceSizeBuffer], and we initialize our [Float]
+     *   variable `val currYRange` to [AXIS_Y_MAX] plus the quantity [AXIS_Y_MAX] minus [AXIS_Y_MIN]
+     *   times `currY` divided by the [Point.y] property of [Point] field [mSurfaceSizeBuffer]. We
+     *   then call our [setViewportBottomLeft] method with `currXRange` as its `x`
+     *
+     * Having dealt with scrolling if necessary, we next call the [Zoomer.computeZoom] method of our
+     * [Zoomer] field [mZoomer] and if it returns `true` (indicating that the zoom is still active)
+     * we perform the zoom since a zoom is in progress (either programmatically or via double-touch):
+     *  - We initialize our [Float] variable `val newWidth` to the quantity 1f minus the
+     *  [Zoomer.currZoom] property of [mZoomer] times the [RectF.width] of [RectF] field
+     *  [mScrollerStartViewport], and we initialize our [Float] variable `val newHeight` to the
+     *  quantity 1f minus the [Zoomer.currZoom] property of [mZoomer] times the [RectF.height] of
+     *  [RectF] field [mScrollerStartViewport].
+     *  - We initialize our [Float] variable `val pointWithinViewportX` to the quantity of the
+     *  [PointF.x] property of [PointF] field [mZoomFocalPoint] minus the [RectF.left] property of
+     *  [RectF] field [mScrollerStartViewport] all divided by the [RectF.width] of
+     *  [mScrollerStartViewport], and we initialize our [Float] variable `val pointWithinViewportY`
+     *  to the quantity of the [PointF.y] property of [PointF] field [mZoomFocalPoint] minus the
+     *  [RectF.top] property of [RectF] field [mScrollerStartViewport] all divided by the
+     *  [RectF.height] of [mScrollerStartViewport].
+     *  - We then call the [RectF.set] method of [mCurrentViewport] to set its `left` to the
+     *  [PointF.x] property of [PointF] field [mZoomFocalPoint] minus `newWidth` times
+     *  `pointWithinViewportX`, to set its `top` to the [PointF.y] property of [PointF] field
+     *  [mZoomFocalPoint] minus `newHeight` times `pointWithinViewportY`, to set its `right` to
+     *  the [PointF.x] property of [PointF] field [mZoomFocalPoint] plus `newWidth` times the
+     *  quantity of 1 minus `pointWithinViewportX`, to set its `bottom` to the [PointF.y] property
+     *  of [PointF] field [mZoomFocalPoint] plus `newHeight` times the quantity 1 minus
+     *  `pointWithinViewportY`.
+     *  - We then call our [constrainViewport] method to ensure that current viewport that we just
+     *  set [mCurrentViewport] to is inside the viewport extremes defined by [AXIS_X_MIN],
+     *  [AXIS_X_MAX], [AXIS_Y_MIN] and [AXIS_Y_MAX], then we set our [Boolean] variable
+     *  `needsInvalidate` to `true`.
+     *
+     * Before returning we check if `needsInvalidate` is `true` and if it is we call the method
+     * [ViewCompat.postInvalidateOnAnimation] method to cause an invalidate of `this` [View] to
+     * happen on the next animation time step, typically the next display frame.
      */
     override fun computeScroll() {
         super.computeScroll()
@@ -1517,18 +1572,18 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
                 mEdgeEffectBottomActive = true
                 needsInvalidate = true
             }
-            val currXRange = AXIS_X_MIN + (AXIS_X_MAX - AXIS_X_MIN) * currX / mSurfaceSizeBuffer.x
-            val currYRange = AXIS_Y_MAX - (AXIS_Y_MAX - AXIS_Y_MIN) * currY / mSurfaceSizeBuffer.y
-            setViewportBottomLeft(currXRange, currYRange)
+            val currXRange: Float = AXIS_X_MIN + (AXIS_X_MAX - AXIS_X_MIN) * currX / mSurfaceSizeBuffer.x
+            val currYRange: Float = AXIS_Y_MAX - (AXIS_Y_MAX - AXIS_Y_MIN) * currY / mSurfaceSizeBuffer.y
+            setViewportBottomLeft(x = currXRange, y = currYRange)
         }
         if (mZoomer.computeZoom()) {
             // Performs the zoom since a zoom is in progress (either programmatically or via
             // double-touch).
-            val newWidth = (1f - mZoomer.currZoom) * mScrollerStartViewport.width()
-            val newHeight = (1f - mZoomer.currZoom) * mScrollerStartViewport.height()
-            val pointWithinViewportX = ((mZoomFocalPoint.x - mScrollerStartViewport.left)
+            val newWidth: Float = (1f - mZoomer.currZoom) * mScrollerStartViewport.width()
+            val newHeight: Float = (1f - mZoomer.currZoom) * mScrollerStartViewport.height()
+            val pointWithinViewportX: Float = ((mZoomFocalPoint.x - mScrollerStartViewport.left)
                 / mScrollerStartViewport.width())
-            val pointWithinViewportY = ((mZoomFocalPoint.y - mScrollerStartViewport.top)
+            val pointWithinViewportY: Float = ((mZoomFocalPoint.y - mScrollerStartViewport.top)
                 / mScrollerStartViewport.height())
             mCurrentViewport!!.set(
                 mZoomFocalPoint.x - newWidth * pointWithinViewportX,
@@ -1545,10 +1600,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     }
 
     /**
-     * Sets the current viewport (defined by [mCurrentViewport]) to the given
-     * X and Y positions. Note that the Y value represents the topmost pixel position, and thus
-     * the bottom of the [mCurrentViewport] rectangle. For more details on why top and
-     * bottom are flipped, see [mCurrentViewport].
+     * Sets the current viewport (defined by [mCurrentViewport]) to the given X and Y positions.
+     * Note that the Y value represents the topmost pixel position, and thus the bottom of the
+     * [mCurrentViewport] rectangle. For more details on why top and bottom are flipped, see
+     * [mCurrentViewport].
      */
     private fun setViewportBottomLeft(x: Float, y: Float) {
         /**
