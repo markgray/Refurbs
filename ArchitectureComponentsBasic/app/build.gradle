@@ -19,7 +19,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
 
     repositories {
         google()
@@ -68,6 +68,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     kapt 'androidx.lifecycle:lifecycle-common:2.6.1'
     implementation 'androidx.room:room-runtime:2.5.2'
+    //noinspection KaptUsageInsteadOfKsp TODO: Switch to ksp
     kapt "androidx.room:room-compiler:2.5.2"
 
     // Android Testing Support Library's runner and rules
