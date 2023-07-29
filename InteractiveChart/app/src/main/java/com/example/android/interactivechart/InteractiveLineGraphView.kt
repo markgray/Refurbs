@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "HasPlatformType", "DEPRECATION", "UNUSED_CHANGED_VALUE", "PublicApiImplicitType", "PublicApiImplicitType", "KDocMissingDocumentation", "ReplaceJavaStaticMethodWithKotlinAnalog", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate", "MemberVisibilityCanBePrivate")
+@file:Suppress("unused", "HasPlatformType", "DEPRECATION", "UNUSED_CHANGED_VALUE", "ReplaceJavaStaticMethodWithKotlinAnalog", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
 
 package com.example.android.interactivechart
 
@@ -200,7 +200,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * [R.styleable.InteractiveLineGraphView_dataThickness] of [R.styleable.InteractiveLineGraphView]
      * to app:dataThickness="8dp" in the layout file `activity_main.xml`
      */
-    var dataThickness = 0f
+    var dataThickness: Float = 0f
 
     /**
      * This is used in a call to the [Paint.setColor] method of [Paint] field [mDataPaint]
@@ -208,7 +208,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * [R.styleable.InteractiveLineGraphView_dataColor] of [R.styleable.InteractiveLineGraphView]
      * to app:dataColor="#a6c" in the layout file `activity_main.xml`
      */
-    var dataColor = 0
+    var dataColor: Int = 0
 
     /**
      * Used as the [Paint] in the call to [Canvas.drawLines] that draws the data on the graph.
@@ -1603,7 +1603,20 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * Sets the current viewport (defined by [mCurrentViewport]) to the given X and Y positions.
      * Note that the Y value represents the topmost pixel position, and thus the bottom of the
      * [mCurrentViewport] rectangle. For more details on why top and bottom are flipped, see
-     * [mCurrentViewport].
+     * [mCurrentViewport]. First we initialize our [Float] variable `var xLocal` to our [Float]
+     * parameter [x], and our [Float] variable `var yLocal` to our [Float] parameter [y]. We
+     * initialize our [Float] variable `val curWidth` to the current [RectF.width] of [RectF] field
+     * [mCurrentViewport], and our [Float] variable `val curHeight` to its current [RectF.height].
+     * We set `xLocal` to the max of [AXIS_X_MIN] and the min of `xLocal` and [AXIS_X_MAX] minus
+     * `curWidth`. We set `yLocal` to the max of the quantity [AXIS_Y_MIN] plus `curHeight` and
+     * the min of `yLocal` and [AXIS_Y_MAX]. Then we use the [RectF.set] method of [mCurrentViewport]
+     * to set its [RectF.left] to `xLocal`, its [RectF.top] to `yLocal` minus `curHeight`, its
+     * [RectF.right] to `xLocal` plus `curWidth`, and its [RectF.bottom] to `yLocal`. Then we call
+     * the [ViewCompat.postInvalidateOnAnimation] method to cause an invalidate of `this` [View] to
+     * happen on the next animation time step, typically the next display frame.
+     *
+     * @param x Used to set the [RectF.left] of [RectF] field [mCurrentViewport].
+     * @param y Used to set the [RectF.bottom] of [RectF] field [mCurrentViewport].
      */
     private fun setViewportBottomLeft(x: Float, y: Float) {
         /**
@@ -1611,20 +1624,21 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
          * (AXIS_X_MAX, etc.) minus the viewport size. For example, if the extrema were 0 and 10,
          * and the viewport size was 2, the scroll range would be 0 to 8.
          */
-        var xLocal = x
-        var yLocal = y
-        val curWidth = mCurrentViewport!!.width()
-        val curHeight = mCurrentViewport!!.height()
+        var xLocal: Float = x
+        var yLocal: Float = y
+        val curWidth: Float = mCurrentViewport!!.width()
+        val curHeight: Float = mCurrentViewport!!.height()
         xLocal = Math.max(AXIS_X_MIN, Math.min(xLocal, AXIS_X_MAX - curWidth))
         yLocal = Math.max(AXIS_Y_MIN + curHeight, Math.min(yLocal, AXIS_Y_MAX))
         mCurrentViewport!!.set(
-            xLocal,
-            yLocal - curHeight,
-            xLocal + curWidth,
-            yLocal
+            /* left = */ xLocal,
+            /* top = */ yLocal - curHeight,
+            /* right = */ xLocal + curWidth,
+            /* bottom = */ yLocal
         )
         ViewCompat.postInvalidateOnAnimation(this)
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //
     //     Methods for programmatically changing the viewport
@@ -1632,12 +1646,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Returns the current viewport (visible extremes for the chart domain and range.)
-     */
-    /**
-     * Sets the chart's current viewport.
-     *
-     * @see .getCurrentViewport
+     * Returns a copy of [RectF] field [mCurrentViewport] (the current viewport, visible extremes
+     * for the chart domain and range). Its "setter" sets the chart's current viewport, calls our
+     * [constrainViewport] method to ensure that the new current viewport is inside the viewport
+     * extremes defined by [AXIS_X_MIN], [AXIS_X_MAX], [AXIS_Y_MIN] and [AXIS_Y_MAX] and then calls
+     * the [ViewCompat.postInvalidateOnAnimation] method to cause an invalidate of `this` [View] to
+     * happen on the next animation time step, typically the next display frame.
      */
     var currentViewport: RectF?
         get() = RectF(mCurrentViewport)
@@ -1648,7 +1662,18 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
 
     /**
-     * Smoothly zooms the chart in one step.
+     * Smoothly zooms the chart in one step. First we use the [RectF.set] method of [RectF] field
+     * [mScrollerStartViewport] to set it to [RectF] field [mCurrentViewport] (for use by our
+     * [Zoomer] field [mZoomer]). The we call the [Zoomer.forceFinished] method of [mZoomer] with
+     * `true` to force any ongoing zoom animation to "finish". We call the [Zoomer.startZoom] method
+     * of [mZoomer] with [ZOOM_AMOUNT] (0.25f) to start a zoom from 1.0 to 1.25 in motion. Next we
+     * use the [PointF.set] method of [PointF] field [mZoomFocalPoint] to set the focal point of the
+     * zoom to the center point of [mCurrentViewport]: X coordinate the [RectF.right] of [RectF]
+     * field [mCurrentViewport] plus its [RectF.left] all over 2, and Y coordinate the [RectF.bottom]
+     * of [mCurrentViewport] plus its [RectF.top] all over 2.
+     *
+     * Finally we call the [ViewCompat.postInvalidateOnAnimation] method to cause an invalidate of
+     * `this` [View] to happen on the next animation time step, typically the next display frame.
      */
     fun zoomIn() {
         mScrollerStartViewport.set(mCurrentViewport!!)
@@ -1662,7 +1687,18 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     }
 
     /**
-     * Smoothly zooms the chart out one step.
+     * Smoothly zooms the chart out one step. First we use the [RectF.set] method of [RectF] field
+     * [mScrollerStartViewport] to set it to [RectF] field [mCurrentViewport] (for use by our
+     * [Zoomer] field [mZoomer]). The we call the [Zoomer.forceFinished] method of [mZoomer] with
+     * `true` to force any ongoing zoom animation to "finish". We call the [Zoomer.startZoom] method
+     * of [mZoomer] with minus [ZOOM_AMOUNT] (-0.25f) to start a zoom from 1.0 to 0.75 in motion.
+     * Next we use the [PointF.set] method of [PointF] field [mZoomFocalPoint] to set the focal
+     * point of the zoom to the center point of [mCurrentViewport]: X coordinate the [RectF.right]
+     * of [RectF] field [mCurrentViewport] plus its [RectF.left] all over 2, and Y coordinate the
+     * [RectF.bottom] of [mCurrentViewport] plus its [RectF.top] all over 2.
+     *
+     * Finally we call the [ViewCompat.postInvalidateOnAnimation] method to cause an invalidate of
+     * `this` [View] to happen on the next animation time step, typically the next display frame.
      */
     fun zoomOut() {
         mScrollerStartViewport.set(mCurrentViewport!!)
@@ -1676,28 +1712,36 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     }
 
     /**
-     * Smoothly pans the chart left one step.
+     * Smoothly pans the chart left one step. We just call our [fling] method with its `velocityX`
+     * argument minus [PAN_VELOCITY_FACTOR] (2f) times our [View.getWidth] (kotlin `width` property)
+     * and its `velocityY` argument 0.
      */
     fun panLeft() {
-        fling((-PAN_VELOCITY_FACTOR * width).toInt(), 0)
+        fling(velocityX = (-PAN_VELOCITY_FACTOR * width).toInt(), velocityY = 0)
     }
 
     /**
-     * Smoothly pans the chart right one step.
+     * Smoothly pans the chart right one step. We just call our [fling] method with its `velocityX`
+     * argument [PAN_VELOCITY_FACTOR] (2f) times our [View.getWidth] (kotlin `width` property) and
+     * its `velocityY` argument 0.
      */
     fun panRight() {
-        fling((PAN_VELOCITY_FACTOR * width).toInt(), 0)
+        fling(velocityX = (PAN_VELOCITY_FACTOR * width).toInt(), velocityY = 0)
     }
 
     /**
-     * Smoothly pans the chart up one step.
+     * Smoothly pans the chart up one step. We just call our [fling] method with its `velocityX`
+     * argument 0 and its `velocityY` argument minus [PAN_VELOCITY_FACTOR] (2f) times our
+     * [View.getHeight] (kotlin `height` property).
      */
     fun panUp() {
-        fling(0, (-PAN_VELOCITY_FACTOR * height).toInt())
+        fling(velocityX = 0, velocityY = (-PAN_VELOCITY_FACTOR * height).toInt())
     }
 
     /**
-     * Smoothly pans the chart down one step.
+     * Smoothly pans the chart down one step. We just call our [fling] method with its `velocityX`
+     * argument 0 and its `velocityY` argument [PAN_VELOCITY_FACTOR] (2f) times our [View.getHeight]
+     * (kotlin `height` property).
      */
     fun panDown() {
         fling(0, (PAN_VELOCITY_FACTOR * height).toInt())
@@ -1709,6 +1753,9 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Unused public access to our private [Float] field [mLabelTextSize]?
+     */
     var labelTextSize: Float
         get() = mLabelTextSize
         set(labelTextSize) {
@@ -1716,6 +1763,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             initPaints()
             ViewCompat.postInvalidateOnAnimation(this)
         }
+
+    /**
+     * TODO: Add kdoc
+     */
     var labelTextColor: Int
         get() = mLabelTextColor
         set(labelTextColor) {
@@ -1723,6 +1774,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             initPaints()
             ViewCompat.postInvalidateOnAnimation(this)
         }
+
+    /**
+     * TODO: Add kdoc
+     */
     var gridThickness: Float
         get() = mGridThickness
         set(gridThickness) {
@@ -1730,6 +1785,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             initPaints()
             ViewCompat.postInvalidateOnAnimation(this)
         }
+
+    /**
+     * TODO: Add kdoc
+     */
     var gridColor: Int
         get() = mGridColor
         set(gridColor) {
@@ -1737,6 +1796,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             initPaints()
             ViewCompat.postInvalidateOnAnimation(this)
         }
+
+    /**
+     * TODO: Add kdoc
+     */
     var axisThickness: Float
         get() = mAxisThickness
         set(axisThickness) {
@@ -1744,6 +1807,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             initPaints()
             ViewCompat.postInvalidateOnAnimation(this)
         }
+
+    /**
+     * TODO: Add kdoc
+     */
     var axisColor: Int
         get() = mAxisColor
         set(axisColor) {
@@ -1758,6 +1825,9 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     //
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * TODO: Add kdoc
+     */
     public override fun onSaveInstanceState(): Parcelable? {
         val superState = super.onSaveInstanceState()
         val ss = SavedState(superState)
@@ -1765,6 +1835,9 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         return ss
     }
 
+    /**
+     * TODO: Add kdoc
+     */
     public override fun onRestoreInstanceState(state: Parcelable) {
         if (state !is SavedState) {
             super.onRestoreInstanceState(state)
@@ -1780,10 +1853,16 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * Persistent state that is saved by InteractiveLineGraphView.
      */
     class SavedState : BaseSavedState {
+        /**
+         * TODO: Add kdoc
+         */
         var viewport: RectF? = null
 
         constructor(superState: Parcelable?) : super(superState)
 
+        /**
+         * TODO: Add kdoc
+         */
         override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
             out.writeFloat(viewport!!.left)
@@ -1813,7 +1892,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
              */
             @Suppress("RedundantNullableReturnType")
             @JvmField
-            val CREATOR = ParcelableCompat.newCreator(object : ParcelableCompatCreatorCallbacks<SavedState?> {
+            val CREATOR: Parcelable.Creator<SavedState?> = ParcelableCompat.newCreator(object : ParcelableCompatCreatorCallbacks<SavedState?> {
                 override fun createFromParcel(inParcel: Parcel, loader: ClassLoader): SavedState? {
                     return SavedState(inParcel)
                 }
