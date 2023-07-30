@@ -617,14 +617,14 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             if (canScrollX && scrolledX > mSurfaceSizeBuffer.x - mContentRect.width()) {
                 mEdgeEffectRight.onPull(
                     (scrolledX - mSurfaceSizeBuffer.x + mContentRect.width())
-                    / mContentRect.width().toFloat()
+                        / mContentRect.width().toFloat()
                 )
                 mEdgeEffectRightActive = true
             }
             if (canScrollY && scrolledY > mSurfaceSizeBuffer.y - mContentRect.height()) {
                 mEdgeEffectBottom.onPull(
                     (scrolledY - mSurfaceSizeBuffer.y + mContentRect.height())
-                    / mContentRect.height().toFloat()
+                        / mContentRect.height().toFloat()
                 )
                 mEdgeEffectBottomActive = true
             }
@@ -800,19 +800,19 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         val minChartSize: Int = resources.getDimensionPixelSize(R.dimen.min_chart_size)
         setMeasuredDimension(
             /* measuredWidth = */ Math.max(
-                suggestedMinimumWidth,
-                resolveSize(
-                    minChartSize + paddingLeft + mMaxLabelWidth + mLabelSeparation + paddingRight,
-                    widthMeasureSpec
-                )
-            ),
-            /* measuredHeight = */ Math.max(
-                suggestedMinimumHeight,
-                resolveSize(
-                    minChartSize + paddingTop + mLabelHeight + mLabelSeparation + paddingBottom,
-                    heightMeasureSpec
-                )
+            suggestedMinimumWidth,
+            resolveSize(
+                minChartSize + paddingLeft + mMaxLabelWidth + mLabelSeparation + paddingRight,
+                widthMeasureSpec
             )
+        ),
+            /* measuredHeight = */ Math.max(
+            suggestedMinimumHeight,
+            resolveSize(
+                minChartSize + paddingTop + mLabelHeight + mLabelSeparation + paddingBottom,
+                heightMeasureSpec
+            )
+        )
         )
     }
 
@@ -1315,7 +1315,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
         dest.set(
             mCurrentViewport!!.left + mCurrentViewport!!.width() * (x - mContentRect.left) / mContentRect.width(),
-            mCurrentViewport!!.top+ mCurrentViewport!!.height() * (y - mContentRect.bottom) / -mContentRect.height()
+            mCurrentViewport!!.top + mCurrentViewport!!.height() * (y - mContentRect.bottom) / -mContentRect.height()
         )
         return true
     }
@@ -1754,7 +1754,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Unused public access to our private [Float] field [mLabelTextSize]?
+     * Unused public access to our private [Float] field [mLabelTextSize]. Notice the clever side
+     * effects caused by the `set` method.
      */
     var labelTextSize: Float
         get() = mLabelTextSize
@@ -1765,7 +1766,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
 
     /**
-     * TODO: Add kdoc
+     * Unused public access to our private [Float] field [mLabelTextColor]. Notice the clever side
+     * effects caused by the `set` method.
      */
     var labelTextColor: Int
         get() = mLabelTextColor
@@ -1776,7 +1778,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
 
     /**
-     * TODO: Add kdoc
+     * Unused public access to our private [Float] field [mGridThickness]. Notice the clever side
+     * effects caused by the `set` method.
      */
     var gridThickness: Float
         get() = mGridThickness
@@ -1787,7 +1790,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
 
     /**
-     * TODO: Add kdoc
+     * Unused public access to our private [Float] field [mGridColor]. Notice the clever side
+     * effects caused by the `set` method.
      */
     var gridColor: Int
         get() = mGridColor
@@ -1798,7 +1802,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
 
     /**
-     * TODO: Add kdoc
+     * Unused public access to our private [Float] field [mAxisThickness]. Notice the clever side
+     * effects caused by the `set` method.
      */
     var axisThickness: Float
         get() = mAxisThickness
@@ -1809,7 +1814,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
 
     /**
-     * TODO: Add kdoc
+     * Unused public access to our private [Float] field [mAxisColor]. Notice the clever side
+     * effects caused by the `set` method.
      */
     var axisColor: Int
         get() = mAxisColor
@@ -1826,42 +1832,75 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * TODO: Add kdoc
+     * Hook allowing a view to generate a representation of its internal state that can later be
+     * used to create a new instance with that same state. This state should only contain information
+     * that is not persistent or can not be reconstructed later. For example, you will never store
+     * your current position on screen because that will be computed again when a new instance of
+     * the view is placed in its view hierarchy. Some examples of things you may store here: the
+     * current cursor position in a text view (but usually not the text itself since that is stored
+     * in a content provider or other persistent storage), the currently selected item in a list
+     * view. We initialize our [Parcelable] variable `val superState` to the [Parcelable] returned
+     * by our super's implementation of `onSaveInstanceState`, then we initialize our [SavedState]
+     * variable `val ss` to a new instance constructed using `superState` as its `superState`
+     * argument. We set the [SavedState.viewport] property of `ss` to our [RectF] field
+     * [mCurrentViewport] and return `ss` to our caller.
+     *
+     * @return a [Parcelable] object containing the view's current dynamic state, or `null` if there
+     * is nothing interesting to save.
      */
     public override fun onSaveInstanceState(): Parcelable? {
-        val superState = super.onSaveInstanceState()
-        val ss = SavedState(superState)
+        val superState: Parcelable? = super.onSaveInstanceState()
+        val ss = SavedState(superState = superState)
         ss.viewport = mCurrentViewport
         return ss
     }
 
     /**
-     * TODO: Add kdoc
+     * Hook allowing a view to re-apply a representation of its internal state that had previously
+     * been generated by [onSaveInstanceState]. This function will never be called with a null
+     * state. If our [Parcelable] parameter [state] is not an instance of [SavedState] we just call
+     * our super's implementation of `onRestoreInstanceState` with our [state] parameter and return.
+     * Otherwise we call our super's implementation of `onRestoreInstanceState` with the value
+     * returned the [SavedState.getSuperState] method of [state] (kotlin `superState` property),
+     * and set our [RectF] field [mCurrentViewport] to the [SavedState.viewport] property of [state].
+     *
+     * @param state – The frozen state that had previously been returned by [onSaveInstanceState].
      */
     public override fun onRestoreInstanceState(state: Parcelable) {
         if (state !is SavedState) {
             super.onRestoreInstanceState(state)
             return
         }
-        @Suppress("UnnecessaryVariable")
-        val ss = state
-        super.onRestoreInstanceState(ss.superState)
-        mCurrentViewport = ss.viewport
+        super.onRestoreInstanceState(state.superState)
+        mCurrentViewport = state.viewport
     }
 
     /**
-     * Persistent state that is saved by InteractiveLineGraphView.
+     * Persistent state that is saved by [InteractiveLineGraphView].
      */
     class SavedState : BaseSavedState {
         /**
-         * TODO: Add kdoc
+         * This is where our [onSaveInstanceState] override saves our [RectF] field [mCurrentViewport]
          */
         var viewport: RectF? = null
 
+        /**
+         * Our constructor. We just call our `BaseSavedState` super with our [Parcelable] parameter
+         * [superState].
+         *
+         * @param superState the [Parcelable] that is passed to our [onSaveInstanceState] override.
+         */
         constructor(superState: Parcelable?) : super(superState)
 
         /**
-         * TODO: Add kdoc
+         * Flatten this object in to a Parcel. First we call our super's implementation of
+         * `writeToParcel`. Then we call the [Parcel.writeFloat] method of our [Parcel] parameter
+         * [out] four times to write the [RectF.left], [RectF.top], [RectF.right], and [RectF.bottom]
+         * of [RectF] field [viewport] to the [Parcel].
+         *
+         * @param out – The Parcel in which the object should be written.
+         * @param flags – Additional flags about how the object should be written. May be 0 or
+         * [Parcelable.PARCELABLE_WRITE_RETURN_VALUE].
          */
         override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
@@ -1871,51 +1910,98 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             out.writeFloat(viewport!!.bottom)
         }
 
+        /**
+         * Returns a string representation of the object.
+         *
+         * @return a [String] displaying the contents of our [RectF] field [viewport], and other
+         * text of possible interest for debugging.
+         */
         override fun toString(): String {
             return ("InteractiveLineGraphView.SavedState{"
                 + Integer.toHexString(System.identityHashCode(this))
                 + " viewport=" + viewport.toString() + "}")
         }
 
+        /**
+         * Constructor used when reading from a [Parcel]. We call our super's constructor with our
+         * [Parcel] parameter [inParcel], then we initialize our [RectF] field [viewport] with a
+         * new instance constructed using the [Parcel.readFloat] method of [inParcel] four times to
+         * read its `left`, `top`, `right`, and `bottom` arguments from the [Parcel].
+         *
+         * @param inParcel the [Parcel] to read from.
+         */
         internal constructor(inParcel: Parcel) : super(inParcel) {
             viewport = RectF(
-                inParcel.readFloat(),
-                inParcel.readFloat(),
-                inParcel.readFloat(),
-                inParcel.readFloat()
+                /* left = */ inParcel.readFloat(),
+                /* top = */ inParcel.readFloat(),
+                /* right = */ inParcel.readFloat(),
+                /* bottom = */ inParcel.readFloat()
             )
         }
 
         companion object {
             /**
-             * TODO: Add kdoc
+             * Interface that must be implemented and provided as a public [CREATOR] field that
+             * generates instances of your [Parcelable] class from a [Parcel].
              */
             @Suppress("RedundantNullableReturnType")
             @JvmField
-            val CREATOR: Parcelable.Creator<SavedState?> = ParcelableCompat.newCreator(object : ParcelableCompatCreatorCallbacks<SavedState?> {
-                override fun createFromParcel(inParcel: Parcel, loader: ClassLoader): SavedState? {
-                    return SavedState(inParcel)
-                }
+            val CREATOR: Parcelable.Creator<SavedState?> = ParcelableCompat.newCreator(
+                object : ParcelableCompatCreatorCallbacks<SavedState?> {
+                    /**
+                     * Create a new instance of the Parcelable class, instantiating it from the given
+                     * Parcel whose data had previously been written by [Parcelable.writeToParcel].
+                     * We just return a new instance of [SavedState] constructed using our [Parcel]
+                     * parameter [inParcel] as its `inParcel` argument.
+                     *
+                     * @param inParcel – The [Parcel] to read the object's data from.
+                     * @return a new instance of the [Parcelable] class.
+                     */
+                    override fun createFromParcel(inParcel: Parcel, loader: ClassLoader): SavedState? {
+                        return SavedState(inParcel = inParcel)
+                    }
 
-                override fun newArray(size: Int): Array<SavedState?> {
-                    return arrayOfNulls(size)
+                    /**
+                     * Create a new array of the Parcelable class.
+                     *
+                     * @param size – Size of the array.
+                     * @return an array of the [Parcelable] class, with every entry initialized to
+                     * `null`.
+                     */
+                    override fun newArray(size: Int): Array<SavedState?> {
+                        return arrayOfNulls(size)
+                    }
                 }
-            })
+            )
         }
     }
 
     /**
      * A simple class representing axis label values.
      *
-     * @see .computeAxisStops
+     * @see [computeAxisStops]
      */
     private class AxisStops {
-        var stops = floatArrayOf()
-        var numStops = 0
-        var decimals = 0
+        /**
+         * Coordinates on the Axis where a label will be drawn.
+         */
+        var stops: FloatArray = floatArrayOf()
+
+        /**
+         * Number of elements in our [FloatArray] property [stops]
+         */
+        var numStops: Int = 0
+
+        /**
+         * Number of decimals used for the label.
+         */
+        var decimals: Int = 0
     }
 
     companion object {
+        /**
+         * TAG used for logging
+         */
         private const val TAG = "InteractiveLineGraphView"
 
         /**
@@ -1926,22 +2012,24 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         /**
          * Initial fling velocity for pan operations, in screen widths (or heights) per second.
          *
-         * @see .panLeft
-         * @see .panRight
-         * @see .panUp
-         * @see .panDown
+         * @see panLeft
+         * @see panRight
+         * @see panUp
+         * @see panDown
          */
         private const val PAN_VELOCITY_FACTOR = 2f
 
         /**
          * The scaling factor for a single zoom 'step'.
          *
-         * @see .zoomIn
-         * @see .zoomOut
+         * @see zoomIn
+         * @see zoomOut
          */
         private const val ZOOM_AMOUNT = 0.25f
 
-        // Viewport extremes. See mCurrentViewport for a discussion of the viewport.
+        /**
+         * Viewport extremes. See [mCurrentViewport] for a discussion of the viewport.
+         */
         private const val AXIS_X_MIN = -1f
         private const val AXIS_X_MAX = 1f
         private const val AXIS_Y_MIN = -1f
@@ -1949,6 +2037,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
 
         /**
          * The simple math function Y = fun(X) to draw on the chart.
+         *
          * @param x The X value
          * @return The Y value
          */
@@ -1959,6 +2048,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         /**
          * Rounds the given number to the given number of significant digits. Based on an answer on
          * [Stack Overflow](http://stackoverflow.com/questions/202302).
+         *
+         * @param num the number to round to one significant digit.
+         * @return a [Float] which is the result of rounding our [Double] parameter [num] to one
+         * significant digit.
          */
         private fun roundToOneSignificantFigure(num: Double): Float {
             val d = Math.ceil(Math.log10(if (num < 0) -num else num).toFloat().toDouble()).toFloat()
@@ -1968,6 +2061,9 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             return shifted / magnitude
         }
 
+        /**
+         * Constants used by our [formatFloat] method to format numbers into strings.
+         */
         private val POW10: IntArray = intArrayOf(1, 10, 100, 1000, 10000, 100000, 1000000)
 
         /**
