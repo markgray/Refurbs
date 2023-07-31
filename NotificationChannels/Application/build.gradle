@@ -25,7 +25,7 @@ List<String> dirs = [
 
 android {
     
-        compileSdkVersion 33
+        compileSdk 33
 
     defaultConfig {
         minSdkVersion 27
