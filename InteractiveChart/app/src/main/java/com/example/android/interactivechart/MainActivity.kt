@@ -62,7 +62,30 @@ class MainActivity : Activity() {
     }
 
     /**
-     * TODO: Add kdoc
+     * This hook is called whenever an item in your options menu is selected. We `when` branch on the
+     * [MenuItem.getItemId] value (kotlin `itemId` property) of the [MenuItem] parameter [item]:
+     *  - [R.id.action_zoom_in] "Demo zoom in": we call the [InteractiveLineGraphView.zoomIn] method
+     *  of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the event.
+     *  - [R.id.action_zoom_out] "Demo zoom out": we call the [InteractiveLineGraphView.zoomOut]
+     *  method of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the
+     *  event.
+     *  - [R.id.action_pan_left] "Demo pan left": we call the [InteractiveLineGraphView.panLeft]
+     *  method of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the
+     *  event.
+     *  - [R.id.action_pan_right] "Demo pan right": we call the [InteractiveLineGraphView.panRight]
+     *  method of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the
+     *  event.
+     *  - [R.id.action_pan_up] "Demo pan up": we call the [InteractiveLineGraphView.panUp] method
+     *  of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the event.
+     *  - [R.id.action_pan_down] "Demo pan down": we call the [InteractiveLineGraphView.panDown]
+     *  method of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the
+     *  event.
+     *
+     * If [MenuItem] parameter [item] matches none of the resource IDs checked by our `when`
+     * statement we return the value returned by our super's implementation of `onOptionsItemSelected`
+     *
+     * @param item – The [MenuItem] that was selected.
+     * @return `false` to allow normal menu processing to proceed, `true` to consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

@@ -26,9 +26,22 @@ import android.view.ScaleGestureDetector
  */
 object ScaleGestureDetectorCompat {
     /**
+     * Returns the value returned by the [ScaleGestureDetector.getCurrentSpanX] method (kotlin
+     * `currentSpanX` property) of our [ScaleGestureDetector] parameter [scaleGestureDetector] if
+     * [Build.VERSION.SDK_INT] is greater than or equal to [Build.VERSION_CODES.HONEYCOMB], otherwise
+     * it returns the value returned by the [ScaleGestureDetector.getCurrentSpan] method (kotlin
+     * `currentSpan` property.
+     *
+     * @param scaleGestureDetector the [ScaleGestureDetector] we are to query for its `currentSpanX`
+     * or `currentSpan` property depending on the SDK of the device.
+     * @return the value returned by the [ScaleGestureDetector.getCurrentSpanX] method (kotlin
+     * `currentSpanX` property) of our [ScaleGestureDetector] parameter [scaleGestureDetector] if
+     * the device is using SDK 14 or newer, otherwise the value returned by its
+     * [ScaleGestureDetector.getCurrentSpan] method (kotlin `currentSpan` property.
+     *
      * @see android.view.ScaleGestureDetector.getCurrentSpanX
      */
-    @SuppressLint("ObsoleteSdkInt")
+    @SuppressLint("ObsoleteSdkInt") // Left in to facilitate reuse of code.
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     fun getCurrentSpanX(scaleGestureDetector: ScaleGestureDetector): Float {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -41,7 +54,7 @@ object ScaleGestureDetectorCompat {
     /**
      * @see android.view.ScaleGestureDetector.getCurrentSpanY
      */
-    @SuppressLint("ObsoleteSdkInt")
+    @SuppressLint("ObsoleteSdkInt") // Left in to facilitate reuse of code.
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     fun getCurrentSpanY(scaleGestureDetector: ScaleGestureDetector): Float {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

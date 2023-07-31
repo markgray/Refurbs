@@ -25,9 +25,18 @@ import android.widget.OverScroller
  */
 object OverScrollerCompat {
     /**
+     * Returns the absolute value of the current velocity of [OverScroller] parameter [overScroller]
+     * if [Build.VERSION.SDK_INT] is greater than or equal to [Build.VERSION_CODES.ICE_CREAM_SANDWICH],
+     * otherwise it returns 0f.
+     *
+     * @param overScroller the [OverScroller] instance whose current velocity we should return.
+     * @return the value returned by the [OverScroller.getCurrVelocity] method (kotlin `currVelocity`
+     * property) of our [OverScroller] parameter [overScroller] if the device is SDK 14 or newer, or
+     * 0f for older devices.
+     *
      * @see android.view.ScaleGestureDetector.getCurrentSpanY
      */
-    @SuppressLint("ObsoleteSdkInt")
+    @SuppressLint("ObsoleteSdkInt") // Left in to facilitate reuse of code.
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     fun getCurrVelocity(overScroller: OverScroller): Float {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
