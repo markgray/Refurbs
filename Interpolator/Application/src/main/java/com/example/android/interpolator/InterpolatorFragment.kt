@@ -34,9 +34,8 @@ import androidx.fragment.app.Fragment
 import com.example.android.common.logger.Log
 
 /**
- * This sample demonstrates the use of animation interpolators and path animations for
- * Material Design.
- * It shows how an [android.animation.ObjectAnimator] is used to animate two properties of a
+ * This sample demonstrates the use of animation interpolators and path animations for Material
+ * Design. It shows how an [android.animation.ObjectAnimator] is used to animate two properties of a
  * view (scale X and Y) along a path.
  */
 class InterpolatorFragment
@@ -63,32 +62,19 @@ class InterpolatorFragment
      * TextView that shows animation selected in SeekBar.
      */
     private var mDurationLabel: TextView? = null
+
     /**
-     * Return the array of loaded Interpolators available in this Fragment (our field
-     * `Interpolator mInterpolators[]`).
-     *
-     * @return Interpolators
-     */
-    /**
-     * Interpolators used for animation.
+     * The array of loaded Interpolators available for animation in this Fragment
      */
     lateinit var interpolators: Array<Interpolator>
         private set
+
     /**
-     * Returns our field `Path mPathIn`.
-     *
-     * @return The animation path for the 'in' (shrinking) animation.
-     */
-    /**
-     * Path for in (shrinking) animation, from 100% scale to 20%.
+     * [Path] for in (shrinking) animation, from 100% scale to 20%.
      */
     var pathIn: Path? = null
         private set
-    /**
-     * Returns our field `Path mPathOut`.
-     *
-     * @return The animation path for the 'out' (growing) animation.
-     */
+
     /**
      * Path for out (growing) animation, from 20% to 100%.
      */
@@ -96,7 +82,7 @@ class InterpolatorFragment
         private set
 
     /**
-     * Set to true if View is animated out (is shrunk).
+     * Set to `true` if [View] is animated out (is shrunk).
      */
     private var mIsOut = false
 
@@ -107,14 +93,15 @@ class InterpolatorFragment
 
     /**
      * Called to do initial creation of a fragment. First we call our super's implementation of
-     * `onCreate`. We call our method `initInterpolators` to initialize our field
-     * `Interpolator mInterpolators[]` with interpolators built from system resource ids.
-     * We then initialize our field `String[] mInterpolatorNames` by reading the string array
-     * with resource id R.array.interpolator_names ("Linear", "Fast Out Linear In", "Fast Out Slow In",
-     * and "Linear Out Slow In"). Finally we call our method `initPaths` to initialize the paths
-     * that are used by the ObjectAnimator to scale the view ({Path mPathIn}, and `Path mPathOut`).
+     * `onCreate`. We call our method [initInterpolators] to initialize our [Array] of [Interpolator]
+     * field [interpolators] with interpolators built from system resource ids. We then initialize
+     * our [Array] of [String] field [mInterpolatorNames] by reading the string array with resource
+     * id [R.array.interpolator_names] ("Linear", "Fast Out Linear In", "Fast Out Slow In", and
+     * "Linear Out Slow In"). Finally we call our method [initPaths] to initialize the paths
+     * that are used by the [ObjectAnimator] to scale the view ([Path] field [pathIn], and [Path]
+     * field [pathOut]).
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,25 +112,29 @@ class InterpolatorFragment
 
     /**
      * Called to have the fragment instantiate its user interface view. We return the view that our
-     * parameter `LayoutInflater inflater` inflates from our layout file R.layout.interpolator_fragment,
-     * using `ViewGroup container` for the LayoutParams without attaching to it.
+     * [LayoutInflater] parameter [inflater] inflates from our layout file
+     * [R.layout.interpolator_fragment], using our [ViewGroup] parameter [container] for the
+     * LayoutParams without attaching to it.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.interpolator_fragment, container, false)
     }
 
     /**
-     * Called immediately after [.onCreateView] has returned,
+     * Called immediately after [onCreateView] has returned,
      * but before any saved state has been restored in to the view. We call our method `initAnimateButton`
      * to set up the 'animate' button (when it is clicked the view is animated with the options selected: the
      * Interpolator, duration and animation path). We initialize our field `TextView mDurationLabel`
