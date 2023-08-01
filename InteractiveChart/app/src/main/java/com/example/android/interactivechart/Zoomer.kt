@@ -24,7 +24,10 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.Interpolator
 
 /**
- * A simple class that animates double-touch zoom gestures. Functionally similar to a [ ].
+ * A simple class that animates double-touch zoom gestures. Functionally similar to a
+ * [android.widget.Scroller].
+ *
+ * @param context the [Context] to use to retrieve resources.
  */
 class Zoomer(context: Context) {
     /**
@@ -41,13 +44,11 @@ class Zoomer(context: Context) {
      * Whether or not the current zoom has finished.
      */
     private var mFinished = true
+
     /**
-     * Returns the current zoom level.
+     * Returns the current zoom level. The current zoom value; computed by [computeZoom].
      *
      * @see android.widget.Scroller.getCurrX
-     */
-    /**
-     * The current zoom value; computed by [.computeZoom].
      */
     var currZoom: Float = 0f
         private set
@@ -64,14 +65,14 @@ class Zoomer(context: Context) {
 
     init {
         mInterpolator = DecelerateInterpolator()
-        mAnimationDurationMillis = context.resources.getInteger(
-            android.R.integer.config_shortAnimTime)
+        mAnimationDurationMillis = context.resources.getInteger(android.R.integer.config_shortAnimTime)
     }
 
     /**
      * Forces the zoom finished state to the given value. Unlike [abortAnimation], the
      * current zoom value isn't set to the ending value.
      *
+     * @param finished the [Boolean] zoom state we are to force.
      * @see android.widget.Scroller.forceFinished
      */
     fun forceFinished(finished: Boolean) {
@@ -92,6 +93,7 @@ class Zoomer(context: Context) {
      * Starts a zoom from 1.0 to (1.0 + endZoom). That is, to zoom from 100% to 125%, endZoom should
      * be 0.25f.
      *
+     * @param endZoom the zoom factor we are to animate to.
      * @see android.widget.Scroller.startScroll
      */
     fun startZoom(endZoom: Float) {
@@ -102,9 +104,10 @@ class Zoomer(context: Context) {
     }
 
     /**
-     * Computes the current zoom level, returning true if the zoom is still active and false if the
+     * Computes the current zoom level, returning `true` if the zoom is still active and `false` if the
      * zoom has finished.
      *
+     * @return `true` if the zoom is still active and `false` if the zoom has finished.
      * @see android.widget.Scroller.computeScrollOffset
      */
     fun computeZoom(): Boolean {

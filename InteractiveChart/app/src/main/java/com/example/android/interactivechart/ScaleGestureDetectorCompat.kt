@@ -52,6 +52,19 @@ object ScaleGestureDetectorCompat {
     }
 
     /**
+     * Returns the value returned by the [ScaleGestureDetector.getCurrentSpanY] method (kotlin
+     * `currentSpanY` property) of our [ScaleGestureDetector] parameter [scaleGestureDetector] if
+     * [Build.VERSION.SDK_INT] is greater than or equal to [Build.VERSION_CODES.HONEYCOMB], otherwise
+     * it returns the value returned by the [ScaleGestureDetector.getCurrentSpan] method (kotlin
+     * `currentSpan` property.
+     *
+     * @param scaleGestureDetector the [ScaleGestureDetector] we are to query for its `currentSpanY`
+     * or `currentSpan` property depending on the SDK of the device.
+     * @return the value returned by the [ScaleGestureDetector.getCurrentSpanY] method (kotlin
+     * `currentSpanY` property) of our [ScaleGestureDetector] parameter [scaleGestureDetector] if
+     * the device is using SDK 14 or newer, otherwise the value returned by its
+     * [ScaleGestureDetector.getCurrentSpan] method (kotlin `currentSpan` property.
+     *
      * @see android.view.ScaleGestureDetector.getCurrentSpanY
      */
     @SuppressLint("ObsoleteSdkInt") // Left in to facilitate reuse of code.
