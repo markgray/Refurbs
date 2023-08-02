@@ -16,12 +16,15 @@
 // FIXME: review and cleanup
 package com.example.android.jetboy
 
+import android.graphics.Bitmap
+import com.example.android.jetboy.JetBoyView.JetBoyThread
+
 /**
- * TODO: Add kdoc
+ * This class is used to represent an individual exploding "Asteroid" as its explosion is animated.
  */
 class Explosion {
     /**
-     * Index of the `BitMap` in `Bitmap[] mExplosions` used to draw us.
+     * Index of the [Bitmap] in [Array] of [Bitmap] field [JetBoyThread.mExplosions] used to draw us.
      */
     var mAniIndex: Int = 0
 

@@ -310,12 +310,12 @@ class JetBoyView constructor(
         /**
          * the things you are trying to hit
          */
-        private val mAsteroids = arrayOfNulls<Bitmap>(12)
+        val mAsteroids: Array<Bitmap?> = arrayOfNulls(12)
 
         /**
          * hit animation
          */
-        private val mExplosions = arrayOfNulls<Bitmap>(4)
+        val mExplosions: Array<Bitmap?> = arrayOfNulls(4)
 
         /**
          * Contains the png with resource id R.drawable.int_timer which is used to decorate our
@@ -1862,10 +1862,10 @@ class JetBoyView constructor(
     /**
      * Setter for our field `Button mButtonRetry`.
      *
-     * @param _buttonRetry `Button` to use to allow user to start game over.
+     * @param buttonRetry [Button] to use to allow user to start game over.
      */
-    fun setButtonView(_buttonRetry: Button?) {
-        mButtonRetry = _buttonRetry
+    fun setButtonView(buttonRetry: Button?) {
+        mButtonRetry = buttonRetry
         //  mButtonRestart = _buttonRestart;
     }
 

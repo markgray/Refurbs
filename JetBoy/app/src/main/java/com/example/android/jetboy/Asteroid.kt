@@ -18,12 +18,15 @@
 
 package com.example.android.jetboy
 
+import android.graphics.Bitmap
+import com.example.android.jetboy.JetBoyView.JetBoyThread
+
 /**
- * TODO: Add kdoc
+ * Class used to represent an individual "Asteroid" as it is animated across space.
  */
 class Asteroid {
     /**
-     * Index of the `BitMap` in `Bitmap[] mAsteroids` used to draw us.
+     * Index of the [Bitmap] in [Array] of [Bitmap] field [JetBoyThread.mAsteroids] used to draw us.
      */
     var mAniIndex: Int = 0
 
@@ -38,7 +41,7 @@ class Asteroid {
     var mDrawX: Int = 0
 
     /**
-     * TODO: Add kdoc
+     * Unused apparently
      */
     var mExploding: Boolean = false
 
