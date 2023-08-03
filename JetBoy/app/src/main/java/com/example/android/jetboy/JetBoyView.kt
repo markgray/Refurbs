@@ -46,8 +46,8 @@ import java.util.Vector
 import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
- * The constructor called when the layout file layout/main.xml is inflated in the main `JetBoy`
- * activity. First we call our super's constructor, then we initialize `SurfaceHolder holder`
+ * The constructor called when the layout file layout/main.xml is inflated in the main [JetBoy]
+ * activity. First we call our super's constructor, then we initialize [SurfaceHolder] holder`
  * fetching the underlying `SurfaceHolder` of our `SurfaceView`, and add this as a
  * `SurfaceHolder` callback to it. If we are not in edit mode (edit mode is true when we
  * are displayed within a developer tool like a layout editor) we initialize `JetBoyThread thread`

@@ -30,7 +30,7 @@ import android.widget.TextView
 import com.example.android.jetboy.JetBoyView.JetBoyThread
 
 /**
- * TODO: Add kdoc
+ * This is the main activity of this demo game.
  */
 class JetBoy : Activity(), View.OnClickListener {
     /**
@@ -39,47 +39,47 @@ class JetBoy : Activity(), View.OnClickListener {
     private var mJetBoyThread: JetBoyThread? = null
 
     /**
-     * A handle to the View in which the game is running.
+     * A handle to the [View] in which the game is running.
      */
     private var mJetBoyView: JetBoyView? = null
 
     /**
-     * the play start button
+     * the play start [Button]
      */
     private var mButton: Button? = null
 
     /**
-     * used to hit retry
+     * [Button] used to hit retry
      */
     private var mButtonRetry: Button? = null
 
     /**
-     * the window for instructions and such
+     * the [TextView] for instructions and such
      */
     private var mTextView: TextView? = null
 
     /**
-     * game window timer
+     * game timer [TextView]
      */
     private var mTimerView: TextView? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.main. We initialize our field
-     * `JetBoyView mJetBoyView` by finding the view with id R.id.JetBoyView, and our field
-     * `JetBoyThread mJetBoyThread` with the value that the `getThread` method of
-     * `mJetBoyView` returns (it is the thread that actually draws the animation). We initialize
-     * `Button mButton` by finding the view with id R.id.Button01 ("START!") and set its
-     * `OnClickListener` to 'this', initialize `Button mButtonRetry` by finding the view
-     * with id R.id.Button02 ("RETRY") and set its `OnClickListener` to 'this'. We then initialize
-     * `TextView mTextView` by finding the view with id R.id.text, and `TextView mTimerView`
-     * by finding the view with id R.id.timer. We call the `setTimerView` method of `mJetBoyView`
-     * to set the timer view widget it updates to `mTimerView`, call the `setButtonView`
-     * method of `mJetBoyView` to set the button to start game over to `mButtonRetry`,
-     * and call the `setTextView` method of `mJetBoyView` to set the end game screen to
-     * `mTextView` (it reuses the help screen for this).
+     * then we set our content view to our layout file [R.layout.main]. We initialize our [JetBoyView]
+     * field [mJetBoyView] by finding the view with id R.id.JetBoyView, and our [JetBoyThread] field
+     * [mJetBoyThread] with the value of the [JetBoyView.thread] property of [mJetBoyView] (it is
+     * the thread that actually draws the animation). We initialize [Button] field [mButton] by
+     * finding the view with id [R.id.Button01] ("START!") and set its [View.OnClickListener] to
+     * 'this', initialize [Button] field [mButtonRetry] by finding the view with id [R.id.Button02]
+     * ("RETRY") and set its [View.OnClickListener] to 'this'. We then initialize [TextView] field
+     * [mTextView] by finding the view with id [R.id.text], and [TextView] field [mTimerView] by
+     * finding the view with id [R.id.timer]. We call the [JetBoyView.setTimerView] method of
+     * [mJetBoyView] to set the timer view widget it updates to [mTimerView], call the
+     * [JetBoyView.setButtonView] method of [mJetBoyView] to set the button to start game over to
+     * [mButtonRetry], and call the [JetBoyView.setTextView] method of [mJetBoyView] to set the end
+     * game screen to [mTextView] (it reuses the help screen for this).
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,35 +111,30 @@ class JetBoy : Activity(), View.OnClickListener {
     }
 
     /**
-     * We implement `onClickListener` and this is called when either of our buttons is clicked.
-     * We branch on the game state state of the `mJetBoyThread`, and if it is not STATE_START
-     * or STATE_PLAY we then check if the `View v` that was clicked is our `Button mButtonRetry`:
+     * We implement [View.OnClickListener] and this is called when either of our buttons is clicked.
+     * We branch on the [JetBoyThread.gameState] property of [mJetBoyThread], and if it is not
+     * [STATE_START] or [STATE_PLAY] we then check if the [View] parameter [v] that was clicked is
+     * our [Button] field [mButtonRetry]:
+     *  * Game state is [STATE_START]: (the first screen) we set the text of [Button] field [mButton]
+     *  to "PLAY!", set the visibility of [TextView] field [mTextView] to visible, set its text to
+     *  the string with resource id [R.string.helpText] (the help text) and set the
+     *  [JetBoyThread.gameState] property of [JetBoyThread] field [mJetBoyThread] to STATE_PLAY.
      *
-     *  *
-     * Game state is STATE_START: (the first screen) we set the text of `Button mButton`
-     * to "PLAY!", set the visibility of `TextView mTextView` to visible, set its text
-     * to the string with resource id R.string.helpText (the help text) and set the game state
-     * of `JetBoyThread` to STATE_PLAY.
+     *  * Game state is [STATE_PLAY]: (we have entered game play, now we about to start running)
+     *  We set the visibility of [Button] field [mButton] to INVISIBLE, set the visibility of
+     *  [TextView] field [mTextView] to INVISIBLE, and set the visibility of [TextView] field
+     *  [mTimerView] to VISIBLE. Then we set the game statue of `JetBoyThread` to STATE_RUNNING.
      *
-     *  *
-     * Game state is STATE_PLAY: (we have entered game play, now we about to start running)
-     * We set the visibility of `Button mButton` to INVISIBLE, set the visibility of
-     * `TextView mTextView` to INVISIBLE, and set the visibility of `TextView mTimerView`
-     * to VISIBLE. Then we set the game statue of `JetBoyThread` to STATE_RUNNING.
+     *  * The [View] parameter [v] that was clicked is [Button] field [mButtonRetry]: (this is a
+     *  retry button click) We set the text of [TextView] field [mTextView] to the string with
+     *  resource id [R.string.helpText] (the help text), set the text of [Button] field [mButton]
+     *  to "PLAY!", and the visibility of [Button] field [mButtonRetry] to INVISIBLE. We set the
+     *  visibility of [TextView] field [mTextView] to VISIBLE, set the text of [Button] field
+     *  [mButton] to "PLAY!" (again?) and set its visibility to VISIBLE. The we set the
+     *  [JetBoyThread.gameState] game state property of [JetBoyThread] field [mJetBoyThread] to
+     *  [STATE_PLAY].
      *
-     *  *
-     * The `View v` that was clicked is `Button mButtonRetry`: (this is a retry
-     * button click) We set the text of `TextView mTextView` to the string with resource
-     * id R.string.helpText (the help text), set the text of `Button mButton` to "PLAY!",
-     * and the visibility of `Button mButtonRetry` to INVISIBLE. We set the visibility
-     * of `TextView mTextView` to VISIBLE, set the text of `Button mButton` to
-     * "PLAY!" (again?) and set its visibility to VISIBLE. The we set the game state of
-     * `mJetBoyThread` to STATE_PLAY.
-     *
-     *  *
-     * If `View v` is not one we were expecting to be clicked, we log the error.
-     *
-     *
+     *  * If [View] paremter [v] is not one we were expecting to be clicked, we log the error.
      *
      * @param v The object which has been clicked
      */
@@ -172,18 +167,18 @@ class JetBoy : Activity(), View.OnClickListener {
     }
 
     /**
-     * Called when a key was pressed down and not handled by any of the views inside of the activity.
-     * So, for example, key presses while the cursor is inside a TextView will not trigger the event
-     * (unless it is a navigation to another object) because TextView handles its own key presses.
-     * If our parameter `keyCode` is KEYCODE_BACK (the Back key) we return the value returned
-     * by our super's implementation of `onKeyDown`. For all other keys we return the value
-     * returned by the `doKeyDown` method of `JetBoyThread mJetBoyThread`.
+     * Called when a key was pressed down and not handled by any of the views inside of the
+     * activity. So, for example, key presses while the cursor is inside a [TextView] will not
+     * trigger the event (unless it is a navigation to another object) because [TextView] handles
+     * its own key presses. If our [Int] parameter [keyCode] is [KeyEvent.KEYCODE_BACK] (the Back
+     * key) we return the value returned by our super's implementation of `onKeyDown`. For all
+     * other keys we return the value returned by the [JetBoyThread.doKeyDown] method of
+     * [JetBoyThread] field [mJetBoyThread].
      *
-     * @param keyCode The value in event.getKeyCode().
+     * @param keyCode The value in [KeyEvent.getKeyCode].
      * @param msg     Description of the key event.
-     * @return Return `true` to prevent this event from being propagated
-     * further, or `false` to indicate that you have not handled
-     * this event and it should continue to be propagated.
+     * @return Return `true` to prevent this event from being propagated further, or `false` to
+     * indicate that you have not handled this event and it should continue to be propagated.
      */
     override fun onKeyDown(keyCode: Int, msg: KeyEvent): Boolean {
         return if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -195,17 +190,17 @@ class JetBoy : Activity(), View.OnClickListener {
 
     /**
      * Called when a key was released and not handled by any of the views inside of the activity.
-     * So, for example, key presses while the cursor is inside a TextView will not trigger the event
-     * (unless it is a navigation to another object) because TextView handles its own key presses.
-     * If our parameter `keyCode` is KEYCODE_BACK (the Back key) we return the value returned
-     * by our super's implementation of `onKeyUp`. For all other keys we return the value
-     * returned by the `doKeyUp` method of `JetBoyThread mJetBoyThread`.
+     * So, for example, key presses while the cursor is inside a [TextView] will not trigger the
+     * event (unless it is a navigation to another object) because [TextView] handles its own key
+     * presses. If our [Int] parameter [keyCode] is [KeyEvent.KEYCODE_BACK] (the Back key) we return
+     * the value returned by our super's implementation of `onKeyUp`. For all other keys we return
+     * the value returned by the [JetBoyThread.doKeyUp] method of [JetBoyThread] field
+     * [mJetBoyThread].
      *
      * @param keyCode The value in event.getKeyCode().
      * @param msg     Description of the key event.
-     * @return Return `true` to prevent this event from being propagated further, or
-     * `false` to indicate that you have not handled this event and it should continue
-     * to be propagated.
+     * @return Return `true` to prevent this event from being propagated further, or `false` to
+     * indicate that you have not handled this event and it should continue to be propagated.
      */
     override fun onKeyUp(keyCode: Int, msg: KeyEvent): Boolean {
         return if (keyCode == KeyEvent.KEYCODE_BACK) {
