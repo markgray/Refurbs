@@ -48,18 +48,18 @@ import java.util.concurrent.ConcurrentLinkedQueue
 /**
  * The constructor called when the layout file layout/main.xml is inflated in the main [JetBoy]
  * activity. In our `init` block we call our super's constructor, then we initialize [SurfaceHolder]
- * holder` fetching the underlying `SurfaceHolder` of our `SurfaceView`, and add this as a
- * `SurfaceHolder` callback to it. If we are not in edit mode (edit mode is true when we
- * are displayed within a developer tool like a layout editor) we initialize `JetBoyThread thread`
- * (thread that actually draws the animation) with a new instance that uses an anonymous `Handler`
- * whose `handleMessage` override updates the timer view `TextView mTimerView` with the
- * string that is stored in the data `Bundle` of the message it receives under the key "text",
- * then if there is a string stored in the `Bundle` under the key "STATE_LOSE" is evaluates
+ * variable `val holder` by fetching the underlying [SurfaceHolder] of our [SurfaceView], and add
+ * `this` as a [SurfaceHolder.Callback] to it. If we are not in edit mode (edit mode is `true` when
+ * we are displayed within a developer tool like a layout editor) we initialize [JetBoyThread] field
+ * [thread] (thread that actually draws the animation) with a new instance that uses an anonymous
+ * [Handler] whose [Handler.handleMessage] override updates the timer [TextView] field [mTimerView]
+ * with the string that is stored in the data [Bundle] of the message it receives under the key
+ * "text", then if there is a string stored in the [Bundle] under the key "STATE_LOSE" it evaluates
  * whether the player has won or lost and updates the state of the UI accordingly. Whether we are
  * in edit mode or not we set ourselves to be focusable, and log the fact that we are done creating
  * the view.
  *
- * @param context The Context the view is running in, through which it can access the current
+ * @param context The [Context] the view is running in, through which it can access the current
  * theme, resources, etc.
  * @param attrs   The attributes of the XML tag that is inflating the view.
  */
@@ -84,18 +84,22 @@ class JetBoyView constructor(
             thread = JetBoyThread(holder, context,
                 object : Handler(Looper.myLooper()!!) {
                     /**
-                     * We implement this to receive messages. First we set the text of our timer `TextView mTimerView`
-                     * to the text stored under the key "text" in the data bundle of our parameter `Message m`. Then
-                     * if and only if there is a string stored under the key "STATE_LOSE" in the data bundle of our parameter
-                     * `Message m` we set the visibility of `Button mButtonRetry` ("RETRY") to VISIBLE, set the
-                     * visibility of `TextView mTimerView` to INVISIBLE, and set the visibility of `TextView mTextView`
-                     * to VISIBLE. We then log the value of `mHitTotal` (the total number of hits scored by the user).
-                     * If `mHitTotal` is greater than or equal to `mSuccessThreshold` we set the text of
-                     * `TextView mTextView` to the string with resource id R.string.winText ("You win...") otherwise
-                     * we set its text to the string "Sorry, You Lose! ...". We then set the text of `TextView mTimerView`
-                     * to the string "1:12", and set the height of `TextView mTextView` to 20.
+                     * We implement this to receive messages. First we set the text of our timer
+                     * [TextView] field [mTimerView] to the text stored under the key "text" in the
+                     * data bundle of our [Message] parameter [m]. Then if and only if there is a
+                     * string stored under the key "STATE_LOSE" in the data bundle of our [Message]
+                     * parameter [m] we set the visibility of [Button] field [mButtonRetry] ("RETRY")
+                     * to VISIBLE, set the visibility of [TextView] field [mTimerView] to INVISIBLE,
+                     * and set the visibility of [TextView] field [mTextView] to VISIBLE. We then
+                     * log the value of [Int] field [mHitTotal] (the total number of hits scored by
+                     * the user). If [mHitTotal] is greater than or equal to [Int] field
+                     * [mSuccessThreshold] we set the text of [TextView] field [mTextView] to the
+                     * string with resource id [R.string.winText] ("You win...") otherwise we set
+                     * its text to the string "Sorry, You Lose! ...". We then set the text of
+                     * [TextView] field [mTimerView] to the string "1:12", and set the height of
+                     * [TextView] field [mTextView] to 20.
                      *
-                     * @param m `Message` that we have been sent using the `sendMessage` method
+                     * @param m [Message] that we have been sent using our [Handler.sendMessage] method
                      */
                     @SuppressLint("SetTextI18n")
                     override fun handleMessage(m: Message) {
@@ -167,41 +171,33 @@ class JetBoyView constructor(
     }
 
     /**
-     * A GameEvent subclass for key based user input. Values are those used by
-     * the standard onKey
-     */
-    class KeyGameEvent
-    /**
-     * Simple constructor to make populating this event easier. We just save our parameters in
-     * our fields.
+     * A GameEvent subclass for key based user input. Values are those used by the standard onKey,
+     * with Simple constructor to make populating this event easier. It just saves its parameters in
+     * its fields.
      *
-     * @param keyCode the `KeyEvent` keycode returned by the `getKeyCode` method
-     * of the `KeyEvent msg`
-     * @param up      true if it was a key up event, false if it was a key down event.
-     * @param msg     `KeyEvent` Description of the key event.
+     * @param keyCode the [KeyEvent] keycode returned by the [KeyEvent.getKeyCode] method
+     * of the [KeyEvent] parameter [msg]
+     * @param up      `true` if it was a key up event, `false` if it was a key down event.
+     * @param msg     [KeyEvent] Description of the key event.
      */
-    (
+    class KeyGameEvent(
         /**
-         * The `KeyEvent` keycode that we represent.
+         * The [KeyEvent] keycode that we represent.
          */
         var keyCode: Int,
         /**
-         * true if it was a key up event, false if it was a key down event.
+         * `true` if it was a key up event, `false` if it was a key down event.
          */
         var up: Boolean,
         /**
-         * `KeyEvent` Description of our key event.
+         * [KeyEvent] Description of our key event.
          */
         var msg: KeyEvent
         ) : GameEvent()
 
     /**
-     * A GameEvent subclass for events from the JetPlayer.
-     */
-    internal class JetGameEvent
-    /**
-     * Simple constructor to make populating this event easier. We just save our parameters in our
-     * fields.
+     * A GameEvent subclass for events from the JetPlayer. It uses a Simple constructor to make
+     * populating this event easier which just saves its parameters in our fields.
      *
      * @param player     the JET player the status update is coming from
      * @param segment    8 bit unsigned value
@@ -210,7 +206,7 @@ class JetBoyView constructor(
      * @param controller 7 bit unsigned value
      * @param value      7 bit unsigned value
      */
-    (
+    internal class JetGameEvent(
         /**
          * the JET player the status update is coming from
          */
@@ -239,37 +235,40 @@ class JetBoyView constructor(
     /**
      * JET info: the JetBoyThread receives all the events from the JET player
      * JET info: through the OnJetEventListener interface.
-     */
-    /**
-     * This is the constructor for the main worker bee. We initialize our field `mSurfaceHolder`
-     * to our parameter `SurfaceHolder surfaceHolder`, our field `mHandler` to our parameter
-     * `Handler handler`, and our field `mContext` to our parameter `Context context`.
-     * We then initialize our field `Resources mRes` with a `Resources` instance for our
-     * parameter `Context context`. We initialize our mute array `boolean muteMask[][]`
-     * associated with the music beds in the JET file to their appropriate true or false value. We
-     * set our state to STATE_START, and call our method `setInitialGameState` to set up all our
-     * initial JET requirements (including loading the JET file). We initialize `Bitmap mTitleBG` by decoding
-     * the png with resource id R.drawable.title_hori, initialize `Bitmap mBackgroundImageFar`
-     * by decoding the png with resource id R.drawable.background_a, initialize `Bitmap mLaserShot`
-     * by decoding the png with resource id R.drawable.laser, initialize `Bitmap mBackgroundImageNear`
-     * by decoding the png with resource id R.drawable.background_b, initialize the four bitmaps used
-     * by `Bitmap[] mShipFlying` by decoding the png's with resource id R.drawable.ship2_1,
-     * R.drawable.ship2_2, R.drawable.ship2_3, and R.drawable.ship2_4, initialize the four bitmaps
-     * used by `Bitmap[] mBeam` by decoding the png's with resource id R.drawable.intbeam_1,
-     * R.drawable.intbeam_2, R.drawable.intbeam_3, and R.drawable.intbeam_4, initialize `Bitmap mTimerShell`
-     * by decoding the png with resource R.drawable.int_timer, initialize `Bitmap[] mAsteroids` with
-     * the 12 png's with resource id's R.drawable.asteroid01 through R.drawable.asteroid12, and initialize
-     * `Bitmap[] mExplosions` with the 4 png's with resource id's R.drawable.asteroid_explode1 through
-     * R.drawable.asteroid_explode4.
      *
-     * @param mSurfaceHolder `SurfaceHolder` we are to use
-     * @param mContext       The Context our view is running in, used to access resources.
-     * @param mHandler       `Handler` that is handling our thread which `JetBoyView`
-     * will use to send us messages.
+     * This is the constructor for the main worker bee. Its [SurfaceHolder] parameter [mSurfaceHolder]
+     * becomes its [SurfaceHolder] field [mSurfaceHolder], its [Context] parameter [mContext] becomes
+     * its [Context] field [mContext], and its [Handler] parameter [mHandler] becomes its [Handler]
+     * field [mHandler].
+     *
+     * In its `init` block it initializes its [Resources] field [mRes] with a [Resources] instance
+     * for its [Context] field [mContext]. We initialize our mute [Array] of [BooleanArray] field
+     * [muteMask] (associated with the music beds in the JET file) to their appropriate `true` or
+     * `false` value. We set our state to [STATE_START], and call our method [setInitialGameState]
+     * to set up all our initial JET requirements (including loading the JET file). We initialize
+     * [Bitmap] field [mTitleBG] by decoding the png with resource id [R.drawable.title_hori],
+     * initialize [Bitmap] field [mBackgroundImageFar] by decoding the png with resource id
+     * [R.drawable.background_a], initialize [Bitmap] field [mLaserShot] by decoding the png with
+     * resource id [R.drawable.laser], initialize [Bitmap] field [mBackgroundImageNear] by decoding
+     * the png with resource id [R.drawable.background_b], initialize the four bitmaps used
+     * by [Array] of [Bitmap] field [mShipFlying] by decoding the png's with resource id
+     * [R.drawable.ship2_1], [R.drawable.ship2_2], [R.drawable.ship2_3], and [R.drawable.ship2_4],
+     * initialize the four bitmaps used by [Array] of [Bitmap] field [mBeam] by decoding the png's
+     * with resource id [R.drawable.intbeam_1], [R.drawable.intbeam_2], [R.drawable.intbeam_3], and
+     * [R.drawable.intbeam_4], initialize [Bitmap] field [mTimerShell] by decoding the png with
+     * resource id [R.drawable.int_timer], initialize [Array] of [Bitmap] field [mAsteroids] with
+     * the 12 png's with resource id's [R.drawable.asteroid01] through [R.drawable.asteroid12], and
+     * initialize [Array] of [Bitmap] field [mExplosions] with the 4 png's with resource id's
+     * [R.drawable.asteroid_explode1] through [R.drawable.asteroid_explode4].
+     *
+     * @param mSurfaceHolder [SurfaceHolder] we are to use
+     * @param mContext       The [Context] our view is running in, used to access resources.
+     * @param mHandler       [Handler] that is handling our thread which [JetBoyView] will use to
+     * send us messages.
      */
     open inner class JetBoyThread(
         /**
-         * Handle to the underlying `SurfaceHolder` of the `SurfaceView` we interact with
+         * Handle to the underlying [SurfaceHolder] of the [SurfaceView] we interact with
          */
         private val mSurfaceHolder: SurfaceHolder,
         /**
@@ -279,9 +278,10 @@ class JetBoyView constructor(
         /**
          * Message handler used by thread to interact with TextView
          */
-        private val mHandler: Handler) : Thread(), OnJetEventListener {
+        private val mHandler: Handler
+    ) : Thread(), OnJetEventListener {
         /**
-         * Has our `setInitialGameState` method been called to initialize the game state?
+         * Has our [setInitialGameState] method been called to initialize the game state?
          */
         var mInitialized: Boolean = false
 
@@ -311,7 +311,8 @@ class JetBoyView constructor(
         private var mTimerValue = "1:12"
 
         /**
-         * STATE_START, STATE_PLAY, STATE_RUNNING, STATE_PAUSE, and STATE_LOSE are the states we use
+         * [STATE_START], [STATE_PLAY], [STATE_RUNNING], [STATE_PAUSE], and [STATE_LOSE] are the
+         * states we use
          */
         var mState: Int
 
@@ -355,12 +356,12 @@ class JetBoyView constructor(
         /**
          * our intrepid space boy
          */
-        private val mShipFlying = arrayOfNulls<Bitmap>(4)
+        private val mShipFlying: Array<Bitmap?> = arrayOfNulls(4)
 
         /**
          * the twinkly bit
          */
-        private val mBeam = arrayOfNulls<Bitmap>(4)
+        private val mBeam: Array<Bitmap?> = arrayOfNulls(4)
 
         /**
          * the things you are trying to hit
@@ -373,13 +374,13 @@ class JetBoyView constructor(
         val mExplosions: Array<Bitmap?> = arrayOfNulls(4)
 
         /**
-         * Contains the png with resource id R.drawable.int_timer which is used to decorate our
-         * timer `TextView`
+         * Contains the png with resource id [R.drawable.int_timer] which is used to decorate our
+         * timer [TextView]
          */
         private val mTimerShell: Bitmap
 
         /**
-         * Contains the png with resource id R.drawable.laser which is used when the laser is fired.
+         * Contains the png with resource id [R.drawable.laser] which is used when the laser is fired.
          */
         private val mLaserShot: Bitmap
 
@@ -399,7 +400,8 @@ class JetBoyView constructor(
         private val mPixelMoveX = 25
 
         /**
-         * The asteroid send events are generated from the Jet File, but which land they start in is random.
+         * The asteroid send events are generated from the Jet File, but which land they start in is
+         * random.
          */
         private val mRandom = Random()
 
@@ -415,13 +417,13 @@ class JetBoyView constructor(
 
         /**
          * Indicate whether the surface has been created & is ready to draw, set to true in our
-         * `surfaceCreated` override by calling the `setRunning(true)` method of
-         * `thread`, set to false in our `surfaceDestroyed` override.
+         * [surfaceCreated] override by calling the [setRunning] method of `thread` with `true`,
+         * set to `false` in our [surfaceDestroyed] override.
          */
         private var mRun = false
 
         /**
-         * `Timer` task queue, updates the screen clock. Also used for tempo timing.
+         * [Timer] task queue, updates the screen clock. Also used for tempo timing.
          */
         private var mTimer: Timer? = null
 
@@ -438,14 +440,14 @@ class JetBoyView constructor(
         /**
          * Current height of the surface/canvas.
          *
-         * @see .setSurfaceSize
+         * @see setSurfaceSize
          */
         private var mCanvasHeight = 1
 
         /**
          * Current width of the surface/canvas.
          *
-         * @see .setSurfaceSize
+         * @see setSurfaceSize
          */
         private var mCanvasWidth = 1
 
@@ -455,62 +457,65 @@ class JetBoyView constructor(
         private var mShipIndex = 0
 
         /**
-         * stores all of the `Asteroid` objects in order
+         * stores all of the [Asteroid] objects in order
          */
         private var mDangerWillRobinson: Vector<Asteroid>? = null
 
         /**
-         * stores all of the `Explosion` objects in order, `Asteroid` objects are replaced
-         * with an `Explosion` object in the same position when the laser hits the asteroid.
+         * stores all of the [Explosion] objects in order, [Asteroid] objects are replaced
+         * with an [Explosion] object in the same position when the laser hits the asteroid.
          */
         private var mExplosion: Vector<Explosion>? = null
         // right to left scroll tracker for near and far BG
         /**
          * right to left scroll tracker for far BG
          */
-        private var mBGFarMoveX = 0
+        private var mBGFarMoveX: Int = 0
 
         /**
          * right to left scroll tracker for near BG
          */
-        private var mBGNearMoveX = 0
+        private var mBGNearMoveX: Int = 0
 
         /**
          * how far up (close to top) jet boy can fly
          */
-        private val mJetBoyYMin = 40
+        private val mJetBoyYMin: Int = 40
 
         /**
          * X position of jet boy
          */
-        private val mJetBoyX = 0
+        private val mJetBoyX: Int = 0
 
         /**
          * Y position of jet boy
          */
-        private var mJetBoyY = 0
+        private var mJetBoyY: Int = 0
 
         /**
          * this is the pixel X position of the laser beam guide.
          */
-        private val mAsteroidMoveLimitX = 110
+        private val mAsteroidMoveLimitX: Int = 110
 
         /**
          * how far up asteroid can be painted
          */
-        private val mAsteroidMinY = 40
+        private val mAsteroidMinY: Int = 40
 
         /**
-         * `Resources` instance for the `Context` our view is running in.
+         * [Resources] instance for the [Context] our view is running in.
          */
         var mRes: Resources
 
         /**
-         * array to store the mute masks that are applied during game play to respond to the
-         * player's hit streaks
+         * [Array] of [BooleanArray] to store the mute masks that are applied during game play to
+         * respond to the player's hit streaks
          */
-        private val muteMask = Array(9) { BooleanArray(32) }
+        private val muteMask: Array<BooleanArray> = Array(9) { BooleanArray(32) }
 
+        /**
+         * See comments of constructor (way up above) for info.
+         */
         init {
             mRes = mContext.resources
 
@@ -620,8 +625,8 @@ class JetBoyView constructor(
 
         /**
          * Does the grunt work of setting up initial jet requirements. We use the factory method
-         * `getJetPlayer` of `JetPlayer` to create a `JetPlayer` instance which
-         * we save in our field `JetPlayer mJet`, set our field `mJetPlaying` to false,
+         * [JetPlayer.getJetPlayer] of [JetPlayer] to create a [JetPlayer] instance which we save
+         * in our [JetPlayer] field [mJet], set our [Boolean] field [mJetPlaying] to `false`,
          * clear the queue of `mJet`, set its `OnJetEventListener` to 'this', and load
          * it with the raw resources JET file with resource id R.raw.level1. We then set our field
          * `mCurrentBed` to 0, and initialize `byte sSegmentID` to 0. We call the
