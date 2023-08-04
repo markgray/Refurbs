@@ -47,8 +47,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
  * The constructor called when the layout file layout/main.xml is inflated in the main [JetBoy]
- * activity. First we call our super's constructor, then we initialize [SurfaceHolder] holder`
- * fetching the underlying `SurfaceHolder` of our `SurfaceView`, and add this as a
+ * activity. In our `init` block we call our super's constructor, then we initialize [SurfaceHolder]
+ * holder` fetching the underlying `SurfaceHolder` of our `SurfaceView`, and add this as a
  * `SurfaceHolder` callback to it. If we are not in edit mode (edit mode is true when we
  * are displayed within a developer tool like a layout editor) we initialize `JetBoyThread thread`
  * (thread that actually draws the animation) with a new instance that uses an anonymous `Handler`
@@ -67,6 +67,61 @@ class JetBoyView constructor(
     context: Context,
     attrs: AttributeSet?
 ) : SurfaceView(context, attrs), SurfaceHolder.Callback {
+    /**
+     * The thread that actually draws the animation
+     */
+    var thread: JetBoyThread? = null
+
+    init {
+        // register our interest in hearing about changes to our surface
+        val holder = holder
+        holder.addCallback(this)
+
+        // create thread only; it's started in surfaceCreated()
+        // except if used in the layout editor.
+        if (!isInEditMode) {
+            @SuppressLint("HandlerLeak")
+            thread = JetBoyThread(holder, context,
+                object : Handler(Looper.myLooper()!!) {
+                    /**
+                     * We implement this to receive messages. First we set the text of our timer `TextView mTimerView`
+                     * to the text stored under the key "text" in the data bundle of our parameter `Message m`. Then
+                     * if and only if there is a string stored under the key "STATE_LOSE" in the data bundle of our parameter
+                     * `Message m` we set the visibility of `Button mButtonRetry` ("RETRY") to VISIBLE, set the
+                     * visibility of `TextView mTimerView` to INVISIBLE, and set the visibility of `TextView mTextView`
+                     * to VISIBLE. We then log the value of `mHitTotal` (the total number of hits scored by the user).
+                     * If `mHitTotal` is greater than or equal to `mSuccessThreshold` we set the text of
+                     * `TextView mTextView` to the string with resource id R.string.winText ("You win...") otherwise
+                     * we set its text to the string "Sorry, You Lose! ...". We then set the text of `TextView mTimerView`
+                     * to the string "1:12", and set the height of `TextView mTextView` to 20.
+                     *
+                     * @param m `Message` that we have been sent using the `sendMessage` method
+                     */
+                    @SuppressLint("SetTextI18n")
+                    override fun handleMessage(m: Message) {
+                        mTimerView!!.text = m.data.getString("text")
+                        if (m.data.getString("STATE_LOSE") != null) {
+                            //mButtonRestart.setVisibility(View.VISIBLE);
+                            mButtonRetry!!.visibility = VISIBLE
+                            mTimerView!!.visibility = INVISIBLE
+                            mTextView!!.visibility = VISIBLE
+                            Log.d(TAG, "the total was $mHitTotal")
+                            if (mHitTotal >= mSuccessThreshold) {
+                                mTextView!!.setText(R.string.winText)
+                            } else {
+                                mTextView!!.text = ("Sorry, You Lose! You got " + mHitTotal
+                                    + ". You need 50 to win.")
+                            }
+                            mTimerView!!.text = "1:12"
+                            mTextView!!.height = 20
+                        }
+                    } //end handle msg
+                })
+        }
+        isFocusable = true // make sure we get key events
+        Log.d(TAG, "@@@ done creating view!")
+    }
+
     /**
      * used to calculate level for mutes and trigger clip
      */
@@ -1704,16 +1759,6 @@ class JetBoyView constructor(
 
 
     } //end thread class
-    /**
-     * Fetches the animation thread corresponding to this LunarView. We return our field
-     * `JetBoyThread thread` to the caller.
-     *
-     * @return the animation thread
-     */
-    /**
-     * The thread that actually draws the animation
-     */
-    var thread: JetBoyThread? = null
 
     /**
      * The `TextView` in our layout that displays the current timer value
@@ -1724,63 +1769,12 @@ class JetBoyView constructor(
      * The `Button` in our layout that starts a new game after the user finishes or loses.
      */
     private var mButtonRetry: Button? = null
-    // private Button mButtonRestart;
+
     /**
      * The `TextView` in our layout that displays the winning or losing information at the end
      * of the game.
      */
     private var mTextView: TextView? = null
-
-    init {
-
-        // register our interest in hearing about changes to our surface
-        val holder = holder
-        holder.addCallback(this)
-
-        // create thread only; it's started in surfaceCreated()
-        // except if used in the layout editor.
-        if (!isInEditMode) {
-            @SuppressLint("HandlerLeak")
-            thread = JetBoyThread(holder, context,
-            object : Handler(Looper.myLooper()!!) {
-                /**
-                 * We implement this to receive messages. First we set the text of our timer `TextView mTimerView`
-                 * to the text stored under the key "text" in the data bundle of our parameter `Message m`. Then
-                 * if and only if there is a string stored under the key "STATE_LOSE" in the data bundle of our parameter
-                 * `Message m` we set the visibility of `Button mButtonRetry` ("RETRY") to VISIBLE, set the
-                 * visibility of `TextView mTimerView` to INVISIBLE, and set the visibility of `TextView mTextView`
-                 * to VISIBLE. We then log the value of `mHitTotal` (the total number of hits scored by the user).
-                 * If `mHitTotal` is greater than or equal to `mSuccessThreshold` we set the text of
-                 * `TextView mTextView` to the string with resource id R.string.winText ("You win...") otherwise
-                 * we set its text to the string "Sorry, You Lose! ...". We then set the text of `TextView mTimerView`
-                 * to the string "1:12", and set the height of `TextView mTextView` to 20.
-                 *
-                 * @param m `Message` that we have been sent using the `sendMessage` method
-                 */
-                @SuppressLint("SetTextI18n")
-                override fun handleMessage(m: Message) {
-                    mTimerView!!.text = m.data.getString("text")
-                    if (m.data.getString("STATE_LOSE") != null) {
-                        //mButtonRestart.setVisibility(View.VISIBLE);
-                        mButtonRetry!!.visibility = VISIBLE
-                        mTimerView!!.visibility = INVISIBLE
-                        mTextView!!.visibility = VISIBLE
-                        Log.d(TAG, "the total was $mHitTotal")
-                        if (mHitTotal >= mSuccessThreshold) {
-                            mTextView!!.setText(R.string.winText)
-                        } else {
-                            mTextView!!.text = ("Sorry, You Lose! You got " + mHitTotal
-                                + ". You need 50 to win.")
-                        }
-                        mTimerView!!.text = "1:12"
-                        mTextView!!.height = 20
-                    }
-                } //end handle msg
-            })
-        }
-        isFocusable = true // make sure we get key events
-        Log.d(TAG, "@@@ done creating view!")
-    }
 
     /**
      * Pass in a reference to the timer view widget so we can update it from here. We just save our
