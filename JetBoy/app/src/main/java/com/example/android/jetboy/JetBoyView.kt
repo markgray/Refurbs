@@ -627,22 +627,24 @@ class JetBoyView constructor(
          * Does the grunt work of setting up initial jet requirements. We use the factory method
          * [JetPlayer.getJetPlayer] of [JetPlayer] to create a [JetPlayer] instance which we save
          * in our [JetPlayer] field [mJet], set our [Boolean] field [mJetPlaying] to `false`,
-         * clear the queue of `mJet`, set its `OnJetEventListener` to 'this', and load
-         * it with the raw resources JET file with resource id R.raw.level1. We then set our field
-         * `mCurrentBed` to 0, and initialize `byte sSegmentID` to 0. We call the
-         * `queueJetSegment` method of `mJet` to queue up segment 0, using 0 as the index
-         * of the sound bank associated with the segment, with 0 as the repeat count (plays only once),
-         * 0 for the amount of pitch transposition (normal playback), 0 as the bitmask to specify which
-         * MIDI tracks will be muted during playback (none), and `sSegmentID` to uniquely identify
-         * the segment. We then call the `queueJetSegment` method of `mJet` to queue up
-         * segment 1, using 0 as the index of the sound bank associated with the segment, with 4 as
-         * the repeat count (plays four times), 0 for the amount of pitch transposition (normal playback),
-         * 0 as the bitmask to specify which MIDI tracks will be muted during playback (none), and
-         * `sSegmentID` to uniquely identify the segment. We again call the `queueJetSegment`
-         * method of `mJet` to queue up segment 1 only this time use 1 for the amount of pitch
-         * transposition (up an octave). We then call the `setMuteArray` method of `mJet`
-         * to set the mute flags for the current active segment to `muteMask[0]`, with true for
-         * the sync flag so that the mute flags will be updated at the start of the next segment.
+         * clear the queue of [mJet], set its [OnJetEventListener] to 'this', and load [mJet] with
+         * the raw resources JET file with resource id [R.raw.level1]. We then set our [Int] field
+         * [mCurrentBed] to 0, and initialize [Byte] variable `val sSegmentID` to 0. We call the
+         * [JetPlayer.queueJetSegment] method of [mJet] to queue up segment 0, using 0 as the index
+         * of the sound bank associated with the segment, with 0 as the repeat count (plays only
+         * once), 0 for the amount of pitch transposition (normal playback), 0 as the bitmask to
+         * specify which MIDI tracks will be muted during playback (none), and `sSegmentID` to
+         * uniquely identify the segment. We then call the [JetPlayer.queueJetSegment] method of
+         * [mJet] to queue up segment 1, using 0 as the index of the sound bank associated with the
+         * segment, with 4 as the repeat count (plays four times), 0 for the amount of pitch
+         * transposition (normal playback), 0 as the bitmask to specify which MIDI tracks will be
+         * muted during playback (none), and `sSegmentID` to uniquely identify the segment. We again
+         * call the [JetPlayer.queueJetSegment] method of [mJet] to queue up segment 1 only this
+         * time use 1 for the amount of pitch transposition (up an octave). We then call the
+         * [JetPlayer.setMuteArray] method of [mJet] to set the mute flags for the current active
+         * segment to the [BooleanArray] at index 0 of [Array] of [BooleanArray] field [muteMask],
+         * with `true` for the sync flag so that the mute flags will be updated at the start of the
+         * next segment.
          */
         private fun initializeJetPlayer() {
 
@@ -683,13 +685,34 @@ class JetBoyView constructor(
             // JET info: it is located at segment 0
             // JET info: it uses the first DLS lib in the .jet resource, which is at index 0
             // JET info: index -1 means no DLS
-            mJet!!.queueJetSegment(0, 0, 0, 0, 0, sSegmentID)
+            mJet!!.queueJetSegment(
+                /* segmentNum = */ 0,
+                /* libNum = */ 0,
+                /* repeatCount = */ 0,
+                /* transpose = */ 0,
+                /* muteFlags = */ 0,
+                /* userID = */ sSegmentID
+            )
 
             // JET info: end game music, loop 4 times normal pitch
-            mJet!!.queueJetSegment(1, 0, 4, 0, 0, sSegmentID)
+            mJet!!.queueJetSegment(
+                /* segmentNum = */ 1,
+                /* libNum = */ 0,
+                /* repeatCount = */ 4,
+                /* transpose = */ 0,
+                /* muteFlags = */ 0,
+                /* userID = */ sSegmentID
+            )
 
             // JET info: end game music loop 4 times up an octave
-            mJet!!.queueJetSegment(1, 0, 4, 1, 0, sSegmentID)
+            mJet!!.queueJetSegment(
+                /* segmentNum = */ 1,
+                /* libNum = */ 0,
+                /* repeatCount = */ 4,
+                /* transpose = */ 1,
+                /* muteFlags = */ 0,
+                /* userID = */ sSegmentID
+            )
 
             // JET info: set the mute mask as designed for the beginning of the game, when the
             // JET info: the player hasn't scored yet.
@@ -698,27 +721,22 @@ class JetBoyView constructor(
         }
 
         /**
-         * Called from the `run` override of the `JetBoyThread` to dispatch the drawing
-         * of our `SurfaceView` to the appropriate method depending on the game state. We branch
-         * depending on the value of our state variable `mState`:
+         * Called from the [Thread.run] override of [JetBoyThread] to dispatch the drawing of our
+         * [SurfaceView] to the appropriate method depending on the game state. We when branch
+         * depending on the value of our [Int] state field [mState]:
          *
-         *  *
-         * STATE_RUNNING: we call our method `doDrawRunning` to do whatever drawing is
-         * appropriate for a running game at this time
+         *  * [STATE_RUNNING]: we call our method [doDrawRunning] to do whatever drawing is
+         *  appropriate for a running game at this time
          *
-         *  *
-         * STATE_START: we call our method `doDrawReady` to do whatever drawing is
-         * appropriate to do before the game has started.
+         *  * [STATE_START]: we call our method [doDrawReady] to do whatever drawing is appropriate
+         *  to do before the game has started.
          *
-         *  *
-         * STATE_PLAY, or STATE_LOSE: If our field `Bitmap mTitleBG2` is null we initialize
-         * it by decoding the png with resource id R.drawable.title_bg_hori, then call our method
-         * `doDrawPlay` to do whatever drawing is appropriate while we wait for the user
-         * to press the "PLAY!" button.
+         *  * [STATE_PLAY], or [STATE_LOSE]: If our [Bitmap] field [mTitleBG2] is `null` we
+         *  initialize it by decoding the png with resource id [R.drawable.title_bg_hori], then
+         *  call our method [doDrawPlay] to do whatever drawing is appropriate while we wait for
+         *  the user to press the "PLAY!" button.
          *
-         *
-         *
-         * @param canvas `Canvas` on which to do our drawing.
+         * @param canvas [Canvas] on which to do our drawing.
          */
         private fun doDraw(canvas: Canvas?) {
             when (mState) {
@@ -734,32 +752,35 @@ class JetBoyView constructor(
                     }
                     doDrawPlay(canvas)
                 }
-            } // end state play block
+            }
         }
 
         /**
-         * Draws current state of the running game `Canvas`. First we decrement the X position
-         * of the far background `mBGFarMoveX` by 1, and the X position of the near background
-         * `mBGNearMoveX` by 4. We initialize `int newFarX` to the width of the far background
-         * bitmap `Bitmap mBackgroundImageFar` minus the negative of `mBGFarMoveX` (this is
-         * the wrap factor), and if `newFarX` is less than or equal to 0 we have scrolled all the
-         * way so we set `mBGFarMoveX` to 0 and have `canvas` draw `mBackgroundImageFar`
-         * at `mBGFarMoveX`, otherwise we have to have it draw `mBackgroundImageFar` twice,
-         * once at `mBGFarMoveX`, and again at `newFarX`. We do much the same thing for
-         * `mBackgroundImageNear`: initialize `int newNearX` to the width of the near
-         * background `mBackgroundImageNear` minus negative `mBGNearMoveX` and if it is
-         * less than or equal to zero we set `mBGNearMoveX` to 0 and draw have `canvas`
-         * draw `mBackgroundImageNear` at `mBGNearMoveX`, otherwise we have it draw it
-         * twice, once at `mBGNearMoveX` and once at `newNearX`. Next we call our method
-         * `doAsteroidAnimation` to draw the asteroids, and have `canvas` draw the
-         * `Bitmap mBeam[mShipIndex]` (the vertical laser beam(?) in front of the ship) after
-         * which we increment `mShipIndex` and wrap it around to 0 if it has reached 4. We then
-         * have canvas draw `Bitmap mShipFlying[mShipIndex]` at the location (mJetBoyX, mJetBoyY)
-         * which is the same lane as the next asteroid. If the laser is on (`mLaserOn` is true)
-         * we have `canvas` draw `Bitmap mLaserShot`. Finally we have `canvas` draw
-         * `Bitmap mTimerShell` in its correct position.
+         * Draws current state of the running game on its [Canvas] parameter [canvas]. First we
+         * decrement the X position of the far background [Int] field [mBGFarMoveX] by 1, and the
+         * X position of the near background [Int] field [mBGNearMoveX] by 4. We initialize [Int]
+         * variable `val newFarX` to the width of the far background bitmap, [Bitmap] field
+         * [mBackgroundImageFar] minus the negative of [mBGFarMoveX] (this is the wrap factor), and
+         * if `newFarX` is less than or equal to 0 we have scrolled all the way so we set
+         * [mBGFarMoveX] to 0 and use the [Canvas.drawBitmap] method of [canvas] to draw
+         * [mBackgroundImageFar] at [mBGFarMoveX], otherwise we have to have it draw
+         * [mBackgroundImageFar] twice, once at [mBGFarMoveX], and again at `newFarX`. We do much
+         * the same thing for [mBackgroundImageNear]: initialize [Int] variable `val newNearX` to
+         * the width of the near background bitmap, [Bitmap] field [mBackgroundImageNear] minus
+         * negative [mBGNearMoveX] and if it is less than or equal to zero we set [mBGNearMoveX]
+         * to 0 and use the [Canvas.drawBitmap] method of [canvas] to draw [mBackgroundImageNear]
+         * at [mBGNearMoveX], otherwise we have it draw it twice, once at [mBGNearMoveX] and once
+         * at `newNearX`. Next we call our method [doAsteroidAnimation] to draw the asteroids, and
+         * use the [Canvas.drawBitmap] method of [canvas] to draw the [Bitmap] at index [mShipIndex]
+         * in [Array] of [Bitmap] field [mBeam] (the vertical laser beam(?) in front of the ship)
+         * after which we increment [mShipIndex] and wrap it around to 0 if it has reached 4. We
+         * then use the [Canvas.drawBitmap] method of [canvas] to draw the [Bitmap] at index
+         * [mShipIndex] in [Array] of [Bitmap] field [mShipFlying] at the location
+         * ([mJetBoyX], [mJetBoyY]) which is the same lane as the next asteroid. If the laser is
+         * on ([mLaserOn] is `true`) we have [canvas] draw [Bitmap] field [mLaserShot]. Finally we
+         * have [canvas] draw [Bitmap] field [mTimerShell] in its correct position.
          *
-         * @param canvas `Canvas` on which to do our drawing.
+         * @param canvas [Canvas] on which to do our drawing.
          */
         private fun doDrawRunning(canvas: Canvas?) {
 
@@ -776,11 +797,26 @@ class JetBoyView constructor(
             if (newFarX <= 0) {
                 mBGFarMoveX = 0
                 // only need one draw
-                canvas!!.drawBitmap(mBackgroundImageFar, mBGFarMoveX.toFloat(), 0f, null)
+                canvas!!.drawBitmap(
+                    /* bitmap = */ mBackgroundImageFar,
+                    /* left = */ mBGFarMoveX.toFloat(),
+                    /* top = */ 0f,
+                    /* paint = */ null
+                )
             } else {
                 // need to draw original and wrap
-                canvas!!.drawBitmap(mBackgroundImageFar, mBGFarMoveX.toFloat(), 0f, null)
-                canvas.drawBitmap(mBackgroundImageFar, newFarX.toFloat(), 0f, null)
+                canvas!!.drawBitmap(
+                    /* bitmap = */ mBackgroundImageFar,
+                    /* left = */ mBGFarMoveX.toFloat(),
+                    /* top = */ 0f,
+                    /* paint = */ null
+                )
+                canvas.drawBitmap(
+                    /* bitmap = */ mBackgroundImageFar,
+                    /* left = */ newFarX.toFloat(),
+                    /* top = */ 0f,
+                    /* paint = */ null
+                )
             }
 
             // same story different image...
@@ -788,24 +824,59 @@ class JetBoyView constructor(
             val newNearX = mBackgroundImageNear.width - -mBGNearMoveX
             if (newNearX <= 0) {
                 mBGNearMoveX = 0
-                canvas.drawBitmap(mBackgroundImageNear, mBGNearMoveX.toFloat(), 0f, null)
+                canvas.drawBitmap(
+                    /* bitmap = */ mBackgroundImageNear,
+                    /* left = */ mBGNearMoveX.toFloat(),
+                    /* top = */ 0f,
+                    /* paint = */ null
+                )
             } else {
-                canvas.drawBitmap(mBackgroundImageNear, mBGNearMoveX.toFloat(), 0f, null)
-                canvas.drawBitmap(mBackgroundImageNear, newNearX.toFloat(), 0f, null)
+                canvas.drawBitmap(
+                    /* bitmap = */ mBackgroundImageNear,
+                    /* left = */ mBGNearMoveX.toFloat(),
+                    /* top = */ 0f,
+                    /* paint = */ null
+                )
+                canvas.drawBitmap(
+                    /* bitmap = */ mBackgroundImageNear,
+                    /* left = */ newNearX.toFloat(),
+                    /* top = */ 0f,
+                    /* paint = */ null
+                )
             }
             doAsteroidAnimation(canvas)
-            canvas.drawBitmap(mBeam[mShipIndex]!!, (51 + 20).toFloat(), 0f, null)
+            canvas.drawBitmap(
+                /* bitmap = */ mBeam[mShipIndex]!!,
+                /* left = */ (51 + 20).toFloat(),
+                /* top = */ 0f,
+                /* paint = */ null
+            )
             mShipIndex++
             if (mShipIndex == 4) mShipIndex = 0
 
             // draw the space ship in the same lane as the next asteroid
-            canvas.drawBitmap(mShipFlying[mShipIndex]!!, mJetBoyX.toFloat(), mJetBoyY.toFloat(), null)
+            canvas.drawBitmap(
+                /* bitmap = */ mShipFlying[mShipIndex]!!,
+                /* left = */ mJetBoyX.toFloat(),
+                /* top = */ mJetBoyY.toFloat(),
+                /* paint = */ null
+            )
             if (mLaserOn) {
-                canvas.drawBitmap(mLaserShot, (mJetBoyX + mShipFlying[0]!!.width).toFloat(), (mJetBoyY + mShipFlying[0]!!.height / 2).toFloat(), null)
+                canvas.drawBitmap(
+                    /* bitmap = */ mLaserShot,
+                    /* left = */ (mJetBoyX + mShipFlying[0]!!.width).toFloat(),
+                    /* top = */ (mJetBoyY + mShipFlying[0]!!.height / 2).toFloat(),
+                    /* paint = */ null
+                )
             }
 
             // tick tock
-            canvas.drawBitmap(mTimerShell, (mCanvasWidth - mTimerShell.width).toFloat(), 0f, null)
+            canvas.drawBitmap(
+                /* bitmap = */ mTimerShell,
+                /* left = */ (mCanvasWidth - mTimerShell.width).toFloat(),
+                /* top = */ 0f,
+                /* paint = */ null
+            )
         }
 
         /**
