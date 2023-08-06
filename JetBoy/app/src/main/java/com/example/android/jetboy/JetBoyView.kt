@@ -881,12 +881,13 @@ class JetBoyView constructor(
 
         /**
          * Sets the game variables to the values they have in the initial state. First we initialize
-         * `mTimerLimit` (the amount of time remaining) to TIMER_LIMIT, and set `mJetBoyY`
-         * (the Y position of the spaceship) to `mJetBoyYMin` (the top position for it). We then
-         * call our method `initializeJetPlayer` to set up the JET interface. We initialize
-         * `Timer mTimer` with a new instance, `Vector<Asteroid> mDangerWillRobinson` with
-         * a new instance, and `Vector<Explosion> mExplosion` with a new instance. We then set
-         * `mInitialized` to true, `mHitStreak` to 0, and `mHitTotal` to 0.
+         * [Int] field [mTimerLimit] (the amount of time remaining) to [TIMER_LIMIT] (72), and set
+         * [Int] field [mJetBoyY] (the Y position of the spaceship) to [Int] field [mJetBoyYMin]
+         * (the top position for it). We then call our method [initializeJetPlayer] to set up the
+         * JET interface. We initialize [Timer] field [mTimer] with a new instance, [Vector] of
+         * [Asteroid] field [mDangerWillRobinson] with a new instance, and [Vector] of [Explosion]
+         * field [mExplosion] with a new instance. We then set [Boolean] field [mInitialized] to
+         * `true`, [Int] field [mHitStreak] to 0, and [Int] field [mHitTotal] to 0.
          */
         private fun setInitialGameState() {
             mTimerLimit = TIMER_LIMIT
@@ -903,29 +904,28 @@ class JetBoyView constructor(
         }
 
         /**
-         * Draws our asteroids and explosions. If our `Vector<Asteroid> mDangerWillRobinson`
-         * list of asteroids is null or has no entries and our `Vector<Explosion> mExplosion`
-         * list of explosions has no entries we just return having done nothing. Otherwise we initialize
-         * `long frameDelta` to the current system time in milliseconds minus `mLastBeatTime`,
-         * and `int animOffset` to ANIMATION_FRAMES_PER_BEAT times `frameDelta` divided by
-         * 428.
+         * Draws our asteroids and explosions. If our [Vector] of [Asteroid] list of asteroids field
+         * [mDangerWillRobinson] is `null` or has no entries and our [Vector] of [Explosion] list of
+         * explosions field [mExplosion] is not `null` and has no entries we just return having done
+         * nothing. Otherwise we initialize [Long] variable `val frameDelta` to the current system
+         * time in milliseconds minus [Long] field [mLastBeatTime], and [Int] variable `val animOffset`
+         * to [ANIMATION_FRAMES_PER_BEAT] times `frameDelta` divided by 428.
          *
+         * Then we loop backwards on [Int] variable `var i` for each of the [Asteroid] variable
+         * `val asteroid` in [Vector] of [Asteroid] field [mDangerWillRobinson]. If the
+         * [Asteroid.mMissed] property of the current `asteroid` is `false` we set [Int] field
+         * [mJetBoyY] to the [Asteroid.mDrawY] field of `asteroid` then draw the bitmap chosen from
+         * [Array] of [Bitmap] field [mAsteroids] by adding `animOffset` to the [Asteroid.mAniIndex]
+         * field of `asteroid` modulo the length of [mAsteroids] at the location given by the values
+         * of the [Asteroid.mDrawX] and [Asteroid.mDrawY] fields of `asteroid`.
          *
-         * Then we loop backwards on `int i` for each of the `Asteroid asteroid` in
-         * `Vector<Asteroid> mDangerWillRobinson`. If the `mMissed` field of the current
-         * `asteroid` is false we set `mJetBoyY` to the `mDrawY` field of `asteroid`
-         * then draw the bitmap chosen from `Bitmap[] mAsteroids` by adding `animOffset` to
-         * the `mAniIndex` field of `asteroid` modulo the length of `mAsteroids` at
-         * the location given by the values of the `mDrawX` and `mDrawY` fields of `asteroid`.
+         * Next we loop backwards on [Int] variable `var i` for each of the [Explosion] variable
+         * `val ex` in [Vector] of [Explosion] field [mExplosion], drawing the bitmap chosen from
+         * [Array] of [Bitmap] field [mExplosions] by adding `animOffset` to the [Explosion.mAniIndex]
+         * field of `ex` modulo the length of [mExplosions] at the location given by the values of
+         * the [Explosion.mDrawX] and [Explosion.mDrawY] fields of `ex`.
          *
-         *
-         * Next we loop backwards on `int i` for each of the `Explosion ex` in
-         * `Vector<Explosion> mExplosion`, drawing the bitmap chosen from `Bitmap[] mExplosions`
-         * by adding `animOffset` to the `mAniIndex` field of `ex` modulo the length
-         * of `mExplosions` at the location given by the values of the `mDrawX` and `mDrawY`
-         * fields of `ex`.
-         *
-         * @param canvas `Canvas` on which to do our drawing.
+         * @param canvas [Canvas] on which to do our drawing.
          */
         private fun doAsteroidAnimation(canvas: Canvas?) {
             if ((mDangerWillRobinson == null || mDangerWillRobinson!!.size == 0)
@@ -934,10 +934,10 @@ class JetBoyView constructor(
             // Compute what percentage through a beat we are and adjust
             // animation and position based on that. This assumes 140bpm(428ms/beat).
             // This is just inter-beat interpolation, no game state is updated
-            val frameDelta = System.currentTimeMillis() - mLastBeatTime
-            val animOffset = (ANIMATION_FRAMES_PER_BEAT * frameDelta / 428).toInt()
+            val frameDelta: Long = System.currentTimeMillis() - mLastBeatTime
+            val animOffset: Int = (ANIMATION_FRAMES_PER_BEAT * frameDelta / 428).toInt()
             for (i in mDangerWillRobinson!!.size - 1 downTo 0) {
-                val asteroid = mDangerWillRobinson!!.elementAt(i)
+                val asteroid: Asteroid = mDangerWillRobinson!!.elementAt(i)
                 if (!asteroid.mMissed) mJetBoyY = asteroid.mDrawY
 
                 // Log.d(TAG, " drawing asteroid " + ii + " at " +
@@ -947,36 +947,36 @@ class JetBoyView constructor(
                     asteroid.mDrawX.toFloat(), asteroid.mDrawY.toFloat(), null)
             }
             for (i in mExplosion!!.size - 1 downTo 0) {
-                val ex = mExplosion!!.elementAt(i)
+                val ex: Explosion = mExplosion!!.elementAt(i)
                 canvas!!.drawBitmap(mExplosions[(ex.mAniIndex + animOffset) % mExplosions.size]!!,
                     ex.mDrawX.toFloat(), ex.mDrawY.toFloat(), null)
             }
         }
 
         /**
-         * Draws `Bitmap mTitleBG` on the `Canvas` passed it (this is the bitmap we use
-         * for the STATE_START game state).
+         * Draws [Bitmap] field [mTitleBG] on the [Canvas] passed it (this is the bitmap we use
+         * for the [STATE_START] game state).
          *
-         * @param canvas `Canvas` on which to do our drawing.
+         * @param canvas [Canvas] on which to do our drawing.
          */
         private fun doDrawReady(canvas: Canvas?) {
             canvas!!.drawBitmap(mTitleBG!!, 0f, 0f, null)
         }
 
         /**
-         * Draws `Bitmap mTitleBG2` on the `Canvas` passed it (this is the bitmap we use
-         * for the STATE_PLAY and STATE_LOSE game states).
+         * Draws [Bitmap] field [mTitleBG2] on the [Canvas] passed it (this is the bitmap we use
+         * for the [STATE_PLAY] and [STATE_LOSE] game states).
          *
-         * @param canvas `Canvas` on which to do our drawing.
+         * @param canvas [Canvas] on which to do our drawing.
          */
         private fun doDrawPlay(canvas: Canvas?) {
             canvas!!.drawBitmap(mTitleBG2!!, 0f, 0f, null)
         }
 
         /**
-         * The heart of the worker bee, started by a call to our super's `start` method in our
-         * `surfaceCreated` override. We loop while our field `boolean mRun` is true,
-         * branching on the value of our state variable `mState`:
+         * The heart of the worker bee, started by a call to our super's [Thread.start] method in
+         * our [surfaceCreated] override. We loop while our [Boolean] field [mRun] is `true`,
+         * branching on the value of our [Int] field [mState] state variable:
          *
          *  *
          * STATE_RUNNING: First we call our `updateGameState` method to process any input
