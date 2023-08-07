@@ -978,31 +978,28 @@ class JetBoyView constructor(
          * our [surfaceCreated] override. We loop while our [Boolean] field [mRun] is `true`,
          * branching on the value of our [Int] field [mState] state variable:
          *
-         *  *
-         * STATE_RUNNING: First we call our `updateGameState` method to process any input
-         * and apply it to the game state. If `mJetPlaying` is false we set `mInitialized`
-         * to false, call the `play` method of `JetPlayer mJet` to start playing the
-         * JET segment queue, and then set `mJetPlaying` to true. Now that we know that
-         * the JET midi is playing we set `mPassedTime` to the current system time in
-         * milliseconds. If `TimerTask mTimerTask` is null (the timer task is not running
-         * yet) we set it to an anonymous class whose `run` override calls our `doCountDown`
-         * method and call the `schedule` method of `Timer mTimer` to schedule
-         * `mTimerTask` to run after a delay of `mTaskIntervalInMillis` milliseconds.
+         *  * [STATE_RUNNING]: First we call our [updateGameState] method to process any input and
+         *  apply it to the game state. If [Boolean] field [mJetPlaying] is `false` we set [Boolean]
+         *  field [mInitialized] to `false`, call the [JetPlayer.play] method of [JetPlayer] field
+         *  [mJet] to start playing the JET segment queue, and then set [mJetPlaying] to `true`. Now
+         *  that we know that the JET midi is playing we set [Long] field [mPassedTime] to the
+         *  current system time in milliseconds. If [TimerTask] field [mTimerTask] is `null` (the
+         *  timer task is not running yet) we set it to an anonymous class whose [TimerTask.run]
+         *  override calls our [doCountDown] method and calls the [Timer.schedule] method of [Timer]
+         *  field [mTimer] to schedule [mTimerTask] to run after a delay of [mTaskIntervalInMillis]
+         *  milliseconds.
          *
-         *  *
-         * STATE_PLAY and `mInitialized` is false: we call our `setInitialGameState`
-         * method to initialize our variables to start playing.
+         *  * [STATE_PLAY] and our [Boolean] field [mInitialized] is `false`: we call our
+         *  [setInitialGameState] method to initialize our variables to start playing.
          *
-         *  *
-         * STATE_LOSE: we set `mInitialized` to false.
+         *  * [STATE_LOSE]: we set [Boolean] field [mInitialized] to `false`.
          *
-         *
-         * Next wrapped in a try block whose finally block calls the `unlockCanvasAndPost` method
-         * of `mSurfaceHolder` to finish editing pixels in the surface in case an exception is
-         * thrown: we set `Cursor c` to the canvas returned by the `lockCanvas` method of
-         * `mSurfaceHolder` (starts editing the pixels in the surface, the returned Canvas can
-         * be used to draw into the surface's bitmap) then call our `doDraw` method with `c`
-         * to have it do whatever drawing is called for.
+         * Next wrapped in a try block whose finally block calls the [SurfaceHolder.unlockCanvasAndPost]
+         * method of [SurfaceHolder] field [mSurfaceHolder] to finish editing pixels in the surface
+         * in case an exception is thrown: we set [Canvas] variable `c` to the canvas returned by
+         * the [SurfaceHolder.lockCanvas] method of [mSurfaceHolder] (starts editing the pixels in
+         * the surface, the returned [Canvas] can be used to draw into the surface's bitmap) then
+         * call our [doDraw] method with `c` to have it do whatever drawing is called for.
          */
         override fun run() {
             // while running do stuff in this loop...buzz!
@@ -1055,35 +1052,29 @@ class JetBoyView constructor(
          * This method handles updating the model of the game state. No rendering is done here only
          * processing of inputs and update of state. This includes positions of all game objects
          * (asteroids, player, explosions), their state (animation frame, hit), creation of new
-         * objects, etc. We loop until setting `GameEvent event` to the `GameEvent`
-         * that the `poll` method of `ConcurrentLinkedQueue<GameEvent> mEventQueue`
-         * is null at which point we break (and return). We branch on whether `event` is an
-         * instance of:
+         * objects, etc. We loop until setting [GameEvent] variable `val event` to the [GameEvent]
+         * that the [ConcurrentLinkedQueue.poll] method of [ConcurrentLinkedQueue] of [GameEvent]
+         * field [mEventQueue] results in `null` at which point we `break` (and return). We branch
+         * on whether `event` is an instance of:
          *
-         *  *
-         * `KeyGameEvent`: We set our field `mKeyContext` to the `Object`
-         * returned by our method `processKeyEvent` when passed `event` and our
-         * old value of `mKeyContext` (if it is an 'up' event it returns null, otherwise
-         * it returns `event`). We then call our `updateLaser` method with
-         * `mKeyContext` as its argument to update the laser state.
+         *  * [KeyGameEvent]: We set our [Any] field [mKeyContext] to the object returned by our
+         *  method [processKeyEvent] when passed `event` and our old value of [mKeyContext] (if it
+         *  is an 'up' event it returns `null`, otherwise it returns `event`). We then call our
+         *  [updateLaser] method with [mKeyContext] as its argument to update the laser state.
          *
-         *  *
-         * `JetGameEvent`: We initialize `JetGameEvent jetEvent` to `event`
-         * (casting it of course) and if the `value` field of `event` is a
-         * TIMER_EVENT we set our field `long mLastBeatTime` (time of the last beat) to
-         * the current system time in milliseconds, call our `updateLaser` method with
-         * our field `mKeyContext` to update the laser state, call our `updateExplosions`
-         * method with our field `mKeyContext` to update the explosions state, and call our
-         * `updateAsteroids` method with our field `mKeyContext` to update the
-         * asteroid positions, hit status and animations. Whether or not it was a TIMER_EVENT
-         * we call our `processJetEvent` to process this `JetGameEvent jetEvent`.
-         *
-         *
+         *  * [JetGameEvent]: We initialize [JetGameEvent] variable `val jetEvent` to `event` and if
+         *  the [JetGameEvent.value] field of `event` is a [TIMER_EVENT] we set our [Long] field
+         *  [mLastBeatTime] (time of the last beat) to the current system time in milliseconds, call
+         *  our [updateLaser] method with our [Any] field [mKeyContext] to update the laser state,
+         *  call our [updateExplosions] method with our field [mKeyContext] to update the explosions
+         *  state, and call our [updateAsteroids] method with our field [mKeyContext] to update the
+         *  asteroid positions, hit status and animations. Whether or not it was a [TIMER_EVENT] we
+         *  call our [processJetEvent] method to process this [JetGameEvent] variable `jetEvent`.
          */
         fun updateGameState() {
             // Process any game events and apply them
             while (true) {
-                val event = mEventQueue.poll() ?: break
+                val event: GameEvent = mEventQueue.poll() ?: break
 
                 // Log.d(TAG,"*** EVENT = " + event);
 
@@ -1131,20 +1122,21 @@ class JetBoyView constructor(
          * This method handles the state updates that can be caused by key press events. Key events
          * may mean different things depending on what has come before, to support this concept this
          * method takes an opaque context object as a parameter and returns an updated version. This
-         * context should be set to null for the first event then should be set to the last value
+         * context should be set to `null` for the first event then should be set to the last value
          * returned for subsequent events.
          *
+         * If the [KeyGameEvent.up] property of our [KeyGameEvent] parameter [event] is `true`, and
+         * the [KeyGameEvent.keyCode] field is [KeyEvent.KEYCODE_DPAD_CENTER] we return `null`. If
+         * the [KeyGameEvent.up] field is `false` and the [KeyGameEvent.keyCode] field is
+         * [KeyEvent.KEYCODE_DPAD_CENTER] we return [event]. If it not a [KeyEvent.KEYCODE_DPAD_CENTER]
+         * key code event we return [Any] parameter [context] unchanged.
          *
-         * If the `up` field of our parameter `KeyGameEvent event` is true, and the
-         * `keyCode` field is KEYCODE_DPAD_CENTER we return null. If the `up` field is
-         * false and the `keyCode` field is KEYCODE_DPAD_CENTER we return `event`. If it
-         * not a KEYCODE_DPAD_CENTER key code event we return `context` unchanged.
-         *
-         * @param event `KeyGameEvent` we are processing.
-         * @param context Last `KeyGameEvent` if it was a key down event or null
-         * @return null if it was an up event for KEYCODE_DPAD_CENTER, or our parameter `event`
-         * if it was a down event for KEYCODE_DPAD_CENTER and the previous value of `context`
-         * was null, or the old value of `context` if the above tests all fail.
+         * @param event [KeyGameEvent] we are processing.
+         * @param context Last [KeyGameEvent] if it was a key down event or `null`
+         * @return `null` if it was an up event for [KeyEvent.KEYCODE_DPAD_CENTER], or our [Any]
+         * parameter [event] if it was a down event for [KeyEvent.KEYCODE_DPAD_CENTER] and the
+         * previous value of [context] was `null`, or the old value of [context] if the above tests
+         * all fail.
          */
         fun processKeyEvent(event: KeyGameEvent, context: Any?): Any? {
             // Log.d(TAG, "key code is " + event.keyCode + " " + (event.up ? "up":"down"));
