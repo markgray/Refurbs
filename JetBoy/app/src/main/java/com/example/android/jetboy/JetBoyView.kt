@@ -1159,19 +1159,19 @@ class JetBoyView constructor(
 
         /**
          * This method updates the laser status based on user input and shot duration. First we set
-         * `long keyTime` to 0 if our parameter `Object inputContext` is null, or to the
-         * `eventTime` field of `inputContext` if it is not null. If `mLaserOn` is
-         * true (the laser is being fired) and the current system time in milliseconds minus
-         * `mLaserFireTime` is greater than 400 (the laser has been on longer than 400ms) we
-         * set `mLaserOn` to false (turn it off), otherwise if the current system time in
-         * milliseconds minus `mLaserFireTime` is greater than 300 we call the `setMuteFlag`
-         * method of `JetPlayer mJet` to mute the laser sound effect. If `mLaserOn` is
-         * false and the current system time in milliseconds minus `mLaserFireTime` is less than
-         * or equal to 400 we set `mLaserOn` to true, set `mLaserFireTime` to `keyTime`
-         * and call the `setMuteFlag` method of `JetPlayer mJet` to un-mute the laser
-         * sound effect.
+         * [Long] variable `val keyTime` to 0 if our [Any] parameter [inputContext] is `null`, or to
+         * the [GameEvent.eventTime] property of [inputContext] if it is not `null`. If [Boolean]
+         * field [mLaserOn] is `true` (the laser is being fired) and the current system time in
+         * milliseconds minus [Long] field [mLaserFireTime] is greater than 400 (the laser has been
+         * on longer than 400ms) we set [mLaserOn] to `false` (turn it off), otherwise if the current
+         * system time in milliseconds minus [mLaserFireTime] is greater than 300 we call the
+         * [JetPlayer.setMuteFlag] of [JetPlayer] field [mJet] to mute the laser sound effect. If
+         * [mLaserOn] is `false` and the current system time in milliseconds minus [mLaserFireTime]
+         * is less than or equal to 400 we set [mLaserOn] to `true`, set [mLaserFireTime] to
+         * `keyTime` and call the [JetPlayer.setMuteFlag] method of [JetPlayer] field [mJet] to
+         * un-mute the laser sound effect.
          *
-         * @param inputContext The `GameEvent` we are responding to, or null
+         * @param inputContext The [GameEvent] we are responding to, or `null`
          */
         protected fun updateLaser(inputContext: Any?) {
             // Lookup the time of the fire event if there is one
@@ -1203,38 +1203,35 @@ class JetBoyView constructor(
         }
 
         /**
-         * Update asteroid state including position and laser hit status. If our list of asteroids
-         * `Vector<Asteroid> mDangerWillRobinson` is null or is empty we return having done
-         * nothing. Otherwise we loop backwards over `int i` for all the `Asteroid`
-         * objects in `mDangerWillRobinson`:
+         * Update asteroid state including position and laser hit status. If the list of asteroids
+         * in [Vector] of [Asteroid] field [mDangerWillRobinson] is `null` or is empty we return
+         * having done nothing. Otherwise we loop backwards over [Int] variable `var i` for all the
+         * [Asteroid] objects in [mDangerWillRobinson]:
          *
-         *  *
-         * We initialize `Asteroid asteroid` with the `i`'th element of `mDangerWillRobinson`
+         *  * We initialize [Asteroid] variable `val asteroid` with the `i`'th element of
+         *  [mDangerWillRobinson]
          *
-         *  *
-         * If the `mDrawX` field of `asteroid` is less than or equal to `mAsteroidMoveLimitX`
-         * plus 20 (it is in range) and the `mMissed` field is false (the user has not fired at it while
-         * it was out of range) we check if `mLaserOn` is true (the laser is firing) we increment
-         * `mHitStreak` and `mHitTotal`, initialize `Explosion ex` with a new instance whose
-         * `mDrawX` and `mDrawY` fields are the same as `asteroid`, add it to our list of
-         * explosions `Vector<Explosion> mExplosion`, un-mute the explosion sound effect and remove element
-         * `i` from `mDangerWillRobinson` and continue executing the loop. If on the other hand the
-         * laser was not on in time we set the `mMissed` field to true, decrement `mHitStreak` (making
-         * sure it does not go below zero.
+         *  * If the [Asteroid.mDrawX] property of `asteroid` is less than or equal to [Int] field
+         *  [mAsteroidMoveLimitX] plus 20 (it is in range) and the [Asteroid.mMissed] field is `false`
+         *  (the user has not fired at it while it was out of range) we check if [Boolean] field
+         *  [mLaserOn] is `true` (the laser is firing) and if so we increment [Int] field [mHitStreak]
+         *  and [Int] field [mHitTotal], initialize [Explosion] variable `val ex` with a new instance
+         *  whose [Explosion.mDrawX] and [Explosion.mDrawY] fields are the same as `asteroid`, add
+         *  it to the list of explosions in [Vector] of [Explosion] field [mExplosion], un-mute the
+         *  explosion sound effect and remove element `i` from [mDangerWillRobinson] and continue
+         *  executing the loop. If on the other hand the laser was not on in time we set the
+         *  [Asteroid.mMissed] field of `asteroid` to `true`, and decrement [mHitStreak] (making
+         *  sure it does not go below zero.
          *
-         *  *
-         * If the `i`'th `Asteroid asteroid` is out of range or has already been missed we
-         * subtract `mPixelMoveX` from the `mDrawX` field of `asteroid` add
-         * ANIMATION_FRAMES_PER_BEAT to its `mAniIndex` field (modulo the length of the
-         * array `Bitmap[] mAsteroids`) and if the new value of its `mDrawX` field is less
-         * than 0 (we have scrolled off the screen) we remove element `i` from `mDangerWillRobinson`,
-         * and loop around for the next `Asteroid`.
-         *
-         *
+         *  * If the `i`'th [Asteroid] in `asteroid` is out of range or has already been missed we
+         *  subtract [Int] field [mPixelMoveX] from the [Asteroid.mDrawX] field of `asteroid` add
+         *  [ANIMATION_FRAMES_PER_BEAT] to its [Asteroid.mAniIndex] field (modulo the size of the
+         *  [Array] of [Bitmap] field [mAsteroids]) and if the new value of its [Asteroid.mDrawX]
+         *  field is less than 0 (we have scrolled off the screen) we remove element `i` from
+         *  [mDangerWillRobinson], and loop around for the next [Asteroid].
          *
          * @param inputContext unused.
          */
-        // Parameter inputContext is not used.
         fun updateAsteroids(inputContext: Any?) {
             if ((mDangerWillRobinson == null) or (mDangerWillRobinson!!.size == 0)) return
             for (i in mDangerWillRobinson!!.size - 1 downTo 0) {
@@ -1285,25 +1282,20 @@ class JetBoyView constructor(
         }
 
         /**
-         * This method updates explosion animation and removes them once they have completed. If our
-         * list of explosions `Vector<Explosion> mExplosion` is null or is empty we return having
-         * done nothing. Otherwise we loop over `int i` backwards through `mExplosion`:
+         * This method updates explosion animation and removes them once they have completed. If the
+         * list of explosions in [Vector] of [Explosion] field [mExplosion] is `null` or is empty we
+         * return having done nothing. Otherwise we loop over [Int] variable `var i` backwards through
+         * [mExplosion]:
          *
-         *  *
-         * We initialize `Explosion ex` with the element at `i` in `mExplosion`.
+         *  * We initialize [Explosion] variable `val ex` with the element at `i` in [mExplosion].
          *
-         *  *
-         * We add ANIMATION_FRAMES_PER_BEAT to the `mAniIndex` field of `ex`.
+         *  * We add [ANIMATION_FRAMES_PER_BEAT] to the [Explosion.mAniIndex] field of `ex`.
          *
-         *  *
-         * If the `mAniIndex` field is now greater than 3 we mute the two tracks used
-         * for the explosion sound effect and remove element `i` from `mExplosion`.
-         *
-         *
+         *  * If the [Explosion.mAniIndex] field is now greater than 3 we mute the two tracks used
+         *  for the explosion sound effect and remove element `i` from [mExplosion].
          *
          * @param inputContext unused.
          */
-        // parameter inputContext is unused.
         protected fun updateExplosions(inputContext: Any?) {
             if ((mExplosion == null) or (mExplosion!!.size == 0)) return
             for (i in mExplosion!!.indices.reversed()) {
@@ -1384,8 +1376,14 @@ class JetBoyView constructor(
          * @param controller unused
          * @param value Value of the JET event, we only care about NEW_ASTEROID_EVENT (create a new asteroid)
          */
-        protected fun processJetEvent(player: JetPlayer?, segment: Short, track: Byte, channel: Byte,
-                                      controller: Byte, value: Byte) {
+        protected fun processJetEvent(
+            player: JetPlayer?,
+            segment: Short,
+            track: Byte,
+            channel: Byte,
+            controller: Byte,
+            value: Byte
+        ) {
 
             //Log.d(TAG, "onJetEvent(): seg=" + segment + " track=" + track + " chan=" + channel
             //        + " controller=" + controller + " val=" + value);
