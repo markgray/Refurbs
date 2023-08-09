@@ -1312,69 +1312,64 @@ class JetBoyView constructor(
         }
 
         /**
-         * This method handles the state updates that can be caused by JET events. If our parameter
-         * {@code value} is NEW_ASTEROID_EVENT we call our method {@code doAsteroidCreation} to create
-         * a new asteroid. We then increment {@code mBeatCount} setting it back to 1 if it is greater
-         * than 4 now. If {@code mBeatCount} is now 1 we want to change the mute array, so we branch
-         * on the value of {@code mHitStreak}: (doing it backwards so to fall into the correct one)
-         * <ul>
-         *     <li>
-         *         Greater than 28: If {@code mCurrentBed} is not already equal to 7 we check whether
-         *         it is less than 7 and if it is we call the {@code triggerClip} method of
-         *         {@code JetPlayer mJet} to schedule the playback of clip 7, then set {@code mCurrentBed}
-         *         to 7, and call the {@code setMuteArray} of {@code mJet} to set the array of muted tracks
-         *         to {@code muteMask[7]} immediately.
-         *     </li>
-         *     <li>
-         *         Greater than 24: If {@code mCurrentBed} is not already equal to 6 we check whether
-         *         it is less than 6 and if it is we call the {@code triggerClip} method of
-         *         {@code JetPlayer mJet} to schedule the playback of clip 6, then set {@code mCurrentBed}
-         *         to 6, and call the {@code setMuteArray} of {@code mJet} to set the array of muted tracks
-         *         to {@code muteMask[6]} immediately.
-         *     </li>
-         *     <li>
-         *         Greater than 20: If {@code mCurrentBed} is not already equal to 5 we check whether
-         *         it is less than 5 and if it is we call the {@code triggerClip} method of
-         *         {@code JetPlayer mJet} to schedule the playback of clip 5, then set {@code mCurrentBed}
-         *         to 5, and call the {@code setMuteArray} of {@code mJet} to set the array of muted tracks
-         *         to {@code muteMask[5]} immediately.
-         *     </li>
-         *     <li>
-         *         Greater than 16: If {@code mCurrentBed} is not already equal to 4 we check whether
-         *         it is less than 4 and if it is we call the {@code triggerClip} method of
-         *         {@code JetPlayer mJet} to schedule the playback of clip 4, then set {@code mCurrentBed}
-         *         to 4, and call the {@code setMuteArray} of {@code mJet} to set the array of muted tracks
-         *         to {@code muteMask[4]} immediately.
-         *     </li>
-         *     <li>
-         *         Greater than 12: If {@code mCurrentBed} is not already equal to 3 we check whether
-         *         it is less than 3 and if it is we call the {@code triggerClip} method of
-         *         {@code JetPlayer mJet} to schedule the playback of clip 3, then set {@code mCurrentBed}
-         *         to 3, and call the {@code setMuteArray} of {@code mJet} to set the array of muted tracks
-         *         to {@code muteMask[3]} immediately.
-         *     </li>
-         *     <li>
-         *         Greater than 8: If {@code mCurrentBed} is not already equal to 2 we check whether
-         *         it is less than 2 and if it is we call the {@code triggerClip} method of
-         *         {@code JetPlayer mJet} to schedule the playback of clip 2, then set {@code mCurrentBed}
-         *         to 2, and call the {@code setMuteArray} of {@code mJet} to set the array of muted tracks
-         *         to {@code muteMask[2]} immediately.
-         *     </li>
-         *     <li>
-         *         Greater than 4: If {@code mCurrentBed} is not already equal to 1 we check whether
-         *         it is less than 1 and if it is we call the {@code triggerClip} method of
-         *         {@code JetPlayer mJet} to schedule the playback of clip 1, then set {@code mCurrentBed}
-         *         to 1, and call the {@code setMuteArray} of {@code mJet} to set the array of muted tracks
-         *         to {@code muteMask[1]} immediately.
-         *     </li>
-         * </ul>
-         * parameters unused except for 'byte value'
+         * This method handles the state updates that can be caused by JET events. If our [Byte]
+         * parameter [value] is [NEW_ASTEROID_EVENT] we call our method [doAsteroidCreation] to
+         * create a new asteroid. We then increment [Int] field [mBeatCount] setting it back to 1
+         * if it is greater than 4 now. If [mBeatCount] is now 1 we want to change the mute array,
+         * so we branch on the value of [Int] field [mHitStreak]: (doing it backwards so to fall
+         * into the correct one)
+         *
+         *  * Greater than 28: If [Int] field [mCurrentBed] is not already equal to 7 we check
+         *  whether it is less than 7 and if it is we call the [JetPlayer.triggerClip] method of
+         *  [JetPlayer] field [mJet] to schedule the playback of clip 7, then set [mCurrentBed]
+         *  to 7, and call the [JetPlayer.setMuteArray] method of [mJet] to set the array of muted
+         *  tracks to the [muteMask] at index 7 immediately.
+         *
+         *  * Greater than 24: If [Int] field [mCurrentBed] is not already equal to 6 we check
+         *  whether it is less than 6 and if it is we call the [JetPlayer.triggerClip] method of
+         *  [JetPlayer] field [mJet] to schedule the playback of clip 6, then set [mCurrentBed]
+         *  to 6, and call the [JetPlayer.setMuteArray] method of [mJet] to set the array of muted
+         *  tracks to the [muteMask] at index 6 immediately.
+         *
+         *  * Greater than 20: If [Int] field [mCurrentBed] is not already equal to 5 we check
+         *  whether it is less than 5 and if it is we call the [JetPlayer.triggerClip] method of
+         *  [JetPlayer] field [mJet] to schedule the playback of clip 5, then set [mCurrentBed]
+         *  to 5, and call the [JetPlayer.setMuteArray] method of [mJet] to set the array of muted
+         *  tracks to the [muteMask] at index 5 immediately.
+         *
+         *  * Greater than 16: If [Int] field [mCurrentBed] is not already equal to 4 we check
+         *  whether it is less than 4 and if it is we call the [JetPlayer.triggerClip] method of
+         *  [JetPlayer] field [mJet] to schedule the playback of clip 4, then set [mCurrentBed]
+         *  to 4, and call the [JetPlayer.setMuteArray] method of [mJet] to set the array of muted
+         *  tracks to the [muteMask] at index 4 immediately.
+         *
+         *  * Greater than 12: If [Int] field [mCurrentBed] is not already equal to 3 we check
+         *  whether it is less than 3 and if it is we call the [JetPlayer.triggerClip] method of
+         *  [JetPlayer] field [mJet] to schedule the playback of clip 3, then set [mCurrentBed]
+         *  to 3, and call the [JetPlayer.setMuteArray] method of [mJet] to set the array of muted
+         *  tracks to the [muteMask] at index 3 immediately.
+         *
+         *  * Greater than 8: If [Int] field [mCurrentBed] is not already equal to 2 we check
+         *  whether it is less than 2 and if it is we call the [JetPlayer.triggerClip] method of
+         *  [JetPlayer] field [mJet] to schedule the playback of clip 2, then set [mCurrentBed]
+         *  to 2, and call the [JetPlayer.setMuteArray] method of [mJet] to set the array of muted
+         *  tracks to the [muteMask] at index 2 immediately.
+         *
+         *  * Greater than 4: If [Int] field [mCurrentBed] is not already equal to 1 we check
+         *  whether it is less than 1 and if it is we call the [JetPlayer.triggerClip] method of
+         *  [JetPlayer] field [mJet] to schedule the playback of clip 1, then set [mCurrentBed]
+         *  to 1, and call the [JetPlayer.setMuteArray] method of [mJet] to set the array of muted
+         *  tracks to the [muteMask] at index 1 immediately.
+         *
+         * The parameters are unused except for [Byte] parameter [value].
+         *
          * @param player unused
          * @param segment unused
          * @param track unused
          * @param channel unused
          * @param controller unused
-         * @param value Value of the JET event, we only care about NEW_ASTEROID_EVENT (create a new asteroid)
+         * @param value Value of the JET event, we only care about [NEW_ASTEROID_EVENT] (create a
+         * new asteroid)
          */
         protected fun processJetEvent(
             player: JetPlayer?,
@@ -1384,11 +1379,6 @@ class JetBoyView constructor(
             controller: Byte,
             value: Byte
         ) {
-
-            //Log.d(TAG, "onJetEvent(): seg=" + segment + " track=" + track + " chan=" + channel
-            //        + " controller=" + controller + " val=" + value);
-
-
             // Check for an event that triggers a new asteroid
             if (value == NEW_ASTEROID_EVENT) {
                 doAsteroidCreation()
@@ -1477,13 +1467,14 @@ class JetBoyView constructor(
         }
 
         /**
-         * Creates a new randomly positioned `Asteroid` and adds it to our list of asteroids
-         * `Vector<Asteroid> mDangerWillRobinson`. First we initialize `Asteroid _as`
-         * with a new instance, and `int drawIndex` with a random integer between [0,4). We
-         * set the `mDrawY` field of `_as` to `mAsteroidMinY` plus 63 times
-         * `drawIndex`, the `mDrawX` field to `mCanvasWidth` minus the width of
-         * `Bitmap mAsteroids[0]`, and the `mStartTime` field to the current system time
-         * in milliseconds. We then add `_as` to `mDangerWillRobinson`.
+         * Creates a new randomly positioned [Asteroid] and adds it to the list of asteroids in
+         * [Vector] of [Asteroid] field [mDangerWillRobinson]. First we initialize [Asteroid]
+         * variable `val asteroid` with a new instance, and [Int] variable `val drawIndex` with a
+         * random integer between [0,4). We set the [Asteroid.mDrawY] field of `asteroid` to
+         * [Int] field [mAsteroidMinY] plus 63 times `drawIndex`, the [Asteroid.mDrawX] field to
+         * [Int] field [mCanvasWidth] minus the width of the [Bitmap] at index 0 of [Array] of
+         * [Bitmap] field [mAsteroids], and the [Asteroid.mStartTime] field to the current system
+         * time in milliseconds. We then add `asteroid` to [mDangerWillRobinson].
          */
         private fun doAsteroidCreation() {
             // Log.d(TAG, "asteroid created");
