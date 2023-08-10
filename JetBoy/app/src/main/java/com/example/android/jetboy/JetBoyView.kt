@@ -1489,12 +1489,12 @@ class JetBoyView constructor(
         }
 
         /**
-         * Used to signal the thread whether it should be running or not. Passing true allows the
-         * thread to run; passing false will shut it down if it's already running. Calling
-         * `start()` after this was most recently called with false will result in an
-         * immediate shutdown. We save our parameter `boolean b` in our field `mRun`,
-         * and if `mRun` is now true and our field `mTimerTask` is not null we call the
-         * `cancel` method of `mTimerTask` to cancel that timer task.
+         * Used to signal the thread whether it should be running or not. Passing `true` allows the
+         * thread to run; passing `false` will shut it down if it's already running. Calling
+         * [Thread.start] after this was most recently called with `false` will result in an
+         * immediate shutdown. We save our [Boolean] parameter [b] in our [Boolean] field [mRun],
+         * and if [mRun] is now `true` and our [TimerTask] field [mTimerTask] is not `null` we call
+         * the [TimerTask.cancel] method of [mTimerTask] to cancel that timer task.
          *
          * @param b true to run, false to shut down
          */
@@ -1504,55 +1504,59 @@ class JetBoyView constructor(
                 if (mTimerTask != null) mTimerTask!!.cancel()
             }
         }
+
         /**
-         * returns the current int value of game state as defined by state tracking constants. In a
-         * block synchronized on our field `SurfaceHolder mSurfaceHolder` we return the value
-         * of our field `mState`.
-         *
-         * @return the current value of our games state field `mState`.
-         */
-        /**
-         * Sets the game mode. That is, whether we are running, paused, in the failure state, in the
-         * victory state, etc. See `setState(int, CharSequence)`. In a block synchronized on
-         * our field `SurfaceHolder mSurfaceHolder` we call our method `setGameState` to
-         * set the game state to our parameter `int mode`.
-         *
-         * param mode one of the STATE_* constants
+         * Game State property `getter` and `setter`. Its [get] and [set] methods both synchronize
+         * on our [SurfaceHolder] field [mSurfaceHolder], and its [set] method calls our method
+         * [setGameState] to have it perform additional tasks associated with changing game state.
          */
         var gameState: Int
+            /**
+             * Returns the current [Int] value of game state as defined by state tracking constants.
+             * In a block synchronized on our [SurfaceHolder] field [mSurfaceHolder] we return the
+             * value of our [Int] field [mState].
+             *
+             * @return the current value of our [Int] games state field [mState].
+             */
             get() {
                 synchronized(mSurfaceHolder) { return mState }
             }
+            /**
+             * Sets the game mode. That is, whether we are running, paused, in the failure state,
+             * in the victory state, etc. See [setGameState]. In a block synchronized on our
+             * [SurfaceHolder] field [mSurfaceHolder] we call our method [setGameState] to set the
+             * game state to our [Int] parameter [mode] and to do whatever else is necessary for
+             * this change of game state..
+             *
+             * @param mode one of [STATE_START], [STATE_PLAY], [STATE_LOSE], [STATE_PAUSE], or
+             * [STATE_RUNNING]
+             */
             set(mode) {
-                synchronized(mSurfaceHolder) { setGameState(mode, null) }
+                synchronized(mSurfaceHolder) { setGameState(state = mode, message = null) }
             }
 
         /**
-         * Sets state based on input, optionally also passing in a text message to log. First we check
-         * if our parameter `CharSequence message` is not null and if so log the change of state.
-         * Then in a block synchronized on our field `SurfaceHolder mSurfaceHolder` we set our
-         * field `mState` to our parameter `int state` if it is not already that value.
-         * We then branch on the value of `mState`:
+         * Sets state based on input, optionally also passing in a text message to log. First we
+         * check if our [CharSequence] parameter [message] is not `null` and if so log the change
+         * of state. Then in a block synchronized on our [SurfaceHolder] field [mSurfaceHolder] we
+         * set our [Int] field [mState] to our [Int] parameter [state] if it is not already that
+         * value. We then branch on the value of [mState]:
          *
-         *  *
-         * STATE_PLAY: We initialize `Resources res` with an instance for the context
-         * of our field `Context mContext`. We initialize `Bitmap mBackgroundImageFar`
-         * by decoding the png with resource ID R.drawable.background_a, then scale it to be
-         * twice the width of our canvas and the height of our canvas and specifying that it
-         * should be filtered. We initialize `Bitmap mBackgroundImageNear` by decoding
-         * the png with resource ID R.drawable.background_b, then scale it to be twice the
-         * width of our canvas and the height of our canvas, specifying that it should be
-         * filtered.
+         *  * [STATE_PLAY]: We initialize [Resources] variable `val res` with an instance for the
+         *  context of our [Context] field [mContext]. We set [Bitmap] field [mBackgroundImageFar]
+         *  by decoding the png with resource ID [R.drawable.background_a], then scale it to be
+         *  twice the width of our canvas and the height of our canvas and specifying that it
+         *  should be filtered. We set [Bitmap] field [mBackgroundImageNear] by decoding the png
+         *  with resource ID [R.drawable.background_b], then scale it to be twice the width of our
+         *  canvas and the height of our canvas, specifying that it should be filtered.
          *
-         *  *
-         * STATE_RUNNING: We clear our field `ConcurrentLinkedQueue<GameEvent> mEventQueue`
-         * (when we enter the running state we should clear any old events in the queue) and
-         * set our field `Object mKeyContext` (the key state) to null so we don't think
-         * a button is pressed when it isn't.
+         *  * [STATE_RUNNING]: We clear our [ConcurrentLinkedQueue] of [GameEvent] field [mEventQueue]
+         *  (when we enter the running state we should clear any old events in the queue) and set
+         *  our [Any] field [mKeyContext] (the key state) to `null` so we don't think a button is
+         *  pressed when it isn't.
          *
-         *
-         *
-         * @param state   Current game state
+         * @param state   Current game state, one of [STATE_START], [STATE_PLAY], [STATE_LOSE],
+         * [STATE_PAUSE], or [STATE_RUNNING].
          * @param message optional message to log
          */
         fun setGameState(state: Int, message: CharSequence?) {
