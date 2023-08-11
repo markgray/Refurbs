@@ -1603,14 +1603,15 @@ class JetBoyView constructor(
         }
 
         /**
-         * Add key press input to the GameEvent queue. We add a new instance of `KeyGameEvent`
-         * constructed from our parameters, with false as the up option to our event queue
-         * `ConcurrentLinkedQueue<GameEvent> mEventQueue`, and return true to the caller.
+         * Add key press input to the [GameEvent] queue. We add a new instance of [KeyGameEvent]
+         * constructed from our parameters, with `false` as the up option to our event queue
+         * in [ConcurrentLinkedQueue] of [GameEvent] field [mEventQueue], and return `true` to
+         * the caller.
          *
-         * @param keyCode the keycode of the `KeyEvent msg`
-         * @param msg     `KeyEvent` Description of the key event.
-         * @return        We always return true, which is in turn returned to the caller of our
-         * `onKeyDown` override to prevent this event from being propagated further.
+         * @param keyCode the keycode of the [KeyEvent] parameter [msg]
+         * @param msg     [msg] Description of the key event.
+         * @return        We always return `true`, which is in turn returned to the caller of our
+         * [onKeyDown] override in [JetBoy] to prevent this event from being propagated further.
          */
         fun doKeyDown(keyCode: Int, msg: KeyEvent): Boolean {
             mEventQueue.add(KeyGameEvent(keyCode, false, msg))
@@ -1618,14 +1619,15 @@ class JetBoyView constructor(
         }
 
         /**
-         * Add key press input to the GameEvent queue. We add a new instance of `KeyGameEvent`
-         * constructed from our parameters, with true as the up option to our event queue
-         * `ConcurrentLinkedQueue<GameEvent> mEventQueue`, and return true to the caller.
+         * Add key press input to the [GameEvent] queue. We add a new instance of [KeyGameEvent]
+         * constructed from our parameters, with `true` as the up option to our event queue
+         * in [ConcurrentLinkedQueue] of [GameEvent] field [mEventQueue], and return `true` to
+         * the caller.
          *
-         * @param keyCode the keycode of the `KeyEvent msg`
-         * @param msg     `KeyEvent` Description of the key event.
-         * @return        We always return true, which is in turn returned to the caller of our
-         * `onKeyDown` override to prevent this event from being propagated further.
+         * @param keyCode the keycode of the [KeyEvent] parameter [msg]
+         * @param msg     [KeyEvent] Description of the key event.
+         * @return        We always return `true`, which is in turn returned to the caller of our
+         * [onKeyDown] override in [JetBoy] to prevent this event from being propagated further.
          */
         fun doKeyUp(keyCode: Int, msg: KeyEvent): Boolean {
             mEventQueue.add(KeyGameEvent(keyCode, true, msg))
@@ -1633,12 +1635,11 @@ class JetBoyView constructor(
         }
 
         /**
-         * Callback invoked when the surface dimensions change. In a block synchronized on our field
-         * `SurfaceHolder mSurfaceHolder` we save our parameters `width` and `height`
-         * in our fields `mCanvasWidth` and `mCanvasHeight` and then resize our fields
-         * `Bitmap mBackgroundImageFar` and `Bitmap mBackgroundImageNear` to be twice
-         * `width` wide an `height` high specifying that they both be filtered while
-         * scaling them.
+         * Callback invoked when the surface dimensions change. In a block synchronized on our
+         * [SurfaceHolder] field [mSurfaceHolder] we save our [Int] parameters [width] and [height]
+         * in our fields [mCanvasWidth] and [mCanvasHeight] respectively and then resize our
+         * [Bitmap] fields [mBackgroundImageFar] and [mBackgroundImageNear] to be twice [width]
+         * wide and [height] high specifying that they both be filtered while scaling them.
          *
          * @param width  New width of the canvas
          * @param height New height of the canvas
@@ -1667,11 +1668,12 @@ class JetBoyView constructor(
         }
 
         /**
-         * Pauses the physics update & animation. In a block synchronized on our field `mSurfaceHolder`
-         * if our field `mState` is equal to STATE_RUNNING, we call our method `setGameState`
-         * to set set our state to STATE_PAUSE. If our field `mTimerTask` is not null we call its
-         * `cancel` method to cancel the timer task. If our field `mJet` is not null we call
-         * its `pause` method to pause the playback of the JET segment queue.
+         * Pauses the physics update & animation. In a block synchronized on our [SurfaceHolder]
+         * field [mSurfaceHolder], if our [Int] field [mState] is equal to [STATE_RUNNING], we call
+         * our method [setGameState] to set set our state to [STATE_PAUSE]. If our [TimerTask] field
+         * [mTimerTask] is not null we call its [TimerTask.cancel] method to cancel the timer task.
+         * If our [JetPlayer] field [mJet] is not `null` we call its [JetPlayer.pause] method to
+         * pause the playback of the JET segment queue.
          */
         fun pause() {
             synchronized(mSurfaceHolder) {
@@ -1687,35 +1689,30 @@ class JetBoyView constructor(
 
         /**
          * Does the work of updating the timer and constructing the string to be displayed in the
-         * timer `TextView`. First we subtract a second from our field `mTimerLimit`.
-         * Then wrapped in a try block intended to catch and log any exceptions we initialize
-         * `int moreThanMinute` to `mTimerLimit` minus 60, then branch on the value of
-         * `moreThanMinute`:
+         * timer [TextView]. First we subtract a second from our [Int] field [mTimerLimit]. Then
+         * wrapped in a `try` block intended to `catch` and log any exceptions we initialize
+         * [Int] variable `val moreThanMinute` to [mTimerLimit] minus 60, then branch on the value
+         * of `moreThanMinute`:
          *
-         *  *
-         * Greater than or equal to 0: If `moreThanMinute` is greater than 9 we set our
-         * field `String mTimerValue` to the string formed by appending the string value
-         * of `moreThanMinute` to the string "1:", otherwise we append it to the string
-         * "1:0".
+         *  * Greater than or equal to 0: If `moreThanMinute` is greater than 9 we set our [String]
+         *  field [mTimerValue] to the string formed by appending the string value of `moreThanMinute`
+         *  to the string "1:", otherwise we append it to the string "1:0".
          *
-         *  *
-         * Less than 0: If `mTimerLimit` is greater than 9 we set our field
-         * `String mTimerValue` to the string formed by appending the string value
-         * of `mTimerLimit` to the string "0:", otherwise we append it to the string
-         * "0:0".
+         *  * Less than 0: If [mTimerLimit] is greater than 9 we set our [String] field [mTimerValue]
+         *  to the string formed by appending the string value of [mTimerLimit] to the string "0:",
+         *  otherwise we append it to the string "0:0".
          *
-         *
-         * Having exited the try block we initialize `Message msg` with an instance from the
-         * global message pool, then initialize `Bundle b` with a new instance and store
-         * `mTimerValue` in it under the key "text". If `mTimerLimit` is now equal to 0
-         * we put the string value of STATE_LOSE in `b` under the key "STATE_LOSE", set
-         * `mTimerTask` to null and `mState` to STATE_LOSE. If `mTimerLimit` is not
-         * equal to 0 we set `mTimerTask` to a new instance whose `run` override calls
-         * this method again and then call the `schedule` method of our field `Timer mTimer`
-         * to schedule `mTimerTask` to run `mTaskIntervalInMillis` (1000) milliseconds
-         * from now. We then set the data bundle of `msg` to `b` and call the `sendMessage`
-         * method of our field `Handler mHandler` to push `msg` onto the end of its message
-         * queue.
+         * Having exited the try block we initialize [Message] variable `val msg` with an instance
+         * from the global message pool, then initialize [Bundle] variable `val b` with a new
+         * instance and store [mTimerValue] in it under the key "text". If [mTimerLimit] is now
+         * equal to 0 we put the string value of [STATE_LOSE] in `b` under the key "STATE_LOSE",
+         * set [TimerTask] field [mTimerTask] to `null` and [Int] field [mState] to [STATE_LOSE].
+         * If [mTimerLimit] is not equal to 0 we set [mTimerTask] to a new instance whose
+         * [TimerTask.run] override calls this method again and then call the [Timer.schedule]
+         * method of our [Timer] field [mTimer] to schedule [mTimerTask] to run [Int] field
+         * [mTaskIntervalInMillis] (1000) milliseconds from now. We then set the data bundle of
+         * `msg` to `b` and call the [Handler.sendMessage] method of our [Handler] field [mHandler]
+         * to push `msg` onto the end of its message queue.
          */
         private fun doCountDown() {
             //Log.d(TAG,"Time left is " + mTimerLimit);
@@ -1764,9 +1761,11 @@ class JetBoyView constructor(
             msg.data = b
             mHandler.sendMessage(msg)
         }
+
         // JET info: JET event listener interface implementation:
+
         /**
-         * required OnJetEventListener method. Notifications for queue updates. We ignore
+         * Required [OnJetEventListener] method. Notifications for queue updates. We ignore.
          *
          * @param player     the JET player the status update is coming from
          * @param nbSegments the number of segments in the JET queue
@@ -1774,14 +1773,17 @@ class JetBoyView constructor(
         override fun onJetNumQueuedSegmentUpdate(player: JetPlayer, nbSegments: Int) {
             //Log.i(TAG, "onJetNumQueuedUpdate(): nbSegs =" + nbSegments);
         }
+
         // JET info: JET event listener interface implementation:
+
         /**
          * The method which receives notification from event listener. This is where we queue up
-         * events 80 and 82. We just add a new instance of `JetGameEvent` constructed from our
-         * parameters to our event queue `ConcurrentLinkedQueue<GameEvent> mEventQueue`.
+         * events 80 and 82. We just add a new instance of [JetGameEvent] constructed from our
+         * parameters to our event queue in [ConcurrentLinkedQueue] of [GameEvent] field
+         * [mEventQueue].
          *
-         * Most of this data passed is unneeded for JetBoy logic but shown
-         * for code sample completeness.
+         * Most of the data passed is unneeded for JetBoy logic but shown for code sample
+         * completeness.
          *
          * @param player     the JET player the status update is coming from
          * @param segment    8 bit unsigned value
@@ -1800,13 +1802,20 @@ class JetBoyView constructor(
             mEventQueue.add(JetGameEvent(player, segment, track, channel, controller, value))
         }
 
+        // JET info: JET event listener interface implementation:
+
         /**
-         * JET info: JET event listener interface implementation:
+         * Callback for when JET pause state is updated. We ignore.
+         *
+         * @param player – the JET player the status update is coming from.
+         * @param paused – indicates whether JET is paused (1) or not (0)
          */
         override fun onJetPauseUpdate(player: JetPlayer, paused: Int) {
             //Log.i(TAG, "onJetPauseUpdate(): paused =" + paused);
         }
+
         // JET info: JET event listener interface implementation:
+
         /**
          * Callback for when JET's currently playing segment's userID is updated. We ignore.
          *
@@ -1817,12 +1826,10 @@ class JetBoyView constructor(
         override fun onJetUserIdUpdate(player: JetPlayer, userId: Int, repeatCount: Int) {
             //Log.i(TAG, "onJetUserIdUpdate(): userId =" + userId + " repeatCount=" + repeatCount);
         }
-
-
     } //end thread class
 
     /**
-     * The `TextView` in our layout that displays the current timer value
+     * The [TextView] in our layout that displays the current timer value
      */
     private var mTimerView: TextView? = null
 
