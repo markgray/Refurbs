@@ -18,31 +18,34 @@
 package com.example.android.jobscheduler.service
 
 import android.app.job.JobParameters
+import android.app.job.JobScheduler
 import android.app.job.JobService
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.os.Messenger
+import android.os.Parcelable
 import android.os.RemoteException
 import android.util.Log
 import com.example.android.jobscheduler.MainActivity
 
 /**
- * Service to handle callbacks from the JobScheduler. Requests scheduled with the JobScheduler
- * ultimately land on this service's "onStartJob" method. It runs jobs for a specific amount of time
+ * Service to handle callbacks from the [JobScheduler]. Requests scheduled with the [JobScheduler]
+ * ultimately land on this service's [onStartJob] method. It runs jobs for a specific amount of time
  * and finishes them. It keeps the activity updated with changes via a Messenger.
  */
 class MyJobService : JobService() {
     /**
-     * `Messenger` to  use to send messages back to `MainActivity`
+     * [Messenger] to  use to send messages back to [MainActivity]
      */
     private var mActivityMessenger: Messenger? = null
 
     /**
-     * Called by the system when the service is first created. First we call our super's implementation
-     * of `onCreate()` then we log that we have been created.
+     * Called by the system when the service is first created. First we call our super's
+     * implementation of `onCreate()` then we log that we have been created.
      */
     override fun onCreate() {
         super.onCreate()
@@ -50,8 +53,9 @@ class MyJobService : JobService() {
     }
 
     /**
-     * Called by the system to notify a Service that it is no longer used and is being removed. First
-     * we call our super's implementation of `onDestroy()` then we log that we have been destroyed.
+     * Called by the system to notify a Service that it is no longer used and is being removed.
+     * First we call our super's implementation of `onDestroy()` then we log that we have been
+     * destroyed.
      */
     override fun onDestroy() {
         super.onDestroy()
@@ -60,33 +64,30 @@ class MyJobService : JobService() {
 
     /**
      * When the app's MainActivity is created, it starts this service. This is so that the
-     * activity and this service can communicate back and forth. See "setUiCallback()"
-     *
+     * activity and this service can communicate back and forth.
      *
      * Called by the system every time a client explicitly starts the service by calling
-     * [android.content.Context.startService], providing the arguments it supplied and a
-     * unique integer token representing the start request.
+     * [Context.startService], providing the arguments it supplied and a unique integer
+     * token representing the start request.
      *
+     * We initialize our [Messenger] field [mActivityMessenger] by retrieving from our [Intent]
+     * parameter [intent] the [Parcelable] value that the activity that launched us stored under
+     * the key [MainActivity.MESSENGER_INTENT_KEY] ("com.example.android.jobscheduler.MESSENGER_INTENT_KEY"),
+     * then return the constant [JobService.START_NOT_STICKY] (if this service's process is killed
+     * while it is started (after returning from [onStartCommand], and there are no new start intents
+     * to deliver to it, then take the service out of the started state and don't recreate until a
+     * future explicit call to [Context.startService].
      *
-     * We initialize our field `mActivityMessenger` by retrieving from `intent` the
-     * `Parcelable` value that the activity that launched us stored under the key
-     * MESSENGER_INTENT_KEY (com.example.android.jobscheduler.MESSENGER_INTENT_KEY), then return
-     * the constant START_NOT_STICKY (if this service's process is killed while it is started (after
-     * returning from onStartCommand(Intent, int, int)), and there are no new start intents to
-     * deliver to it, then take the service out of the started state and don't recreate until a
-     * future explicit call to `Context.startService(Intent)`.
-     *
-     * @param intent The Intent supplied to [android.content.Context.startService],
-     * as given.  This may be null if the service is being restarted after
-     * its process has gone away, and it had previously returned anything
-     * except [.START_STICKY_COMPATIBILITY].
+     * @param intent The [Intent] supplied to [Context.startService], as given. This may be `null`
+     * if the service is being restarted after its process has gone away, and it had previously
+     * returned anything except [JobService.START_STICKY_COMPATIBILITY].
      * @param flags Additional data about this start request.
      * @param startId A unique integer representing this specific request to
-     * start.  Use with [.stopSelfResult].
+     * start.  Use with [stopSelfResult].
      *
-     * @return The return value indicates what semantics the system should
-     * use for the service's current started state.  It may be one of the
-     * constants associated with the [.START_CONTINUATION_MASK] bits.
+     * @return The return value indicates what semantics the system should use for the service's
+     * current started state. It may be one of the constants associated with the
+     * [JobService.START_CONTINUATION_MASK] bits.
      */
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
