@@ -1834,21 +1834,21 @@ class JetBoyView constructor(
     private var mTimerView: TextView? = null
 
     /**
-     * The `Button` in our layout that starts a new game after the user finishes or loses.
+     * The [Button] in our layout that starts a new game after the user finishes or loses.
      */
     private var mButtonRetry: Button? = null
 
     /**
-     * The `TextView` in our layout that displays the winning or losing information at the end
+     * The [TextView] in our layout that displays the winning or losing information at the end
      * of the game.
      */
     private var mTextView: TextView? = null
 
     /**
      * Pass in a reference to the timer view widget so we can update it from here. We just save our
-     * parameter `TextView tv` in our field `mTimerView`.
+     * [TextView] parameter [tv] in our [TextView] field [mTimerView].
      *
-     * @param tv `TextView` to use for our timer `View`: `TextView mTimerView`
+     * @param tv [TextView] to use for our timer `View`: [TextView] field [mTimerView]
      */
     fun setTimerView(tv: TextView?) {
         mTimerView = tv
@@ -1856,11 +1856,12 @@ class JetBoyView constructor(
 
     /**
      * Standard window-focus override. Notice focus lost so we can pause on focus lost. e.g. user
-     * switches to take a call. If our parameter `hasWindowFocus` is false and our field
-     * `JetBoyThread thread` is not null we call the `pause` method of `thread` to
-     * pause the game.
+     * switches to take a call. If our [Boolean] parameter [hasWindowFocus] is `false` and our
+     * [JetBoyThread] field [thread] is not `null` we call the [JetBoyThread.pause] method of
+     * [thread] to pause the game.
      *
-     * @param hasWindowFocus True if the window containing this view now has focus, false otherwise.
+     * @param hasWindowFocus `true` if the window containing this view now has focus,
+     * `false` otherwise.
      */
     override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
         if (!hasWindowFocus) {
@@ -1871,11 +1872,11 @@ class JetBoyView constructor(
     /**
      * This is called immediately after any structural changes (format or size) have been made to the
      * surface. You should at this point update the imagery in the surface. This method is always
-     * called at least once, after [.surfaceCreated]. We just call the `setSurfaceSize`
-     * method of our field `JetBoyThread thread` to inform it of the new values for our parameters
-     * `width` and `height`.
+     * called at least once, after [surfaceCreated]. We just call the [JetBoyThread.setSurfaceSize]
+     * method of our [JetBoyThread] field [thread] to inform it of the new values for our [Int]
+     * parameters [width] and [height].
      *
-     * @param holder The SurfaceHolder whose surface has changed.
+     * @param holder The [SurfaceHolder] whose surface has changed.
      * @param format The new PixelFormat of the surface.
      * @param width  The new width of the surface.
      * @param height The new height of the surface.
@@ -1885,11 +1886,12 @@ class JetBoyView constructor(
     }
 
     /**
-     * This is called immediately after the surface is first created. We call the `setRunning`
-     * method of our field `JetBoyThread thread` to signal the thread that it should be running,
-     * then call its `start` method to have it begin execution.
+     * This is called immediately after the surface is first created. We call the
+     * [JetBoyThread.setRunning] method of our [JetBoyThread] field [thread] to signal
+     * the thread that it should be running, then call its [JetBoyThread.start] method
+     * to have it begin execution.
      *
-     * @param arg0 The SurfaceHolder whose surface is being created.
+     * @param arg0 The [SurfaceHolder] whose surface is being created.
      */
     override fun surfaceCreated(arg0: SurfaceHolder) {
         // start the thread here so that we don't busy-wait in run()
@@ -1899,12 +1901,12 @@ class JetBoyView constructor(
     }
 
     /**
-     * This is called immediately before a surface is being destroyed. We initialize `boolean retry`
-     * to true then call the `setRunning` method of our field `JetBoyThread thread` with
-     * false to signal the thread that it should stop running. Then we loop while `retry` remains
-     * true wrapping an attempt to wait for `thread` to die in a try block that catches and log
-     * InterruptedException. We exit the loop by setting `retry` to false if the call to `join`
-     * returns without an exception being thrown.
+     * This is called immediately before a surface is being destroyed. We initialize [Boolean]
+     * variable `var retry` to `true` then call the [JetBoyThread.setRunning] method of our
+     * [JetBoyThread] field [thread] with `false` to signal the thread that it should stop running.
+     * Then we loop while `retry` remains `true` wrapping an attempt to wait for [thread] to die in
+     * a `try` block that catches and logs [InterruptedException]. We exit the loop by setting
+     * `retry` to false if the call to [JetBoyThread.join] returns without an exception being thrown.
      *
      * @param arg0 The SurfaceHolder whose surface is being destroyed.
      */
@@ -1922,7 +1924,7 @@ class JetBoyView constructor(
     }
 
     /**
-     * Setter for our field `Button mButtonRetry`.
+     * Setter for our [Button] field [mButtonRetry].
      *
      * @param buttonRetry [Button] to use to allow user to start game over.
      */
@@ -1932,10 +1934,10 @@ class JetBoyView constructor(
     }
 
     /**
-     * Setter for our field `TextView mTextView` (we reuse the help screen from the end game
+     * Setter for our [TextView] field [mTextView] (we reuse the help screen from the end game
      * screen).
      *
-     * @param textView `TextView` to use for the end game screen.
+     * @param textView [TextView] to use for the end game screen.
      */
     fun setTextView(textView: TextView?) {
         mTextView = textView
@@ -1952,10 +1954,10 @@ class JetBoyView constructor(
          */
         const val TAG: String = "JetBoy"
     }
-
 }
 
     // State-tracking constants.
+
     /**
      * Game is in the start state, set by our constructor.
      */
