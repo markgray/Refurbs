@@ -21,6 +21,7 @@ import android.app.Activity
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -42,54 +43,52 @@ import com.example.android.jobscheduler.service.MyJobService
 import java.lang.ref.WeakReference
 
 /**
- * Schedules and configures jobs to be executed by a [JobScheduler].
- *
- *
- * [MyJobService] can send messages to this via a [Messenger]
- * that is sent in the Intent that starts the Service.
+ * Schedules and configures jobs to be executed by a [JobScheduler]. [MyJobService] can send
+ * messages to this class via a [Messenger] that is sent in the Intent that starts the Service.
  */
 class MainActivity : Activity() {
     /**
-     * `EditText` the user uses to enter the number of seconds to delay before launching a job.
+     * [EditText] the user uses to enter the number of seconds to delay before launching a job.
      */
     private var mDelayEditText: EditText? = null
 
     /**
-     * `EditText` the user uses to enter the number of seconds for the maximum scheduling
+     * [EditText] the user uses to enter the number of seconds for the maximum scheduling
      * latency. The job will be run by this deadline even if other requirements are not met.
      */
     private var mDeadlineEditText: EditText? = null
 
     /**
-     * `EditText` the user uses to enter the number of seconds for the duration of the job.
+     * [EditText] the user uses to enter the number of seconds for the duration of the job.
      */
     private var mDurationTimeEditText: EditText? = null
 
     /**
-     * `RadioButton` the user uses to select unmetered network connection (NETWORK_TYPE_UNMETERED)
+     * [RadioButton] the user uses to select unmetered network connection (NETWORK_TYPE_UNMETERED)
      */
     private var mWiFiConnectivityRadioButton: RadioButton? = null
 
     /**
-     * `RadioButton` the user uses to select any network connection (NETWORK_TYPE_ANY)
+     * [RadioButton] the user uses to select any network connection (NETWORK_TYPE_ANY)
      */
     private var mAnyConnectivityRadioButton: RadioButton? = null
 
     /**
-     * `CheckBox` the user uses to select requires charging
+     * [CheckBox] the user uses to select requires charging
      */
     private var mRequiresChargingCheckBox: CheckBox? = null
 
     /**
-     * `CheckBox` the user uses specify that to run, the job needs the device to be in idle mode.
+     * [CheckBox] the user uses specify that to run, the job needs the device to be in idle mode.
      * Idle mode is a loose definition provided by the system, which means that the device is not in
      * use, and has not been in use for some time.
      */
     private var mRequiresIdleCheckbox: CheckBox? = null
 
     /**
-     * `ComponentName` for `MyJobService`, used to construct the `JobInfo.Builder`
-     * we use to which we configure and build, then use the JOB_SCHEDULER_SERVICE to schedule.
+     * [ComponentName] for [MyJobService], used to construct the [JobInfo.Builder] we then configure
+     * and build into a [JobInfo] instance that we then use the [Context.JOB_SCHEDULER_SERVICE]
+     * service to schedule.
      */
     private var mServiceComponent: ComponentName? = null
 
