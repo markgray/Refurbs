@@ -93,15 +93,15 @@ class MainActivity : Activity() {
     private var mServiceComponent: ComponentName? = null
 
     /**
-     * Application-provided id for this job. Subsequent calls to cancel, or jobs created with the
-     * same jobId, will update the pre-existing job with the same id. We increment it after every
-     * creation of a new job.
+     * Application-provided id for the next job we start. Subsequent calls to cancel, or jobs created
+     * with the same jobId, will update the pre-existing job with the same id. We increment it after
+     * every creation of a new job.
      */
     private var mJobId = 0
 
     /**
-     * Handler for incoming messages from the service, we pass a `Messenger` constructed from
-     * this handler to `MyJobService` in its intent.
+     * Handler for incoming messages from the service, we pass a [Messenger] constructed from
+     * this handler to [MyJobService] in the [Intent] we use to start it.
      */
     private var mHandler: IncomingMessageHandler? = null
 
@@ -110,16 +110,16 @@ class MainActivity : Activity() {
      * then set our content view to our layout file R.layout.sample_main. We then proceed to initialize
      * our various UI widget references by finding them in our layout:
      *
-     *  * [.mDelayEditText] R.id.delay_time
-     *  * [.mDurationTimeEditText] R.id.duration_time
-     *  * [.mDeadlineEditText] R.id.deadline_time
-     *  * [.mWiFiConnectivityRadioButton] R.id.checkbox_unmetered
-     *  * [.mAnyConnectivityRadioButton] R.id.checkbox_any
-     *  * [.mRequiresChargingCheckBox] R.id.checkbox_charging
-     *  * [.mRequiresIdleCheckbox] R.id.checkbox_idle
+     *  * [mDelayEditText] is the [EditText] with ID [R.id.delay_time]
+     *  * [mDurationTimeEditText] is the [EditText] with ID [R.id.duration_time]
+     *  * [mDeadlineEditText] is the [EditText] with ID [R.id.deadline_time]
+     *  * [mWiFiConnectivityRadioButton] is the [RadioButton] with ID [R.id.checkbox_unmetered]
+     *  * [mAnyConnectivityRadioButton] is the [RadioButton] with ID [R.id.checkbox_any]
+     *  * [mRequiresChargingCheckBox] is the [CheckBox] with ID [R.id.checkbox_charging]
+     *  * [mRequiresIdleCheckbox] is the [CheckBox] with ID [R.id.checkbox_idle]
      *
-     * We then initialize our field `ComponentName mServiceComponent` with a new instance for
-     * `MyJobService`, and `IncomingMessageHandler mHandler` with a new instance.
+     * We then initialize our [ComponentName] field [mServiceComponent] with a new instance for
+     * [MyJobService], and [IncomingMessageHandler] field [mHandler] with a new instance.
      *
      * @param savedInstanceState we do not use `onSaveInstanceState` so do not use.
      */
@@ -140,8 +140,8 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Called when you are no longer visible to the user. We call `stopService` to stop the
-     * running of `MyJobService` then call our super's implementation of `onStop`.
+     * Called when you are no longer visible to the user. We call [stopService] to stop the
+     * running of [MyJobService] then call our super's implementation of `onStop`.
      */
     override fun onStop() {
         // A service can be "started" and/or "bound". In this case, it's "started" by this Activity
@@ -153,16 +153,13 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Called after [.onCreate]  or after [.onRestart] when
-     * the activity had been stopped, but is now again being displayed to the
-     * user.  It will be followed by [.onResume].
-     *
-     *
-     * We create `Intent startServiceIntent` for starting the service `MyJobService`,
-     * initialize `Messenger messengerIncoming` with a new instance specifying `mHandler`
-     * as its handler for messages and add it as an extra under the key MESSENGER_INTENT_KEY to
-     * `startServiceIntent`. We then call `startService` to request that `startServiceIntent`
-     * be started.
+     * Called after [onCreate]  or after [onRestart] when the activity had been stopped, but is now
+     * again being displayed to the user. It will be followed by [onResume]. First we call our
+     * super's implementation of `onStart`, then we create [Intent] variable `val startServiceIntent`
+     * for starting the service [MyJobService], initialize [Messenger] variable `val messengerIncoming`
+     * with a new instance specifying [IncomingMessageHandler] field [mHandler] as its handler for
+     * messages and add it as an extra under the key [MESSENGER_INTENT_KEY] to `startServiceIntent`.
+     * We then call [startService] to request that `startServiceIntent` be started.
      */
     override fun onStart() {
         super.onStart()
@@ -174,45 +171,44 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Executed when user clicks on SCHEDULE JOB, specified by android:onClick="scheduleJob" element
-     * in our layout file. We initialize `JobInfo.Builder builder` with a builder constructed
-     * to build a `JobInfo` addressed for `mServiceComponent` (which is a component name
-     * for `MyJobService`) using `mJobId` as the job id (which we post increment to be
-     * ready for the next use). We set `String delay` to the string the user may have entered
-     * for the delay in `EditText mDelayEditText`, and if it is not the empty string we set the
-     * minimum latency of `builder` to 1000 times the long value of `delay`.
+     * Executed when user clicks on "SCHEDULE JOB", specified by the android:onClick="scheduleJob"
+     * attribute in our layout file. We initialize [JobInfo.Builder] variable `val builder` with a
+     * builder constructed to build a [JobInfo] addressed for [ComponentName] field [mServiceComponent]
+     * (which is a component name for [MyJobService]) using [Int] field [mJobId] as the job id (which
+     * we post increment to be ready for the next use). We set [String] variable `val delay` to the
+     * string the user may have entered for the delay in [EditText] field [mDelayEditText], and if
+     * it is not the empty string we set the minimum latency of `builder` to 1000 times the [Long]
+     * value of `delay`.
      *
+     * We set [String] variable `val deadline` to the string the user may have entered for the
+     * deadline in [EditText] field [mDeadlineEditText], and if it is not the empty string we set
+     * the maximum scheduling latency of `builder` to 1000 times the [Long] value of `deadline`.
      *
-     * We set `String deadline` to the string the user may have entered for the deadline in
-     * `EditText mDeadlineEditText`, and if it is not the empty string we set the maximum
-     * scheduling latency of `builder` to 1000 times the long value of `deadline`.
+     * We set [Boolean] variable `val requiresUnmetered` to the checked state of [RadioButton] field
+     * [mWiFiConnectivityRadioButton] ("WiFi") and set [Boolean] variable `val requiresAnyConnectivity`
+     * to the checked state of [RadioButton] field [mAnyConnectivityRadioButton] ("Any"). If
+     * `requiresUnmetered` is `true` we set the required network type of `builder` to
+     * [JobInfo.NETWORK_TYPE_UNMETERED], else if `requiresAnyConnectivity` is `true` we set the
+     * required network type of `builder` to [JobInfo.NETWORK_TYPE_ANY].
      *
+     * We set the requires device idle state of `builder` to the checked state of [CheckBox] field
+     * [mRequiresIdleCheckbox] ("Idle"), and the requires device charging state of `builder` to the
+     * checked state of [CheckBox] field [mRequiresChargingCheckBox] ("Charging").
      *
-     * We set `boolean requiresUnmetered` to the checked state of `mWiFiConnectivityRadioButton`
-     * ("WiFi") and set `boolean requiresAnyConnectivity` to the checked state of
-     * `mAnyConnectivityRadioButton` ("Any"). If `requiresUnmetered` is true we set the
-     * required network type of `builder` to NETWORK_TYPE_UNMETERED, else if `requiresAnyConnectivity`
-     * is true we set the required network type of `builder` to NETWORK_TYPE_ANY.
+     * We initialize [PersistableBundle] variable `val extras` with a new instance. Set [String]
+     * variable `var workDuration` to the text contained in [EditText] field [mDurationTimeEditText]
+     * ("Work duration:") and if it is the empty string we set it to "1". We then store 1000 times
+     * the long value of `workDuration` under the key [WORK_DURATION_KEY]
+     * ("com.example.android.jobscheduler.WORK_DURATION_KEY") in `extras`. We then set the extras of
+     * `builder` to `extras`.
      *
+     * Finally we initialize [JobScheduler] variable `val tm` with a handle to the system level
+     * service [Context.JOB_SCHEDULER_SERVICE] then build `builder` passing it to the
+     * [JobScheduler.schedule] method of `tm` to schedule it to be executed (it will replace any
+     * currently scheduled job with the same ID with the new information in the [JobInfo]. If a job
+     * with the given ID is currently running, it will be stopped).
      *
-     * We set the requires device idle state of `builder` to the checked state of `mRequiresIdleCheckbox`
-     * ("Idle"), and the requires device charging state of `builder` to the checked state of
-     * `mRequiresChargingCheckBox` ("Charging").
-     *
-     *
-     * We initialize `PersistableBundle extras` with a new instance. Set `String workDuration`
-     * to the text contained in `EditText mDurationTimeEditText` ("Work duration:") and if it is
-     * the empty string we set it to "1". We then store 1000 times the long value of `workDuration`
-     * under the key WORK_DURATION_KEY ("com.example.android.jobscheduler.WORK_DURATION_KEY") in
-     * `extras`. We then set the extras of `builder` to `extras`.
-     *
-     *
-     * Finally we initialize `JobScheduler tm` with a handle to the system level service JOB_SCHEDULER_SERVICE
-     * then build `builder` passing it to the `schedule` method of `tm` to schedule it
-     * to be executed (it will replace any currently scheduled job with the same ID with the new information
-     * in the JobInfo. If a job with the given ID is currently running, it will be stopped).
-     *
-     * @param v View that was clicked, unused.
+     * @param v the [View] that was clicked, unused.
      */
     fun scheduleJob(v: View?) {
         val builder = JobInfo.Builder(mJobId++, mServiceComponent!!)
@@ -250,12 +246,13 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Executed when user clicks on CANCEL ALL, specified by android:onClick="cancelAllJobs" element
-     * in our layout file. We initialize `JobScheduler tm` with a handle to the system level
-     * service JOB_SCHEDULER_SERVICE, then call its `cancelAll()` method to cancel all jobs
-     * that have been scheduled by our application.
+     * Executed when user clicks on "CANCEL ALL", specified by a android:onClick="cancelAllJobs"
+     * attribute in our layout file. We initialize [JobScheduler] variable `val tm` with a handle
+     * to the system level service [Context.JOB_SCHEDULER_SERVICE], then call its
+     * [JobScheduler.cancelAll] method to cancel all jobs that have been scheduled by our
+     * application.
      *
-     * @param v View that was clicked, unused.
+     * @param v the [View] that was clicked, unused.
      */
     fun cancelAllJobs(v: View?) {
         val tm = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
