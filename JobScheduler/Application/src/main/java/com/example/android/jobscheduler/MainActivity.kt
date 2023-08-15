@@ -261,21 +261,23 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Executed when user clicks on FINISH LAST TASK, specified by android:onClick="finishJob" element
-     * in our layout file. We initialize `JobScheduler jobScheduler` with a handle to the system
-     * level service JOB_SCHEDULER_SERVICE. We use the `getAllPendingJobs()` method of `jobScheduler`
-     * to retrieve all jobs that have been scheduled by application into `List<JobInfo> allPendingJobs`.
-     * If the size of `allPendingJobs` is greater than 0, we retrieve the id of the 0'th job into
-     * `int jobId`, then pass that to the `cancel` method of `jobScheduler` to cancel
-     * the last job. Having done this we toast `jobId` in a formatted string: "Cancelled job %d".
-     * If there are 0 entries in `allPendingJobs` we toast the string "No jobs to cancel".
-     * (Note this actually cancels a random task, not necessarily the last!)
+     * Executed when user clicks on "FINISH LAST TASK", specified by android:onClick="finishJob"
+     * attribute in our layout file. We initialize [JobScheduler] variable `val jobScheduler` with
+     * a handle to the system level service [Context.JOB_SCHEDULER_SERVICE]. We use the
+     * [JobScheduler.getAllPendingJobs] method of `jobScheduler` (kotlin `allPendingJobs` property)
+     * to retrieve all jobs that have been scheduled by the application into [List] of [JobInfo]
+     * variable `val allPendingJobs`. If the size of `allPendingJobs` is greater than 0, we retrieve
+     * the [JobInfo.getId] of the 0'th job (kotlin `id` property) into [Int] variable `val jobId`,
+     * then pass that to the [JobScheduler.cancel] method of `jobScheduler` to cancel the last job.
+     * Having done this we toast `jobId` in a formatted string: "Cancelled job %d". If there are 0
+     * entries in `allPendingJobs` we toast the string "No jobs to cancel". (Note this actually
+     * cancels a random task, not necessarily the last!)
      *
-     * @param v View that was clicked, unused
+     * @param v the [View] that was clicked, unused
      */
     fun finishJob(v: View?) {
         val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
-        val allPendingJobs = jobScheduler.allPendingJobs
+        val allPendingJobs: MutableList<JobInfo> = jobScheduler.allPendingJobs
         if (allPendingJobs.size > 0) {
             // Finish the last one
             val jobId = allPendingJobs[0].id
@@ -291,18 +293,17 @@ class MainActivity : Activity() {
     }
 
     /**
-     * A [Handler] allows you to send messages associated with a thread. A [Messenger]
-     * uses this handler to communicate from [MyJobService]. It's also used to make
-     * the start and stop views blink for a short period of time.
-     * Our constructor. We call our super's zero argument constructor with [Looper.myLooper]
-     * then save our parameter `MainActivity activity` in our field `mActivity`.
+     * A [Handler] allows you to send messages associated with a thread. A [Messenger] uses this
+     * handler to communicate from [MyJobService]. It's also used to make the start and stop views
+     * blink for a short period of time. Our constructor. We call our super's zero argument
+     * constructor with [Looper.myLooper] then in our `init` block we save our [MainActivity]
+     * parameter `activity` in our [WeakReference] to a [MainActivity] field [mActivity].
      *
-     * @param activity this when called from `onCreate` method of `MainActivity`
-     *
+     * @param activity `this` when called from `onCreate` method of [MainActivity]
      */
     private class IncomingMessageHandler(activity: MainActivity) : Handler(Looper.myLooper()!!) {
         /**
-         * `MainActivity` passed to our constructor. Prevent possible leaks with a weak reference.
+         * [MainActivity] passed to our constructor. Prevent possible leaks with a weak reference.
          */
         private val mActivity: WeakReference<MainActivity>
 
@@ -311,47 +312,42 @@ class MainActivity : Activity() {
         }
 
         /**
-         * We implement this to receive messages. First we retrieve `MainActivity mainActivity`
-         * from our `mActivity` weak reference and if it is null we just return. We initialize
-         * `View showStartView` by finding the view with id R.id.onstart_textview, and
-         * `View showStopView` by finding the view with id R.id.onstop_textview. We declare
-         * `Message m` then switch on the value of the `what` field of our parameter
-         * `msg`:
+         * We implement this to receive messages. First we retrieve [MainActivity] variable
+         * `val mainActivity` from our [WeakReference] to a [MainActivity] field [mActivity] and
+         * if it is `null` we just return. We initialize [View] variable `val showStartView` by
+         * finding the view in `mainActivity` with id [R.id.onstart_textview], and [View] variable
+         * `val showStopView` by finding the view in `mainActivity` with id [R.id.onstop_textview].
+         * We declare [Message] variable `val m` then switch on the value of the [Message.what]
+         * field of our parameter [msg]:
          *
-         *  *
-         * MSG_COLOR_START: Start received, we set the background color of `showStartView`
-         * to R.color.start_received (#00FF00 green), and call our method `updateParamsTextView`
-         * with the `obj` field of `msg` and the string "started" (this displays the
-         * text "Job ID `valueOf(obj)` started" in the textview with id R.id.task_params)
-         * We then create a message for `m` with the what field set to MSG_UNCOLOR_START
-         * and send it to ourselves with a delay of 1000ms (this will clear the background color
-         * after 1000ms and clear the textview).
+         *  * [MSG_COLOR_START]: Start received, we set the background color of `showStartView` to
+         *  [R.color.start_received] (#00FF00 green), and call our method [updateParamsTextView]
+         *  with the [Message.obj] field of [msg] and the string "started" (this displays the text
+         *  "Job ID `valueOf(obj)` started" in the textview with id [R.id.task_params]). We then
+         *  create a message for `m` with the what field set to [MSG_UNCOLOR_START] and send it to
+         *  ourselves with a delay of 1000ms (this will clear the background color after 1000ms and
+         *  clear the textview).
          *
-         *  *
-         * MSG_COLOR_STOP: Stop received, we set the background color of `showStopView`
-         * to R.color.stop_received (#FF0000 red), and call our method `updateParamsTextView`
-         * with the `obj` field of `msg` and the string "stopped" (this displays the
-         * text "Job ID `valueOf(obj)` stopped" in the textview with id R.id.task_params)
-         * We then create a message for `m` with the what field set to MSG_UNCOLOR_STOP
-         * and send it to ourselves with a delay of 2000ms (this will clear the background color
-         * after 2000ms and clear the textview).
+         *  * [MSG_COLOR_STOP]: Stop received, we set the background color of `showStopView` to
+         *  [R.color.stop_received] (#FF0000 red), and call our method [updateParamsTextView] with
+         *  the [Message.obj] field of [msg] and the string "stopped" (this displays the text
+         *  "Job ID `valueOf(obj)` stopped" in the textview with id [R.id.task_params]). We then
+         *  create a [Message] for `m` with the what field set to [MSG_UNCOLOR_STOP] and send it
+         *  to ourselves with a delay of 2000ms (this will clear the background color after 2000ms
+         *  and clear the textview).
          *
-         *  *
-         * MSG_UNCOLOR_START: We set the background color of `showStartView` to
-         * R.color.none_received (#999999 gray), and call our method `updateParamsTextView`
-         * with null for the `jobId` and the empty string for the `action` (clears
-         * all the changes done by a previous MSG_COLOR_START message).
+         *  * [MSG_UNCOLOR_START]: We set the background color of `showStartView` to
+         *  [R.color.none_received] (#999999 gray), and call our [updateParamsTextView] method
+         *  with `null` for the `jobId` and the empty string for the `action` (clears all the
+         *  changes done by a previous [MSG_COLOR_START] message).
          *
-         *  *
-         * MSG_UNCOLOR_STOP: We set the background color of `showStopView` to
-         * R.color.none_received (#999999 gray), and call our method `updateParamsTextView`
-         * with null for the `jobId` and the empty string for the `action` (clears
+         *  * [MSG_UNCOLOR_STOP]: We set the background color of `showStopView` to
+         *  [R.color.none_received] (#999999 gray), and call our [updateParamsTextView] method
+         *  with `null` for the `jobId` and the empty string for the `action` (clears
          * all the changes done by a previous MSG_COLOR_STOP message).
          *
-         *
-         *
-         * @param msg `Message` containing a description (`what` field) and arbitrary data
-         * object (`obj` field)
+         * @param msg [Message] containing a description ([Message.what] field) and arbitrary data
+         * object ([Message.obj] field)
          */
         override fun handleMessage(msg: Message) {
             val mainActivity = mActivity.get()
@@ -364,7 +360,7 @@ class MainActivity : Activity() {
                 MSG_COLOR_START -> {
                     // Start received, turn on the indicator and show text.
                     showStartView.setBackgroundColor(getColor(R.color.start_received))
-                    updateParamsTextView(msg.obj, "started")
+                    updateParamsTextView(jobId = msg.obj, action = "started")
 
                     // Send message to turn it off after a second.
                     m = Message.obtain(this, MSG_UNCOLOR_START)
@@ -374,7 +370,7 @@ class MainActivity : Activity() {
                 MSG_COLOR_STOP -> {
                     // Stop received, turn on the indicator and show text.
                     showStopView.setBackgroundColor(getColor(R.color.stop_received))
-                    updateParamsTextView(msg.obj, "stopped")
+                    updateParamsTextView(jobId = msg.obj, action = "stopped")
 
                     // Send message to turn it off after a second.
                     m = obtainMessage(MSG_UNCOLOR_STOP)
@@ -383,25 +379,26 @@ class MainActivity : Activity() {
 
                 MSG_UNCOLOR_START -> {
                     showStartView.setBackgroundColor(getColor(R.color.none_received))
-                    updateParamsTextView(null, "")
+                    updateParamsTextView(jobId = null, action = "")
                 }
 
                 MSG_UNCOLOR_STOP -> {
                     showStopView.setBackgroundColor(getColor(R.color.none_received))
-                    updateParamsTextView(null, "")
+                    updateParamsTextView(jobId = null, action = "")
                 }
             }
         }
 
         /**
-         * Updates text displayed in the textview with id R.id.task_params. First we initialize our
-         * variable `TextView paramsTextView` by finding the view with id R.id.task_params. If
-         * our parameter `jobId` is null we set the text of `paramsTextView` to the empty
-         * string and return. We initialize `String jobIdText` with the value of our parameter
-         * `jobId` then set the text of `paramsTextView` to a string that formats the
-         * strings `jobIdText` and `action` with the format "Job ID %s %s".
+         * Updates text displayed in the textview with id [R.id.task_params]. First we initialize
+         * our [TextView] variable `val paramsTextView` by finding the view in [mActivity] with id
+         * [R.id.task_params]. If our [Any] parameter [jobId] is `null` we set the text of
+         * `paramsTextView` to the empty string and return. We initialize [String] variable
+         * `val jobIdText` with the string value of our [Any] parameter [jobId] then set the text
+         * of `paramsTextView` to a string that formats the strings `jobIdText` and `action` with
+         * the format "Job ID %s %s".
          *
-         * @param jobId job id that has started or stopped, or null
+         * @param jobId job id that has started or stopped, or `null`
          * @param action Action ("started" or "stopped" or "") that has occurred
          */
         private fun updateParamsTextView(jobId: Any?, action: String) {
