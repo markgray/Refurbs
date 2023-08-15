@@ -23,6 +23,7 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -412,7 +413,13 @@ class MainActivity : Activity() {
         }
 
         /**
-         * Convenience function for converting a color resource reference to an integer color.
+         * Convenience function for converting a color resource reference to an integer color. It
+         * does this by retrieving the [MainActivity] reference from our [WeakReference] to a
+         * [MainActivity] field [mActivity] and calling its [MainActivity.getResources] method
+         * (kotlin `resources` property) to retrieve a [Resources] instance for the application's
+         * package which it uses to call its [Resources.getColor] method to return the themed color
+         * integer associated with our `ColorRes` parameter [color] if the device is SDK M or newer
+         * or the unthemed color integer associated with it if the device is older than SDK M.
          *
          * @param color color resource reference
          * @return A single color value in the form 0xAARRGGBB.
@@ -431,15 +438,15 @@ class MainActivity : Activity() {
         /**
          * TAG used for logging
          */
-        private val TAG = MainActivity::class.java.simpleName
+        private val TAG: String = MainActivity::class.java.simpleName
 
         /**
-         * User-defined message code for clearing Start received color 1000ms after MSG_COLOR_START
+         * User-defined message code for clearing Start received color 1000ms after [MSG_COLOR_START]
          */
         const val MSG_UNCOLOR_START: Int = 0
 
         /**
-         * User-defined message code for clearing Stop received color 2000ms after MSG_COLOR_STOP
+         * User-defined message code for clearing Stop received color 2000ms after [MSG_COLOR_STOP]
          */
         const val MSG_UNCOLOR_STOP: Int = 1
 
@@ -460,7 +467,7 @@ class MainActivity : Activity() {
         const val MESSENGER_INTENT_KEY: String = BuildConfig.APPLICATION_ID + ".MESSENGER_INTENT_KEY"
 
         /**
-         * Intent key for storing of the duration that the job is supposed to last, `MyJobService`
+         * Intent key for storing of the duration that the job is supposed to last, [MyJobService]
          * waits for this long in milliseconds before quiting "com.example.android.jobscheduler.WORK_DURATION_KEY"
          */
         const val WORK_DURATION_KEY: String = BuildConfig.APPLICATION_ID + ".WORK_DURATION_KEY"
