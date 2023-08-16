@@ -22,14 +22,13 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 
 /**
- * This example shows how to use LayoutTransition to animate simple changes in a layout
- * container.
- *
+ * This example shows how to use [LayoutTransition] to animate simple changes in a layout container.
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [LayoutTransChanging video](https://www.youtube.com/watch?v=55wLsaWpQ4g).
@@ -37,24 +36,25 @@ import android.widget.LinearLayout
 class LayoutTransChanging : Activity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.main. We initialize `Button addButton`
-     * by finding the view with id R.id.addButton ("Add Item"), `Button removeButton` by finding the
-     * view with id R.id.removeButton ("Remove Item"), and `LinearLayout container` by finding the
-     * view with id R.id.container. We initialize `Context context` to 'this'. We then loop over
-     * `int i` to add two new instances of `ColoredView` to `container`. We set the
-     * `OnClickListener` of `addButton` to an anonymous class which adds a new instance of
-     * `ColoredView` at index 1 to `container`, and set the `OnClickListener` of
-     * `removeButton` to an anonymous class which removes the view at index 1 from `container`
-     * (or the view at index 0 if it is the last one standing).
+     * then we set our content view to our layout file [R.layout.main]. We initialize [Button]
+     * variable `val addButton` by finding the view with id [R.id.addButton] ("Add Item"), [Button]
+     * variable `val removeButton` by finding the view with id [R.id.removeButton] ("Remove Item"),
+     * and [LinearLayout] variable `val container` by finding the view with id [R.id.container].
+     * We initialize [Context] variable `val context` to 'this'. We then loop over [Int] variable
+     * `var i` to add two new instances of [ColoredView] to `container`. We set the [OnClickListener]
+     * of `addButton` to an anonymous class which adds a new instance of [ColoredView] at index 1 to
+     * `container` when the [Button] is clicked, and set the [OnClickListener] of `removeButton` to
+     * an anonymous class which removes the view at index 1 from `container` when the [Button] is
+     * clicked (or the view at index 0 if it is the last one standing).
      *
+     * We initialize [LayoutTransition] variable `val transition` to the [LayoutTransition] object
+     * for the `container` [ViewGroup], then call its [LayoutTransition.enableTransitionType] method
+     * to enable the [LayoutTransition.CHANGING] transition type (flag enabling the animation that
+     * runs on those items that are changing due to a layout change not caused by items being added
+     * to or removed from the container -- this is for the changing of the size of the [ColoredView]
+     * views when they are clicked on).
      *
-     * We initialize `LayoutTransition transition` to the LayoutTransition object for the `container`
-     * ViewGroup, then call its `enableTransitionType` method to enable the CHANGING transition
-     * type (flag enabling the animation that runs on those items that are changing due to a layout
-     * change not caused by items being added to or removed from the container -- this is for the
-     * changing of the size of the `ColoredView` views when they are clicked on).
-     *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
