@@ -23,12 +23,12 @@ import android.graphics.Paint
 import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.view.View.OnClickListener
 import android.widget.ImageView
 
 /**
- * This example shows how to use AnimationDrawable to construct a keyframe animation where each
+ * This example shows how to use [AnimationDrawable] to construct a keyframe animation where each
  * frame is shown for a specified duration.
- *
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [Key Frame Animations](https://www.youtube.com/watch?v=V3ksidLf7vA)
@@ -36,18 +36,19 @@ import android.widget.ImageView
 class KeyframeAnimation : Activity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_keyframe_animation, and we initialize
-     * `ImageView imageview` by finding the view with id R.id.imageview. We initialize our variable
-     * `AnimationDrawable animationDrawable` then loop for `int i` from 0 to 9 calling the
-     * `addFrame` method of `animationDrawable` to add the `BitmapDrawable` returned
-     * by our method `getDrawableForFrameNumber` for `i` to it with a duration of 300ms.
-     * We call the `setOneShot(false)` method of `animationDrawable` so that it will run
-     * until it stops, and set the content of `imageview` to `animationDrawable`. Finally
-     * we set the `OnClickListener` of `imageview` to an anonymous class whose `onClick`
-     * override stops `animationDrawable` if it is currently running or starts it running if it is
-     * not running.
+     * then we set our content view to our layout file [R.layout.activity_keyframe_animation], and
+     * we initialize [ImageView] variable `val imageview` by finding the view with id [R.id.imageview].
+     * We initialize our [AnimationDrawable] variable `val animationDrawable` to a new instance then
+     * loop for [Int] variable `var i` from 0 to 9 calling the [AnimationDrawable.addFrame] method
+     * of `animationDrawable` to add the [BitmapDrawable] returned by our method
+     * [getDrawableForFrameNumber] for `i` to it with a duration of 300ms. We call the
+     * [AnimationDrawable.setOneShot] method (kotlin `isOneShot` property) of `animationDrawable`
+     * with `false` so that it will run until it stops, and set the content of `imageview` to
+     * `animationDrawable`. Finally we set the [OnClickListener] of `imageview` to an anonymous
+     * class whose [OnClickListener.onClick] override stops `animationDrawable` if it is currently
+     * running or starts it running if it is not running.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,20 +75,20 @@ class KeyframeAnimation : Activity() {
     }
 
     /**
-     * Creates a `BitmapDrawable` for the given frame number. The 'frames' in this app are
+     * Creates a [BitmapDrawable] for the given frame number. The 'frames' in this app are
      * nothing more than a gray background with text indicating the number of the frame. First we
-     * initialize `Bitmap bitmap` with a 400 pixel by 400 pixel instance using the config
-     * ARGB_8888. We initialize `Canvas canvas` with an instance that will draw into
-     * `bitmap` and fill it with the color GRAY. We initialize `Paint paint` with an
-     * instance with its ANTI_ALIAS_FLAG flag set, set its text size to 80, and set its color to BLACK.
-     * We call the `drawText` method of `canvas` to draw a string formed by concatenating
-     * the string "Frame " to the string value of our parameter `int frameNumber` at the location
-     * (40,220) using `paint` as the paint. Finally we return a `BitmapDrawable` created
-     * from `bitmap` to the caller.
+     * initialize [Bitmap] variable `val bitmap` with a 400 pixel by 400 pixel instance using the
+     * config ARGB_8888. We initialize [Canvas] variable `val canvas` with an instance that will
+     * draw into `bitmap` and use its [Canvas.drawColor] method to fill it with the color GRAY.
+     * We initialize [Paint] variable `val paint` with a new instance with its ANTI_ALIAS_FLAG flag
+     * set, set its text size to 80f, and set its color to BLACK. We call the [Canvas.drawText]
+     * method of `canvas` to draw a string formed by concatenating the string "Frame " to the string
+     * value of our [Int] parameter [frameNumber] at the location (40,220) using `paint` as the
+     * paint. Finally we return a [BitmapDrawable] created from `bitmap` to the caller.
      *
      * @param frameNumber frame number we are creating
-     * @return a `BitmapDrawable` consisting of a gray background with text indicating
-     * the number of the frame.
+     * @return a [BitmapDrawable] consisting of a gray background with text indicating the number
+     * of the frame.
      */
     private fun getDrawableForFrameNumber(frameNumber: Int): BitmapDrawable {
         val bitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888)
