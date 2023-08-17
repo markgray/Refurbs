@@ -41,21 +41,22 @@ import java.util.Collections
 class ListViewAnimations : Activity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_list_view_animations. We
-     * then initialize `CheckBox vpaCB` by finding the view with id R.id.vpaCB
-     * ("ViewPropertyAnimator") initialize `CheckBox setTransientStateCB` by finding the view with
-     * id R.id.setTransientStateCB ("Transient State") and initialize `ListView listView` by finding
-     * the view with id R.id.list_view. We initialize `ArrayList<String> cheeseList` with a new
-     * instance then add all of the strings in the array `Cheeses.sCheeseStrings` to it. We
-     * initialize `StableArrayAdapter adapter` with an instance which will represent the objects in
-     * `cheeseList` using the layout file android.R.layout.simple_list_item_1 as the `TextView` when
+     * then we set our content view to our layout file [R.layout.activity_list_view_animations]. We
+     * then initialize [CheckBox] variable `val vpaCB` by finding the view with id [R.id.vpaCB]
+     * ("ViewPropertyAnimator") initialize [CheckBox] variable `val setTransientStateCB` by finding
+     * the view with id [R.id.setTransientStateCB] ("Transient State") and initialize [ListView]
+     * variable `val listView` by finding the view with id [R.id.list_view]. We initialize
+     * [ArrayList] of [String] variable `val cheeseList` with a new instance then add all of the
+     * strings in the array [Cheeses.sCheeseStrings] to it. We initialize [StableArrayAdapter]
+     * variable `val adapter` with an instance which will represent the objects in `cheeseList`
+     * using the layout file [android.R.layout.simple_list_item_1] as the [TextView] when
      * instantiating views, and set it to be the adapter for `listView`. We then set the
-     * `OnItemClickListener` of `listView` to an anonymous class whose `onItemClick` removes the
-     * item clicked from the `listView` and animates the removal by fading the alpha of the item to
-     * 0 before removing it. The two checkboxes enable or disable workarounds for the continued
-     * alpha animation of views that have been recycled, with their unchecked state being used to
-     * branch around code in the override which "does the right thing" using the workaround selected
-     * by the checkboxes.
+     * [OnItemClickListener] of `listView` to a lambda whose [OnItemClickListener.onItemClick]
+     * override removes the item clicked from the `listView` and animates the removal by fading
+     * the alpha of the item to 0 before removing it. The two checkboxes enable or disable
+     * workarounds for the continued alpha animation of views that have been recycled, with their
+     * unchecked state being used to branch around code in the override which "does the right thing"
+     * using the workaround selected by the checkboxes.
      *
      * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
      */
@@ -67,12 +68,15 @@ class ListViewAnimations : Activity() {
         val listView = findViewById<ListView>(R.id.list_view)
         val cheeseList = ArrayList<String>()
         Collections.addAll(cheeseList, *Cheeses.sCheeseStrings)
-        val adapter = StableArrayAdapter(this,
-            android.R.layout.simple_list_item_1, cheeseList)
+        val adapter = StableArrayAdapter(
+            context = this,
+            textViewResourceId = android.R.layout.simple_list_item_1,
+            objects = cheeseList
+        )
         listView.adapter = adapter
         listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             /**
-             * Callback method to be invoked when an item in this AdapterView has been clicked. We
+             * Callback method to be invoked when an item in this [ListView] has been clicked. We
              * initialize `String item` with the string returned by the `getItemAtPosition`
              * method of our parameter `AdapterView<?> parent` for the item in position
              * `position`. We then branch on whether `CheckBox vpaCB` is checked:
