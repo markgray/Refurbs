@@ -94,21 +94,22 @@ class LayoutTransChanging : Activity() {
      * Custom view painted with a random background color and two different sizes which are
      * toggled between due to user interaction.
      *
-     * Our constructor. First we call our super's constructor. We initialize `int red`,
-     * `int green`, and `int blue` to random numbers between 127 and 255, then
-     * initialize `int color` to a ARGB color formed by shifting each to their proper
-     * position and or'ing them together along with 0xff for the alpha channel. We then set our
-     * background color to `color`, set our layout params to `LayoutParams mCompressedParams`
-     * and set our `OnClickListener` which will toggle our layout params between
-     * `mCompressedParams` and `mExpandedParams` depending on the value of `mExpanded`
-     * then toggle `mExpanded`, and request a new layout.
+         * Our constructor. First we call our super's constructor. In our `init` block we initialize
+     * [Int] variable `val red`, [Int] variable `val green`, and [Int] variable `val blue` to random
+     * numbers between 127 and 255, then initialize [Int] variable `val color` to a ARGB color formed
+     * by shifting each to their proper position and or'ing them together along with 0xff for the
+     * alpha channel. We then set our background color to `color`, set our layout params to
+     * [LinearLayout.LayoutParams] field [mCompressedParams] and set our [OnClickListener] to a
+     * lambda which will toggle our layout params between our [LinearLayout.LayoutParams] field
+     * [mCompressedParams] and our [LinearLayout.LayoutParams] field [mExpandedParams] depending on
+     * the value of [Boolean] field [mExpanded] then toggle [mExpanded], and request a new layout.
      *
-     * @param context The Context the view is running in, through which it can access the
+     * @param context The [Context] the view is running in, through which it can access the
      * current theme, resources, etc.
      */
     class ColoredView constructor(context: Context) : View(context) {
         /**
-         * Flag to indicate whether we are in the expanded state (true) or not (false).
+         * Flag to indicate whether we are in the expanded state (`true`) or not (`false`).
          */
         private var mExpanded = false
 
