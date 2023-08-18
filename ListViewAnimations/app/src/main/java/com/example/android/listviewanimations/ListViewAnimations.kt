@@ -24,6 +24,8 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.ViewPropertyAnimator
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
@@ -77,40 +79,38 @@ class ListViewAnimations : Activity() {
         listView.onItemClickListener = OnItemClickListener { parent, view, position, id ->
             /**
              * Callback method to be invoked when an item in this [ListView] has been clicked. We
-             * initialize `String item` with the string returned by the `getItemAtPosition`
-             * method of our parameter `AdapterView<?> parent` for the item in position
-             * `position`. We then branch on whether `CheckBox vpaCB` is checked:
+             * initialize [String] variable `val item` with the string returned by the
+             * [AdapterView.getItemAtPosition] method of our [AdapterView] parameter [parent] for
+             * the item in position [position]. We then branch on whether [CheckBox] variable
+             * `vpaCB` is checked:
              *
-             *  *
-             * Checked: we retrieve a `ViewPropertyAnimator` object for the clicked
-             * `View view`, set its duration to 1000ms, configure it to animate the
-             * alpha property to 0, and set an an anonymous `Runnable` to run when the
-             * animation finishes whose `run` override removes `item` from the
-             * dataset `ArrayList<String> cheeseList`, notifies `adapter` that the
-             * dataset has changed, and sets the alpha of `view` to 1.
+             *  * Checked: we retrieve a [ViewPropertyAnimator] object for the clicked [View]
+             *  parameter [view], set its duration to 1000ms, configure it to animate the alpha
+             *  property to 0, and set an an anonymous [Runnable] lambda to run when the animation
+             *  finishes whose [Runnable.run] override removes `item` from the dataset in [ArrayList]
+             *  of [String] variable `cheeseList`, notifies `adapter` that the dataset has changed,
+             *  and sets the alpha of [view] to 1.
              *
-             *  *
-             * Unchecked: We initialize `ObjectAnimator anim` with an instance which will
-             * animate the ALPHA property of `View view`, and set its duration to 1000ms.
-             * Then if checkbox `setTransientStateCB` is checked we call the
-             * `setHasTransientState(true)` method of `view` to set the transient state flag
-             * (A view with transient state cannot be trivially rebound from an external data
-             * source, such as an adapter binding item views in a list). Then we add an anonymous
-             * `AnimatorListenerAdapter` whose `onAnimationEnd` override removes `item` from the
-             * dataset `ArrayList<String> cheeseList`, notifies `adapter` that the dataset
-             * has changed, and sets the alpha of `view` to 1. Then if checkbox `setTransientStateCB`
-             * is checked we call the `setHasTransientState(false)` method of `view` to
-             * clear the transient state flag (this flag is reference counted, so every call to
-             * setHasTransientState(true) should be paired with a later call to
-             * setHasTransientState(false)). Having configured `ObjectAnimator anim` we start
-             * it running.
+             *  * Unchecked: We initialize [ObjectAnimator] variable `val anim` with an instance
+             *  which will animate the ALPHA property of [View] parameter [view], and set its
+             *  duration to 1000ms. Then if [CheckBox] variable `setTransientStateCB` is checked
+             *  we call the [View.setHasTransientState] method of [view] with `true` to set its
+             *  transient state flag (A view with transient state cannot be trivially rebound from
+             *  an external data source, such as an adapter binding item views in a list). Then we
+             *  add an anonymous [AnimatorListenerAdapter] whose [AnimatorListenerAdapter.onAnimationEnd]
+             *  override removes `item` from the dataset in [ArrayList] of [String] variable `cheeseList`,
+             *  notifies `adapter` that the dataset has changed, and sets the alpha of [view] to 1.
+             *  Then if [CheckBox] variable `setTransientStateCB` is checked we call the
+             *  [View.setHasTransientState] method of [view] with `false` to clear its transient
+             *  state flag (this flag is reference counted, so every call to
+             *  [View.setHasTransientState] with `true` should be paired with a later call to
+             *  [View.setHasTransientState]with `false`). Having configured [ObjectAnimator] `anim`
+             *  we start it running.
              *
-             *
-             *
-             * param parent   The AdapterView where the click happened.
-             * param view     The view within the AdapterView that was clicked (this
-             * will be a view provided by the adapter)
-             * param position The position of the view in the adapter.
+             * param parent   The [AdapterView] where the click happened.
+             * param view     The [View] within the [AdapterView] that was clicked (this will be a
+             * view provided by the adapter)
+             * param position The position of the [View] in the adapter.
              * param id       The row id of the item that was clicked.
              */
             val item = parent.getItemAtPosition(position) as String
@@ -151,13 +151,13 @@ class ListViewAnimations : Activity() {
     }
 
     /**
-     * An `ArrayAdapter<String>` subclass with stable id's (Stable IDs allow the ListView to
-     * optimize for the case when items remain the same between notifyDataSetChanged calls. The IDs
-     * it refers to are the ones returned from getItemId).
-     * Our constructor. First we call our super's constructor. Then in our `init` block we loop over
-     * `int i` for all the strings in our parameter `List<String> objects` storing the current value
-     * of `i` under the key of the string at position `i` in `objects` in our field
-     * `HashMap<String, Integer> mIdMap`.
+     * An [ArrayAdapter] of [String] subclass with stable id's (Stable IDs allow the [ListView] to
+     * optimize for the case when items remain the same between [notifyDataSetChanged] calls. The
+     * IDs it refers to are the ones returned from [getItemId]). Our constructor. First we call our
+     * super's constructor. Then in our `init` block we loop over [Int] variable `var i` for all the
+     * strings in our [List] of [String] parameter `objects` storing the current value of `i` under
+     * the key of the string at position `i` in `objects` in our [HashMap] of [String] to [Int]
+     * field [mIdMap].
      *
      * @param context The current [Context].
      * @param textViewResourceId The resource ID for a layout file containing a [TextView] to use
@@ -181,9 +181,9 @@ class ListViewAnimations : Activity() {
         }
 
         /**
-         * Get the row id associated with the specified position in the list. We initialize
-         * `String item` with the item in position `position` of our dataset, then return the
-         * `Integer` stored in our field `HashMap<String, Integer> mIdMap` under that key to
+         * Get the row id associated with the specified position in the list. We initialize [String]
+         * variable `val item` with the item in position [position] of our dataset, then return the
+         * [Integer] stored in our [HashMap] of [String] to [Int] field [mIdMap] under that key to
          * the caller.
          *
          * @param position The position of the item within the adapter's data set whose row id
@@ -197,9 +197,9 @@ class ListViewAnimations : Activity() {
 
         /**
          * Indicates whether the item ids are stable across changes to the underlying data.
-         * In our case we always return true.
+         * In our case we always return `true`.
          *
-         * @return True if the same id always refers to the same object.
+         * @return `true` if the same id always refers to the same object.
          */
         override fun hasStableIds(): Boolean {
             return true
