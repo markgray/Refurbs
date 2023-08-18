@@ -19,6 +19,7 @@ package com.example.android.insertingcells
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -33,29 +34,27 @@ import android.widget.AbsListView
 import android.widget.AbsListView.LayoutParams.MATCH_PARENT
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
 
 /**
- * This custom array adapter is used to populate the ListView in this application.
- * This adapter also maintains a map of unique stable ids for each object in the data set.
- * Since this adapter has to support the addition of a new cell to the 1ist index, it also
- * provides a mechanism to add a stable ID for new data that was recently inserted.
+ * This custom array adapter is used to populate the [ListView] in this application. This adapter
+ * also maintains a map of unique stable ids for each object in the data set. Since this adapter
+ * has to support the addition of a new cell to the 1ist index, it also provides a mechanism to add
+ * a stable ID for new data that was recently inserted.
  *
- * Our constructor. First we call our super's constructor. Then we save our parameter `data`
- * in our field `List<ListItemObject> mData`, our parameter `context` in our field
- * `Context mContext`, and our parameter `layoutViewResourceId` in our field
- * `int mLayoutViewResourceId`. Then in our `init` block we call our method `updateStableIds`
- * to build our field `HashMap<ListItemObject, Integer> mIdMap`, which we use to access stable
- * ids for each of the `ListItemObject` items in our dataset.
+ * Our constructor. First we call our super's constructor. Then in our `init` block we call our
+ * method [updateStableIds] to build our [HashMap] of [ListItemObject] to [Int] field [mIdMap],
+ * which we use to access stable ids for each of the [ListItemObject] items in our dataset.
  *
- * @param mContext The current context
+ * @param mContext The current [Context]
  * @param mLayoutViewResourceId Resource id for the item layout field we should use
  * @param mData our dataset.
  */
 class CustomArrayAdapter(
     /**
      * The current context as passed to our constructor, used for quick access to the [LayoutInflater]
-     * instance that our activity retrieved from its Context, and to retrieve a `Resources` instance
+     * instance that our activity retrieved from its Context, and to retrieve a [Resources] instance
      * for the application's package.
      */
     var mContext: Context,
@@ -64,18 +63,18 @@ class CustomArrayAdapter(
      */
     var mLayoutViewResourceId: Int,
     /**
-     * Our dataset, set by our constructor, shared with the `InsertionListView` we are the
-     * adapter for and added to by it behind our back.
+     * Our dataset, set by our constructor, shared with the [InsertionListView] we are the adapter
+     * for and added to by it behind our back.
      */
     var mData: List<ListItemObject>
 ) : ArrayAdapter<ListItemObject?>(mContext, mLayoutViewResourceId, mData) {
     /**
-     * Stable ids for each of the `ListItemObject` items in our dataset.
+     * Stable ids for each of the [ListItemObject] items in our dataset.
      */
     var mIdMap: HashMap<ListItemObject?, Int> = HashMap()
 
     /**
-     * Counter we use to assign a stable id to each of the `ListItemObject` items in our dataset.
+     * Counter we use to assign a stable id to each of the [ListItemObject] items in our dataset.
      */
     var mCounter: Int = 0
 
