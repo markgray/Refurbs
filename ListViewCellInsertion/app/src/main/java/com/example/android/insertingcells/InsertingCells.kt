@@ -19,6 +19,8 @@ package com.example.android.insertingcells
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.res.Resources
 import android.os.Bundle
@@ -120,49 +122,51 @@ class InsertingCells : Activity(), OnRowAdditionAnimationListener {
     }
 
     /**
-     * Called when the `Button` with id R.id.add_row_button ("Add Row") is clicked, we add a
-     * new `ListItemObject` cloned from one of those in `mValues` to our layout's
-     * `InsertionListView mListView`. First we disable our field `Button mButton`, then
-     * we increment our field `Integer mItemNum`. We initialize `ListItemObject obj` with
-     * the `ListItemObject` in our field `ListItemObject mValues[]` with index `mItemNum`
-     * modulo the length of `mValues`. We then initialize `ListItemObject newObj` with a
-     * new instance created using the title of `obj`, the resource id of its jpg, and our field
-     * `mCellHeight` as the height to use when layout parameters are created to display this item.
-     * We initialize `boolean shouldAnimateInNewImage` with the value returned by the
-     * `shouldAnimateInNewImage` method of `mListView` (it returns true if there are no
-     * items in the list, or if the first item in the list is at the very top of the view, if the
-     * first item is even slightly off screen it returns false).
+     * Called when the [Button] with id [R.id.add_row_button] ("Add Row") is clicked, we add a new
+     * [ListItemObject] cloned from one of those in [Array] of [ListItemObject] field [mValues] to
+     * our layout's [InsertionListView] field [mListView]. First we disable our [Button] field
+     * [mButton], then we increment our [Int] field [mItemNum]. We initialize [ListItemObject]
+     * variable `val obj` with the [ListItemObject] in our [Array] of [ListItemObject] field
+     * [mValues] with index [mItemNum] modulo the length of [mValues]. We then initialize
+     * [ListItemObject] variable `val newObj` with a new instance created using the
+     * [ListItemObject.title] title of `obj`, the resource id of its jpg [ListItemObject.imgResource],
+     * and our [Int] field [mCellHeight] as the height to use when layout parameters are created to
+     * display this item. We initialize [Boolean] variable `val shouldAnimateInNewImage` with the
+     * value returned by the [InsertionListView.shouldAnimateInNewImage] method of [mListView] (it
+     * returns `true` if there are no items in the list, or if the first item in the list is at the
+     * very top of the view, if the first item is even slightly off screen it returns `false`).
      *
+     * If `shouldAnimateInNewImage` is `false` we just call the [InsertionListView.addRow] method of
+     * [mListView] to add `newObj` to the list then return. Otherwise we disable [mListView] and
+     * initialize [ObjectAnimator] variable `val animator` with the [ObjectAnimator] created by the
+     * [RoundView.scalingAnimator] property of our [RoundView] field [mRoundView] that will animate
+     * the scale of [mRoundView], making it shrink to 0.3 of its starting size then grow back to its
+     * original size. We then add an [AnimatorListenerAdapter] to `animator` whose
+     * [AnimatorListenerAdapter.onAnimationRepeat] override calls the [InsertionListView.addRow]
+     * method of [mListView] to add `newObj` to the list. Finally we start `animator` running.
      *
-     * If `shouldAnimateInNewImage` is false we just call the `addRow` method of `mListView`
-     * to add `newObj` to the list then return. Otherwise we disable `mListView` and initialize
-     * `ObjectAnimator animator` with the `ObjectAnimator` created by the `getScalingAnimator`
-     * method of our field `RoundView mRoundView` that will animate the scale of `mRoundView`,
-     * making it shrink to 0.3 its starting size then grow back to its original size. We then add an
-     * `AnimatorListenerAdapter` to `animator` whose `onAnimationRepeat` calls the
-     * `addRow` method of `mListView` to add `newObj` to the list.
-     *
-     *
-     * Finally we start `animator` running.
-     *
-     * @param view view that was clicked (the `Button` with id R.id.add_row_button ("Add Row")
-     * calls us when it is clicked thanks to an android:onClick="addRow" attribute).
+     * @param view the [View] that was clicked (the [Button] with id [R.id.add_row_button]
+     * ("Add Row") calls us when it is clicked thanks to an android:onClick="addRow" attribute).
      */
     @Suppress("UNUSED_PARAMETER")
     fun addRow(view: View?) {
         mButton!!.isEnabled = false
         mItemNum++
-        val obj = mValues[mItemNum % mValues.size]
-        val newObj = ListItemObject(obj.title, obj.imgResource,
-            mCellHeight)
-        val shouldAnimateInNewImage = mListView!!.shouldAnimateInNewImage()
+        val obj: ListItemObject = mValues[mItemNum % mValues.size]
+        val newObj = ListItemObject(obj.title, obj.imgResource, mCellHeight)
+        val shouldAnimateInNewImage: Boolean = mListView!!.shouldAnimateInNewImage()
         if (!shouldAnimateInNewImage) {
             mListView!!.addRow(newObj)
             return
         }
         mListView!!.isEnabled = false
-        val animator = mRoundView!!.scalingAnimator
+        val animator: ObjectAnimator = mRoundView!!.scalingAnimator
         animator.addListener(object : AnimatorListenerAdapter() {
+            /**
+             * Notifies the repetition of the animation.
+             *
+             * @param animation – The animation which was repeated.
+             */
             override fun onAnimationRepeat(animation: Animator) {
                 mListView!!.addRow(newObj)
             }
@@ -171,17 +175,18 @@ class InsertingCells : Activity(), OnRowAdditionAnimationListener {
     }
 
     /**
-     * Called when the animation of a new row addition begins from the `addRow` method of
-     * `InsertionListView mListView`. We just disable our button `Button mButton`.
+     * Called when the animation of a new row addition begins from the [InsertionListView.addRow]
+     * method of [InsertionListView] field [mListView]. We just disable our [Button] field [mButton].
      */
     override fun onRowAdditionAnimationStart() {
         mButton!!.isEnabled = false
     }
 
     /**
-     * Called when the animation of a new row addition ends from the `onAnimationEnd` override
-     * of the `AnimatorSet` which animates the addition of a new row when the `addRow`
-     * method of `InsertionListView mListView` is called. We just enable our `Button mButton`.
+     * Called when the animation of a new row addition ends from the
+     * [AnimatorListenerAdapter.onAnimationEnd] override of the [AnimatorSet] which animates the
+     * addition of a new row when the [InsertionListView.addRow] method of [InsertionListView]
+     * [mListView] is called. We just enable our [Button] field [mButton].
      */
     override fun onRowAdditionAnimationEnd() {
         mButton!!.isEnabled = true

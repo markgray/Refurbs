@@ -40,6 +40,9 @@ import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.view.animation.OvershootInterpolator
+import android.animation.TimeInterpolator
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.RelativeLayout
@@ -47,39 +50,40 @@ import android.widget.TextView
 import com.example.android.insertingcells.CustomArrayAdapter.Companion.getCroppedBitmap
 
 /**
- * This ListView displays a set of ListItemObjects. By calling addRow with a new
- * ListItemObject, it is added to the top of the ListView and the new row is animated
- * in. If the ListView content is at the top (the scroll offset is 0), the animation of
- * the new row is accompanied by an extra image animation that pops into place in its
- * corresponding item in the ListView.
+ * This [ListView] displays a list of [ListItemObject]. Calling [addRow] with a new [ListItemObject]
+ * adds it to the top of the [ListView] and the new row is animated in. If the [ListView] content is
+ * at the top (the scroll offset is 0), the animation of the new row is accompanied by an extra
+ * image animation that pops an [ImageView] into its place in its corresponding item in the
+ * [ListView].
  */
 class InsertionListView : ListView {
     /**
-     * `OvershootInterpolator` which is in used as the `TimeInterpolator` for the scaling
+     * [OvershootInterpolator] which is in used as the [TimeInterpolator] for the scaling
      * animation applied to the image.
      */
     private var sOvershootInterpolator: OvershootInterpolator? = null
 
     /**
-     * Parent RelativeLayout of this `ListView`, set by a setter which is called from the
-     * `onCreate` override of `InsertingCells`, it is required in order to add the
-     * custom animated overlaying bitmap when adding a new row.
+     * Parent [RelativeLayout] of this [ListView], set by our [setLayout] method which is called
+     * from the `onCreate` override of [InsertingCells]. It is required in order to add the custom
+     * animated overlaying [Bitmap] when adding a new row.
      */
     private var mLayout: RelativeLayout? = null
 
     /**
-     * `Context` we were constructed for, set by our `init` method which is called by
+     * [Context] we were constructed for, set by our [inititialize] method which is called by
      * each of our constructors, and is used to access application resources. We are constructed
      * by an element in the layout file layout/activity_main.xml so it is the context of the
-     * `Activity` which inflates that file (the `onCreate` override of `InsertingCells`).
+     * [Activity] which inflates that file (the `onCreate` override of [InsertingCells]).
      */
     private var mContext: Context? = null
 
     /**
-     * `OnRowAdditionAnimationListener` whose `onRowAdditionAnimationStart` override we
-     * will call at the start of the of a row addition animation, and whose `onRowAdditionAnimationEnd`
-     * override we will call at the end of that animation. It is set by our `setRowAdditionAnimationListener`
-     * method which is called with 'this' from the `onCreate` override of `InsertingCells`.
+     * [OnRowAdditionAnimationListener] whose [OnRowAdditionAnimationListener.onRowAdditionAnimationStart]
+     * override we will call at the start of the of a row addition animation, and whose
+     * [OnRowAdditionAnimationListener.onRowAdditionAnimationEnd] override we will call at the end
+     * of that animation. It is set by our [setRowAdditionAnimationListener] method which is called
+     * with 'this' from the `onCreate` override of [InsertingCells].
      */
     private var mRowAdditionAnimationListener: OnRowAdditionAnimationListener? = null
 
@@ -89,17 +93,17 @@ class InsertionListView : ListView {
     private var mData: MutableList<ListItemObject>? = null
 
     /**
-     * `BitmapDrawable` objects of all the cells that were visible before the data set changed
-     * but not after. This is a bitmap created from the entire view of the item, both the image and
+     * [BitmapDrawable] objects of all the cells that were visible before the data set changed but
+     * not after. This is a bitmap created from the entire view of the item, both the image and
      * the text.
      */
     private var mCellBitmapDrawables: MutableList<BitmapDrawable?>? = null
 
     /**
-     * Our one argument constructor. We just call our `init` method with our parameter
-     * `Context context`. UNUSED
+     * Our one argument constructor. We just call our [inititialize] method with our [Context]
+     * parameter [context]. UNUSED
      *
-     * @param context  The Context the view is running in, through which it can access the current
+     * @param context  The [Context] the view is running in, through which it can access the current
      * theme, resources, etc.
      */
     constructor(context: Context?) : super(context) {
@@ -107,11 +111,11 @@ class InsertionListView : ListView {
     }
 
     /**
-     * Perform inflation from XML. We just call our `init` method with our parameter
-     * `Context context`. This is the constructor that is used by our application's
-     * layout file layout/activity_main.xml
+     * Perform inflation from XML. We just call our [inititialize] method with our [Context]
+     * parameter [context]. This is the constructor that is used by our application's layout
+     * file layout/activity_main.xml
      *
-     * @param context  The Context the view is running in, through which it can access the current
+     * @param context  The [Context] the view is running in, through which it can access the current
      * theme, resources, etc.
      * @param attrs    The attributes of the XML tag that is inflating the view.
      */
@@ -121,28 +125,28 @@ class InsertionListView : ListView {
 
     /**
      * Perform inflation from XML and apply a class-specific base style from a theme attribute or
-     * style resource. We just call our `init` method with our parameter `Context context`.
+     * style resource. We just call our [inititialize] method with our [Context] parameter [context].
      * UNUSED
      *
-     * @param context  The Context the view is running in, through which it can access the current
+     * @param context  The [Context] the view is running in, through which it can access the current
      * theme, resources, etc.
      * @param attrs    The attributes of the XML tag that is inflating the view.
-     * @param defStyle An attribute in the current theme that contains a reference to a style resource
-     * that supplies default values for the view. Can be 0 to not look for defaults.
+     * @param defStyle An attribute in the current theme that contains a reference to a style
+     * resource that supplies default values for the view. Can be 0 to not look for defaults.
      */
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
         inititialize(context)
     }
 
     /**
-     * Initializes this instance. First we call the `setDivider` method to set the drawable
-     * that will be drawn between each item in the list to null. Then we save our parameter
-     * `Context context` in our field `Context mContext`. We initialize our field
-     * `List<BitmapDrawable> mCellBitmapDrawables` with a new instance of `ArrayList`,
-     * and initialize our field `OvershootInterpolator sOvershootInterpolator` with a new
-     * instance which will overshoot by OVERSHOOT_INTERPOLATOR_TENSION (5).
+     * Initializes this instance. First we call the [ListView.setDivider] method (kotlin `divider`
+     * property) to set the drawable that will be drawn between each item in the list to `null`.
+     * Then we save our [Context] parameter [context] in our [Context] field [mContext]. We
+     * initialize our [MutableList] of [BitmapDrawable] field [mCellBitmapDrawables] with a new
+     * instance of [ArrayList], and initialize our [OvershootInterpolator] field [sOvershootInterpolator]
+     * with a new instance which will overshoot by [OVERSHOOT_INTERPOLATOR_TENSION] (5).
      *
-     * @param context The Context the view is running in, through which it can access the current
+     * @param context The [Context] the view is running in, through which it can access the current
      * theme, resources, etc.
      */
     fun inititialize(context: Context?) {
@@ -154,49 +158,44 @@ class InsertionListView : ListView {
 
     /**
      * Modifies the underlying data set and adapter through the addition of the new object as the
-     * first item of the ListView. The new cell is then animated into place from above the bounds
-     * of the ListView. We initialize `CustomArrayAdapter adapter` with a handle to the adapter
-     * currently in use by this ListView. We initialize `HashMap<Long, Rect> listViewItemBounds`
-     * with a new instance, and `HashMap<Long, BitmapDrawable> listViewItemDrawables` with a new
-     * instance. We initialize `int firstVisiblePosition` to the position within our data set
-     * of the first item displayed on screen. We then loop over `int i` for the number of children
-     * in this `ViewGroup` (the number of children is 1 more than the number currently on screen
-     * in our `ListView`):
+     * first item of the [ListView]. The new cell is then animated into place from above the bounds
+     * of the [ListView]. We initialize [CustomArrayAdapter] variable `val adapter` with a handle to
+     * the adapter currently in use by this [ListView]. We initialize [HashMap] of [Long] to [Rect]
+     * variable `val listViewItemBounds` with a new instance, and [HashMap] of [Long] to [BitmapDrawable]
+     * variable `val listViewItemDrawables` with a new instance. We initialize [Int] variable
+     * `val firstVisiblePosition` to the position within our data set of the first item displayed
+     * on screen. We then loop over [Int] variable `var i` for the number of children in this
+     * [ViewGroup] (the number of children is 1 more than the number currently on screen in our
+     * [ListView]):
      *
-     *  *
-     * We initialize `View child` with our `i`'th child
+     *  * We initialize [View] variable `val child` with our `i`'th child
      *
-     *  *
-     * We initialize `int position` to `firstVisiblePosition` plus `i`
+     *  * We initialize [Int] variable `val position` to `firstVisiblePosition` plus `i`
      *
-     *  *
-     * We initialize `long itemID` with the stable id returned by the `getItemId`
-     * method of `adapter`.
+     *  * We initialize [Long] variable `val itemID` with the stable id returned by the
+     *  [CustomArrayAdapter.getItemId] method of `adapter`.
      *
-     *  *
-     * We initialize `Rect startRect` with an instance which matches the size and position
-     * of `child` relative to its parent and store it in `listViewItemBounds` under
-     * the key `itemID`.
+     *  * We initialize [Rect] variable `val startRect` with an instance which matches the size and
+     *  position of `child` relative to its parent and store it in `listViewItemBounds` under the
+     *  key `itemID`.
      *
-     *  *
-     * We store the `BitmapDrawable` returned by our method `getBitmapDrawableFromView`
-     * which contains the contents of `child` in `listViewItemDrawables` under the key
-     * `itemID`.
+     *  * We store the [BitmapDrawable] returned by our method [getBitmapDrawableFromView] which
+     *  contains the contents of `child` in `listViewItemDrawables` under the key `itemID`.
      *
+     * When done with the loop we add our [ListItemObject] parameter [newObj] to our [MutableList]
+     * of [ListItemObject] field [mData], call the [CustomArrayAdapter.addStableIdForDataAtPosition]
+     * method of `adapter` to have it generate and add a new stable id for the new [ListItemObject]
+     * at position 0 (Note that we share access with `adapter` to [mData]). We then call
+     * the [CustomArrayAdapter.notifyDataSetChanged] method of `adapter` notify it that the
+     * underlying data has been changed and any [View] reflecting the data set should refresh itself.
      *
-     * When done with the loop we add our parameter `ListItemObject newObj` to our field
-     * `List<ListItemObject> mData`, call the `addStableIdForDataAtPosition` method of
-     * `adapter` to have it generate and add a new stable id for the new `ListItemObject`
-     * at position 0 (Note that we share access with `adapter` to `mData`). We then call
-     * the `notifyDataSetChanged` method of `adapter` notify it that the underlying data
-     * has been changed and any View reflecting the data set should refresh itself.
+     * We initialize [ViewTreeObserver] variable `val observer` with a handle to the [ViewTreeObserver]
+     * for our view's hierarchy and add an anonymous [ViewTreeObserver.OnPreDrawListener] whose
+     * [ViewTreeObserver.OnPreDrawListener.onPreDraw] override causes some fancy animations to occur
+     * when the [ListView] is redrawn.
      *
-     *
-     * We initialize `ViewTreeObserver observer` with a handle to the `ViewTreeObserver`
-     * for our view's hierarchy and add an anonymous `OnPreDrawListener` whose `onPreDraw`
-     * override causes some fancy animations to occur when the `ListView` is redrawn.
-     *
-     * @param newObj `ListItemObject` to add to our dataset (and animate into place).
+     * @param newObj the [ListItemObject] to add to our dataset (and animate into its place in our
+     * [ListView]).
      */
     fun addRow(newObj: ListItemObject) {
         val adapter = adapter as CustomArrayAdapter
@@ -223,7 +222,7 @@ class InsertionListView : ListView {
         mData!!.add(0, newObj)
         adapter.addStableIdForDataAtPosition(0)
         adapter.notifyDataSetChanged()
-        val observer = viewTreeObserver
+        val observer: ViewTreeObserver = viewTreeObserver
         observer.addOnPreDrawListener(object : OnPreDrawListener {
             /**
              * Callback method to be invoked when the view tree is about to be drawn. At this point, all
