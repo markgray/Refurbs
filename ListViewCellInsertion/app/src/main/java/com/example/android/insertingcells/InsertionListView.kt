@@ -225,130 +225,112 @@ class InsertionListView : ListView {
         val observer: ViewTreeObserver = viewTreeObserver
         observer.addOnPreDrawListener(object : OnPreDrawListener {
             /**
-             * Callback method to be invoked when the view tree is about to be drawn. At this point, all
-             * views in the tree have been measured and given a frame. Clients can use this to adjust
-             * their scroll bounds or even to request a new layout before drawing occurs.
+             * Callback method to be invoked when the view tree is about to be drawn. At this point,
+             * all views in the tree have been measured and given a frame. Clients can use this to
+             * adjust their scroll bounds or even to request a new layout before drawing occurs.
              *
+             * First we remove ourselves as an [OnPreDrawListener]. We initialize our [ArrayList]
+             * of [Animator] variable `val animations` with a new instance, initialize [View]
+             * variable `val newCell` with our 0'th child (the one with at least a bit showing at
+             * the top of our view). We then initialize [ImageView] variable `val imgView` by
+             * finding the view in `newCell` with id [R.id.image_view], and initialize [ImageView]
+             * variable `val copyImgView` with a new instance. We initialize [Int] variable
+             * `val firstVisiblePosition` with the position within the adapter's data set for the
+             * first item displayed on screen, initialize [Boolean] variable `val shouldAnimateInNewRow`
+             * with the value returned by our method [shouldAnimateInNewRow] (just returns `true` if
+             * the position within the adapter's data set for the first item displayed on screen is
+             * 0), and initialize [Boolean] variable `val shouldAnimateInImage` with the value
+             * returned by our method [shouldAnimateInNewImage] (returns `true` if the position
+             * within the adapter's data set for the first item displayed on screen is 0 AND the
+             * top of the 0'th child is at the very top of our view (also returns `true` if there
+             * are 0 children). We now branch on the value of `shouldAnimateInNewRow`:
              *
-             * First we remove ourselves as an `OnPreDrawListener`. We initialize our variable
-             * `ArrayList<Animator> animations` with a new instance, `View newCell` with our
-             * 0'th child (the one with at least a bit showing at the top of our view). We then
-             * initialize `ImageView imgView` by finding the view in `newCell` with id
-             * R.id.image_view, and initialize `ImageView copyImgView` with a new instance.
-             * We initialize `int firstVisiblePosition` with the position within the adapter's
-             * data set for the first item displayed on screen, initialize `boolean shouldAnimateInNewRow`
-             * with the value returned by our method `shouldAnimateInNewRow` (just returns true
-             * if the position within the adapter's data set for the first item displayed on screen is
-             * 0), and initialize `boolean shouldAnimateInImage` with the value returned by our
-             * method `shouldAnimateInNewImage` (returns true if the position within the adapter's
-             * data set for the first item displayed on screen is 0 AND the top of the 0'th child is
-             * at the very top of our view (also returns true if there are 0 children). We now branch
-             * on the value of `shouldAnimateInNewRow`:
+             *  * `true`: We initialize [TextView] variable `val textView` by finding the view in
+             *  `newCell` with id [R.id.text_view], create [ObjectAnimator] variable `val textAlphaAnimator`
+             *  to animate the alpha of `textView` from 0 to 1.0, and add it to our [ArrayList] of
+             *  [Animator] variable `animations`.
              *
-             *  *
-             * We initialize `TextView textView` by finding the view in `newCell`
-             * with id R.id.text_view, create `ObjectAnimator textAlphaAnimator` to animate
-             * the alpha of `textView` from 0 to 1.0, and add it to `animations`.
+             *  * Then if `shouldAnimateInImage` is also true:
              *
-             *  *
-             * Then if `shouldAnimateInImage` is also true:
+             *  * We initialize [Int] variable `val width` with the width of `imgView` and [Int]
+             *  variable `val height` with its height.
              *
-             *  *
-             * We initialize `int width` with the width of `imgView` and
-             * `int height` with its height.
+             *  * We initialize [Point] variable `val childLoc` with the absolute x,y coordinates
+             *  relative to the top left corner of the phone screen as returned by our method
+             *  [getLocationOnScreen] for `newCell`, and [Point] variable `val layoutLoc` with the
+             *  value that method calculates for [RelativeLayout] field [mLayout] (our parent
+             *  [ViewGroup])
              *
-             *  *
-             * We initialize `Point childLoc` with the absolute x,y coordinates
-             * relative to the top left corner of the phone screen as returned by our
-             * method `getLocationOnScreen` for `newCell`, and
-             * `Point layoutLoc` with the value that method calculates for
-             * `RelativeLayout mLayout` (our parent `ViewGroup`)
+             *  * We initialize [ListItemObject] variable `val obj` with the 0'th object in
+             *  [MutableList] of [ListItemObject] field [mData], and initialize [Bitmap] variable
+             *  `val bitmap` with the bitmap returned by the [CustomArrayAdapter.getCroppedBitmap]
+             *  method of [CustomArrayAdapter] when it is passed the [Bitmap] decoded from the
+             *  resource id that the [ListItemObject.imgResource] property of `obj` returns.
              *
-             *  *
-             * We initialize `ListItemObject obj` with the 0'th object in
-             * `mData`, and initialize `Bitmap bitmap` with the bitmap
-             * returned by the `getCroppedBitmap` method of `CustomArrayAdapter`
-             * when it is passed the `Bitmap` decoded from the resource id that
-             * the `getImgResource` method of `obj` returns.
+             *  * We then set the content of [ImageView] variable `copyImgView` to `bitmap`, set the
+             *  visibility of `imgView` to `INVISIBLE`, and set the scale type of `copyImgView` to
+             *  [ImageView.ScaleType.CENTER].
              *
-             *  *
-             * We then set the content of `ImageView copyImgView` to `bitmap`,
-             * set the visibility of `imgView` to INVISIBLE, and set the scale type
-             * of `copyImgView` to CENTER.
+             *  * We initialize [ObjectAnimator] variable `val imgViewTranslation` with an animator
+             *  which will animate the `Y` property of `copyImgView` to the value calculated by
+             *  subtracting the `y` field of `layoutLoc` from the `y` field of `childLoc`.
              *
-             *  *
-             * We initialize `ObjectAnimator imgViewTranslation` with an animator which
-             * will animate the Y property of `copyImgView` to the value calculated
-             * by subtracting the `y` field of `layoutLoc` from the `y`
-             * field of `childLoc`.
+             *  * We initialize [PropertyValuesHolder] variable `val imgViewScaleY` with an instance
+             *  which will animate the SCALE_Y property from 0 to 1.0 and initialize [PropertyValuesHolder]
+             *  variable `val imgViewScaleX` with an instance which will animate the SCALE_X property
+             *  from 0 to 1.0, and then initialize [ObjectAnimator] variable `val imgViewScaleAnimator`
+             *  with an instance which will apply both `imgViewScaleX` and `imgViewScaleY` to
+             *  `copyImgView`
              *
-             *  *
-             * We initialize `PropertyValuesHolder imgViewScaleY` with an instance
-             * which will animate the SCALE_Y property from 0 to 1.0 and initialize
-             * `PropertyValuesHolder imgViewScaleX` with an instance which will
-             * animate the SCALE_X property from 0 to 1.0, and then initialize
-             * `ObjectAnimator imgViewScaleAnimator` with an instance which will
-             * apply both `imgViewScaleX` and `imgViewScaleY` to `copyImgView`
+             *  * We then set the [TimeInterpolator] of `imgViewScaleAnimator` to [OvershootInterpolator]
+             *  field [sOvershootInterpolator] and add `imgViewTranslation` and `imgViewScaleAnimator`
+             *  to `animations`.
              *
-             *  *
-             * We then set the `TimeInterpolator` of `imgViewScaleAnimator`
-             * to `sOvershootInterpolator` and add `imgViewTranslation` and
-             * `imgViewScaleAnimator` to `animations`.
+             *  * We initialize [RelativeLayout.LayoutParams] variable `val params` with a `width`
+             *  by `height` instance and add [ImageView] variable `copyImgView` to [RelativeLayout]
+             *  field [mLayout] using `params` as the layout params.
              *
-             *  *
-             * We initialize `RelativeLayout.LayoutParams params` with a `width`
-             * by `height` instance and add `ImageView copyImgView` to
-             * `RelativeLayout mLayout` using `params` as the layout params.
+             * Now we loop over [Int] variable `var i` for all of the currently visible cells in our
+             * [ListView]:
              *
+             *  * We initialize [View] variable `val child` with the `i`'th child [View], and
+             *  initialize [Int] variable `val position` to `firstVisiblePosition` plus `i`
              *
+             *  * We initialize [Long] variable `val itemId` with the item id of the position
+             *  `position` item in `adapter`, [Rect] variable `val startRect` with the [Rect] stored
+             *  under the key `itemId` in [HashMap] of [Long] to [Rect] variable `listViewItemBounds`,
+             *  and [Int] variable `val top` with the top position of `child` relative to its parent.
              *
+             *  * We now branch on the value of `startRect`:
              *
-             * Now we loop over `int i` for all of the currently visible cells in our `ListView`:
+             *  * If `startRect` is not `null` it was visible before the data set change, and after
+             *  the data set change so we animate the cell between the two positions: Initializing
+             *  [Int] variable `val startTop` to the top of `startRect` and [Int] variable `val delta`
+             *  to `startTop` minus `top`. We create [ObjectAnimator] variable `val animation` to
+             *  animate the TRANSLATION_Y property of `child` from `delta` to 0f and add it to
+             *  `animations`
              *
-             *  *
-             * We initialize `View child` with the `i`'th child view, and initialize
-             * `int position` to `firstVisiblePosition` plus `i`
+             *  * If `startRect` is `null` it was not visible (or present) before the data set
+             *  change but is visible after the data set change so we use its height to determine
+             *  the delta by which it should be animated: initializing [Int] variable `val childHeight`
+             *  to the height of `child` plus the divider height, [Int] variable `val startTop` to
+             *  `top` plus `childHeight` if `i` is greater than 0 or to `top` minus `childHeight` if
+             *  `i` is 0. We then initialize [Int] variable val delta` to `startTop` minus `top`,
+             *  and create [ObjectAnimator] variable `val animation` to animate the TRANSLATION_Y
+             *  property of `child` from `delta` to 0 then add `animation` to `animations`.
              *
-             *  *
-             * We initialize `long itemId` with the item id of the position `position`
-             * item in `adapter`, `Rect startRect` with the `Rect` stored under
-             * the key `itemId` in `listViewItemBounds`, and `int top` with
-             * the top position of `child` relative to its parent.
+             * We then remove the [Rect] stored under the key `itemId` in [HashMap] of [Long] to
+             * [Rect] variable `listViewItemBounds` and the [BitmapDrawable] stored under that key
+             * in [HashMap] of [Long] to [BitmapDrawable] variable `listViewItemDrawables`.
              *
-             *  *
-             * We now branch on the value of `startRect`:
+             * Now we loop over the [Long] variable `var itemId` keys of the cells remaining in
+             * `listViewItemBounds` (these are cells that were visible before the data set changed
+             * but not after):
              *
-             *  *
-             * If `startRect` is not null it was visible before the data set change,
-             * and after the data set change so we animate the cell between the two positions:
-             * Initializing `int startTop` to the top of `startRect` and
-             * `int delta` to `startTop` minus `top` we create
-             * `ObjectAnimator animation` to animate the TRANSLATION_Y property
-             * of `child` from `delta` to 0 and add it to `animations`
-             *
-             *  *
-             * If `startRect` is null it was not visible (or present) before the data
-             * set change but is visible after the data set change so we use its height to
-             * determine the delta by which it should be animated: initializing `int childHeight`
-             * to the height of `child` plus the divider height, `int startTop` to
-             * `top` plus `childHeight` if `i` is greater than 0 or to
-             * `top` minus `childHeight` if `i` is 0. We then initialize
-             * `int delta` to `startTop` minus `top`, and create `ObjectAnimator animation`
-             * to animate the TRANSLATION_Y property of `child` from `delta` to 0 then
-             * add `animation` to `animations`.
-             *
-             *
-             * We then remove the `Rect` stored under the key `itemId` in `listViewItemBounds`
-             * and the `BitmapDrawable` stored under that key in `listViewItemDrawables`.
-             *
-             *
-             * Now set loop over the `Long itemId` keys of the cells remaining in `listViewItemBounds`
-             * (these are cells that were visible before the data set changed but not after):
-             *
-             *  *
-             * We initialize `BitmapDrawable bitmapDrawable` with the `BitmapDrawable`
-             * stored under key `itemId` in `listViewItemDrawables` and `Rect startBounds`
-             * with the `Rect` stored under that key in `listViewItemBounds`.
+             *  * We initialize [BitmapDrawable] variable `val bitmapDrawable` with the [BitmapDrawable]
+             *  stored under key `itemId` in [HashMap] of [Long] to [BitmapDrawable] variable
+             *  `listViewItemDrawables` and [Rect] variable `val startBounds` with the [Rect] stored
+             *  under that key in [HashMap] of [Long] to [Rect] variable `listViewItemBounds`.
              *
              *  *
              * We set the bounding rectangle of `bitmapDrawable` to `startBounds` (this is where
@@ -398,12 +380,12 @@ class InsertionListView : ListView {
             override fun onPreDraw(): Boolean {
                 observer.removeOnPreDrawListener(this)
                 val animations = ArrayList<Animator>()
-                val newCell = getChildAt(0)
+                val newCell: View = getChildAt(0)
                 val imgView = newCell.findViewById<ImageView>(R.id.image_view)
                 val copyImgView = ImageView(mContext)
-                val firstVisiblePositionLocal = getFirstVisiblePosition()
-                val shouldAnimateInNewRow = shouldAnimateInNewRow()
-                val shouldAnimateInImage = shouldAnimateInNewImage()
+                val firstVisiblePositionLocal: Int = getFirstVisiblePosition()
+                val shouldAnimateInNewRow: Boolean = shouldAnimateInNewRow()
+                val shouldAnimateInImage: Boolean = shouldAnimateInNewImage()
                 if (shouldAnimateInNewRow) {
                     /* Fades in the text of the first cell. */
                     val textView = newCell.findViewById<TextView>(R.id.text_view)
@@ -411,20 +393,28 @@ class InsertionListView : ListView {
                     animations.add(textAlphaAnimator)
 
                     /* Animates in the extra hover view corresponding to the image
-                     * in the top row of the ListView. */if (shouldAnimateInImage) {
-                        val width = imgView.width
-                        val height = imgView.height
-                        val childLoc = getLocationOnScreen(newCell)
-                        val layoutLoc = getLocationOnScreen(mLayout)
-                        val obj = mData!![0]
-                        val bitmap = getCroppedBitmap(BitmapFactory
-                            .decodeResource(mContext!!.resources, obj.imgResource,
-                                null))
+                     * in the top row of the ListView. */
+                    if (shouldAnimateInImage) {
+                        val width: Int = imgView.width
+                        val height: Int = imgView.height
+                        val childLoc: Point = getLocationOnScreen(newCell)
+                        val layoutLoc: Point = getLocationOnScreen(mLayout)
+                        val obj: ListItemObject = mData!![0]
+                        val bitmap: Bitmap = getCroppedBitmap(
+                            BitmapFactory.decodeResource(
+                                mContext!!.resources,
+                                obj.imgResource,
+                                null
+                            )
+                        )
                         copyImgView.setImageBitmap(bitmap)
                         imgView.visibility = INVISIBLE
                         copyImgView.scaleType = ImageView.ScaleType.CENTER
-                        val imgViewTranslation = ObjectAnimator.ofFloat(copyImgView,
-                            Y, (childLoc.y - layoutLoc.y).toFloat())
+                        val imgViewTranslation = ObjectAnimator.ofFloat(
+                            copyImgView,
+                            Y,
+                            (childLoc.y - layoutLoc.y).toFloat()
+                        )
                         val imgViewScaleY = PropertyValuesHolder.ofFloat(SCALE_Y, 0f, 1.0f)
                         val imgViewScaleX = PropertyValuesHolder.ofFloat(SCALE_X, 0f, 1.0f)
                         val imgViewScaleAnimator = ObjectAnimator
@@ -438,29 +428,39 @@ class InsertionListView : ListView {
                 }
 
                 /* Loops through all the currently visible cells in the ListView and animates
-                 * all of them into their post layout positions from their original positions.*/for (i in 0 until childCount) {
-                    val child = getChildAt(i)
-                    val position = firstVisiblePositionLocal + i
-                    val itemId = adapter.getItemId(position)
-                    val startRect = listViewItemBounds[itemId]
-                    val top = child.top
+                 * all of them into their post layout positions from their original positions.*/
+                for (i in 0 until childCount) {
+                    val child: View = getChildAt(i)
+                    val position: Int = firstVisiblePositionLocal + i
+                    val itemId: Long = adapter.getItemId(position)
+                    val startRect: Rect? = listViewItemBounds[itemId]
+                    val top: Int = child.top
                     if (startRect != null) {
                         /* If the cell was visible before the data set change and
                          * after the data set change, then animate the cell between
                          * the two positions.*/
-                        val startTop = startRect.top
-                        val delta = startTop - top
-                        val animation = ObjectAnimator.ofFloat(child, TRANSLATION_Y, delta.toFloat(), 0f)
+                        val startTop: Int = startRect.top
+                        val delta: Int = startTop - top
+                        val animation = ObjectAnimator.ofFloat(
+                            child,
+                            TRANSLATION_Y,
+                            delta.toFloat(),
+                            0f
+                        )
                         animations.add(animation)
                     } else {
                         /* If the cell was not visible (or present) before the data set
                          * change but is visible after the data set change, then use its
                          * height to determine the delta by which it should be animated.*/
-                        val childHeight = child.height + dividerHeight
-                        val startTop = top + if (i > 0) childHeight else -childHeight
-                        val delta = startTop - top
-                        val animation = ObjectAnimator.ofFloat(child,
-                            TRANSLATION_Y, delta.toFloat(), 0f)
+                        val childHeight: Int = child.height + dividerHeight
+                        val startTop: Int = top + if (i > 0) childHeight else -childHeight
+                        val delta: Int = startTop - top
+                        val animation = ObjectAnimator.ofFloat(
+                            child,
+                            TRANSLATION_Y,
+                            delta.toFloat(),
+                            0f
+                        )
                         animations.add(animation)
                     }
                     listViewItemBounds.remove(itemId)
@@ -474,15 +474,21 @@ class InsertionListView : ListView {
                  * original state to the new one (off the screen). By storing all
                  * the drawables that meet this criteria, they can be redrawn on top
                  * of the ListView via dispatchDraw as they are animating.
-                 */for (itemId in listViewItemBounds.keys) {
-                    val bitmapDrawable = listViewItemDrawables[itemId]
-                    val startBounds = listViewItemBounds[itemId]
+                 */
+                for (itemId in listViewItemBounds.keys) {
+                    val bitmapDrawable: BitmapDrawable? = listViewItemDrawables[itemId]
+                    val startBounds: Rect? = listViewItemBounds[itemId]
                     bitmapDrawable!!.bounds = startBounds!!
-                    val childHeight = startBounds.bottom - startBounds.top + dividerHeight
+                    val childHeight: Int = startBounds.bottom - startBounds.top + dividerHeight
                     val endBounds = Rect(startBounds)
                     endBounds.offset(0, childHeight)
-                    val animation = ObjectAnimator.ofObject(bitmapDrawable,
-                        "bounds", sBoundsEvaluator, startBounds, endBounds)
+                    val animation = ObjectAnimator.ofObject(
+                        bitmapDrawable,
+                        "bounds",
+                        sBoundsEvaluator,
+                        startBounds,
+                        endBounds
+                    )
                     animation.addUpdateListener(object : AnimatorUpdateListener {
                         private var mLastBound: Rect? = null
                         private val mCurrentBound = Rect()
@@ -515,7 +521,8 @@ class InsertionListView : ListView {
                 }
 
                 /* Animates all the cells from their old position to their new position
-                 *  at the same time.*/isEnabled = false
+                 *  at the same time.*/
+                isEnabled = false
                 mRowAdditionAnimationListener!!.onRowAdditionAnimationStart()
                 val set = AnimatorSet()
                 set.duration = NEW_ROW_DURATION.toLong()
