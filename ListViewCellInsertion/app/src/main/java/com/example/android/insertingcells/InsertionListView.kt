@@ -41,8 +41,10 @@ import android.view.View
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.view.animation.OvershootInterpolator
 import android.animation.TimeInterpolator
+import android.view.Display
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.RelativeLayout
@@ -332,50 +334,52 @@ class InsertionListView : ListView {
              *  `listViewItemDrawables` and [Rect] variable `val startBounds` with the [Rect] stored
              *  under that key in [HashMap] of [Long] to [Rect] variable `listViewItemBounds`.
              *
-             *  *
-             * We set the bounding rectangle of `bitmapDrawable` to `startBounds` (this is where
-             * the drawable will draw when its `draw()` method is called).
+             *  * We set the bounding rectangle of `bitmapDrawable` to `startBounds` (this is where
+             *  the drawable will draw when its `draw()` method is called).
              *
-             *  *
-             * We initialize `int childHeight` to the `bottom` field of  `startBounds` minus
-             * its `top` field plus the divider height, and `Rect endBounds` to an instance
-             * initialized to the values of `startBounds`. We then offset `endBounds` by 0
-             * in the X direction and `childHeight` in the Y direction.
+             *  * We initialize [Int] variable `val childHeight` to the [Rect.bottom] property of
+             *  `startBounds` minus its [Rect.top] property plus the divider height, and [Rect]
+             *  variable `val endBounds` to an instance initialized to the values of `startBounds`.
+             *  We then offset `endBounds` by 0 in the X direction and `childHeight` in the Y
+             *  direction.
              *
-             *  *
-             * We create `ObjectAnimator animation` to animate the "bounds" property of `bitmapDrawable`
-             * using `sBoundsEvaluator` as the `TypeEvaluator` from `startBounds` to `endBounds`.
-             * We then add an anonymous `AnimatorUpdateListener` whose `onAnimationUpdate` override
-             * creates a union of the `Rect` which was just animated to with the accumulated bounds
-             * in order to invalidate only the area of interest (it is deprecated to do this though so
-             * it would be better to just invalidate the entire view).
+             *  * We create [ObjectAnimator] variable `val animation` to animate the "bounds"
+             *  property of `bitmapDrawable` using our [TypeEvaluator] of [Rect] field
+             *  [sBoundsEvaluator] as the [TypeEvaluator] from `startBounds` to `endBounds`. We
+             *  then add an anonymous [AnimatorUpdateListener] whose
+             *  [AnimatorUpdateListener.onAnimationUpdate] override creates a union of the [Rect]
+             *  which was just animated to with the accumulated bounds in order to invalidate only
+             *  the area of interest (it is deprecated to do this though so it would be better to
+             *  just invalidate the entire view).
              *
-             *  *
-             * We then remove the `Rect` stored under the key `itemId` in `listViewItemBounds`
-             * and the `BitmapDrawable` stored under that key in `listViewItemDrawables`.
+             *  * We then remove the [Rect] stored under the key `itemId` in [HashMap] of [Long] to
+             *  [Rect] variable `listViewItemBounds` and the [BitmapDrawable] stored under that key
+             *  in [HashMap] of [Long] to [BitmapDrawable] variable `listViewItemDrawables`.
              *
-             *  *
-             * We add `bitmapDrawable` to `mCellBitmapDrawables` and `animation` to
-             * `animations` and loop around for the next `itemId`
+             *  * We add `bitmapDrawable` to [MutableList] of [BitmapDrawable]
+             *  field [mCellBitmapDrawables] and `animation` to [ArrayList] of [Animator] variable
+             *  `animations` and loop around for the next `itemId`.
              *
-             *
-             * We now disable our `View` and call the `onRowAdditionAnimationStart` override of
-             * `OnRowAdditionAnimationListener mRowAdditionAnimationListener` to notify it that the
-             * animations are about to start. We initialize `AnimatorSet set` with a new instance,
-             * set its duration to NEW_ROW_DURATION and set it up to play the animations in `animations`
-             * at the same time. We then add an anonymous `AnimatorListenerAdapter` to `set` whose
-             * `onAnimationEnd` override clears `mCellBitmapDrawables`, sets the visibility of
-             * `imgView` to VISIBLE, removes the view `copyImgView` from `mLayout`, calls
-             * the `onRowAdditionAnimationEnd` override of `mRowAdditionAnimationListener` to
-             * notify it that the animation is over, enables this view and calls `invalidate` to
+             * We now disable our [View] and call the
+             * [OnRowAdditionAnimationListener.onRowAdditionAnimationStart] override of
+             * [OnRowAdditionAnimationListener] field [mRowAdditionAnimationListener] to notify it
+             * that the animations are about to start. We initialize [AnimatorSet] variable `val set`
+             * with a new instance, set its duration to [NEW_ROW_DURATION] and set it up to play the
+             * animations in `animations` at the same time. We then add an anonymous
+             * [AnimatorListenerAdapter] to `set` whose [AnimatorListenerAdapter.onAnimationEnd]
+             * override clears [MutableList] of [BitmapDrawable] field [mCellBitmapDrawables], sets
+             * the visibility of `imgView` to VISIBLE, removes the view `copyImgView` from
+             * [RelativeLayout] field [mLayout], calls
+             * the [OnRowAdditionAnimationListener.onRowAdditionAnimationEnd] override of
+             * [OnRowAdditionAnimationListener] field [mRowAdditionAnimationListener] to
+             * notify it that the animation is over, enables this view and calls [invalidate] to
              * request a redrawing of the view.
              *
-             *
              * It is now time to start `set` running, clear the contents of `listViewItemBounds`
-             * and `listViewItemDrawables` and return true to the caller to have it proceed with the
+             * and `listViewItemDrawables` and return `true` to the caller to have it proceed with the
              * current drawing pass.
              *
-             * @return Return true to proceed with the current drawing pass, or false to cancel.
+             * @return Return `true` to proceed with the current drawing pass, or `false` to cancel.
              */
             override fun onPreDraw(): Boolean {
                 observer.removeOnPreDrawListener(this)
@@ -495,12 +499,13 @@ class InsertionListView : ListView {
 
                         /**
                          * Notifies the occurrence of another frame of the animation. We initialize
-                         * `Rect bounds` with most recent `Rect` calculated by our parameter
-                         * `ValueAnimator valueAnimator`, and copy its coordinates to `mCurrentBound`.
-                         * If `mLastBound` is not null we update `mCurrentBound` to enclose itself
-                         * and `mLastBound`. We then set `mLastBound` to `bounds` and call
-                         * the `invalidate` method to mark the area defined by `mCurrentBound`
-                         * as needing to be redrawn and scheduling it to occur.
+                         * [Rect] variable `val bounds` with most recent [Rect] calculated by our
+                         * [ValueAnimator] parameter [valueAnimator], and copy its coordinates to
+                         * [Rect] property [mCurrentBound]. If [Rect] property [mLastBound] is not
+                         * `null` we update [mCurrentBound] to enclose itself and [mLastBound]. We
+                         * then set [mLastBound] to `bounds` and call the [invalidate] method to
+                         * mark the area defined by [mCurrentBound] as needing to be redrawn and
+                         * scheduling it to occur.
                          *
                          * @param valueAnimator The animation which has moved to another frame.
                          */
@@ -529,11 +534,12 @@ class InsertionListView : ListView {
                 set.playTogether(animations)
                 set.addListener(object : AnimatorListenerAdapter() {
                     /**
-                     * Notifies the end of the animation. We clear `mCellBitmapDrawables` of all
-                     * entries, set `imgView` to be VISIBLE, remove the view `copyImgView`
-                     * from `mLayout`, call the `onRowAdditionAnimationEnd` override of
-                     * `mRowAdditionAnimationListener` to notify it that the animation has finished,
-                     * enable our view, and call `invalidate` to have us be drawn again.
+                     * Notifies the end of the animation. We clear [MutableList] of [BitmapDrawable]
+                     * field [mCellBitmapDrawables] of all entries, set `imgView` to be VISIBLE,
+                     * remove the view `copyImgView` from [RelativeLayout] field [mLayout], call the
+                     * [OnRowAdditionAnimationListener.onRowAdditionAnimationEnd] override of
+                     * [mRowAdditionAnimationListener] to notify it that the animation has finished,
+                     * enable our view, and call [invalidate] to have us be drawn again.
                      *
                      * @param animation The animation which reached its end.
                      */
@@ -555,17 +561,17 @@ class InsertionListView : ListView {
     }
 
     /**
-     * Called by `draw` to draw the child views. This may be overridden by derived classes to
+     * Called by [draw] to draw the child views. This may be overridden by derived classes to
      * gain control just before its children are drawn (but after its own view has been drawn). By
-     * overriding `dispatchDraw`, the BitmapDrawables of all the cells that were on the screen
+     * overriding [dispatchDraw], the [BitmapDrawable]s of all the cells that were on the screen
      * before (but not after) the layout are drawn and animated off the screen.
      *
+     * First we call our super's implementation of `dispatchDraw`, then if the size of [MutableList]
+     * of [BitmapDrawable] field [mCellBitmapDrawables] is greater than 0 we loop through all the
+     * [BitmapDrawable] variable `var bitmapDrawable` in it calling the [BitmapDrawable.draw] method
+     * of each [BitmapDrawable].
      *
-     * First we call our super's implementation of `dispatchDraw`, then if the size of
-     * `mCellBitmapDrawables` is greater than 0 we loop through all the `BitmapDrawable bitmapDrawable`
-     * in it calling the `draw` method of each `BitmapDrawable`.
-     *
-     * @param canvas the canvas on which to draw the view
+     * @param canvas the [Canvas] on which to draw the view
      */
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
@@ -580,7 +586,7 @@ class InsertionListView : ListView {
      * Convenience function to determine if the first visible position is equal to 0, in which case
      * we need to animate in new rows when they are added.
      *
-     * @return true if the first visible position is equal to 0
+     * @return `true` if the first visible position is equal to 0
      */
     fun shouldAnimateInNewRow(): Boolean {
         val firstVisiblePosition = firstVisiblePosition
@@ -588,16 +594,16 @@ class InsertionListView : ListView {
     }
 
     /**
-     * Convenience function to determine whether the `ImageView` of a new row should be animated
-     * from the top of the screen to its item's position. If our `ViewGroup` has no children yet
-     * we just return true to the caller. Otherwise we initialize `boolean shouldAnimateInNewRow`
-     * with the value returned by our method `shouldAnimateInNewRow`, and `View topCell`
-     * with our 0'th child. If `shouldAnimateInNewRow` is true and the top position of the view
-     * `topCell` relative to its parent is 0 we return true to the caller otherwise we return
-     * false.
+     * Convenience function to determine whether the [ImageView] of a new row should be animated
+     * from the top of the screen to its item's position. If our [ViewGroup] has no children yet
+     * we just return `true` to the caller. Otherwise we initialize [Boolean] variable
+     * `val shouldAnimateInNewRow` with the value returned by our method [shouldAnimateInNewRow],
+     * and [View] variable `val topCell` with our 0'th child. If `shouldAnimateInNewRow` is `true`
+     * and the top position of the view `topCell` relative to its parent is 0 we return `true` to
+     * the caller otherwise we return `false`.
      *
-     * @return true if the `ImageView` of a new row should be animated from the top of the
-     * screen, which should occur only if our list view is at the very top of its list
+     * @return `true` if the [ImageView] of a new row should be animated from the top of the screen,
+     * which should occur only if our list view is at the very top of its list.
      */
     fun shouldAnimateInNewImage(): Boolean {
         if (childCount == 0) {
@@ -609,16 +615,16 @@ class InsertionListView : ListView {
     }
 
     /**
-     * Returns a bitmap drawable showing a screenshot of the view passed in. We initialize our variable
-     * `Bitmap bitmap` with an instance that is the same width and height as our parameter
-     * `View v` using ARGB_8888 as its config. We create `Canvas canvas` to draw into
-     * `bitmap` and call the `draw` method of `v` to have it draw itself onto
-     * `canvas`. Finally we return a new instance of `BitmapDrawable` created from
+     * Returns a bitmap drawable showing a screenshot of the [View] parameter [v] passed in. We
+     * initialize our [Bitmap] variable `val bitmap` with an instance that is the same width and
+     * height as our [View] parameter [v] using ARGB_8888 as its config. We create [Canvas] variable
+     * `val canvas` to draw into `bitmap` and call the [View.draw] method of [v] to have it draw
+     * itself onto `canvas`. Finally we return a new instance of [BitmapDrawable] created from
      * `bitmap` using an initial target density based on the display metrics of the resources
-     * of our `View`.
+     * of our [View].
      *
-     * @param v `View` we want to create a bitmap of.
-     * @return a bitmap drawable showing a screenshot of the view passed in.
+     * @param v the [View] we want to create a bitmap of.
+     * @return a [BitmapDrawable] showing a screenshot of the view passed in.
      */
     private fun getBitmapDrawableFromView(v: View): BitmapDrawable {
         val bitmap = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
@@ -628,20 +634,21 @@ class InsertionListView : ListView {
     }
 
     /**
-     * Returns the absolute x,y coordinates of our parameter `View v` relative to the top left
-     * corner of the phone screen. We initialize `DisplayMetrics dm` with a new instance. We
-     * retrieve the context our view is running in, cast it to `Activity` in order to call its
-     * `getWindowManager` method to retrieve the window manager for showing custom windows, in
-     * order to call its `getDefaultDisplay` method to retrieve the `Display` upon which
-     * its will create new windows, in order to call its `getMetrics` method to load the display
-     * metrics that describe its size and density into `dm` (since we do not use `dm` this
-     * is a strange thing to do of course). We then allocate to ints to initialize `int[] location`
-     * and call the `getLocationOnScreen` method of `v` to load its coordinates on the
-     * screen into `location`. Finally we return a `Point` constructed from the X coordinate
-     * in `location[0]` and the Y coordinate in `location[1]`.
+     * Returns the absolute x,y coordinates of our [View] parameter [v] relative to the top left
+     * corner of the phone screen. We initialize [DisplayMetrics] variable `val dm` with a new
+     * instance. We retrieve the context our view is running in, cast it to [Activity] in order to
+     * call its [Activity.getWindowManager] method (kotlin `windowManager` property( to retrieve the
+     * window manager for showing custom windows, in order to call its [WindowManager.getDefaultDisplay]
+     * method (kotlin `defaultDisplay` property) to retrieve the [Display] upon which it will create
+     * new windows, in order to call its [Display.getMetrics] method to load the display metrics
+     * that describe its size and density into `dm` (since we do not use `dm` this is a strange
+     * thing to do of course). We then allocate an [IntArray] of size 2 to initialize `val location`
+     * and call the [View.getLocationOnScreen] method of [v] to load its coordinates on the screen
+     * into `location`. Finally we return a [Point] constructed from the X coordinate in
+     * `location[0]` and the Y coordinate in `location[1]`.
      *
-     * @param v `View` we want the coordinates of.
-     * @return the absolute x,y coordinates of our parameter `View v` relative to the top left
+     * @param v the [View] we want the coordinates of.
+     * @return the absolute x,y coordinates of our [View] parameter [v] relative to the top left
      * corner of the phone screen
      */
     fun getLocationOnScreen(v: View?): Point {
@@ -654,8 +661,8 @@ class InsertionListView : ListView {
     }
 
     /**
-     * Setter for the underlying data set controlling the adapter. We just store our parameter
-     * `data` in our field `List<ListItemObject> mData`.
+     * Setter for the underlying data set controlling the adapter. We just store our [List] of
+     * [ListItemObject] parameter [data] in our [MutableList] of [ListItemObject] field [mData].
      *
      * @param data the `List<ListItemObject>` we are to use as our dataset.
      */
@@ -664,43 +671,48 @@ class InsertionListView : ListView {
     }
 
     /**
-     * Setter for the parent RelativeLayout of this ListView. A reference to this ViewGroup is
+     * Setter for the parent [RelativeLayout] of this [ListView]. A reference to this [ViewGroup] is
      * required in order to add the custom animated overlaying bitmap when adding a new row. We
-     * just save our parameter `RelativeLayout layout` in our field `RelativeLayout mLayout`.
+     * just save our [RelativeLayout] parameter [layout] in our [RelativeLayout] field [mLayout].
      *
-     * @param layout `RelativeLayout` that is our parent view.
+     * @param layout the [RelativeLayout] that is our parent view.
      */
     fun setLayout(layout: RelativeLayout?) {
         mLayout = layout
     }
 
     /**
-     * Setter for our field `OnRowAdditionAnimationListener mRowAdditionAnimationListener`
-     * (we need to call `onRowAdditionAnimationStart` and `onRowAdditionAnimationEnd`
-     * overrides of this field to notify it about the state of our animations). We just save our
-     * parameter in our field.
+     * Setter for our [OnRowAdditionAnimationListener] field [mRowAdditionAnimationListener]. (we
+     * need to call the [OnRowAdditionAnimationListener.onRowAdditionAnimationStart] and
+     * [OnRowAdditionAnimationListener.onRowAdditionAnimationEnd] overrides of this field to notify
+     * it about the state of our animations). We just save our [OnRowAdditionAnimationListener]
+     * parameter [rowAdditionAnimationListener] in our [OnRowAdditionAnimationListener] field
+     * [mRowAdditionAnimationListener].
      *
-     * @param rowAdditionAnimationListener `OnRowAdditionAnimationListener` whose
-     * `onRowAdditionAnimationStart` and `onRowAdditionAnimationEnd` overrides
-     * we are to call
+     * @param rowAdditionAnimationListener the [OnRowAdditionAnimationListener] whose
+     * [OnRowAdditionAnimationListener.onRowAdditionAnimationStart] and
+     * [OnRowAdditionAnimationListener.onRowAdditionAnimationEnd] overrides we are to call
      */
     fun setRowAdditionAnimationListener(rowAdditionAnimationListener: OnRowAdditionAnimationListener?) {
         mRowAdditionAnimationListener = rowAdditionAnimationListener
     }
 
     companion object {
+        /**
+         * TAG used for logging
+         */
         private const val TAG = "InsertionListView"
 
         /**
-         * Duration of the animation which animates all the cells from their old position to their new
-         * position at the same time.
+         * Duration of the animation which animates all the cells from their old position to their
+         * new position at the same time.
          */
         private const val NEW_ROW_DURATION = 500
 
         /**
-         * Amount of overshoot used to construct `OvershootInterpolator sOvershootInterpolator`
-         * which is in turn used as the `TimeInterpolator` for the scaling animation applied to
-         * the image.
+         * Amount of overshoot used when constructing [OvershootInterpolator] field
+         * [sOvershootInterpolator] which is in turn used as the [TimeInterpolator] for the scaling
+         * animation applied to the image.
          */
         private const val OVERSHOOT_INTERPOLATOR_TENSION = 5
 
@@ -710,18 +722,19 @@ class InsertionListView : ListView {
          */
         val sBoundsEvaluator: TypeEvaluator<Rect> = object : TypeEvaluator<Rect> {
             /**
-             * This function returns the result of linearly interpolating the start and end values, with
-             * `fraction` representing the proportion between the start and end values. We
-             * return a new instance of `Rect` whose left, top, right, and bottom values are those
-             * calculated by our `interpolate` method when it linearly interpolates between the
-             * same fields in our parameters `Rect startValue` and `Rect endValue` to take
-             * into account the value of our parameter `fraction`
+             * This function returns the result of linearly interpolating the start and end values,
+             * with [Float] parameter [fraction] representing the proportion between the start and
+             * end values. We return a new instance of [Rect] whose [Rect.left], [Rect.top],
+             * [Rect.right], and [Rect.bottom] values are those calculated by our [interpolate]
+             * method when it linearly interpolates between the same fields in our [Rect] parameters
+             * [startValue] and [endValue] to take into account the value of our [Float] parameter
+             * [fraction]
              *
              * @param fraction   The fraction from the starting to the ending values
              * @param startValue The start value.
              * @param endValue   The end value.
              * @return A linear interpolation between the start and end values, given the
-             * `fraction` parameter.
+             * [Float] parameter [fraction].
              */
             override fun evaluate(fraction: Float, startValue: Rect, endValue: Rect): Rect {
                 return Rect(interpolate(startValue.left, endValue.left, fraction),
@@ -731,13 +744,14 @@ class InsertionListView : ListView {
             }
 
             /**
-             * Linearly interpolates between the start and end values of a value being animated. We return
-             * `start` plus `fraction` times the quantity `end` minus `start`.
+             * Linearly interpolates between the start and end values of a value being animated. We
+             * return our [Int] parameter [start] plus [Float] parameter [fraction] times the
+             * quantity [Int] parameter [end] minus [start].
              *
              * @param start    starting value
              * @param end      ending value
              * @param fraction The fraction from the starting to the ending values
-             * @return a value that is `fraction` distance between the start and end.
+             * @return a value that is [fraction] distance between the start and end.
              */
             fun interpolate(start: Int, end: Int, fraction: Float): Int {
                 return (start + fraction * (end - start)).toInt()
