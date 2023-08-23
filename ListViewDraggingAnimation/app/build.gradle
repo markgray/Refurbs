@@ -2,12 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.android.listviewdragginganimation"
         minSdkVersion 16
-        targetSdkVersion 33
+        //noinspection EditedTargetSdkVersion
+        targetSdkVersion 34
     }
 
     buildTypes {
