@@ -34,41 +34,42 @@ import android.view.View
 class RoundView : View {
 
     /**
-     * `Paint` we use to draw our circle in our `onDraw` override.
+     * [Paint] we use to draw our circle in our [onDraw] override.
      */
     private var mPaint: Paint? = null
 
     /**
-     * Our one argument constructor. First we call our super's constructor, then we call our `init`
-     * method to allocate and configure the `Paint mPaint` our `onDraw` override uses to
-     * draw us. UNUSED
+     * Our one argument constructor. First we call our super's constructor, then we call our
+     * [inititialize] method to allocate and configure the [Paint] field [mPaint] that our [onDraw]
+     * override uses to draw us. UNUSED
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      */
     constructor(context: Context?) : super(context) {
-        init()
+        inititialize()
     }
 
     /**
-     * Perform inflation from XML. First we call our super's constructor, then we call our `init`
-     * method to allocate and configure the `Paint mPaint` our `onDraw` override uses to
-     * draw us. This is the one which is used by our layout file layout/activity_main.xml
+     * Perform inflation from XML. First we call our super's constructor, then we call our
+     * [inititialize] method to allocate and configure the [Paint] field [mPaint] our [onDraw]
+     * override uses to draw us. This is the one which is used by our layout file
+     * layout/activity_main.xml
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        init()
+        inititialize()
     }
 
     /**
-     * Perform inflation from XML and apply a class-specific base style from a theme attribute. First
-     * we call our super's constructor, then we call our `init` method to allocate and configure
-     * the `Paint mPaint` our `onDraw` override uses to draw us. UNUSED
+     * Perform inflation from XML and apply a class-specific base style from a theme attribute.
+     * First we call our super's constructor, then we call our [inititialize] method to allocate
+     * and configure the [Paint] field [mPaint] our [onDraw] override uses to draw us. UNUSED
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      * @param defStyle An attribute in the current theme that contains a
@@ -76,16 +77,16 @@ class RoundView : View {
      * the view. Can be 0 to not look for defaults.
      */
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
-        init()
+        inititialize()
     }
 
     /**
-     * Called by our constructors to allocate and configure the `Paint mPaint` used by our
-     * `onDraw` override to draw us. We initialize `Paint mPaint` with a new instance,
-     * set its ANTI_ALIAS_FLAG, set its color to WHITE, set its style to STROKE, and set its stroke
-     * width to STROKE_WIDTH (6).
+     * Called by our constructors to allocate and configure the [Paint] field [mPaint] used by our
+     * [onDraw] override to draw us. We initialize [Paint] field [mPaint] with a new instance, set
+     * its ANTI_ALIAS_FLAG, set its color to [Color.WHITE], set its style to [Paint.Style.STROKE],
+     * and set its stroke width to [STROKE_WIDTH] (6).
      */
-    private fun init() {
+    private fun inititialize() {
         mPaint = Paint()
         mPaint!!.isAntiAlias = true
         mPaint!!.color = Color.WHITE
@@ -94,28 +95,29 @@ class RoundView : View {
     }
 
     /**
-     * We implement this to do our drawing. We call the `drawCircle` method of our parameter
-     * `Canvas canvas` to draw a circle of radius RADIUS, centered at the center of our view
-     * using `Paint mPaint` as the `Paint`.
+     * We implement this to do our drawing. We call the [Canvas.drawCircle] method of our [Canvas]
+     * parameter [canvas] to draw a circle of radius [RADIUS], centered at the center of our view
+     * using [Paint] field [mPaint] as the [Paint].
      *
-     * @param canvas the canvas on which the background will be drawn
+     * @param canvas the [Canvas] on which the background will be drawn
      */
     override fun onDraw(canvas: Canvas) {
         canvas.drawCircle(width / 2f, height / 2f, RADIUS.toFloat(), mPaint!!)
     }
 
     /**
-     * Creates and returns an @code ObjectAnimator} which will shrink 'this' `View` down to
-     * SCALE_FACTOR by SCALE_FACTOR of its original size, then back to its original size. First we
-     * initialize `PropertyValuesHolder imgViewScaleY` with an instance that will animate the
-     * SCALE_Y property down to SCALE_FACTOR, and `PropertyValuesHolder imgViewScaleX` with an
-     * instance that will animate the SCALE_X property down to SCALE_FACTOR. Then we initialize
-     * `ObjectAnimator imgViewScaleAnimator` that will apply both of them to 'this', set its
-     * repeat count to 1, its repeat mode to REVERSE, and its duration to ANIMATION_DURATION. Finally
-     * we return `imgViewScaleAnimator` to the caller.
+     * Creates and returns an [ObjectAnimator] which will shrink 'this' [View] down to [SCALE_FACTOR]
+     * by [SCALE_FACTOR] of its original size, then back to its original size. First we initialize
+     * [PropertyValuesHolder] variable `val imgViewScaleY` with an instance that will animate the
+     * [View.SCALE_Y] property down to [SCALE_FACTOR], and [PropertyValuesHolder] variable
+     * `val imgViewScaleX` with an instance that will animate the [View.SCALE_X] property down to
+     * [SCALE_FACTOR]. Then we initialize [ObjectAnimator] variable `val imgViewScaleAnimator` with
+     * an instance that will apply both of them to 'this', set its repeat count to 1, its repeat
+     * mode to [ValueAnimator.REVERSE], and its duration to [ANIMATION_DURATION]. Finally we return
+     * `imgViewScaleAnimator` to the caller.
      *
-     * @return an `ObjectAnimator` which will shrink 'this' `View` down to SCALE_FACTOR
-     * by SCALE_FACTOR of its original size, then back to its original size.
+     * @return an [ObjectAnimator] which will shrink 'this' [View] down to [SCALE_FACTOR]
+     * by [SCALE_FACTOR] of its original size, then back to its original size.
      */
     val scalingAnimator: ObjectAnimator
         get() {
@@ -130,13 +132,13 @@ class RoundView : View {
 
     companion object {
         /**
-         * The width to use for stroking of `Paint mPaint`, which is used to draw our circle.
+         * The width to use for stroking of [Paint] field [mPaint], which is used to draw our circle.
          */
         private const val STROKE_WIDTH = 6
 
         /**
-         * The radius of our circle, used in the call to the `drawCircle` method of the
-         * `Canvas` passed to our `onDraw` override.
+         * The radius of our circle, used in the call to the [Canvas.drawCircle] method of the
+         * [Canvas] passed to our [onDraw] override.
          */
         private const val RADIUS = 20
 
