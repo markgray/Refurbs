@@ -40,28 +40,22 @@ import android.widget.BaseAdapter
 import android.widget.ListView
 
 /**
- * The dynamic ListView is an extension of ListView that supports cell dragging
- * and swapping.
+ * The [DynamicListView] is an extension of [ListView] that supports cell dragging and swapping.
+ * This layout is in charge of positioning the hover cell in the correct location on the screen in
+ * response to user touch events. It uses the position of the hover cell to determine when two cells
+ * should be swapped. If two cells should be swapped, all the corresponding data set and layout
+ * changes are handled here.
  *
+ * If no cell is selected, all the touch events are passed down to the [ListView] and behave
+ * normally. If one of the items in the [ListView] experiences a long press event, the contents of
+ * its current visible state are captured as a bitmap and its visibility is set to INVISIBLE. A
+ * hover cell is then created and added to this layout as an overlaying [BitmapDrawable] above the
+ * [ListView]. Once the hover cell is translated some distance to signify an item swap, a data set
+ * change accompanied by animation takes place. When the user releases the hover cell, it animates
+ * into its corresponding position in the [ListView].
  *
- * This layout is in charge of positioning the hover cell in the correct location
- * on the screen in response to user touch events. It uses the position of the
- * hover cell to determine when two cells should be swapped. If two cells should
- * be swapped, all the corresponding data set and layout changes are handled here.
- *
- *
- * If no cell is selected, all the touch events are passed down to the ListView
- * and behave normally. If one of the items in the ListView experiences a
- * long press event, the contents of its current visible state are captured as
- * a bitmap and its visibility is set to INVISIBLE. A hover cell is then created and
- * added to this layout as an overlaying BitmapDrawable above the ListView. Once the
- * hover cell is translated some distance to signify an item swap, a data set change
- * accompanied by animation takes place. When the user releases the hover cell,
- * it animates into its corresponding position in the ListView.
- *
- *
- * When the hover cell is either above or below the bounds of the ListView, this
- * ListView also scrolls on its own so as to reveal additional content.
+ * When the hover cell is either above or below the bounds of the [ListView], this [ListView] also
+ * scrolls on its own so as to reveal additional content.
  */
 class DynamicListView : ListView {
 
@@ -168,18 +162,18 @@ class DynamicListView : ListView {
 
     /**
      * Our one argument constructor. First we call our super's constructor, then we call our method
-     * `init` to initialize this instance. UNUSED.
+     * [initialize] to initialize this instance. UNUSED.
      *
      * @param context The Context the view is running in, through which it can access the current
      * theme, resources, etc.
      */
     constructor(context: Context) : super(context) {
-        init(context)
+        initialize(context)
     }
 
     /**
      * Perform inflation from XML and apply a class-specific base style from a theme attribute or
-     * style resource. First we call our super's constructor, then we call our method `init`
+     * style resource. First we call our super's constructor, then we call our method [initialize]
      * to initialize this instance. UNUSED.
      *
      * @param context  The Context the view is running in, through which it can access the current
@@ -189,19 +183,19 @@ class DynamicListView : ListView {
      * that supplies default values for the view.
      */
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
-        init(context)
+        initialize(context)
     }
 
     /**
      * Perform inflation from XML. First we call our super's constructor, then we call our method
-     * `init` to initialize this instance. This is the constructor that is used.
+     * [initialize] to initialize this instance. This is the constructor that is used.
      *
      * @param context The Context the view is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(context)
+        initialize(context)
     }
 
     /**
@@ -217,7 +211,7 @@ class DynamicListView : ListView {
      * @param context The Context the view is running in, through which it can access the current
      * theme, resources, etc.
      */
-    fun init(context: Context) {
+    fun initialize(context: Context) {
         onItemLongClickListener = mOnItemLongClickListener
         setOnScrollListener(mScrollListener)
         val metrics = context.resources.displayMetrics
