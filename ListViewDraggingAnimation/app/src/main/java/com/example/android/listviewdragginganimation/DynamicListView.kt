@@ -371,31 +371,27 @@ class DynamicListView : ListView {
     }
 
     /**
-     * Retrieves the view in the list corresponding to itemID. We initialize `int firstVisiblePosition`
-     * with the position in the dataset of the first visible item on the screen. We then initialize
-     * `StableArrayAdapter adapter` by retrieving our `ListView`'s adapter. We loop over
-     * `int i` for all of our children:
+     * Retrieves the view in the list corresponding to [Long] parameter [itemID]. We initialize
+     * [Int] variable `val firstVisiblePosition` with the position in the dataset of the first
+     * visible item on the screen. We then initialize [StableArrayAdapter] variable `val adapter`
+     * by retrieving our [ListView]'s adapter. We loop over [Int] variable `var i` for all of our
+     * children:
      *
-     *  *
-     * We initialize `View v` with our `i`'th child.
+     *  * We initialize [View] variable `val v` with our `i`'th child.
      *
-     *  *
-     * We set `int position` to `firstVisiblePosition` plus `i` (this is
-     * the position in our dataset of this `i`'th child)
+     *  * We set [Int] variable `val position` to `firstVisiblePosition` plus `i` (this is the
+     *  position in our dataset of this `i`'th child)
      *
-     *  *
-     * We initialize `long id` with the item id that the `getItemId` method of
-     * `adapter` returns for the position `position`
+     *  * We initialize [Long] variable `val id` with the item id that the [StableArrayAdapter.getItemId]
+     *  method of `adapter` returns for the position `position`
      *
-     *  *
-     * If `id` is equal to `itemID` we return `v` to the caller (otherwise
-     * we loop around to check the next child.
+     *  * If `id` is equal to [itemID] we return `v` to the caller (otherwise we loop around to
+     *  check the next child.
      *
-     *
-     * If our loop fails to find a child with the item id `itemID` we return null to the caller.
+     * If our loop fails to find a child with the item id [itemID] we return `null` to the caller.
      *
      * @param itemID item id of the view we want
-     * @return `View` that has item id `long itemID`
+     * @return the [View] that has item id [itemID]
      */
     fun getViewForID(itemID: Long): View? {
         val firstVisiblePosition: Int = firstVisiblePosition
@@ -412,13 +408,13 @@ class DynamicListView : ListView {
     }
 
     /**
-     * Retrieves the position in the list corresponding to our parameter `itemID`. First we
-     * initialize `View v` with the view that our method `getViewForID` returns for the
-     * item id `itemID`. If `v` is null we return -1, otherwise we return the position
-     * returned by the method `getPositionForView` for `v`.
+     * Retrieves the position in the list corresponding to our [Long] parameter [itemID]. First we
+     * initialize [View] variable `val v` with the view that our method [getViewForID] returns for
+     * the item id [itemID]. If `v` is `null` we return -1, otherwise we return the position
+     * returned by the method [getPositionForView] for `v`.
      *
      * @param itemID item id we are searching for
-     * @return the position in the list corresponding to our parameter `itemID`
+     * @return the position in the list corresponding to our [Long] parameter [itemID]
      */
     fun getPositionForID(itemID: Long): Int {
         val v: View? = getViewForID(itemID)
@@ -426,14 +422,13 @@ class DynamicListView : ListView {
     }
 
     /**
-     * `dispatchDraw` gets invoked when all the child views are about to be drawn.
-     * By overriding this method, the hover cell's `BitmapDrawable` can be drawn
-     * over the `ListView`'s items whenever the `ListView` is redrawn. First
-     * we call our super's implementation of `dispatchDraw` to draw all of its items.
-     * Then if our field `BitmapDrawable mHoverCell` is not null we call its `draw`
-     * method to draw itself on our parameter `Canvas canvas`.
+     * [dispatchDraw] gets invoked when all the child views are about to be drawn. By overriding
+     * this method, the hover cell's [BitmapDrawable] can be drawn over the [ListView]'s items
+     * whenever the [ListView] is redrawn. First we call our super's implementation of `dispatchDraw`
+     * to draw all of its items. Then if our [BitmapDrawable] field [mHoverCell] is not `null` we
+     * call its [BitmapDrawable.draw] method to draw itself on our [Canvas] parameter [canvas].
      *
-     * @param canvas the canvas on which to draw the view
+     * @param canvas the [Canvas] on which to draw the view
      */
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
@@ -444,66 +439,58 @@ class DynamicListView : ListView {
 
     /**
      * We implement this method to handle touch screen motion events. We switch on the masked off
-     * action field of our parameter `MotionEvent event`:
+     * action field of our [MotionEvent] parameter [event]:
      *
-     *  *
-     * ACTION_DOWN: We initialize our field `mDownX` with the X coordinate `event`
-     * for first pointer index, and `mDownY` with the Y coordinate. We initialize our
-     * field `mActivePointerId` with the pointer identifier associated with the 0'th
-     * pointer data index, and then break.
+     *  * [MotionEvent.ACTION_DOWN]: We initialize our [Int] field [mDownX] with the X coordinate
+     *  of the first pointer index of [event], and `mDownY` with the Y coordinate. We initialize our
+     *  [Int] field [mActivePointerId] with the pointer identifier associated with the 0'th pointer
+     *  data index.
      *
-     *  *
-     * ACTION_MOVE: If our field `mActivePointerId` is equal to INVALID_POINTER_ID we
-     * just break. Otherwise we initialize `int pointerIndex` with the index of the
-     * data in `event` for pointer id `mActivePointerId`, then set our field
-     * `mLastEventY` to the Y coordinate in `event` for pointer index
-     * `pointerIndex`. We initialize `int deltaY` to `mLastEventY` minus
-     * `mDownY`. If our field `mCellIsMobile` is true (a cell has been long
-     * clicked and is being dragged) we offset `Rect mHoverCellCurrentBounds` to the
-     * X coordinate given in the `left` field of `mHoverCellOriginalBounds` (the
-     * hover cell does not move horizontally), and the Y coordinate calculated by adding the
-     * `top` field of `mHoverCellOriginalBounds` to `deltaY` plus our field
-     * `mTotalOffset`. We then specify `mHoverCellCurrentBounds` as the bounding
-     * rectangle for `mHoverCell` (this is where the drawable will draw when its draw()
-     * method is called), and call `invalidate` to invalidate our whole view so that
-     * `draw` will be called sometime in the future. We then call our method
-     * `handleCellSwitch` to check whether the hover cell has been shifted far enough
-     * to invoke a cell swap, and if so, the respective cell swap candidate is determined
-     * and the data set is changed (the layout invoked by a call to `notifyDataSetChanged`
-     * will place the cells in the right place). We set our field `mIsMobileScrolling`
-     * to false, then call our method `handleMobileCellScroll` to determine if the hover
-     * cell is above or below the bounds of the ListView, and if so, has the ListView do an
-     * appropriate upward or downward smooth scroll so as to reveal new items. Finally we return
-     * false to the caller so that regular touch event processing will proceed. On the other
-     * hand if `mCellIsMobile` is false we just break.
+     *  * [MotionEvent.ACTION_MOVE]: If our [Int] field [mActivePointerId] is equal to
+     *  [INVALID_POINTER_ID] we do nothing. Otherwise we initialize [Int] variable `val pointerIndex`
+     *  with the index of the data in [event] for pointer id [mActivePointerId], then set our [Int]
+     *  field [mLastEventY] to the Y coordinate in `event` for pointer index `pointerIndex`. We
+     *  initialize [Int] variable `val deltaY` to [mLastEventY] minus [mDownY]. If our [Boolean]
+     *  field [mCellIsMobile] is `true` (a cell has been long clicked and is being dragged) we
+     *  offset [Rect] field [mHoverCellCurrentBounds] to the X coordinate given in the [Rect.left]
+     *  field of [Rect] field [mHoverCellOriginalBounds] (the hover cell does not move horizontally),
+     *  and the Y coordinate calculated by adding the [Rect.top] field of [mHoverCellOriginalBounds]
+     *  to `deltaY` plus our [Int] field [mTotalOffset]. We then specify [mHoverCellCurrentBounds]
+     *  as the bounding rectangle for [BitmapDrawable] field [mHoverCell] (this is where the drawable
+     *  will draw when its [BitmapDrawable.draw] method is called), and call [invalidate] to
+     *  invalidate our whole view so that [draw] will be called sometime in the future. We then call
+     *  our method [handleCellSwitch] to check whether the hover cell has been shifted far enough to
+     *  invoke a cell swap, and if so, the respective cell swap candidate is determined and the data
+     *  set is changed (the layout invoked by a call to [StableArrayAdapter.notifyDataSetChanged]
+     *  will place the cells in the right place). We set our [Boolean] field [mIsMobileScrolling] to
+     *  `false`, then call our method [handleMobileCellScroll] to determine if the hover cell is
+     *  above or below the bounds of the [ListView], and if so, has the [ListView] do an appropriate
+     *  upward or downward smooth scroll so as to reveal new items. Finally we return false to the
+     *  caller so that regular touch event processing will proceed. On the other hand if
+     *  [mCellIsMobile] is `false` we do nothing.
      *
-     *  *
-     * ACTION_UP: We call our method `touchEventsEnded` to reset all the appropriate
-     * fields to a default state while also animating the hover cell to its correct location
-     * in the `ListView`, and then break.
+     *  * [MotionEvent.ACTION_UP]: We call our method [touchEventsEnded] to reset all the
+     *  appropriate fields to a default state while also animating the hover cell to its
+     *  correct location in the [ListView].
      *
-     *  *
-     * ACTION_CANCEL: We call our method `touchEventsCancelled` to reset all the
-     * appropriate fields to a default state, and then break.
+     *  * [MotionEvent.ACTION_CANCEL]: We call our method [touchEventsCancelled] to reset all the
+     *  appropriate fields to a default state.
      *
-     *  *
-     * ACTION_POINTER_UP: We mask off the action pointer index from the action of `event`
-     * and normalize its shift in order to set `pointerIndex`. We initialize `int pointerId`
-     * with the pointer id associated with `pointerIndex` and if it is equal to
-     * `mActivePointerId` (the pointer id for the ACTION_DOWN which started the touch
-     * sequence) we call our method `touchEventsEnded` to reset all the appropriate
-     * fields to a default state while also animating the hover cell to its correct location
-     * in the `ListView` same as for an ACTION_UP event. In either case we then break.
+     *  * [MotionEvent.ACTION_POINTER_UP]: We mask off the action pointer index from the action of
+     *  [event] and normalize its shift in order to set [Int] variable `val pointerIndex`. We
+     *  initialize [Int] variable `val pointerId` with the pointer id associated with `pointerIndex`
+     *  and if it is equal to [Int] field [mActivePointerId] (the pointer id for the ACTION_DOWN
+     *  which started the touch sequence) we call our method [touchEventsEnded] to reset all the
+     *  appropriate fields to a default state while also animating the hover cell to its correct
+     *  location in the [ListView] same as for an ACTION_UP event.
      *
-     *  *
-     * default: we just break.
+     *  * default: we do nothing
      *
-     *
-     * Finally we return the value returned by our super's implementation of `onTouchEvent` to
+     * Finally we return the value returned by our super's implementation of [onTouchEvent] to
      * the caller.
      *
      * @param event The motion event.
-     * @return True if the event was handled, false otherwise.
+     * @return `true` if the event was handled, `false` otherwise.
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -540,7 +527,7 @@ class DynamicListView : ListView {
                  * the movement of the hover cell has ended, then the dragging event
                  * ends and the hover cell is animated to its corresponding position
                  * in the ListView. */
-                val pointerIndex = event.action and MotionEvent.ACTION_POINTER_INDEX_MASK shr
+                val pointerIndex: Int = event.action and MotionEvent.ACTION_POINTER_INDEX_MASK shr
                     MotionEvent.ACTION_POINTER_INDEX_SHIFT
                 val pointerId = event.getPointerId(pointerIndex)
                 if (pointerId == mActivePointerId) {
@@ -555,68 +542,60 @@ class DynamicListView : ListView {
 
     /**
      * This method determines whether the hover cell has been shifted far enough to invoke a cell
-     * swap. If so, then the respective cell swap candidate is determined and the data set is changed.
-     * Upon posting a notification of the data set change, a layout is invoked to place the cells in
-     * the right place. Using a ViewTreeObserver and a corresponding OnPreDrawListener, we can offset
-     * the cell being swapped to where it previously was and then animate it to its new position.
+     * swap. If so, then the respective cell swap candidate is determined and the data set is
+     * changed. Upon posting a notification of the data set change, a layout is invoked to place the
+     * cells in the right place. Using a [ViewTreeObserver] and a corresponding [OnPreDrawListener],
+     * we can offset the cell being swapped to where it previously was and then animate it to its
+     * new position.
      *
+     * First we initialize [Int] variable `val deltaY` by subtracting [Int] field [mDownY] from [Int]
+     * field [mLastEventY] (giving us the plus or minus distance on the screen we have moved since
+     * the initial long click, or the last time a cell was swapped -- it is set to [mLastEventY]
+     * every time a cell is swapped). Then we initialize [Int] variable `val deltaYTotal` by adding
+     * the [Rect.top] field of [Rect] field [mHoverCellOriginalBounds] to [Int] field [mTotalOffset]
+     * plus `deltaY` (this is the current position of the top of the hover cell). We initialize [View]
+     * variable `val belowView` with the view with the id of [Long] field [mBelowItemId], [View]
+     * variable `val mobileView` with the view with the id of [Long] field [mMobileItemId], and
+     * [View] variable `val aboveView` with the view with the id of [Long] field [mAboveItemId]. We
+     * initialize [Boolean] variable `val isBelow` to `true` if `belowView` is not `null` and
+     * `deltaYTotal` is greater than the top Y coordinate of `belowView`. We initialize [Boolean]
+     * variable `val isAbove` to `true` if `aboveView` is not `null` and `deltaYTotal` is less than
+     * the top Y coordinate of `aboveView`. If either `isBelow` or `isAbove` is `true` we need to
+     * switch cells:
      *
-     * First we initialize `int deltaY` by subtracting `mDownY` from `mLastEventY`
-     * (giving us the plus or minus distance on the screen we have moved since the initial long click,
-     * or the last time a cell was swapped -- it is set to `mLastEventY` every time a cell is
-     * swapped). Then we initialize `int deltaYTotal` by adding the `top` field of
-     * `mHoverCellOriginalBounds` to `mTotalOffset` plus `deltaY` (this is the
-     * current position of the top of the hover cell). We initialize `View belowView` with the
-     * view with the id `mBelowItemId`, `View mobileView` with the view with the id
-     * `mMobileItemId`, and `View aboveView` with the view with the id `mAboveItemId`.
-     * We initialize `boolean isBelow` to true if `belowView` is not null and
-     * `deltaYTotal` is greater than the top Y coordinate of `belowView`. We initialize
-     * `boolean isAbove` to true if `aboveView` is not null and `deltaYTotal` is
-     * less than the top Y coordinate of `aboveView`. If either `isBelow` or `isAbove`
-     * is true we need to switch cells:
+     *  * We initialize [Long] variable `val switchItemID` to [mBelowItemId] if `isBelow` is `true`
+     *  or to [mAboveItemId] if it is `false`, and initialize [View] variable `val switchView` to
+     *  `belowView` if `isBelow` is true or to `aboveView` if it is false.
      *
-     *  *
-     * We initialize `long switchItemID` to `mBelowItemId` if `isBelow` is
-     * true or to `mAboveItemId` if it is false, and initialize `View switchView`
-     * to `belowView` if `isBelow` is true or to `aboveView` if it is false.
+     *  * We initialize [Int] variable `val originalItem` with the position in our [AdapterView]'s
+     *  dataset that the [getPositionForView] method calculates for `mobileView`.
      *
-     *  *
-     * We initialize `int originalItem` with the position in our `AdapterView`'s
-     * dataset that the `getPositionForView` method calculates for `mobileView`.
+     *  * If `switchView` is `null` we call our method [updateNeighborViewsForID] to update the item
+     *  id's in [mAboveItemId] and [mBelowItemId] to values for the item id [mMobileItemId] (the
+     *  items before and after the hover cell's item id). I cannot find a case where `switchView`
+     *  can possibly be null, the logic before this statement guaranties that it is either
+     *  `belowView` or `aboveView`!
      *
-     *  *
-     * If `switchView` is null we call our method `updateNeighborViewsForID` to
-     * update the item id's of `mAboveItemId` and `mBelowItemId` to values for
-     * the item id `mMobileItemId` (the items before and after the hover cell's item id).
-     * I cannot find a case where `switchView` can possibly be null, the logic before
-     * this statement guaranties that it is either `belowView` or `aboveView`!
+     *  * We call our method [swapElements] to swap the data items at position `originalItem` (the
+     *  item being dragged) with the item at the position occupied by `switchView` in our [ArrayList]
+     *  of [String] dataset field[mCheeseList]. We then call the [StableArrayAdapter.notifyDataSetChanged]
+     *  method of our adapter to notify it that the dataset changed and the [ListView] needs to be
+     *  redrawn.
      *
-     *  *
-     * We call our method `swapElements` to swap the data items at position `originalItem`
-     * (the item being dragged) with the item at the position occupied by `switchView` in
-     * our dataset `ArrayList<String> mCheeseList`. We then call the `notifyDataSetChanged`
-     * method of our adapter to notify it that that dataset changed and the `ListView` needs
-     * to be redrawn.
+     *  * We set [Int] field [mDownY] to [Int] field [mLastEventY], and initialize [Int] variable
+     *  `val switchViewStartTop` to the top Y coordinate of `switchView`.
      *
-     *  *
-     * We set `mDownY` to `mLastEventY`, and initialize `int switchViewStartTop`
-     * to the top Y coordinate of `switchView`.
+     *  * We set the visibility of `mobileView` to VISIBLE and the visibility of `switchView` to
+     *  INVISIBLE, then we call our [updateNeighborViewsForID] method to have it update the values
+     *  of [Long] field [mAboveItemId] (the id of the item that is now above the long clicked item
+     *  on the screen given the new location of the item with id of [Long] field [mMobileItemId]),
+     *  and [Long] field [mBelowItemId] (the id of the item that is now below the long clicked item
+     *  on the screen given the new location of the item with id [mMobileItemId]).
      *
-     *  *
-     * We set the visibility of `mobileView` to VISIBLE and the visibility of `switchView`
-     * to INVISIBLE, then we call our `updateNeighborViewsForID` to have it update the values
-     * of `mAboveItemId` (the id of the item that is now above the long clicked item on the screen
-     * given the new location of the item with id `mMobileItemId`), and `mBelowItemId` (the
-     * id of the item that is now below the long clicked item on the screen given the new location of
-     * the item with id `mMobileItemId`).
-     *
-     *  *
-     * We initialize `ViewTreeObserver observer` with the `ViewTreeObserver` for this view's
-     * hierarchy and add to it an anonymous `OnPreDrawListener` which animates the view containing
-     * the item with id `switchItemID` into its new position on the screen, and then returns true
-     * to the caller so that the drawing will proceed.
-     *
-     *
+     *  * We initialize [ViewTreeObserver] variable `val observer` with the [ViewTreeObserver] for
+     *  this view's hierarchy and add to it an anonymous [OnPreDrawListener] which animates the view
+     *  containing the item with id `switchItemID` into its new position on the screen, and then
+     *  returns `true` to the caller so that the drawing will proceed.
      */
     private fun handleCellSwitch() {
         val deltaY: Int = mLastEventY - mDownY
@@ -645,21 +624,23 @@ class DynamicListView : ListView {
             val observer: ViewTreeObserver = viewTreeObserver
             observer.addOnPreDrawListener(object : OnPreDrawListener {
                 /**
-                 * Callback method to be invoked when the view tree is about to be drawn. At this point, all
-                 * views in the tree have been measured and given a frame. First we remove ourselves as an
-                 * `OnPreDrawListener`. Then we initialize `View switchViewLocal` with the view that
-                 * our method `getViewForID` finds for the item id `switchItemID`. Then we add
-                 * `deltaY` to our field `mTotalOffset`. We initialize `int switchViewNewTop`
-                 * with the new top Y coordinate of `switchViewLocal`, and `int delta` by subtracting
-                 * `switchViewNewTop` from `switchViewStartTop` (this is how far the switched view
-                 * has to move to get to its new location), then we set the the vertical location of this view
-                 * relative to its `getTop()` position to `delta` (this effectively positions the
-                 * object post-layout, in addition to wherever the object's layout placed it). Then we initialize
-                 * `ObjectAnimator animator` with an instance which will animate the TRANSLATION_Y property
-                 * of `switchViewLocal` back to 0, set its duration to MOVE_DURATION (150ms), and start it running.
-                 * Finally we return true to the caller so the current drawing pass will proceed.
+                 * Callback method to be invoked when the view tree is about to be drawn. At this
+                 * point, all views in the tree have been measured and given a frame. First we
+                 * remove ourselves as an [OnPreDrawListener]. Then we initialize [View] variable
+                 * `val switchViewLocal` with the view that our method [getViewForID] finds for the
+                 * item id `switchItemID`. Then we add `deltaY` to our [Int] field [mTotalOffset].
+                 * We initialize [Int] variable `val switchViewNewTop` with the new top Y coordinate
+                 * of `switchViewLocal`, and [Int] variable `val delta` by subtracting `switchViewNewTop`
+                 * from `switchViewStartTop` (this is how far the switched view has to move to get
+                 * to its new location), then we set the the vertical location of this view relative
+                 * to its `top` position to `delta` (this effectively positions the object post-layout,
+                 * in addition to wherever the object's layout placed it). Then we initialize
+                 * [ObjectAnimator] variable `val animator` with an instance which will animate the
+                 * TRANSLATION_Y property of `switchViewLocal` back to 0, set its duration to
+                 * [MOVE_DURATION] (150ms), and start it running. Finally we return `true` to the
+                 * caller so the current drawing pass will proceed.
                  *
-                 * @return Returns true to proceed with the current drawing pass.
+                 * @return Returns `true` to proceed with the current drawing pass.
                  */
                 override fun onPreDraw(): Boolean {
                     observer.removeOnPreDrawListener(this)
