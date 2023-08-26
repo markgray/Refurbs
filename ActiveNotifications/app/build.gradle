@@ -8,12 +8,13 @@ dependencies {
 }
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.android.activenotifications"
         minSdkVersion 28
-        targetSdkVersion 33
+        //noinspection EditedTargetSdkVersion
+        targetSdkVersion 34
     }
 
     compileOptions {
