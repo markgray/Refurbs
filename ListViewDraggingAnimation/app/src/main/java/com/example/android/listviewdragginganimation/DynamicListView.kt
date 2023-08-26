@@ -21,6 +21,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.TypeEvaluator
+import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
@@ -659,14 +660,17 @@ class DynamicListView : ListView {
     }
 
     /**
-     * Swaps the location of two items in our dataset. First we initialize `Object temp` with
-     * the `Object` at position `indexOne` in the list `arrayList`, then we replace
-     * the element at position `indexOne` in this list with the element in position `indexTwo`.
-     * Finally we replace the element at position `indexTwo` in this list with `temp`.
+     * Swaps the location of two items in our dataset. First we initialize [String] variable
+     * `val temp` with the [Object] at the position of [Int] parameter [indexOne] in the [ArrayList]
+     * of [String] parameter [arrayList], then we replace the element at position [indexOne] in this
+     * list with the element in the position of [Int] parameter [indexTwo]. Finally we replace the
+     * element at position [indexTwo] in this list with `temp`.
      *
-     * @param arrayList the `ArrayList` holding our dataset
-     * @param indexOne the first index into `ArrayList arrayList` whose item is to swapped
-     * @param indexTwo the second index into `ArrayList arrayList` whose item is to swapped
+     * @param arrayList the [ArrayList] of [String] holding our dataset
+     * @param indexOne the first index into [ArrayList] of [String] parameter [arrayList] whose item
+     * is to swapped
+     * @param indexTwo the second index into [ArrayList] of [String] parameter [arrayList] whose
+     * item is to swapped
      */
     private fun swapElements(arrayList: ArrayList<String>?, indexOne: Int, indexTwo: Int) {
         val temp: String = arrayList!![indexOne]
@@ -676,33 +680,33 @@ class DynamicListView : ListView {
 
     /**
      * Resets all the appropriate fields to a default state while also animating the hover cell back
-     * to its correct location. First we initialize `View mobileView` with the view whose item
-     * id is `mMobileItemId`. Then we branch based on whether either of our fields `mCellIsMobile`
-     * or `mIsWaitingForScrollFinish` is true:
+     * to its correct location. First we initialize [View] variable `val mobileView` with the [View]
+     * whose item id is [Long] field [mMobileItemId]. Then we branch based on whether either of our
+     * [Boolean] fields [mCellIsMobile] or [mIsWaitingForScrollFinish] is `true`:
      *
-     *  *
-     * Either `mCellIsMobile` (an item in our list has been long clicked and has been being
-     * dragged about) or `mIsWaitingForScrollFinish` (`mScrollState` was not equal to
-     * SCROLL_STATE_IDLE on a previous call to us) is true:
-     * We set `mCellIsMobile`, `mIsWaitingForScrollFinish`, and `mIsMobileScrolling`
-     * all to false, and set `mActivePointerId` to INVALID_POINTER_ID. Then if `mScrollState`
-     * is not equal to SCROLL_STATE_IDLE we set `mIsWaitingForScrollFinish` to true and just
-     * return (since the AutoScroller has not completed scrolling, we need to wait for it to finish
-     * in order to determine the final location of where the hover cell should be animated to).
-     * Otherwise we offset the rectangle of `mHoverCellCurrentBounds` to the top Y coordinate
-     * of `mobileView`. We initialize `ObjectAnimator hoverViewAnimator` with an instance
-     * which will animate the "bounds" property to `BitmapDrawable mHoverCell` to `mHoverCellCurrentBounds`
-     * using `sBoundEvaluator` as the `TypeEvaluator`, and set its `AnimatorUpdateListener`
-     * to an anonymous class whose `onAnimationUpdate` override just calls `invalidate` to
-     * have our view redrawn, and whose `onAnimationEnd` sets everything back to the state they
-     * should be in when the dragging is over. Finally we start `hoverViewAnimator` running.
+     *  * Either [mCellIsMobile] is `true` (an item in our list has been long clicked and has been
+     *  being dragged about) or [mIsWaitingForScrollFinish] is `true` ([Int] field [mScrollState]
+     *  was not equal to [OnScrollListener.SCROLL_STATE_IDLE] on a previous call to us):
+     *  We set [Boolean] fields [mCellIsMobile], [mIsWaitingForScrollFinish], and [mIsMobileScrolling]
+     *  all to `false`, and set [Int] field [mActivePointerId] to [INVALID_POINTER_ID]. Then if
+     *  [mScrollState] is not equal to [OnScrollListener.SCROLL_STATE_IDLE] we set [Boolean] field
+     *  [mIsWaitingForScrollFinish] to `true` and just return (since the `AutoScroller` has not
+     *  completed scrolling, we need to wait for it to finish in order to determine the final
+     *  location of where the hover cell should be animated to). Otherwise we offset the rectangle
+     *  of [Rect] field [mHoverCellCurrentBounds] to the top Y coordinate of `mobileView`. We
+     *  initialize [ObjectAnimator] variable `val hoverViewAnimator` with an instance which will
+     *  animate the "bounds" property of [BitmapDrawable] field [mHoverCell] to [Rect] field
+     *  [mHoverCellCurrentBounds] using [TypeEvaluator] field [sBoundEvaluator] as the [TypeEvaluator],
+     *  and set its [AnimatorUpdateListener] to an anonymous class whose lambda override just calls
+     *  [invalidate] to have our view redrawn. Then we add an [AnimatorListenerAdapter] to
+     *  `hoverViewAnimator` whose [AnimatorListenerAdapter.onAnimationStart] disables our [View]
+     *  (to prevent additional touch events occurring during the animation), and whose
+     *  [AnimatorListenerAdapter.onAnimationEnd] override sets everything back to the state they
+     *  should be in when the dragging is over. Finally we start `hoverViewAnimator` running.
      *
-     *  *
-     * If both `mCellIsMobile` and `mIsWaitingForScrollFinish` are false we just
-     * call our `touchEventsCancelled` method to reset all the appropriate fields to a
-     * default state.
-     *
-     *
+     *  * If both [Boolean] fields [mCellIsMobile] and [mIsWaitingForScrollFinish] are `false` we
+     *  just call our [touchEventsCancelled] method to reset all the appropriate fields to a
+     *  default state.
      */
     private fun touchEventsEnded() {
         val mobileView: View? = getViewForID(mMobileItemId)
@@ -725,7 +729,7 @@ class DynamicListView : ListView {
             hoverViewAnimator.addUpdateListener { invalidate() }
             hoverViewAnimator.addListener(object : AnimatorListenerAdapter() {
                 /**
-                 * Notifies the start of the animation. We disable our view (to prevent additional
+                 * Notifies the start of the animation. We disable our [View] (to prevent additional
                  * touch events occurring during the animation).
                  *
                  * @param animation The started animation.
@@ -735,10 +739,10 @@ class DynamicListView : ListView {
                 }
 
                 /**
-                 * Notifies the end of the animation. We set our fields `mAboveItemId`, `mMobileItemId`,
-                 * and `mBelowItemId` all to INVALID_ID, set the visibility of `mobileView` to VISIBLE,
-                 * set `mHoverCell` to null, enable our view, and then call `invalidate` to have our
-                 * view redrawn.
+                 * Notifies the end of the animation. We set our [Long] fields [mAboveItemId],
+                 * [mMobileItemId], and [mBelowItemId] all to [INVALID_ID], set the visibility of
+                 * `mobileView` to VISIBLE, set [BitmapDrawable] field [mHoverCell] to `null`,
+                 * enable our [View], and then call [invalidate] to have our [View] redrawn.
                  *
                  * @param animation The animation which reached its end.
                  */
@@ -759,17 +763,16 @@ class DynamicListView : ListView {
     }
 
     /**
-     * Resets all the appropriate fields to a default state. First we initialize `View mobileView`
-     * with the view whose item id is `mMobileItemId`. If `mCellIsMobile` is true:
+     * Resets all the appropriate fields to a default state. First we initialize [View] variable
+     * `val mobileView` with the view whose item id is [Long] field [mMobileItemId].
+     * If [Boolean] field [mCellIsMobile] is `true`:
      *
-     *  *
-     * We set our fields `mAboveItemId`, `mMobileItemId`, and `mBelowItemId`
-     * all to INVALID_ID, set the visibility of `mobileView` to VISIBLE, set `mHoverCell`
-     * to null, and then call `invalidate` to have our view redrawn.
+     *  * We set our [Long] fields [mAboveItemId], [mMobileItemId], and [mBelowItemId] all to
+     *  [INVALID_ID], set the visibility of `mobileView` to VISIBLE, set [BitmapDrawable] field
+     *  [mHoverCell] to `null`, and then call [invalidate] to have our [View] redrawn.
      *
-     *
-     * We then set our fields `mCellIsMobile` and `mIsMobileScrolling` to false and set
-     * `mActivePointerId` to INVALID_POINTER_ID.
+     * We then set our [Boolean] fields [mCellIsMobile] and [mIsMobileScrolling] to `false` and set
+     * [Int] field [mActivePointerId] to [INVALID_POINTER_ID].
      */
     private fun touchEventsCancelled() {
         val mobileView: View? = getViewForID(mMobileItemId)
@@ -787,10 +790,10 @@ class DynamicListView : ListView {
     }
 
     /**
-     * Determines whether this ListView is in a scrolling state invoked by the fact that the hover
-     * cell is out of the bounds of the ListView. We just set our field `mIsMobileScrolling`
-     * to the value returned by our `handleMobileCellScroll` method for the current value of
-     * our field `Rect mHoverCellCurrentBounds`.
+     * Determines whether this [ListView] is in a scrolling state invoked by the fact that the hover
+     * cell is out of the bounds of the [ListView]. We just set our [Boolean] field [mIsMobileScrolling]
+     * to the value returned by our [handleMobileCellScroll] method for the current value of our
+     * [Rect] field [mHoverCellCurrentBounds].
      */
     private fun handleMobileCellScroll() {
         mIsMobileScrolling = handleMobileCellScroll(mHoverCellCurrentBounds)
@@ -798,30 +801,30 @@ class DynamicListView : ListView {
 
     /**
      * This method is in charge of determining if the hover cell is above or below the bounds of the
-     * `ListView`. If so, the `ListView` does an appropriate upward or downward smooth
-     * scroll so as to reveal new items. We initialize `int offset` with the value that the
-     * `computeVerticalScrollOffset` method returns for the vertical offset of the scrollbar's
-     * thumb. We initialize `int height` with the height of our view. We initialize `int extent`
-     * with the value that the `computeVerticalScrollExtent` method returns for the vertical
-     * extent of the scrollbar's thumb. We initialize `int range` with the value that the
-     * `computeVerticalScrollRange` method returns for the total vertical range represented by
-     * the vertical scrollbar. We initialize `int hoverViewTop` with the `top` field of
-     * our parameter `Rect r` (the top Y coordinate of our hover cell). And we initialize
-     * `int hoverHeight` with the height of our hover cell. If `hoverViewTop` is less
-     * than or equal to 0 (the hover cell has been dragged to the very top of the `ListView`)
-     * and `offset` is greater than 0 (part of the `ListView` is above the top of the
-     * screen and can be scrolled down) we call the method `smoothScrollBy` to scroll the
-     * `ListView` by `-mSmoothScrollAmountAtEdge` (down) with 0 as the animation duration,
-     * and then return true to the caller. If `hoverViewTop` plus `hoverHeight` is greater
-     * than or equal to `height` (the hover cell has been dragged to the bottom of the screen)
-     * and `offset` plus `extent` is less than `range` (there are still cells below
-     * the bottom of the screen in the `ListView`) we call the method `smoothScrollBy` to
-     * scroll the `ListView` by `mSmoothScrollAmountAtEdge` (up) with 0 as the animation
-     * duration, and then return true to the caller. If the hover cell is not at top or the bottom of
-     * the screen we return false to the caller.
+     * [ListView]. If so, the [ListView] does an appropriate upward or downward smooth scroll so as
+     * to reveal new items. We initialize [Int] variable `val offset` with the value that the
+     * [computeVerticalScrollOffset] method returns for the vertical offset of the scrollbar's
+     * thumb. We initialize [Int] variable `val height` with the height of our [View]. We initialize
+     * [Int] variable `val extent` with the value that the [computeVerticalScrollExtent] method
+     * returns for the vertical extent of the scrollbar's thumb. We initialize [Int] variable
+     * `val range` with the value that the [computeVerticalScrollRange] method returns for the total
+     * vertical range represented by the vertical scrollbar. We initialize [Int] variable
+     * `val hoverViewTop` with the [Rect.top] field of our [Rect] parameter [r] (the top Y coordinate
+     * of our hover cell). And we initialize [Int] variable `val hoverHeight` with the [Rect.height]
+     * of our [Rect] parameter [r]. If `hoverViewTop` is less than or equal to 0 (the hover cell has
+     * been dragged to the very top of the [ListView]) and `offset` is greater than 0 (part of the
+     * [ListView] is above the top of the screen and can be scrolled down) we call the method
+     * [smoothScrollBy] to scroll the [ListView] by minus our [Int] field [mSmoothScrollAmountAtEdge]
+     * (down) with 0 as the animation duration, and then return `true` to the caller. If `hoverViewTop`
+     * plus `hoverHeight` is greater than or equal to `height` (the hover cell has been dragged to
+     * the bottom of the screen) and `offset` plus `extent` is less than `range` (there are still
+     * cells below the bottom of the screen in the [ListView]) we call the method [smoothScrollBy]
+     * to scroll the `ListView` by plus [mSmoothScrollAmountAtEdge] (up) with 0 as the animation
+     * duration, and then return `true` to the caller. If the hover cell is not at top or the bottom
+     * of the screen we return `false` to the caller.
      *
-     * @param r current hover cell bounds (always `mHoverCellCurrentBounds` in our case)
-     * @return true if the `ListView` is smooth scrolling, false if it did not need to.
+     * @param r current hover cell bounds (always [Rect] field [mHoverCellCurrentBounds] in our case)
+     * @return `true` if the [ListView] is smooth scrolling, `false` if it did not need to.
      */
     fun handleMobileCellScroll(r: Rect?): Boolean {
         val offset: Int = computeVerticalScrollOffset()
@@ -842,7 +845,8 @@ class DynamicListView : ListView {
     }
 
     /**
-     * Sets our dataset `ArrayList<String> mCheeseList` to our parameter `cheeseList`.
+     * Sets our [ArrayList] of [String] dataset field [mCheeseList] to our [ArrayList] of [String]
+     * parameter [cheeseList].
      *
      * @param cheeseList List of cheeses that we should use as our dataset.
      */
@@ -851,52 +855,53 @@ class DynamicListView : ListView {
     }
 
     /**
-     * This scroll listener is added to the ListView in order to handle cell swapping
-     * when the cell is either at the top or bottom edge of the ListView. If the hover
-     * cell is at either edge of the ListView, the ListView will begin scrolling. As
-     * scrolling takes place, the ListView continuously checks if new cells became visible
+     * This scroll listener is added to the [ListView] in order to handle cell swapping
+     * when the cell is either at the top or bottom edge of the [ListView]. If the hover
+     * cell is at either edge of the [ListView], the [ListView] will begin scrolling. As
+     * scrolling takes place, the [ListView] continuously checks if new cells became visible
      * and determines whether they are potential candidates for a cell swap.
      */
     private val mScrollListener: OnScrollListener = object : OnScrollListener {
         /**
-         * Value of the index of the first visible cell on the previous call to `onScroll`
+         * Value of the index of the first visible cell on the previous call to [onScroll]
          */
         private var mPreviousFirstVisibleItem: Int = -1
 
         /**
-         * Value of the number of visible cells on the previous call to `onScroll`
+         * Value of the number of visible cells on the previous call to [onScroll]
          */
         private var mPreviousVisibleItemCount: Int = -1
 
         /**
-         * Value of the index of the first visible cell on the latest call to `onScroll`
+         * Value of the index of the first visible cell on the latest call to [onScroll]
          */
         private var mCurrentFirstVisibleItem: Int = 0
 
         /**
-         * Value of the number of visible cells on the latest call to `onScroll`
+         * Value of the number of visible cells on the latest call to [onScroll]
          */
         private var mCurrentVisibleItemCount: Int = 0
 
         /**
-         * Value of the latest scroll state reported to `onScrollStateChanged`
+         * Value of the latest scroll state reported to [onScrollStateChanged]
          */
         private var mCurrentScrollState: Int = 0
 
         /**
          * Callback method to be invoked when the list or grid has been scrolled. This will be called
-         * after the scroll has completed. We save our parameter `int firstVisibleItem` in
-         * `mCurrentFirstVisibleItem`, and our parameter `int visibleItemCount` in
-         * `mCurrentVisibleItemCount`. If `mPreviousFirstVisibleItem` is equal to -1 (the
-         * uninitialized state) we set it to `mCurrentFirstVisibleItem` and if `mPreviousVisibleItemCount`
-         * is equal to -1 (the uninitialized state) we set it to `mCurrentVisibleItemCount`. We
-         * then call the methods `checkAndHandleFirstVisibleCellChange` (which handles the situation
-         * where mCurrentFirstVisibleItem != mPreviousFirstVisibleItem) and `checkAndHandleLastVisibleCellChange`
-         * (which handles the situation where the `ListView` has scrolled down enough to reveal
-         * a new cell at the bottom of the list). Finally we set `mPreviousFirstVisibleItem` to
-         * `mCurrentFirstVisibleItem` and `mPreviousVisibleItemCount` to `mCurrentVisibleItemCount`.
+         * after the scroll has completed. We save our [Int] parameter [firstVisibleItem] in [Int]
+         * field [mCurrentFirstVisibleItem], and our [Int] parameter [visibleItemCount] in [Int]
+         * field [mCurrentVisibleItemCount]. If [Int] field [mPreviousFirstVisibleItem] is equal
+         * to -1 (the uninitialized state) we set it to [mCurrentFirstVisibleItem] and if [Int]
+         * field [mPreviousVisibleItemCount] is equal to -1 (the uninitialized state) we set it to
+         * [mCurrentVisibleItemCount]. We then call the methods [checkAndHandleFirstVisibleCellChange]
+         * (which handles the situation where [mCurrentFirstVisibleItem] != [mPreviousFirstVisibleItem])
+         * and [checkAndHandleLastVisibleCellChange] (which handles the situation where the [ListView]
+         * has scrolled down enough to reveal a new cell at the bottom of the list). Finally we set
+         * [mPreviousFirstVisibleItem] to [mCurrentFirstVisibleItem] and [mPreviousVisibleItemCount]
+         * to [mCurrentVisibleItemCount].
          *
-         * @param view             The view whose scroll state is being reported
+         * @param view             The [ListView] whose scroll state is being reported
          * @param firstVisibleItem the index of the first visible cell (ignore if visibleItemCount == 0)
          * @param visibleItemCount the number of visible cells
          * @param totalItemCount   the number of items in the list adaptor
