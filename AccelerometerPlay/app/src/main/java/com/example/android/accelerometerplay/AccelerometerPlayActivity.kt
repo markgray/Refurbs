@@ -341,7 +341,7 @@ class AccelerometerPlayActivity : Activity() {
                 // make each particle a bit different by randomizing its
                 // coefficient of friction
                 val r = (Math.random().toFloat() - 0.5f) * 0.2f
-                mOneMinusFriction = 1.0f - sFriction + r
+                mOneMinusFriction = 1.0f - S_FRICTION + r
             }
 
             /**
@@ -551,7 +551,7 @@ class AccelerometerPlayActivity : Activity() {
                             var dy = ball.mPosY - curr.mPosY
                             var dd = dx * dx + dy * dy
                             // Check for collisions
-                            if (dd <= sBallDiameter2) {
+                            if (dd <= S_BAL_DIAMETER2) {
                                 /*
                                  * add a little bit of entropy, after nothing is
                                  * perfect in the universe.
@@ -561,7 +561,7 @@ class AccelerometerPlayActivity : Activity() {
                                 dd = dx * dx + dy * dy
                                 // simulate the spring
                                 val d = sqrt(dd.toDouble()).toFloat()
-                                val c = 0.5f * (sBallDiameter - d) / d
+                                val c = 0.5f * (S_BAL_DIAMETER - d) / d
                                 curr.mPosX -= dx * c
                                 curr.mPosY -= dy * c
                                 ball.mPosX += dx * c
@@ -660,7 +660,7 @@ class AccelerometerPlayActivity : Activity() {
          * @param context `Context` to use to access resources.
          */
         init {
-            mAccelerometer = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+            mAccelerometer = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!!
             val metrics = DisplayMetrics()
             @Suppress("DEPRECATION") // TODO: Fix getMetrics deprecation
             windowManager.defaultDisplay.getMetrics(metrics)
@@ -671,8 +671,8 @@ class AccelerometerPlayActivity : Activity() {
 
             // rescale the ball so it's about 0.5 cm on screen
             val ball = BitmapFactory.decodeResource(resources, R.drawable.ball)
-            val dstWidth = (sBallDiameter * mMetersToPixelsX + 0.5f).toInt()
-            val dstHeight = (sBallDiameter * mMetersToPixelsY + 0.5f).toInt()
+            val dstWidth = (S_BAL_DIAMETER * mMetersToPixelsX + 0.5f).toInt()
+            val dstHeight = (S_BAL_DIAMETER * mMetersToPixelsY + 0.5f).toInt()
             mBitmap = Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true)
             val opts = BitmapFactory.Options()
             @Suppress("DEPRECATION") // TODO: As of Build.VERSION_CODES.N, this is ignored
@@ -707,8 +707,8 @@ class AccelerometerPlayActivity : Activity() {
             // the bitmap
             mXOrigin = (w - mBitmap.width) * 0.5f
             mYOrigin = (h - mBitmap.height) * 0.5f
-            mHorizontalBound = (w / mMetersToPixelsX - sBallDiameter) * 0.5f
-            mVerticalBound = (h / mMetersToPixelsY - sBallDiameter) * 0.5f
+            mHorizontalBound = (w / mMetersToPixelsX - S_BAL_DIAMETER) * 0.5f
+            mVerticalBound = (h / mMetersToPixelsY - S_BAL_DIAMETER) * 0.5f
         }
 
         /**
@@ -867,17 +867,17 @@ private const val WAKE_LOCK_TIMEOUT = 1000000L
 /**
  * diameter of the balls in meters
  */
-private const val sBallDiameter = 0.004f
+private const val S_BAL_DIAMETER = 0.004f
 
 /**
  * Square of the diameter of the balls in meters squared.
  */
-private const val sBallDiameter2 = sBallDiameter * sBallDiameter
+private const val S_BAL_DIAMETER2 = S_BAL_DIAMETER * S_BAL_DIAMETER
 
 /**
  * friction of the virtual table and air
  */
-private const val sFriction = 0.1f
+private const val S_FRICTION = 0.1f
 /**
  * Number of balls in our particle system.
  */
