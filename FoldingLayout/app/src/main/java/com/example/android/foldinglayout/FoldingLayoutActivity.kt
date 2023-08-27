@@ -740,7 +740,7 @@ class FoldingLayoutActivity : Activity() {
          * @return `true` if the event is consumed, else `false`
          */
         override fun onScroll(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             distanceX: Float,
             distanceY: Float
