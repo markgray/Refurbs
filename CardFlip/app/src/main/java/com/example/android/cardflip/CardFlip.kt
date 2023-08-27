@@ -235,13 +235,8 @@ class CardFlip : Activity(), CardFlipListener {
          * @param velocityY The velocity of this fling measured in pixels per second along the y axis.
          * @return `true` if the event is consumed, else `false`
          */
-        override fun onFling(
-            e1: MotionEvent,
-            e2: MotionEvent,
-            velocityX: Float,
-            velocityY: Float
-        ): Boolean {
-            val stack: Int = getStack(e1)
+        override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+            val stack: Int = getStack(e1!!)
             val cardStack: ArrayList<CardView> = mStackCards!![stack]
             val size: Int = cardStack.size
             if (size > 0) {
