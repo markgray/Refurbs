@@ -21,18 +21,20 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.TextView
 
 /**
  * Our stable id's `ArrayAdapter<String>` subclass.
  */
 
 /**
- * Our constructor. First we call our super's constructor, then we loop over `int i` for the
- * size of our parameter `List<String> objects` storing the current value of `i` using
- * the string in position `i` of `objects` as the key.
+ * Our constructor. First we call our super's constructor, then in our `init` block we loop over
+ * [Int] variable `var i` for all the [indices] in our [List] of [String] parameter `objects`
+ * storing the current value of `i` in our [HashMap] of [String] to [Int] field [mIdMap] using the
+ * [String] in position `i` of `objects` as the key.
  *
- * @param context            The current context.
- * @param textViewResourceId The resource ID for a layout file containing a TextView to use when
+ * @param context            The current [Context].
+ * @param textViewResourceId The resource ID for a layout file containing a [TextView] to use when
  * instantiating views.
  * @param objects            The objects to represent in the ListView.
  */
@@ -54,11 +56,12 @@ class StableArrayAdapter(
     }
 
     /**
-     * Get the row id associated with the specified position in the list. If our parameter `position`
-     * is less than 0 or greater than or equal to the size of our field `HashMap<String, Integer> mIdMap`
-     * we just return INVALID_ID (the item's position is outside of the bounds of our dataset). Otherwise
-     * we initialize `String item` with the item in position `position` in our dataset then
-     * return the `Integer` stored under the key `item` in `mIdMap` to the caller.
+     * Get the row id associated with the specified position in the list. If our [Int] parameter
+     * [position] is less than 0 or greater than or equal to the size of our [HashMap] of [String]
+     * to [Int] field [mIdMap] we just return [INVALID_ID] (the item's position is outside of the
+     * bounds of our dataset). Otherwise we initialize [String] variable `val item` with the item
+     * in position [position] in our dataset then return the [Long] version of the [Int] stored
+     * under the key `item` in [mIdMap] to the caller.
      *
      * @param position The position of the item within the adapter's data set whose row id we want.
      * @return The id of the item at the specified position.
@@ -72,25 +75,25 @@ class StableArrayAdapter(
     }
 
     /**
-     * Indicates whether the item ids are stable across changes to the underlying data. We return true,
-     * our id's are stable.
+     * Indicates whether the item ids are stable across changes to the underlying data. We return
+     * `true`, our id's are stable.
      *
-     * @return True if the same id always refers to the same object.
+     * @return `true` if the same id always refers to the same object.
      */
     override fun hasStableIds(): Boolean {
         return true
     }
 
     /**
-     * Get a View that displays the data at the specified position in the data set. If our parameter
-     * `View convertView` is not null we set its visibility to VISIBLE (just in case it is a
+     * Get a View that displays the data at the specified position in the data set. If our [View]
+     * parameter [convertView] is not `null` we set its visibility to VISIBLE (just in case it is a
      * recycled view which was made invisible). Then we return the view our super's implementation
      * of `getView` returns to the caller.
      *
-     * @param position The position of the item within the adapter's data set whose view we want.
-     * @param convertView The old view to reuse, if possible.
-     * @param parent The parent that this view will eventually be attached to
-     * @return A View corresponding to the data at the specified position.
+     * @param position The position of the item within the adapter's data set whose [View] we want.
+     * @param convertView The old [View] to reuse, if possible.
+     * @param parent The parent that this [View] will eventually be attached to
+     * @return A [View] corresponding to the data at the specified position.
      */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         if (convertView != null) {
@@ -101,9 +104,9 @@ class StableArrayAdapter(
 
     companion object {
         /**
-         * Item id value we return if the position that our `getItemId` override is called for is
-         * outside the bounds of the `HashMap<String, Integer> mIdMap` we use to map strings in our
-         * dataset to their id's.
+         * Item id value we return if the position that our [getItemId] override is called for is
+         * outside the bounds of the [HashMap] of [String] to [Int] field [mIdMap] we use to map
+         * strings in our dataset to their id's.
          */
         const val INVALID_ID: Int = -1
     }

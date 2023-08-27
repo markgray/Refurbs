@@ -920,16 +920,16 @@ class DynamicListView : ListView {
         /**
          * Callback method to be invoked while the list view or grid view is being scrolled. If the
          * view is being scrolled, this method will be called before the next frame of the scroll is
-         * rendered. We save our parameter `int scrollState` in `mCurrentScrollState` as
-         * well as in our field `mScrollState`. We then call our `isScrollCompleted` method
+         * rendered. We save our [Int] parameter [scrollState] in our [Int] field [mCurrentScrollState]
+         * as well as in our [Int] field [mScrollState]. We then call our [isScrollCompleted] method
          * to either continue a scroll invoked by the hover cell being outside the bounds of the
-         * `ListView`, or if the hover cell has already been released invoke the animation for
-         * the hover cell to return to its correct position after the ListView has entered an idle
+         * [ListView], or if the hover cell has already been released invoke the animation for the
+         * hover cell to return to its correct position after the [ListView] has entered an idle
          * scroll state.
          *
          * @param view The view whose scroll state is being reported
          * @param scrollState The current scroll state. One of
-         * [.SCROLL_STATE_TOUCH_SCROLL] or [.SCROLL_STATE_IDLE].
+         * [OnScrollListener.SCROLL_STATE_TOUCH_SCROLL] or [OnScrollListener.SCROLL_STATE_IDLE].
          */
         override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
             mCurrentScrollState = scrollState
@@ -938,25 +938,25 @@ class DynamicListView : ListView {
         }
 
         /**
-         * This method is in charge of invoking 1 of 2 actions. Firstly, if the `ListView` is
+         * This property is in charge of invoking 1 of 2 actions. Firstly, if the [ListView] is
          * in a state of scrolling invoked by the hover cell being outside its bounds, then this
          * scrolling event is continued. Secondly, if the hover cell has already been released, this
          * invokes the animation for the hover cell to return to its correct position after the
-         * `ListView` has entered an idle scroll state. If `mCurrentVisibleItemCount` is
-         * greater than 0 (there are one or more visible items from our `ListView` on the screen)
-         * and `mCurrentScrollState` is equal to SCROLL_STATE_IDLE (view is not scrolling) we
-         * branch whether both `mCellIsMobile` and `mIsMobileScrolling` are true:
+         * [ListView] has entered an idle scroll state. If [Int] field [mCurrentVisibleItemCount] is
+         * greater than 0 (there are one or more visible items from our [ListView] on the screen)
+         * and [Int] field [mCurrentScrollState] is equal to [OnScrollListener.SCROLL_STATE_IDLE]
+         * (view is not scrolling) we branch on whether both [Boolean] field [mCellIsMobile] and
+         * [Boolean] field [mIsMobileScrolling] are `true`:
          *
-         *  *
-         * yes: we call the `handleMobileCellScroll` to handle any scrolling that may
-         * be necessary when the hover cell is above or below the bounds of the `ListView`.
+         *  * both `true`: we call the [handleMobileCellScroll] method to handle any scrolling that
+         *  may be necessary when the hover cell is above or below the bounds of the [ListView].
          *
-         *  *
-         * no: if `mIsWaitingForScrollFinish` is true we call our `touchEventsEnded`
-         * method to reset all the appropriate fields to a default state while also animating
-         * the hover cell back to its correct location.
+         *  * one or both `false`: if [Boolean] field [mIsWaitingForScrollFinish] is `true` we call
+         *  our [touchEventsEnded] method to reset all the appropriate fields to a default state
+         *  while also animating the hover cell back to its correct location.
          *
-         *
+         * *NOTE:* This should not be a property, but the java to kotlin converter was confused by
+         * the name (bizarre!)
          */
         private val isScrollCompleted: Unit
             get() {
@@ -970,14 +970,14 @@ class DynamicListView : ListView {
             }
 
         /**
-         * Determines if the ListView scrolled up enough to reveal a new cell at the top of the list.
-         * If so, then the appropriate parameters are updated. If `mCurrentFirstVisibleItem` is
-         * not equal to `mPreviousFirstVisibleItem` (the first visible item has changed) we check
-         * to see whether`mCellIsMobile` is true (the hover cell is in motion) and `mMobileItemId`
-         * is not equal to INVALID_ID (the item id of the hover cell is valid) and if this is true we
-         * call our `updateNeighborViewsForID` method to update the item id's of the items above
-         * and below `mMobileItemId` in the `ListView` and then call our method `handleCellSwitch`
-         * to swap cells if it is necessary to do so.
+         * Determines if the [ListView] scrolled up enough to reveal a new cell at the top of the
+         * list. If so, then the appropriate parameters are updated. If [mCurrentFirstVisibleItem]
+         * is not equal to [mPreviousFirstVisibleItem] (the first visible item has changed) we check
+         * to see whether [Boolean] field [mCellIsMobile] is `true` (the hover cell is in motion)
+         * and [Long] field [mMobileItemId] is not equal to [INVALID_ID] (the item id of the hover
+         * cell is valid) and if these are both `true` we call our [updateNeighborViewsForID] method
+         * to update the item id's of the items above and below [mMobileItemId] in the [ListView]
+         * and then call our method [handleCellSwitch] to swap cells if it is necessary to do so.
          */
         fun checkAndHandleFirstVisibleCellChange() {
             if (mCurrentFirstVisibleItem != mPreviousFirstVisibleItem) {
@@ -989,17 +989,19 @@ class DynamicListView : ListView {
         }
 
         /**
-         * Determines if the ListView scrolled down enough to reveal a new cell at the bottom of the
-         * list. If so, then the appropriate parameters are updated. We set `int currentLastVisibleItem`
-         * to `mCurrentFirstVisibleItem` plus `mCurrentVisibleItemCount` (this is the index
-         * of the last visible item in the `ListView`) and `int previousLastVisibleItem` to
-         * `mPreviousFirstVisibleItem` plus `mPreviousVisibleItemCount` (this is the index
-         * of the previous last visible item in the `ListView`). If `currentLastVisibleItem`
-         * is not equal to `previousLastVisibleItem` (the last visible item has changed) we check
-         * to see whether`mCellIsMobile` is true (the hover cell is in motion) and `mMobileItemId`
-         * is not equal to INVALID_ID (the item id of the hover cell is valid) and if this is true we
-         * call our `updateNeighborViewsForID` method to update the item id's of the items above
-         * to swap cells if it is necessary to do so.
+         * Determines if the [ListView] scrolled down enough to reveal a new cell at the bottom of
+         * the list. If so, then the appropriate parameters are updated. We set [Int] variable
+         * `val currentLastVisibleItem` to [Int] field [mCurrentFirstVisibleItem] plus [Int] field
+         * [mCurrentVisibleItemCount] (this is the index of the last visible item in the [ListView])
+         * and [Int] variable `val previousLastVisibleItem` to [Int] field [mPreviousFirstVisibleItem]
+         * plus [Int] field [mPreviousVisibleItemCount] (this is the index of the previous last
+         * visible item in the [ListView]). If `currentLastVisibleItem` is not equal to
+         * `previousLastVisibleItem` (the last visible item has changed) we check to see whether
+         * [Boolean] field [mCellIsMobile] is `true` (the hover cell is in motion) and [Long] field
+         * [mMobileItemId] is not equal to [INVALID_ID] (the item id of the hover cell is valid) and
+         * if they are both `true` we call our [updateNeighborViewsForID] method to update the item
+         * id's of the items above and below and then we call our [handleCellSwitch] method to swap
+         * cells if it is necessary to do so.
          */
         fun checkAndHandleLastVisibleCellChange() {
             val currentLastVisibleItem: Int = mCurrentFirstVisibleItem + mCurrentVisibleItemCount
@@ -1020,24 +1022,25 @@ class DynamicListView : ListView {
         const val TAG: String = "DynamicListView"
 
         /**
-         * This TypeEvaluator is used to animate the BitmapDrawable back to its
-         * final location when the user lifts his finger by modifying the
-         * BitmapDrawable's bounds.
+         * This [TypeEvaluator] is used to animate the [BitmapDrawable] back to its final location
+         * when the user lifts his finger by animating the modification of the [BitmapDrawable]'s
+         * bounds.
          */
         private val sBoundEvaluator: TypeEvaluator<Rect> = object : TypeEvaluator<Rect> {
             /**
-             * This function returns the result of linearly interpolating the start and end values, with
-             * `fraction` representing the proportion between the start and end values. We return
-             * a new instance of `Rect` whose `left`, `top`, `right`, and `bottom`
-             * values are calculated by our method `interpolate` by interpolating between the `startValue`
-             * and `endValue` values of those fields with `fraction` representing the proportion
-             * between the start and end values.
+             * This function returns the result of linearly interpolating the start and end values,
+             * with its [Float] parameter [fraction] representing the proportion between the start
+             * and end values. We return a new instance of [Rect] whose [Rect.left], [Rect.top],
+             * [Rect.right], and [Rect.bottom] values are calculated by our method [interpolate] by
+             * interpolating between the [Rect] parameter [startValue] and [Rect] parameter [endValue]
+             * values of those fields with [fraction] representing the proportion between the start
+             * and end values.
              *
              * @param fraction   The fraction from the starting to the ending values
              * @param startValue The start value.
              * @param endValue   The end value.
              * @return A linear interpolation between the start and end values, given the
-             * `fraction` parameter.
+             * [Float] parameter [fraction].
              */
             override fun evaluate(fraction: Float, startValue: Rect, endValue: Rect): Rect {
                 return Rect(interpolate(startValue.left, endValue.left, fraction),
@@ -1047,14 +1050,16 @@ class DynamicListView : ListView {
             }
 
             /**
-             * Returns a value calculated by linearly interpolating the start and end values, with
-             * `fraction` representing the proportion between the start and end values.
+             * Returns a value calculated by linearly interpolating between the [Int] parameter
+             * [start] and the [Int] parameter [end] values, with [Float] parameter [fraction]
+             * representing the proportion between the [start] and [end] values.
              *
              * @param start start value
              * @param end end value
              * @param fraction proportion between the start and end values
-             * @return value calculated by linearly interpolating the start and end values, with
-             * `fraction` representing the proportion between the start and end values
+             * @return value calculated by linearly interpolating between the [start] and [end]
+             * values, with [fraction] representing the proportion between the [start] and [end]
+             * values.
              */
             fun interpolate(start: Int, end: Int, fraction: Float): Int {
                 return (start + fraction * (end - start)).toInt()
@@ -1062,20 +1067,20 @@ class DynamicListView : ListView {
         }
 
         /**
-         * DP amount to scroll by, it is divided by the density of the screen in order to determine how
-         * many pixels to smoothly scroll the `ListView` when the item being dragged has been
-         * dragged above or below the bounds of the `ListView`.
+         * DP amount to scroll by, it is divided by the density of the screen in order to determine
+         * how many pixels to smoothly scroll the [ListView] when the item being dragged has been
+         * dragged above or below the bounds of the [ListView].
          */
         private const val SMOOTH_SCROLL_AMOUNT_AT_EDGE: Int = 15
 
         /**
-         * Duration of the animation of item views which are moved when the view being dragged passes
-         * over them.
+         * Duration of the animation of item views which are moved when the view being dragged
+         * passes over them.
          */
         private const val MOVE_DURATION: Int = 150
 
         /**
-         * Stroke width of the `Paint` used by the `getBitmapWithBorder` method to draw
+         * Stroke width of the [Paint] used by the [getBitmapWithBorder] method to draw
          * a black border over the screenshot of the view passed in
          */
         private const val LINE_THICKNESS: Int = 15

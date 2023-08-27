@@ -21,28 +21,25 @@ import android.widget.ListView
 import java.util.Collections
 
 /**
- * This application creates a `ListView` where the ordering of the data set
- * can be modified in response to user touch events.
- *
- *
- * An item in the `ListView` is selected via a long press event and is then
- * moved around by tracking and following the movement of the user's finger.
- * When the item is released, it animates to its new position within the `ListView`.
+ * This application creates a [ListView] where the ordering of the data set can be modified in
+ * response to user touch events. An item in the [ListView] is selected via a long press event and
+ * is then moved around by tracking and following the movement of the user's finger. When the item
+ * is released, it animates to its new position within the [ListView].
  * See: [ListViewDraggingAnimation](https://www.youtube.com/watch?v=_BZIvjMgH-Q)
  */
 class ListViewDraggingAnimation : Activity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_list_view. We initialize
-     * `ArrayList<String> mCheeseList` with a new instance, then add all of the strings in the
-     * array `Cheeses.sCheeseStrings` to it. We initialize `StableArrayAdapter adapter` with
-     * a new instance which will use `mCheeseList` as its dataset and the layout file R.layout.text_view
-     * to display the data items in the `ListView` it is the adapter for. We initialize
-     * `DynamicListView listView` by finding the view with id R.id.list_view, call its `setCheeseList`
-     * method to set its dataset to `mCheeseList`, set its adapter to `adapter` and set its
-     * choice mode to CHOICE_MODE_SINGLE.
+     * then we set our content view to our layout file [R.layout.activity_list_view]. We initialize
+     * [ArrayList] of [String] variable `val mCheeseList` with a new instance, then add all of the
+     * strings in the array [Cheeses.sCheeseStrings] to it. We initialize [StableArrayAdapter]
+     * variable `val adapter` with a new instance which will use `mCheeseList` as its dataset and
+     * the layout file [R.layout.text_view] to display the data items in the [ListView] it is the
+     * adapter for. We initialize [DynamicListView] variable `val listView` by finding the view with
+     * id [R.id.list_view], call its [DynamicListView.setCheeseList] method to set its dataset to
+     * `mCheeseList`, set its adapter to `adapter` and set its choice mode to CHOICE_MODE_SINGLE.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
