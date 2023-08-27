@@ -32,11 +32,12 @@ import android.widget.AbsListView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.TextView
 
 /**
- * This is a custom array adapter used to populate the ListView whose items will
- * expand to display extra content in addition to the default display.
+ * This is a custom array adapter used to populate the [ListView] whose items will expand to display
+ * extra content in addition to the default display.
  *
  * Constructor. First we call our super's constructor, then we save our parameter `data` in
  * our field `List<ExpandableListItem> mData` and our parameter `layoutViewResourceId`
@@ -59,7 +60,8 @@ class CustomArrayAdapter(
     /**
      * Our dataset, it is set by our constructor.
      */
-    private val mData: List<ExpandableListItem>) : ArrayAdapter<ExpandableListItem?>(context!!, mLayoutViewResourceId, mData) {
+    private val mData: List<ExpandableListItem>
+) : ArrayAdapter<ExpandableListItem?>(context!!, mLayoutViewResourceId, mData) {
     /**
      * Get a View that displays the data at the specified position in the data set. Populates the
      * item in the ListView cell with the appropriate data. This method sets the thumbnail image,
