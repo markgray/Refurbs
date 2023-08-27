@@ -73,14 +73,10 @@ class GestureListener : SimpleOnGestureListener() {
      * @return `true` if the event is consumed, else `false`. We return `false` to allow the event
      * to propagate to the underlying [View].
      */
-    override fun onScroll(
-        e1: MotionEvent,
-        e2: MotionEvent,
-        distanceX: Float,
-        distanceY: Float)
+    override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float)
     : Boolean {
         // User attempted to scroll
-        Log.i(TAG, "Scroll" + getTouchType(e1))
+        Log.i(TAG, "Scroll" + getTouchType(e1!!))
         return false
     }
 
@@ -98,14 +94,9 @@ class GestureListener : SimpleOnGestureListener() {
      * @return `true` if the event is consumed, else `false`. We return `false` to allow the event
      * to propagate to the underlying [View].
      */
-    override fun onFling(
-        e1: MotionEvent,
-        e2: MotionEvent,
-        velocityX: Float,
-        velocityY: Float
-    ): Boolean {
+    override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
         // Fling event occurred.  Notification of this one happens after an "up" event.
-        Log.i(TAG, "Fling" + getTouchType(e1))
+        Log.i(TAG, "Fling" + getTouchType(e1!!))
         return false
     }
 
