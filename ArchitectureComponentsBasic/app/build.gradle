@@ -17,9 +17,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 
 android {
-    compileSdk 33
+    compileSdk 34
 
     repositories {
         google()
@@ -29,7 +30,8 @@ android {
     defaultConfig {
         applicationId 'com.example.android.persistence'
         minSdkVersion 21
-        targetSdkVersion 33
+        //noinspection EditedTargetSdkVersion
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
@@ -68,8 +70,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     kapt 'androidx.lifecycle:lifecycle-common:2.6.1'
     implementation 'androidx.room:room-runtime:2.5.2'
-    //noinspection KaptUsageInsteadOfKsp TODO: Switch to ksp
-    kapt "androidx.room:room-compiler:2.5.2"
+    ksp "androidx.room:room-compiler:2.5.2"
 
     // Android Testing Support Library's runner and rules
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
