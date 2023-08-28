@@ -26,6 +26,7 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
@@ -39,22 +40,20 @@ import android.widget.TextView
  * This is a custom array adapter used to populate the [ListView] whose items will expand to display
  * extra content in addition to the default display.
  *
- * Constructor. First we call our super's constructor, then we save our parameter `data` in
- * our field `List<ExpandableListItem> mData` and our parameter `layoutViewResourceId`
- * in our field `int mLayoutViewResourceId`.
+ * Constructor. We just we call our super's constructor, our parameters are also our fields.
  *
- * @param context              The current context.
- * @param mLayoutViewResourceId The resource ID for a layout file containing a TextView to use when
- * instantiating views.
- * @param mData                 The objects to represent in the ListView.
+ * @param context              The current [Context].
+ * @param mLayoutViewResourceId The resource ID for a layout file containing a [TextView] to use
+ * when instantiating views.
+ * @param mData                 The objects to represent in the [ListView].
  */
 class CustomArrayAdapter(
     /**
-     * The current context.
+     * The current [Context].
      */
     context: Context?,
     /**
-     * The resource id we use as the layout for the `ExpandableListItem` objects in our dataset.
+     * The resource id we use as the layout to display the [ExpandableListItem] objects in our dataset.
      */
     private val mLayoutViewResourceId: Int,
     /**
@@ -63,70 +62,79 @@ class CustomArrayAdapter(
     private val mData: List<ExpandableListItem>
 ) : ArrayAdapter<ExpandableListItem?>(context!!, mLayoutViewResourceId, mData) {
     /**
-     * Get a View that displays the data at the specified position in the data set. Populates the
-     * item in the ListView cell with the appropriate data. This method sets the thumbnail image,
+     * Get a [View] that displays the data at the specified position in the data set. Populates the
+     * item in the [ListView] cell with the appropriate data. This method sets the thumbnail image,
      * the title and the extra text. This method also updates the layout parameters of the item's
      * view so that the image and title are centered in the bounds of the collapsed view, and such
      * that the extra text is not displayed in the collapsed state of the cell.
      *
+     * First we initialize [View] variable `var convertViewLocal` to our [View] parameter [convertView],
+     * and our [ExpandableListItem] variable `val listItem` with the item whose index is given by [Int]
+     * parameter [position] in our [List] of [ExpandableListItem] dataset field [mData]. If our [View]
+     * variable `convertViewLocal` is `null` we initialize [LayoutInflater] variable `val inflater`
+     * with the instance for our context and use it to inflate the layout file with the resource id
+     * in [Int] field [mLayoutViewResourceId] into `convertViewLocal` using our [ViewGroup] parameter
+     * [parent] for the layout params without attaching to it. Having ensured that `convertViewLocal`
+     * holds a non-`null` [View] we initialize [LinearLayout] variable `val linearLayout` by finding
+     * the view in `convertViewLocal` with id [R.id.item_linear_layout], then we initialize
+     * [LinearLayout.LayoutParams] variable `val linearLayoutParams` with an instance whose X size
+     * is `MATCH_PARENT` and whose Y size is the collapsed height of `listItem`, and we then set the
+     * layout params of `linearLayout` to `linearLayoutParams`.
      *
-     * First we initialize `ExpandableListItem object` with the item at position `position`
-     * in our dataset `List<ExpandableListItem> mData`. If our parameter `View convertView`
-     * is null we initialize `LayoutInflater inflater` with the instance for our context and use
-     * it to inflate the layout file with id `mLayoutViewResourceId` into `convertView`
-     * using our parameter `ViewGroup parent` for the layout params without attaching to it.
-     * Null or not we initialize `LinearLayout linearLayout` by finding the view in `convertView`
-     * with id R.id.item_linear_layout, initialize `LayoutParams linearLayoutParams` with an instance
-     * whose X size is MATCH_PARENT and whose Y size is the collapsed height of `object`, then
-     * set the layout params of `linearLayout` to `linearLayoutParams`.
+     * We initialize [ImageView] variable `val imgView` by finding the view in `convertViewLocal`
+     * with id [R.id.image_view], [TextView] variable `val titleView` by finding the view with id
+     * [R.id.title_view], and [TextView] variable `val textView` by finding the view with id
+     * [R.id.text_view]. We set the text of `titleView` to the [ExpandableListItem.title] field of
+     * `listItem`, the content of `imgView` to the bitmap returned by our method [getCroppedBitmap]
+     * when passed the bitmap decoded from the resource id in the [ExpandableListItem.imgResource]
+     * field of `listItem` ([getCroppedBitmap] returns a circle cut out of the bitmap), and the text
+     * of `textView` to the text string in the [ExpandableListItem.text] field of `listItem`. We then
+     * set the layout params of `convertViewLocal` to an instance whose X size is MATCH_PARENT and
+     * whose Y size is WRAP_CONTENT.
      *
+     * We initialize [ExpandingLayout] variable `val expandingLayout` by finding the view in
+     * `convertViewLocal` with id [R.id.expanding_layout], set its expanded height property to the
+     * expanded height in the [ExpandableListItem.expandedHeight] field of `listItem`, and set its
+     * [OnSizeChangedListener] to `listItem`. If `listItem` is not expanded we set its visibility to
+     * GONE, and if it is expanded we set it to VISIBLE. Finally we return `convertViewLocal` to the
+     * caller.
      *
-     * We initialize `ImageView imgView` by finding the view in `convertView` with id
-     * R.id.image_view, `TextView titleView` by finding the view with id R.id.title_view, and
-     * `TextView textView` by finding the view with id R.id.text_view. We set the text of
-     * `titleView` to the title of `object`, the content of `imgView` to the bitmap
-     * returned by our method `getCroppedBitmap` when passed the bitmap decoded from the image
-     * resource id of `object` (`getCroppedBitmap` returns a circle cut out of the bitmap),
-     * and the text of `textView` to the text string of `object`. We then set the layout
-     * params of `convertView` to an instance whose X size is MATCH_PARENT and whose Y size is
-     * WRAP_CONTENT.
-     *
-     *
-     * We initialize `ExpandingLayout expandingLayout` by finding the view in `convertView`
-     * with id R.id.expanding_layout, set its expanded height property to the expanded height of
-     * `object`, and set its `OnSizeChangedListener` to `object`. If `object`
-     * is not expanded we set its visibility to GONE, and if it is expanded we set it to VISIBLE.
-     * Finally we return `convertView` to the caller.
-     *
-     * @param position The position of the item within the adapter's data set whose view we want.
-     * @param convertView The old view to reuse, if possible.
+     * @param position The position of the item within the adapter's data set whose [View] we want.
+     * @param convertView The old [View] to reuse, if possible.
      * @param parent The parent that this view will eventually be attached to
-     * @return A View corresponding to the data at the specified position.
+     * @return A [View] corresponding to the data at the specified position.
      */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        var convertViewLocal = convertView
-        val `object` = mData[position]
+        var convertViewLocal: View? = convertView
+        val listItem: ExpandableListItem = mData[position]
         if (convertViewLocal == null) {
-            val inflater = (context as Activity).layoutInflater
+            val inflater: LayoutInflater = (context as Activity).layoutInflater
             convertViewLocal = inflater.inflate(mLayoutViewResourceId, parent, false)
         }
         val linearLayout = convertViewLocal!!.findViewById<LinearLayout>(R.id.item_linear_layout)
-        val linearLayoutParams = LinearLayout.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
-            `object`.collapsedHeight)
+        val linearLayoutParams = LinearLayout.LayoutParams(
+            AbsListView.LayoutParams.MATCH_PARENT,
+            listItem.collapsedHeight
+        )
         linearLayout.layoutParams = linearLayoutParams
         val imgView = convertViewLocal.findViewById<ImageView>(R.id.image_view)
         val titleView = convertViewLocal.findViewById<TextView>(R.id.title_view)
         val textView = convertViewLocal.findViewById<TextView>(R.id.text_view)
-        titleView.text = `object`.title
-        imgView.setImageBitmap(getCroppedBitmap(BitmapFactory.decodeResource(context
-            .resources, `object`.imgResource, null)))
-        textView.text = `object`.text
-        convertViewLocal.layoutParams = AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT,
-            AbsListView.LayoutParams.WRAP_CONTENT)
+        titleView.text = listItem.title
+        imgView.setImageBitmap(getCroppedBitmap(BitmapFactory.decodeResource(
+            context.resources,
+            listItem.imgResource,
+            null
+        )))
+        textView.text = listItem.text
+        convertViewLocal.layoutParams = AbsListView.LayoutParams(
+            AbsListView.LayoutParams.MATCH_PARENT,
+            AbsListView.LayoutParams.WRAP_CONTENT
+        )
         val expandingLayout = convertViewLocal.findViewById<ExpandingLayout>(R.id.expanding_layout)
-        expandingLayout.expandedHeight = `object`.expandedHeight
-        expandingLayout.setSizeChangedListener(`object`)
-        if (!`object`.isExpanded) {
+        expandingLayout.expandedHeight = listItem.expandedHeight
+        expandingLayout.setSizeChangedListener(listItem)
+        if (!listItem.isExpanded) {
             expandingLayout.visibility = View.GONE
         } else {
             expandingLayout.visibility = View.VISIBLE
@@ -135,33 +143,42 @@ class CustomArrayAdapter(
     }
 
     /**
-     * Crops a circle out of the thumbnail photo passed it and returns the circle to the caller. First
-     * we initialize `Bitmap output` with a bitmap that is the same width and height as our
-     * parameter `Bitmap bitmap`. We initialize `Rect rect` whose dimensions are the width
-     * of `bitmap` by its height. We initialize `Canvas canvas` with an instance which will
-     * draw into `output`. We initialize `Paint paint` with a new instance and set its
-     * antialias flag, initialize `int halfWidth` to be half the width of `bitmap` and
-     * `int halfHeight` to be half its height. We then draw a circle on `canvas` centered
-     * at (halfWidth, halfHeight) whose radius is the larger of `halfWidth` and `halfHeight`
-     * using `paint` as the `Paint`. New we set the transfer mode of `paint` to
-     * SRC_IN (keeps the source pixels that cover the destination pixels, discards the remaining source
-     * and destination pixels), and use it to draw `bitmap` on `canvas` using `rect`
-     * as both the source and destination rectangle (utilizes the entire bitmaps without scaling or
-     * translation). Finally we return `output` to the caller.
+     * Crops a circle out of the thumbnail photo passed it and returns the circle to the caller.
+     * First we initialize [Bitmap] variable `val output` with a [Bitmap] that is the same width
+     * and height as our [Bitmap] parameter [bitmap]. We initialize [Rect] variable `val rect` to
+     * an instance whose dimensions are the width of [bitmap] by its height. We initialize [Canvas]
+     * variable `val canvas` with an instance which will draw into `output`. We initialize [Paint]
+     * variable `val paint` with a new instance and set its antialias flag to `true`, initialize
+     * [Int] variable `val halfWidth` to be half the width of [bitmap] and [Int] variable
+     * `val halfHeight` to be half its height. We then draw a circle on `canvas` centered at
+     * (`halfWidth`, `halfHeight`) whose radius is the larger of `halfWidth` and `halfHeight`
+     * using `paint` as the [Paint]. New we set the transfer mode of `paint` to SRC_IN (keeps the
+     * source pixels that cover the destination pixels, discards the remaining source and destination
+     * pixels), and use it to draw [bitmap] on `canvas` using `rect` as both the source and
+     * destination rectangle (utilizes the entire bitmaps without scaling or translation). Finally
+     * we return `output` to the caller.
      *
-     * @param bitmap `Bitmap` to be cropped.
-     * @return circle `Bitmap` cropped out of our parameter `Bitmap bitmap`
+     * @param bitmap the [Bitmap] to be cropped.
+     * @return circle [Bitmap] cropped out of our [Bitmap] parameter [bitmap]
      */
     fun getCroppedBitmap(bitmap: Bitmap): Bitmap {
-        val output = Bitmap.createBitmap(bitmap.width, bitmap.height,
-            Bitmap.Config.ARGB_8888)
+        val output = Bitmap.createBitmap(
+            bitmap.width,
+            bitmap.height,
+            Bitmap.Config.ARGB_8888
+        )
         val rect = Rect(0, 0, bitmap.width, bitmap.height)
         val canvas = Canvas(output)
         val paint = Paint()
         paint.isAntiAlias = true
         val halfWidth = bitmap.width / 2
         val halfHeight = bitmap.height / 2
-        canvas.drawCircle(halfWidth.toFloat(), halfHeight.toFloat(), Math.max(halfWidth, halfHeight).toFloat(), paint)
+        canvas.drawCircle(
+            halfWidth.toFloat(),
+            halfHeight.toFloat(),
+            Math.max(halfWidth, halfHeight).toFloat(),
+            paint
+        )
         paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
         canvas.drawBitmap(bitmap, rect, rect, paint)
         return output

@@ -23,19 +23,16 @@ import android.util.Log
 import android.widget.RelativeLayout
 
 /**
- * This layout is used to contain the extra information that will be displayed
- * when a certain cell is expanded. The custom relative layout is created in
- * order to achieve a fading affect of this layout's contents as it is being
- * expanded or collapsed as opposed to just fading the content in(out) after(before)
- * the cell expands(collapses).
+ * This layout is used to contain the extra information that will be displayed when a certain cell
+ * is expanded. The custom relative layout is created in order to achieve a fading affect of this
+ * layout's contents as it is being expanded or collapsed as opposed to just fading the content
+ * in(out) after(before) the cell expands(collapses).
  *
- *
- * During expansion, layout takes place so the full contents of this layout can
- * be displayed. When the size changes to display the full contents of the layout,
- * its height is stored. When the view is collapsing, this layout's height becomes 0
- * since it is no longer in the visible part of the cell. By overriding onMeasure, and
- * setting the height back to its max height, it is still visible during the collapse
- * animation, and so, a fade out effect can be achieved.
+ * During expansion, layout takes place so the full contents of this layout can be displayed. When
+ * the size changes to display the full contents of the layout, its height is stored. When the view
+ * is collapsing, this layout's height becomes 0 since it is no longer in the visible part of the
+ * cell. By overriding [onMeasure], and setting the height back to its max height, it is still
+ * visible during the collapseanimation, and so, a fade out effect can be achieved.
  */
 class ExpandingLayout : RelativeLayout {
     /**

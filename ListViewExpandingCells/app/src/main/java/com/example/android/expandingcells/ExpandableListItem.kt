@@ -15,6 +15,10 @@
  */
 package com.example.android.expandingcells
 
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+
 /**
  * This custom object is used to populate the list adapter. It contains a reference
  * to an image, title, and the extra text to be displayed. Furthermore, it keeps track
@@ -30,35 +34,36 @@ package com.example.android.expandingcells
  */
 class ExpandableListItem(
     /**
-     * Title of the item, it is displayed to the right of the image whether the `ExpandableListItem`
-     * is "expanded" or not. The `getView` override of `CustomArrayAdapter` uses it as the
-     * text of the `TextView` with id R.id.title_view.
+     * Title of the item, it is displayed to the right of the image whether the [ExpandableListItem]
+     * is "expanded" or not. The [CustomArrayAdapter.getView] override of [CustomArrayAdapter] uses
+     * it as the text of the [TextView] with id [R.id.title_view].
      */
     val title: String,
     /**
-     * Resource id of the jpg used for the `ImageView` with id R.id.image_view in the item
+     * Resource id of the jpg used for the [ImageView] with id [R.id.image_view] in the item
      * layout, it is displayed to the left of the title of the item.
      */
     val imgResource: Int,
     /**
-     * Height of the item in the collapsed state, it is set to CELL_DEFAULT_HEIGHT (200 pixels) in
+     * Height of the item in the collapsed state, it is set to `CELL_DEFAULT_HEIGHT` (200 pixels) in
      * calls to our constructor.
      */
     var collapsedHeight: Int,
     /**
-     * Text used by the `TextView` inside the `ExpandingLayout` with id R.id.text_view
+     * Text used by the [TextView] inside the [ExpandingLayout] with id [R.id.text_view]
      */
-    var text: String) : OnSizeChangedListener {
+    var text: String
+) : OnSizeChangedListener {
 
     /**
-     * Flag used to indicate whether the item is in the expanded (true) or default state (false)
+     * Flag used to indicate whether the item is in the expanded (`true`) or default state (`false`)
      */
     var isExpanded: Boolean = false
 
     /**
      * This is the height of the item when it is in the expanded state, it starts at -1 when we are
-     * constructed, and is set to the height reported to our `onSizeChanged` override (we
-     * are set as the `OnSizeChangedListener` of the `ExpandingLayout` displaying us)
+     * constructed, and is set to the height reported to our [onSizeChanged] override (we are set as
+     * the [OnSizeChangedListener] of the [ExpandingLayout] displaying us)
      */
     var expandedHeight: Int
 
@@ -67,11 +72,11 @@ class ExpandableListItem(
     }
 
     /**
-     * Called from the `onSizeChanged` override of the `ExpandingLayout` displaying our
-     * item's expanded text. We just call our `setExpandedHeight` override with our parameter
-     * `newHeight` as the argument.
+     * Called from the `onSizeChanged` override of the [ExpandingLayout] displaying our
+     * item's expanded text. We just set our [Int] field [expandedHeight] property to our [Int]
+     * parameter [newHeight].
      *
-     * @param newHeight new height of the `View`
+     * @param newHeight new height of the [View]
      */
     override fun onSizeChanged(newHeight: Int) {
         expandedHeight = newHeight

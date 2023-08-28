@@ -19,48 +19,47 @@ package com.example.android.expandingcells
 
 import android.app.Activity
 import android.os.Bundle
+import android.widget.ListView
 
 /**
  * This activity creates a ListView whose items can be clicked to expand and show
  * additional content.
  *
  *
- * In this specific demo, each item in a ListView displays an image and a corresponding
- * title. These two items are centered in the default (collapsed) state of the ListView's
- * item. When the item is clicked, it expands to display text of some varying length.
- * The item persists in this expanded state (even if the user scrolls away and then scrolls
- * back to the same location) until it is clicked again, at which point the cell collapses
- * back to its default state.
- *
+ * In this specific demo, each item in a ListView displays an image and a corresponding title. These
+ * two items are centered in the default (collapsed) state of the [ExpandingListView]'s item. When
+ * the item is clicked, it expands to display text of some varying length. The item persists in this
+ * expanded state (even if the user scrolls away and then scrolls back to the same location) until
+ * it is clicked again, at which point the cell collapses back to its default state.
  *
  * See: [ListViewExpandingCells](https://www.youtube.com/watch?v=mwE61B56pVQ)
  */
 class ExpandingCells : Activity() {
     /**
-     * `ExpandingListView` in our layout with id R.id.main_list_view (it is the only widget in
-     * our layout, and extends `ListView`).
+     * [ExpandingListView] in our layout with id [R.id.main_list_view] (it is the only widget in
+     * our layout, and extends [ListView]).
      */
     private var mListView: ExpandingListView? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_main. We initialize
-     * `ExpandableListItem[] values` with three different instances. We initialize
-     * `List<ExpandableListItem> mData` with a new instance of `ArrayList`. We then loop
-     * over `int i` adding NUM_OF_CELLS `ExpandableListItem` objects constructed by
-     * copying the contents of entries of `values` in a round robin order. We initialize
-     * `CustomArrayAdapter adapter` with a new instance which uses `mData` as its dataset,
-     * and the layout file R.layout.list_view_item to display each item in that dataset. We initialize
-     * `ExpandingListView mListView` by finding the view with id R.id.main_list_view, set its
-     * adapter to be `adapter` and call its `setDivider` method to set its divider to
-     * null.
+     * then we set our content view to our layout file [R.layout.activity_main]. We initialize our
+     * [Array] of [ExpandableListItem] variable `val values` with three different instances. We
+     * initialize our [MutableList] of [ExpandableListItem] variable `val mData` with a new instance
+     * of [ArrayList]. We then loop over [Int] variable `var i` adding [NUM_OF_CELLS] of
+     * [ExpandableListItem] objects constructed by copying the contents of entries of `values` in a
+     * round robin order. We initialize [CustomArrayAdapter] variable `val adapter` with a new
+     * instance which uses `mData` as its dataset, and the layout file [R.layout.list_view_item] to
+     * display each item in that dataset. We initialize [ExpandingListView] field [mListView] by
+     * finding the view with id [R.id.main_list_view], set its adapter to be `adapter` and call its
+     * [ExpandingListView.setDivider] method (kotlin `divider` property) to set its divider to `null`.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val values = arrayOf(
+        val values: Array<ExpandableListItem> = arrayOf(
             ExpandableListItem("Chameleon", R.drawable.chameleon, CELL_DEFAULT_HEIGHT,
                 resources.getString(R.string.short_lorem_ipsum)),
             ExpandableListItem("Rock", R.drawable.rock, CELL_DEFAULT_HEIGHT,
@@ -81,12 +80,12 @@ class ExpandingCells : Activity() {
 
     companion object {
         /**
-         * Used as the collapsed height of the `ExpandableListItem` objects we create.
+         * Used as the collapsed height of the [ExpandableListItem] objects we create.
          */
         private const val CELL_DEFAULT_HEIGHT = 200
 
         /**
-         * Number of `ExpandableListItem` objects we add to our dataset.
+         * Number of [ExpandableListItem] objects we add to our dataset.
          */
         private const val NUM_OF_CELLS = 30
     }
