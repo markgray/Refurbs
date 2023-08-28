@@ -576,7 +576,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
          * @return `true` if the event is consumed, else `false`, we always return `true`
          */
         override fun onScroll(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             distanceX: Float,
             distanceY: Float
@@ -646,7 +646,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
          * @return `true` if the event is consumed, else `false`, we always return `true`
          */
         override fun onFling(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             velocityX: Float,
             velocityY: Float
