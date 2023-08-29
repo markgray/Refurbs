@@ -16,14 +16,15 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.example.android.contentprovidersample"
         minSdkVersion 21
-        targetSdkVersion 33
+        //noinspection EditedTargetSdkVersion
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -67,6 +68,5 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.5.2'
     annotationProcessor 'androidx.lifecycle:lifecycle-common:2.6.1'
     annotationProcessor 'androidx.room:room-compiler:2.5.2'
-    //noinspection KaptUsageInsteadOfKsp TODO: Switch to ksp
-    kapt "androidx.room:room-compiler:2.5.2"
+    ksp "androidx.room:room-compiler:2.5.2"
 }

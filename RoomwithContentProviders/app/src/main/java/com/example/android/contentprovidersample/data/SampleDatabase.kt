@@ -27,7 +27,7 @@ import androidx.room.RoomDatabase
 /**
  * The Room database, with only one table: the Entity annotated `Cheese` class.
  */
-@Database(entities = [Cheese::class], version = 1)
+@Database(entities = [Cheese::class], version = 1, exportSchema = false)
 abstract class SampleDatabase : RoomDatabase() {
     /**
      * @return The DAO for the Cheese table.
