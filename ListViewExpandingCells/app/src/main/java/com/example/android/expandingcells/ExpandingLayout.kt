@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "UnusedImport")
 
 package com.example.android.expandingcells
 
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
+import android.view.View
+import android.view.View.MeasureSpec
 import android.widget.RelativeLayout
 
 /**
@@ -32,24 +34,24 @@ import android.widget.RelativeLayout
  * the size changes to display the full contents of the layout, its height is stored. When the view
  * is collapsing, this layout's height becomes 0 since it is no longer in the visible part of the
  * cell. By overriding [onMeasure], and setting the height back to its max height, it is still
- * visible during the collapseanimation, and so, a fade out effect can be achieved.
+ * visible during the collapse animation, and so, a fade out effect can be achieved.
  */
 class ExpandingLayout : RelativeLayout {
     /**
-     * The `OnSizeChangedListener` whose `onSizeChanged` override we call with our new
-     * height when size changes are reported to our `onSizeChanged` override.
+     * The [OnSizeChangedListener] whose [OnSizeChangedListener.onSizeChanged] override we call with
+     * our new height when size changes are reported to our [onSizeChanged] override.
      */
     private var mSizeChangedListener: OnSizeChangedListener? = null
 
     /**
      * Height of our view when in the expanded state.
      */
-    private var mExpandedHeight = -1
+    private var mExpandedHeight: Int = -1
 
     /**
      * Our one argument constructor. We just call our super's constructor. UNUSED
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the [View] is running in, through which it can
      * access the current theme, resources, etc.
      */
     constructor(context: Context?) : super(context)
@@ -57,7 +59,7 @@ class ExpandingLayout : RelativeLayout {
     /**
      * Perform inflation from XML. We just call our super's constructor. This is the one that is used.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the [View] is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
@@ -65,32 +67,30 @@ class ExpandingLayout : RelativeLayout {
 
     /**
      * Perform inflation from XML and apply a class-specific base style from a theme attribute or
-     * style resource. This constructor of View allows subclasses to use their own base style when
+     * style resource. This constructor of [View] allows subclasses to use their own base style when
      * they are inflating. We just call our super's constructor. UNUSED
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the [View] is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
-     * @param defStyle An attribute in the current theme that contains a
-     * reference to a style resource that supplies default values for
-     * the view. Can be 0 to not look for defaults.
+     * @param defStyle An attribute in the current theme that contains a reference to a style
+     * resource that supplies default values for the [View]. Can be 0 to not look for defaults.
      */
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
 
     /**
      * Measure the view and its content to determine the measured width and the measured height.
-     * This method is invoked by [.measure] and should be overridden by subclasses
-     * to provide accurate and efficient measurement of their contents. If our field `mExpandedHeight`
-     * is not equal to zero we set our parameter `heightMeasureSpec` to a measure specification
-     * based on a size of `mExpandedHeight`, and a mode of AT_MOST (child can be as large as
-     * it wants up to the specified size). Finally we call our super's implementation of `onMeasure`.
+     * This method is invoked by [measure] and should be overridden by subclasses to provide
+     * accurate and efficient measurement of their contents. If our [Int] field [mExpandedHeight]
+     * is not equal to zero we set our [Int] parameter [heightMeasureSpec] to a measure specification
+     * based on a size of [mExpandedHeight], and a mode of [MeasureSpec.AT_MOST] (child can be as
+     * large as it wants up to the specified size). Finally we call our super's implementation of
+     * `onMeasure`.
      *
      * @param widthMeasureSpec horizontal space requirements as imposed by the parent.
-     * The requirements are encoded with
-     * [android.view.View.MeasureSpec].
+     * The requirements are encoded with [android.view.View.MeasureSpec].
      * @param heightMeasureSpec vertical space requirements as imposed by the parent.
-     * The requirements are encoded with
-     * [android.view.View.MeasureSpec].
+     * The requirements are encoded with [android.view.View.MeasureSpec].
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         var heightMeasureSpecLocal = heightMeasureSpec
@@ -102,10 +102,11 @@ class ExpandingLayout : RelativeLayout {
 
     /**
      * This is called during layout when the size of this view has changed. If you were just added
-     * to the view hierarchy, you're called with the old values of 0. First we set our field
-     * `mExpandedHeight` to our parameter `h`, then we call the `onSizeChanged`
-     * override of our field `OnSizeChangedListener mSizeChangedListener` to notify the list
-     * data object corresponding to this layout that its size has changed.
+     * to the view hierarchy, you're called with the old values of 0. First we set our [Int] field
+     * [mExpandedHeight] to our [Int] parameter [h], then we call the
+     * [OnSizeChangedListener.onSizeChanged] override of our [OnSizeChangedListener] field
+     * [OnSizeChangedListener] to notify the list data object corresponding to this layout that its
+     * size has changed.
      *
      * @param w Current width of this view.
      * @param h Current height of this view.
@@ -119,15 +120,16 @@ class ExpandingLayout : RelativeLayout {
     }
 
     /**
-     * The expanded height field of the object we are to be displaying
+     * Public access to our [Int] field [mExpandedHeight], the expanded height field of the object
+     * we are to be displaying
      */
     var expandedHeight: Int
         get() = mExpandedHeight
         /**
-         * Called from the `getView` override of `CustomArrayAdapter` to set our field
-         * `mExpandedHeight` to the value of the expanded height field of the object we are
-         * to be displaying. We just save our parameter `int expandedHeight` in our field
-         * `mExpandedHeight`.
+         * Called from the [CustomArrayAdapter.getView] override of [CustomArrayAdapter] to set our
+         * [Int] field [mExpandedHeight] to the value of the expanded height field of the object we
+         * are to be displaying. We just save our [Int] parameter [expandedHeight] in our field
+         * [mExpandedHeight].
          *
          * @param expandedHeight expanded height field of the object we are to be displaying.
          */
@@ -139,10 +141,10 @@ class ExpandingLayout : RelativeLayout {
         }
 
     /**
-     * Setter for our field `OnSizeChangedListener mSizeChangedListener`.
+     * Setter for our [OnSizeChangedListener] field [mSizeChangedListener].
      *
-     * @param listener the `OnSizeChangedListener` whose `onSizeChanged` override we should
-     * call when our size changes
+     * @param listener the [OnSizeChangedListener] whose [OnSizeChangedListener.onSizeChanged]
+     * override we should call when our size changes
      */
     fun setSizeChangedListener(listener: OnSizeChangedListener?) {
         mSizeChangedListener = listener

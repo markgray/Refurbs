@@ -31,14 +31,15 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
 
 /**
- * A custom ListView which supports the preview of extra content corresponding to each cell
+ * A custom [ListView] which supports the preview of extra content corresponding to each cell
  * by clicking on the cell to hide and show the extra content.
  */
 class ExpandingListView : ListView {
     /**
-     * Flag used by our `onPreDraw` override to determine if this is the first or second pass
-     * (the `OnPreDrawListener` should be removed on the second pass so that the method does
-     * not keep getting called -- the two passes are used for different stages of the animation).
+     * Flag used by the [OnPreDrawListener.onPreDraw] override of our [OnPreDrawListener] to
+     * determine if this is the first or second pass (the [OnPreDrawListener] should be removed on
+     * the second pass so that the method does not keep getting called -- the two passes are used
+     * for different stages of the animation).
      */
     private var mShouldRemoveObserver = false
 
@@ -55,71 +56,77 @@ class ExpandingListView : ListView {
     private lateinit var mTranslate: IntArray
 
     /**
-     * Our one argument constructor. First we call or super's constructor, then we call our method `init`
-     * to set our `OnItemClickListener` to our field `OnItemClickListener mItemClickListener`.
-     * UNUSED
+     * Our one argument constructor. First we call or super's constructor, then we call our method
+     * [initialize] to set our [OnItemClickListener] to our [OnItemClickListener] field
+     * [mItemClickListener]. UNUSED
      *
-     * @param context The Context the view is running in, through which it can
-     * access the current theme, resources, etc.
+     * @param context The [Context] the [View] is running in, through which it can access the
+     * current theme, resources, etc.
      */
     constructor(context: Context?) : super(context) {
-        init()
+        initialize()
     }
 
     /**
-     * Perform inflation from XML. First we call or super's constructor, then we call our method `init`
-     * to set our `OnItemClickListener` to our field `OnItemClickListener mItemClickListener`.
-     * This is the one that is used.
+     * Perform inflation from XML. First we call or super's constructor, then we call our method
+     * [initialize] to set our [OnItemClickListener] to our [OnItemClickListener] field
+     * [mItemClickListener]. This is the constructor that is used.
      *
-     * @param context The Context the view is running in, through which it can
-     * access the current theme, resources, etc.
+     * @param context The [Context] the [View] is running in, through which it can access the
+     * current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        init()
+        initialize()
     }
 
     /**
      * Perform inflation from XML and apply a class-specific base style from a theme attribute or
-     * style resource. This constructor of View allows subclasses to use their own base style when
-     * they are inflating. First we call or super's constructor, then we call our method `init`
-     * to set our `OnItemClickListener` to our field `OnItemClickListener mItemClickListener`.
+     * style resource. This constructor of [View] allows subclasses to use their own base style when
+     * they are inflating. First we call or super's constructor, then we call our method [initialize]
+     * to set our [OnItemClickListener] to our [OnItemClickListener] field [mItemClickListener].
      * UNUSED
      *
-     * @param context The Context the view is running in, through which it can
-     * access the current theme, resources, etc.
+     * @param context The [Context] the [View] is running in, through which it can access the
+     * current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
-     * @param defStyle An attribute in the current theme that contains a
-     * reference to a style resource that supplies default values for
-     * the view. Can be 0 to not look for defaults.
+     * @param defStyle An attribute in the current theme that contains a reference to a style
+     * resource that supplies default values for the view. Can be 0 to not look for defaults.
      */
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
-        init()
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyle: Int
+    ) : super(context, attrs, defStyle) {
+        initialize()
     }
 
     /**
-     * Convenience method used by our constructors to set our `OnItemClickListener` to our
-     * field `OnItemClickListener mItemClickListener`.
+     * Convenience method used by our constructors to set our [OnItemClickListener] to our
+     * [OnItemClickListener] field [mItemClickListener].
      */
-    private fun init() {
+    private fun initialize() {
         onItemClickListener = mItemClickListener
     }
 
     /**
-     * Listens for item clicks and expands or collapses the selected view depending on
-     * its current state.
-     * Callback method to be invoked when an item in our AdapterView has been clicked. First we
-     * initialize `ExpandableListItem viewObject` with the the data associated with the
-     * the position within the adapter's data set that is displayed in `View view`. Then
-     * if the `isExpanded` method of `viewObject` returns false (the view is collapsed)
-     * we call our method `expandView` to expand the view, and if it returns true (the view
-     * is expanded) we call our method `collapseView` to collapse the view.
+     * Listens for item clicks and expands or collapses the selected view depending on its current
+     * state. Its [OnItemClickListener.onItemClick] lambda is invoked when an item in our [ListView]
+     * has been clicked. First we initialize [ExpandableListItem] variable `val viewObject` with the
+     * data associated with the the position within the adapter's data set that is displayed in our
+     * [View] parameter `view`. Then if the [ExpandableListItem.isExpanded] method of `viewObject`
+     * returns `false` (the view is collapsed) we call our method [expandView] to expand the view,
+     * and if it returns `true` (the view is expanded) we call our method [collapseView] to collapse
+     * the view.
      *
-     * Parameter parent The AdapterView where the click happened.
-     * Parameter view The view within the AdapterView that was clicked (this
+     * *Parameter* parent The AdapterView where the click happened.
+     *
+     * *Parameter* view The view within the AdapterView that was clicked (this
      * will be a view provided by the adapter)
-     * Parameter position The position of the view in the adapter.
-     * Parameter id The row id of the item that was clicked.
+     *
+     * *Parameter* position The position of the view in the adapter.
+     *
+     * *Parameter* id The row id of the item that was clicked.
      */
     private val mItemClickListener = OnItemClickListener { parent, view, position, id ->
 
@@ -135,7 +142,6 @@ class ExpandingListView : ListView {
      * Calculates the top and bottom bound changes of the selected item. These values are also used
      * to move the bounds of the items around the one that is actually being expanded or collapsed.
      *
-     *
      * This method can be modified to achieve different user experiences depending on how you want
      * the cells to expand or collapse. In this specific demo, the cells always try to expand
      * downwards (leaving top bound untouched), and similarly, collapse upwards (leaving top bound
@@ -143,28 +149,25 @@ class ExpandingListView : ListView {
      * bound is moved to the top of the screen so as not to hide any additional content that the user
      * has not interacted with yet. Furthermore, if the collapsed cell is partially off screen when
      * it is first clicked, it is translated such that its full contents are visible. Lastly, this
-     * behaviour varies slightly near the bottom of the ListView in order to account for the fact
-     * that the bottom bounds of the actual ListView cannot be modified.
+     * behaviour varies slightly near the bottom of the [ListView] in order to account for the fact
+     * that the bottom bounds of the actual [ListView] cannot be modified.
      *
+     * First we initialize [Int] variable `var yTranslateTop` to 0, and initialize [Int] variable
+     * `var yTranslateBottom` to our [Int] parameter [yDelta]. We then initialize [Int] variable
+     * `val height` to our [Int] parameter [bottom] minus our [Int] parameter [top]. Next we branch
+     * on the value of our [Boolean] parameter [isExpanding]:
      *
-     * First we initialize `yTranslateTop` to 0, and initialize `int yTranslateBottom` to
-     * our parameter `int yDelta`. We then initialize `int height` to our parameter
-     * `int bottom` minus our parameter `int top`. Next we branch on the value of our
-     * parameter `boolean isExpanding`:
-     *
-     *  *
-     * true: (the view is expanding from its collapsed state) We set `boolean isOverTop`
-     * to true if our parameter `int top` is less than 0 (the top of the view that is to
-     * expand is above the screen), and we set `boolean isBelowBottom` to true if the sum
-     * of `top` plus `height` plus `yDelta` is greater than the height of our
-     * `ExpandingListView` (part of the view that is to expand is below the screen). If
-     * `isOverTop` is true we set `yTranslateTop` to `top` and `yTranslateBottom`
-     * to `yDelta` minus `yTranslateTop`. On the other hand if `isOverTop` is
-     * false but `isBelowBottom` is true we initialize `int deltaBelow` to `top`
-     * plus `height` plus `yDelta` minus the height of our `ExpandingListView`.
-     * Then if `top` minus `deltaBelow` is less than 0 we set `yTranslateTop`
-     * to `top` otherwise we set it to `deltaBelow`, and set `yTranslateBottom`
-     * to `yDelta` minus `yTranslateTop`.
+     *  * `true`: (the view is expanding from its collapsed state) We set [Boolean] variable
+     *  `val isOverTop` to `true` if our [Int] parameter [top] is less than 0 (the top of the view
+     *  that is to expand is above the screen), and we set [Boolean] variable `val isBelowBottom` to
+     *  `true` if the sum of [top] plus `height` plus [Int] parameter [yDelta] is greater than the
+     *  height of our [ExpandingListView] (part of the view that is to expand is below the screen).
+     *  If `isOverTop` is `true` we set `yTranslateTop` to [top] and `yTranslateBottom` to [yDelta]
+     *  minus `yTranslateTop`. On the other hand if `isOverTop` is `false` but `isBelowBottom` is
+     *  `true` we initialize [Int] variable `val deltaBelow` to [top] plus `height` plus [yDelta]
+     *  minus the height of our [ExpandingListView]. Then if [top] minus `deltaBelow` is less than 0
+     *  we set `yTranslateTop` to [top] otherwise we set it to `deltaBelow`, and set `yTranslateBottom`
+     *  to [yDelta] minus `yTranslateTop`.
      *
      *  *
      * false: (the view is collapsing from its expanded state) We set `int offset` to the
@@ -193,13 +196,18 @@ class ExpandingListView : ListView {
      * @return array of two int's, the 0'th entry containing how far the top of the clicked view should
      * be translated, and the 1'th entry containing how far the bottom of the clicked view should be translated
      */
-    private fun getTopAndBottomTranslations(top: Int, bottom: Int, yDelta: Int, isExpanding: Boolean): IntArray {
+    private fun getTopAndBottomTranslations(
+        top: Int,
+        bottom: Int,
+        yDelta: Int,
+        isExpanding: Boolean
+    ): IntArray {
         var yTranslateTop = 0
-        var yTranslateBottom = yDelta
-        val height = bottom - top
+        var yTranslateBottom: Int = yDelta
+        val height: Int = bottom - top
         if (isExpanding) {
-            val isOverTop = top < 0
-            val isBelowBottom = top + height + yDelta > getHeight()
+            val isOverTop: Boolean = top < 0
+            val isBelowBottom: Boolean = top + height + yDelta > getHeight()
             if (isOverTop) {
                 yTranslateTop = top
                 yTranslateBottom = yDelta - yTranslateTop
@@ -209,12 +217,12 @@ class ExpandingListView : ListView {
                 yTranslateBottom = yDelta - yTranslateTop
             }
         } else {
-            val offset = computeVerticalScrollOffset()
-            val range = computeVerticalScrollRange()
-            val extent = computeVerticalScrollExtent()
-            val leftoverExtent = range - offset - extent
-            val isCollapsingBelowBottom = yTranslateBottom > leftoverExtent
-            val isCellCompletelyDisappearing = bottom - yTranslateBottom < 0
+            val offset: Int = computeVerticalScrollOffset()
+            val range: Int = computeVerticalScrollRange()
+            val extent: Int = computeVerticalScrollExtent()
+            val leftoverExtent: Int = range - offset - extent
+            val isCollapsingBelowBottom: Boolean = yTranslateBottom > leftoverExtent
+            val isCellCompletelyDisappearing: Boolean = bottom - yTranslateBottom < 0
             if (isCollapsingBelowBottom) {
                 yTranslateTop = yTranslateBottom - leftoverExtent
                 yTranslateBottom = yDelta - yTranslateTop
