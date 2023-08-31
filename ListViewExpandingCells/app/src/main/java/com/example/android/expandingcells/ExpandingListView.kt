@@ -293,7 +293,7 @@ class ExpandingListView : ListView {
      * @param view the [View] that is to be expanded because it was clicked while collapsed
      */
     private fun expandView(view: View) {
-        val viewObject = getItemAtPosition(getPositionForView(view)) as ExpandableListItem
+        val viewObject: ExpandableListItem = getItemAtPosition(getPositionForView(view)) as ExpandableListItem
 
         /* Store the original top and bottom bounds of all the cells.*/
         val oldTop = view.top
@@ -366,39 +366,38 @@ class ExpandingListView : ListView {
              *  the key `v`, set the top of `v` to `old[0]` and the bottom of `v` to `old[1]`.
              *
              *  * If `v` now has no parent (it has been forced off the screen) we add it to our
-             *  [List] of [View] field [mViewsToDraw], set `int delta` to `-yTranslateTop`
-             * if `old[0]` is less than `oldTop` or to `yTranslateBottom` if it is not.
-             * We then add the `Animator` created by our `getAnimation` method for animating
-             * the translation of the top and bottom Y of `v` both by `delta` to our list
-             * `ArrayList <Animator> animations`. On the other hand if `v` still has a parent
-             * we set `int i` to the child index of `v` and if `v` is not equal to
-             * `view` we set `int delta` to `yTranslateBottom` if `i` is greater
-             * than `index` or to `-yTranslateTop` if it is not then add the `Animator`
-             * created by our `getAnimation` method for animating the translation of the top and
-             * bottom Y of `v` both by `delta` to our list `ArrayList <Animator> animations`.
-             * We then clear the has transient state flag of `v`.
+             *  [List] of [View] field [mViewsToDraw], set [Int] variable `val delta` to
+             *  `-yTranslateTop` if `old[0]` is less than `oldTop` or to `yTranslateBottom` if it
+             *  is not. We then add the [Animator] created by our [getAnimation] method for animating
+             *  the translation of the top and bottom Y of `v` both by `delta` to our [ArrayList] of
+             *  [Animator] variable `animations`. On the other hand if `v` still has a parent
+             *  we set [Int] variable `val i` to the child index of `v` and if `v` is not equal to
+             *  `view` we set [Int] variable `val delta` to `yTranslateBottom` if `i` is greater
+             *  than `index` or to `-yTranslateTop` if it is not then add the [Animator] created by
+             *  our [getAnimation] method for animating the translation of the top and bottom Y of
+             *  `v` both by `delta` to our [ArrayList] of [Animator] variable `animations`. We then
+             *  clear the "has transient state" flag of `v`.
              *
+             * Having finished with all the siblings of the expanding cell we add an [Animator]
+             * created by our [getAnimation] method for animating the translation of the top Y of
+             * `view` (the clicked on cell) by `-yTranslateTop` and the bottom Y by `yTranslateBottom`.
+             * Then we add an object animator to `animations` which animates the alpha property of
+             * the view in `view` with id [R.id.expanding_layout] (the expanding extra content) from
+             * 0 to 1. We then disable our [ListView] for the duration of the animation, and set it
+             * to not be clickable. We initialize [AnimatorSet] variable `val s` with a new instance,
+             * set it to play the animations in `animations` at the same time, and add to it an
+             * anonymous [AnimatorListenerAdapter] whose [AnimatorListenerAdapter.onAnimationEnd]
+             * override sets the [ExpandableListItem.isExpanded] property of `viewObject` to `true`
+             * to set it to an expanded state, enables our [ListView] and sets it to be clickable,
+             * then if there are any views in our [MutableList] of [View] field [mViewsToDraw] loops
+             * through them clearing their "has transient state" flag. When done doing this we clear
+             * the contents of [mViewsToDraw]. Having created and configured our [AnimatorSet] variable
+             * `s` we start it running and return true so that this drawing pass will continue.
              *
-             * Having finished with all the siblings of the expanding cell we add an `Animator` created by our
-             * `getAnimation` method for animating the translation of the top Y of `view` (the clicked
-             * on cell) by `-yTranslateTop` and the bottom Y by `yTranslateBottom`. Then we add an
-             * object animator to `animations` which animates the alpha property of the view in `view`
-             * with id R.id.expanding_layout (the expanding extra content) from 0 to 1. We then disable our
-             * `ListView` for the duration of the animation, and set it to not be clickable. We initialize
-             * `AnimatorSet s` with a new instance, set it to play the animations in `animations` at
-             * the same time, and add to it an anonymous `AnimatorListenerAdapter` whose `onAnimationEnd`
-             * override calls the `setExpanded(true)` method of `viewObject` to set its expanded state,
-             * enables our `ListView` and sets it to be clickable, then if there are any views in our list
-             * `mViewsToDraw` loops through them clearing their has transient state flag. When done doing this
-             * we clear the contents of `mViewsToDraw`. Having created and configured our `AnimatorSet s`
-             * we start it running and return true so that this drawing pass will continue.
-             *
-             *
-             *
-             * @return Return true to proceed with the current drawing pass, or false to cancel, on the
-             * first pass we return false so that the ListView does not redraw its contents on this layout
-             * pass but only updates all the parameters associated with its children, and on the second
-             * pass we return true so that the ListView proceed to draw itself.
+             * @return Return `true` to proceed with the current drawing pass, or `false` to cancel,
+             * on the first pass we return `false` so that the [ListView] does not redraw its contents
+             * on this layout pass but only updates all the parameters associated with its children,
+             * and on the second pass we return `true` so that the [ListView] proceed to draw itself.
              */
             override fun onPreDraw(): Boolean {
                 /* Determine if this is the first or second pass.*/
@@ -409,19 +408,19 @@ class ExpandingListView : ListView {
                     * The ListView must be offset in a way, such that after the animation
                     * takes place, all the cells that remain visible are rendered completely
                     * by the ListView.*/
-                    val newTop = view.top
-                    val newBottom = view.bottom
-                    val newHeight = newBottom - newTop
-                    val oldHeight = oldBottom - oldTop
-                    val delta = newHeight - oldHeight
+                    val newTop: Int = view.top
+                    val newBottom: Int = view.bottom
+                    val newHeight: Int = newBottom - newTop
+                    val oldHeight: Int = oldBottom - oldTop
+                    val delta: Int = newHeight - oldHeight
                     mTranslate = getTopAndBottomTranslations(oldTop, oldBottom, delta, true)
-                    val currentTop = view.top
-                    val futureTop = oldTop - mTranslate[0]
-                    var firstChildStartTop = getChildAt(0).top
-                    var firstVisiblePosition = firstVisiblePosition
-                    var deltaTop = currentTop - futureTop
+                    val currentTop: Int = view.top
+                    val futureTop: Int = oldTop - mTranslate[0]
+                    var firstChildStartTop: Int = getChildAt(0).top
+                    var firstVisiblePosition: Int = firstVisiblePosition
+                    var deltaTop: Int = currentTop - futureTop
                     var i: Int
-                    val childCountLocal = getChildCount()
+                    val childCountLocal: Int = getChildCount()
                     i = 0
                     while (i < childCountLocal) {
                         val v = getChildAt(i)
@@ -444,16 +443,17 @@ class ExpandingListView : ListView {
 
                     /* Return false such that the ListView does not redraw its contents on
                      * this layout but only updates all the parameters associated with its
-                     * children.*/return false
+                     * children.*/
+                    return false
                 }
 
                 /* Remove the pre-draw listener so this method does not keep getting called. */
                 mShouldRemoveObserver = false
                 observer.removeOnPreDrawListener(this)
-                val yTranslateTop = mTranslate[0]
-                val yTranslateBottom = mTranslate[1]
+                val yTranslateTop: Int = mTranslate[0]
+                val yTranslateBottom: Int = mTranslate[1]
                 val animations = ArrayList<Animator>()
-                val index = indexOfChild(view)
+                val index: Int = indexOfChild(view)
 
                 /* Loop through all the views that were on the screen before the cell was
                 *  expanded. Some cells will still be children of the ListView while
@@ -467,12 +467,12 @@ class ExpandingListView : ListView {
                     v.bottom = old[1]
                     if (v.parent == null) {
                         mViewsToDraw.add(v)
-                        val delta = if (old[0] < oldTop) -yTranslateTop else yTranslateBottom
+                        val delta: Int = if (old[0] < oldTop) -yTranslateTop else yTranslateBottom
                         animations.add(getAnimation(v, delta.toFloat(), delta.toFloat()))
                     } else {
-                        val i = indexOfChild(v)
+                        val i: Int = indexOfChild(v)
                         if (v !== view) {
-                            val delta = if (i > index) yTranslateBottom else -yTranslateTop
+                            val delta: Int = if (i > index) yTranslateBottom else -yTranslateTop
                             animations.add(getAnimation(v, delta.toFloat(), delta.toFloat()))
                         }
                         v.setHasTransientState(false)
@@ -483,8 +483,14 @@ class ExpandingListView : ListView {
                 animations.add(getAnimation(view, -yTranslateTop.toFloat(), yTranslateBottom.toFloat()))
 
                 /* Adds an animation for fading in the extra content. */
-                animations.add(ObjectAnimator.ofFloat(view.findViewById(R.id.expanding_layout),
-                    ALPHA, 0f, 1f))
+                animations.add(
+                    ObjectAnimator.ofFloat(
+                        /* target = */ view.findViewById(R.id.expanding_layout),
+                        /* property = */ ALPHA,
+                        /* ...values = */ 0f,
+                        1f
+                    )
+                )
 
                 /* Disabled the ListView for the duration of the animation.*/
                 isEnabled = false
@@ -495,11 +501,11 @@ class ExpandingListView : ListView {
                 s.playTogether(animations)
                 s.addListener(object : AnimatorListenerAdapter() {
                     /**
-                     * Notifies the end of the animation. First we call the `setExpanded(true)` method
-                     * of `viewObject` to set its expanded state, then we enable our `ListView`
-                     * and set it to be clickable, then if there are any views in our list `mViewsToDraw`
-                     * we loop through them clearing their has transient state flag. Finally we clear the
-                     * contents of `mViewsToDraw`.
+                     * Notifies the end of the animation. First we set the [ExpandableListItem.isExpanded]
+                     * property of `viewObject` to `true` to set it to an expanded state, then we enable
+                     * our [ListView] and set it to be clickable, then if there are any views in our
+                     * [MutableList] of [View] field [mViewsToDraw] we loop through them clearing their
+                     * "has transient state" flag. Finally we clear the contents of [mViewsToDraw].
                      *
                      * @param animation The animation which reached its end.
                      */
@@ -522,17 +528,18 @@ class ExpandingListView : ListView {
     }
 
     /**
-     * Called by draw to draw the child views. By overriding dispatchDraw, we can draw the cells that
-     * disappear during the expansion process. When the cell expands, some items below or above the
-     * expanding cell may be moved off screen and are thus no longer children of the ListView's layout.
-     * By storing a reference to these views prior to the layout, and guaranteeing that these cells do
-     * not get recycled (by setting their has transient state flag), the cells can be drawn directly
-     * onto the canvas during the animation process. After the animation completes, the references to
-     * the extra views can then be discarded. First we call our super's implementation of `dispatchDraw`,
-     * then if there are no views in `List<View> mViewsToDraw` we return having done nothing.
-     * Otherwise we loop over the `View v` in `mViewsToDraw` translating the canvas to the
-     * top Y of `v`, then instructing `v` to draw itself on the canvas, and the translating
-     * the canvas back to where it started before we loop around for the next `v`.
+     * Called by [draw] to draw the child views. By overriding [dispatchDraw], we can draw the cells
+     * that disappear during the expansion process. When the cell expands, some items below or above
+     * the expanding cell may be moved off screen and are thus no longer children of the [ListView]'s
+     * layout. By storing a reference to these views prior to the layout, and guaranteeing that these
+     * cells do not get recycled (by setting their has transient state flag), the cells can be drawn
+     * directly onto the canvas during the animation process. After the animation completes, the
+     * references to the extra views can then be discarded. First we call our super's implementation
+     * of `dispatchDraw`, then if there are no views in [MutableList] of [View] field [mViewsToDraw]
+     * we return having done nothing. Otherwise we loop over the [View] variable `var v` in
+     * [mViewsToDraw] translating our [Canvas] parameter [canvas] to the top Y of `v`, then
+     * instructing `v` to draw itself on [canvas], and then translating the canvas back to where it
+     * started before we loop around for the next [View] in [mViewsToDraw].
      *
      * @param canvas the canvas on which to draw the view
      */
@@ -549,86 +556,80 @@ class ExpandingListView : ListView {
     }
 
     /**
-     * This method collapses the view that was clicked and animates all the views
-     * around it to close around the collapsing view. There are several steps required
-     * to do this which are outlined below.
+     * This method collapses the [View] that was clicked and animates all the views around it to
+     * close around the collapsing view. There are several steps required to do this which are
+     * outlined below.
      *
-     *  *
-     * 1. Update the layout parameters of the view clicked so as to minimize its height
-     * to the original collapsed (default) state.
+     *  * Update the layout parameters of the [View] clicked so as to minimize its height to the
+     *  original collapsed (default) state.
      *
-     *  *
-     * 2. After invoking a layout, the ListView will shift all the cells so as to display
-     * them most efficiently. Therefore, during the first pre-draw pass, the ListView
-     * must be offset by some amount such that given the custom bound change upon
-     * collapse, all the cells that need to be on the screen after the layout
-     * are rendered by the ListView.
+     *  * After invoking a layout, the [ListView] will shift all the cells so as to display them
+     *  most efficiently. Therefore, during the first pre-draw pass, the [ListView] must be offset
+     *  by some amount such that given the custom bound change upon collapse, all the cells that
+     *  need to be on the screen after the layout are rendered by the [ListView].
      *
-     *  *
-     * 3. On the second pre-draw pass, all the items are first returned to their original
-     * location (before the first layout).
+     *  * On the second pre-draw pass, all the items are first returned to their original location
+     *  (before the first layout).
      *
-     *  *
-     * 4. The collapsing view's bounds are animated to what the final values should be.
+     *  * The collapsing view's bounds are animated to what the final values should be.
      *
-     *  *
-     * 5. The bounds above the collapsing view are animated downwards while the bounds
-     * below the collapsing view are animated upwards.
+     *  * The bounds above the collapsing view are animated downwards while the bounds below the
+     *  collapsing view are animated upwards.
      *
-     *  *
-     * 6. The extra text is faded out as its contents become visible throughout the
-     * animation process.
+     *  * The extra text is faded out as its contents become visible throughout the animation process.
      *
+     * First we initialize [ExpandableListItem] variable `val viewObject` with the item whose position
+     * is that which is displayed in our [View] parameter [view]. We then initialize [Int] variable
+     * `val oldTop` with the top Y coordinate of [view] and [Int] variable `val oldBottom` with the
+     * bottom Y coordinate. We initialize [HashMap] of [View] to [IntArray] variable
+     * `val oldCoordinates` with a new instance, and [Int] variable `val childCount` with the number
+     * of children in our [ViewGroup]. We then loop over [Int] variable `var i` for those `childCount`
+     * children setting [View] variable `val v` to the i'th child, setting the fact that `v` is
+     * currently tracking transient state that the framework should attempt to preserve when possible,
+     * and storing an array of 2 [Int]s containing the top Y coordinate and the bottom Y coordinate
+     * of `v` under the key `v` in `oldCoordinates`.
      *
-     * First we initialize `ExpandableListItem viewObject` with the item whose position is that
-     * which is displayed in our parameter `View view`. We then initialize `int oldTop`
-     * with the top Y coordinate of `view` and `int oldBottom` with the bottom Y coordinate.
-     * We initialize `HashMap<View, int[]> oldCoordinates` with a new instance, and `int childCount`
-     * with the number of children in our `ViewGroup`. We then loop over `int i` for those
-     * `childCount` children setting `View v` to the i'th child, setting the fact that
-     * `v` is currently tracking transient state that the framework should attempt to preserve
-     * when possible, and storing an array of 2 ints containing the top Y coordinate and the bottom
-     * Y coordinate of `v` under the key `v` in `oldCoordinates`.
+     * We set the layout params of [view] to a new instance whose X dimension is MATCH_PARENT and
+     * whose Y dimension is the collapsed height of `viewObject` returned by its
+     * [ExpandableListItem.collapsedHeight] property. We initialize [ViewTreeObserver] variable
+     * `val observer` with the [ViewTreeObserver] for this view's hierarchy, and add an anonymous
+     * [OnPreDrawListener] to it whose [OnPreDrawListener.onPreDraw] override calculates and sets
+     * in motion the animations which result from collapsing [view] in two passes.
      *
-     *
-     * We set the layout params of `view` to a new instance whose X dimension is MATCH_PARENT and
-     * whose Y dimension is the collapsed height of `viewObject` returned by its `getCollapsedHeight`
-     * method. We initialize `ViewTreeObserver observer` with the ViewTreeObserver for this view's
-     * hierarchy, and add an anonymous `OnPreDrawListener` whose `onPreDraw` override calculates
-     * and sets in motion the animations which result from collapsing `view` in two passes.
-     *
-     * @param view `View` that was clicked which we need to collapse.
+     * @param view the [View] that was clicked which we need to collapse.
      */
     private fun collapseView(view: View) {
-        val viewObject = getItemAtPosition(getPositionForView(view)) as ExpandableListItem
+        val viewObject: ExpandableListItem = getItemAtPosition(getPositionForView(view)) as ExpandableListItem
 
         /* Store the original top and bottom bounds of all the cells.*/
-        val oldTop = view.top
-        val oldBottom = view.bottom
-        val oldCoordinates = HashMap<View, IntArray>()
-        val childCount = childCount
+        val oldTop: Int = view.top
+        val oldBottom: Int = view.bottom
+        val oldCoordinates: HashMap<View, IntArray> = HashMap()
+        val childCount: Int = childCount
         for (i in 0 until childCount) {
-            val v = getChildAt(i)
+            val v: View = getChildAt(i)
             v.setHasTransientState(true)
             oldCoordinates[v] = intArrayOf(v.top, v.bottom)
         }
 
-        /* Update the layout so the extra content becomes invisible.*/view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,
-            viewObject.collapsedHeight)
+        /* Update the layout so the extra content becomes invisible.*/
+        view.layoutParams = LayoutParams(
+            LayoutParams.MATCH_PARENT,
+            viewObject.collapsedHeight
+        )
 
         /* Add an onPreDraw listener. */
-        val observer = viewTreeObserver
+        val observer: ViewTreeObserver = viewTreeObserver
         observer.addOnPreDrawListener(object : OnPreDrawListener {
             /**
-             * Callback method to be invoked when the view tree is about to be drawn. At this point, all
-             * views in the tree have been measured and given a frame. We branch on the value of our field
-             * `mShouldRemoveObserver`:
+             * Callback method to be invoked when the view tree is about to be drawn. At this point,
+             * all views in the tree have been measured and given a frame. We branch on the value of
+             * our [Boolean] field [mShouldRemoveObserver]:
              *
-             *  *
-             * false: (this is the first pass) first we set `mShouldRemoveObserver` to true,
-             * then we initialize `int newTop` with the new top Y of `view`, and
-             * `int newBottom` with the new bottom Y (these values now reflect that the
-             * expanded content has gone from visible to gone). We set `int newHeight` to
+             *  * `false`: (this is the first pass) first we set [mShouldRemoveObserver] to `true`,
+             *  then we initialize [Int] variable `val newTop` with the new top Y of [view], and
+             *  [Int] variable `val newBottom` with the new bottom Y (these values now reflect that
+             *  the expanded content has gone from visible to gone). We set `int newHeight` to
              * `newBottom` minus `newTop`, `int oldHeight` to `oldBottom`
              * minus `oldTop`, and `int deltaHeight` to `newHeight` minus
              * `oldHeight`. We then set our field `mTranslate` to the `int[]`
@@ -726,23 +727,23 @@ class ExpandingListView : ListView {
                     * be determined such that the necessary cells of the ListView are rendered
                     * and added to it.*/
                     mShouldRemoveObserver = true
-                    val newTop = view.top
-                    val newBottom = view.bottom
-                    val newHeight = newBottom - newTop
-                    val oldHeight = oldBottom - oldTop
-                    val deltaHeight = oldHeight - newHeight
+                    val newTop: Int = view.top
+                    val newBottom: Int = view.bottom
+                    val newHeight: Int = newBottom - newTop
+                    val oldHeight: Int = oldBottom - oldTop
+                    val deltaHeight: Int = oldHeight - newHeight
                     mTranslate = getTopAndBottomTranslations(oldTop, oldBottom, deltaHeight, false)
-                    val currentTop = view.top
-                    val futureTop = oldTop + mTranslate[0]
-                    var firstChildStartTop = getChildAt(0).top
-                    var firstVisiblePosition = firstVisiblePosition
-                    var deltaTop = currentTop - futureTop
+                    val currentTop: Int = view.top
+                    val futureTop: Int = oldTop + mTranslate[0]
+                    var firstChildStartTop: Int = getChildAt(0).top
+                    var firstVisiblePosition: Int = firstVisiblePosition
+                    var deltaTop: Int = currentTop - futureTop
                     var i: Int
-                    val childCountLocal = getChildCount()
+                    val childCountLocal: Int = getChildCount()
                     i = 0
                     while (i < childCountLocal) {
-                        val v = getChildAt(i)
-                        val height = v.bottom - Math.max(0, v.top)
+                        val v: View = getChildAt(i)
+                        val height: Int = v.bottom - Math.max(0, v.top)
                         deltaTop -= if (deltaTop - height > 0) {
                             firstVisiblePosition++
                             height
@@ -760,13 +761,13 @@ class ExpandingListView : ListView {
                 }
                 mShouldRemoveObserver = false
                 observer.removeOnPreDrawListener(this)
-                val yTranslateTop = mTranslate[0]
-                val yTranslateBottom = mTranslate[1]
-                val index = indexOfChild(view)
-                val childCountLocal = getChildCount()
+                val yTranslateTop: Int = mTranslate[0]
+                val yTranslateBottom: Int = mTranslate[1]
+                val index: Int = indexOfChild(view)
+                val childCountLocal: Int = getChildCount()
                 for (i in 0 until childCountLocal) {
-                    val v = getChildAt(i)
-                    val old = oldCoordinates[v]
+                    val v: View = getChildAt(i)
+                    val old: IntArray? = oldCoordinates[v]
                     if (old != null) {
                         /* If the cell was present in the ListView before the collapse and
                         * after the collapse then the bounds are reset to their old values.*/
@@ -777,29 +778,32 @@ class ExpandingListView : ListView {
                         /* If the cell is present in the ListView after the collapse but
                          * not before the collapse then the bounds are calculated using
                          * the bottom and top translation of the collapsing cell.*/
-                        val delta = if (i > index) yTranslateBottom else -yTranslateTop
+                        val delta: Int = if (i > index) yTranslateBottom else -yTranslateTop
                         v.top = v.top + delta
                         v.bottom = v.bottom + delta
                     }
                 }
-                val expandingLayout = view.findViewById<View>(R.id.expanding_layout)
+                val expandingLayout: View = view.findViewById(R.id.expanding_layout)
 
                 /* Animates all the cells present on the screen after the collapse. */
-                val animations = ArrayList<Animator>()
+                val animations: ArrayList<Animator> = ArrayList()
                 for (i in 0 until childCountLocal) {
-                    val v = getChildAt(i)
+                    val v: View = getChildAt(i)
                     if (v !== view) {
-                        val diff = (if (i > index) -yTranslateBottom else yTranslateTop).toFloat()
+                        val diff: Float = (if (i > index) -yTranslateBottom else yTranslateTop).toFloat()
                         animations.add(getAnimation(v, diff, diff))
                     }
                 }
 
 
-                /* Adds animation for collapsing the cell that was clicked. */animations.add(getAnimation(view, yTranslateTop.toFloat(), -yTranslateBottom.toFloat()))
+                /* Adds animation for collapsing the cell that was clicked. */
+                animations.add(getAnimation(view, yTranslateTop.toFloat(), -yTranslateBottom.toFloat()))
 
-                /* Adds an animation for fading out the extra content. */animations.add(ObjectAnimator.ofFloat(expandingLayout, ALPHA, 1f, 0f))
+                /* Adds an animation for fading out the extra content. */
+                animations.add(ObjectAnimator.ofFloat(expandingLayout, ALPHA, 1f, 0f))
 
-                /* Disabled the ListView for the duration of the animation.*/isEnabled = false
+                /* Disabled the ListView for the duration of the animation.*/
+                isEnabled = false
                 isClickable = false
 
                 /* Play all the animations created above together at the same time. */
@@ -825,7 +829,8 @@ class ExpandingListView : ListView {
                         isClickable = true
                         /* Note that alpha must be set back to 1 in case this view is reused
                         * by a cell that was expanded, but not yet collapsed, so its state
-                        * should persist in an expanded state with the extra content visible.*/expandingLayout.alpha = 1f
+                        * should persist in an expanded state with the extra content visible.*/
+                        expandingLayout.alpha = 1f
                     }
                 })
                 s.start()
