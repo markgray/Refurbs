@@ -583,7 +583,7 @@ class ExpandingListView : ListView {
      * `val oldTop` with the top Y coordinate of [view] and [Int] variable `val oldBottom` with the
      * bottom Y coordinate. We initialize [HashMap] of [View] to [IntArray] variable
      * `val oldCoordinates` with a new instance, and [Int] variable `val childCount` with the number
-     * of children in our [ViewGroup]. We then loop over [Int] variable `var i` for those `childCount`
+     * of children in our [ViewGroup]. We then loop over [Int] variable `var i` for those `childCountLocal`
      * children setting [View] variable `val v` to the i'th child, setting the fact that `v` is
      * currently tracking transient state that the framework should attempt to preserve when possible,
      * and storing an array of 2 [Int]s containing the top Y coordinate and the bottom Y coordinate
@@ -629,50 +629,47 @@ class ExpandingListView : ListView {
              *  * `false`: (this is the first pass) first we set [mShouldRemoveObserver] to `true`,
              *  then we initialize [Int] variable `val newTop` with the new top Y of [view], and
              *  [Int] variable `val newBottom` with the new bottom Y (these values now reflect that
-             *  the expanded content has gone from visible to gone). We set `int newHeight` to
-             * `newBottom` minus `newTop`, `int oldHeight` to `oldBottom`
-             * minus `oldTop`, and `int deltaHeight` to `newHeight` minus
-             * `oldHeight`. We then set our field `mTranslate` to the `int[]`
-             * array containing the top and bottom translations for `view` by our
-             * `getTopAndBottomTranslations` method when passed `oldTop` for the
-             * old top Y of our view, `oldBottom` for the old bottom Y of our view,
-             * `deltaHeight` for the change in the height of the clicked on view, and
-             * false for the `isExpanding` to indicate we want the values for an collapsing
-             * view. We then initialize `int currentTop` with the current top Y of `view`,
-             * and `int futureTop` with `oldTop` plus `mTranslate[0]`. We set
-             * `int firstChildStartTop` to the top Y of our child at index 0, `int firstVisiblePosition`
-             * to the position within the adapter's data set for the first item displayed on screen, and
-             * `int deltaTop` to `currentTop` minus `futureTop`. We declare `int i`,
-             * set `int childCount` to the number of children in the group, then loop over `i`
-             * for all these children:
+             *  the expanded content has gone from visible to gone). We set [Int] variable
+             *  `val newHeight` to `newBottom` minus `newTop`, [Int] variable `val oldHeight` to
+             *  `oldBottom` minus `oldTop`, and [Int] variable `val deltaHeight` to `newHeight`
+             *  minus `oldHeight`. We then set our [IntArray] field [mTranslate] to the [IntArray]
+             *  containing the top and bottom translations for `view` returned by our
+             *  [getTopAndBottomTranslations] method when passed `oldTop` for the old top Y of our
+             *  view, `oldBottom` for the old bottom Y of our view, `deltaHeight` for the change in
+             *  the height of the clicked on view, and `false` for the `isExpanding` argument to
+             *  indicate we want the values for an collapsing view. We then initialize [Int] variable
+             *  `val currentTop` with the current top Y of `view`, and [Int] variable `val futureTop`
+             *  with `oldTop` plus `mTranslate[0]`. We set [Int] variable `var firstChildStartTop`
+             *  to the top Y of our child at index 0, [Int] variable `var firstVisiblePosition` to
+             *  the position within the adapter's data set for the first item displayed on screen,
+             *  and [Int] variable `var deltaTop` to `currentTop` minus `futureTop`. We declare [Int]
+             *  variable `var i`, set [Int] variable `val childCount` to the number of children in
+             *  the group, then loop over `i` for all these children:
              *
-             *  *
-             * We set `View v` to the child at index `i`, and `int height`
-             * to the bottom Y of `v` minus the maximum of 0 and the top Y of `v`.
+             *  * We set [View] variable `val v` to the child at index `i`, and [Int] variable
+             *  `val height` to the bottom Y of `v` minus the maximum of 0 and the top Y of `v`.
              *
-             *  *
-             * If `deltaTop` minus `height` is greater than 0, we increment
-             * `firstVisiblePosition` subtract `height` from `deltaTop`
-             * and loop around for the next i'th child, otherwise we break out of the loop.
+             *  * If `deltaTop` minus `height` is greater than 0, we increment `firstVisiblePosition`
+             *  subtract `height` from `deltaTop` and loop around for the next i'th child, otherwise
+             *  we break out of the loop.
              *
+             *  * If `i` is greater than 0 we set `firstChildStartTop` to 0. We then call
+             *  [setSelectionFromTop] to select the position `firstVisiblePosition` and position it
+             *  `firstChildStartTop` minus `deltaTop` pixels from the top edge of our [ListView]. We
+             *  then call the [requestLayout] method to request another layout to update the layout
+             *  parameters of the cells and return `false` so that the current drawing pass will be
+             *  canceled.
              *
-             * If `i` is greater than 0 we set `firstChildStartTop` to 0. We then call
-             * `setSelectionFromTop` to select the position `firstVisiblePosition` and
-             * position it `firstChildStartTop` minus `deltaTop` pixels from the top edge
-             * of our `ListView`. We then call the `requestLayout` method to request another
-             * layout to update the layout parameters of the cells and return false so that the current
-             * drawing pass will be canceled.
+             *  * `true`: (this is the second pass) we set our [Boolean] field [mShouldRemoveObserver]
+             *  to `false` and remove ourselves as a pre-draw listener so this method does not keep
+             *  getting called. We then set [Int] variable `val yTranslateTop` to `mTranslate[0]`,
+             *  [Int] variable `val yTranslateBottom` to `mTranslate[1]`, and we set [Int] variable
+             *  `val index` to the child index in our [ViewGroup] of `view`. We then loop over [Int]
+             *  variable `var i` for all our `childCountLocal` children:
              *
-             *  *
-             * true: (this is the second pass) we set our field `mShouldRemoveObserver` to false
-             * and remove ourselves as a pre-draw listener so this method does not keep getting called.
-             * We then set `int yTranslateTop` to `mTranslate[0]`, `int yTranslateBottom`
-             * to `mTranslate[1]`, and we set `int index` to the child index in our ViewGroup of
-             * `view`. We then loop over `int i` for all our `childCount` children:
-             *
-             *  *
-             * We initialize `View v` with the child at index `i` and `int [] old`
-             * with the array stored under the key `v` in `oldCoordinates`.
+             *  * We initialize [View] variable `val v` with the child at index `i` and [IntArray]
+             *  variable `val old` with the array stored under the key `v` in [HashMap] of [View] to
+             *  [IntArray] variable `oldCoordinates`.
              *
              *  *
              * If `old` is not equal to null (the `View v` was present before and after
@@ -687,7 +684,7 @@ class ExpandingListView : ListView {
              *
              * We initialize `View expandingLayout` by finding the view in `view` with id
              * R.id.expanding_layout and initialize `ArrayList <Animator> animations` with a new
-             * instance. Then we loop over `int i` for all our `childCount` children:
+             * instance. Then we loop over `int i` for all our `childCountLocal` children:
              *
              *  *
              * We initialize `View v` with our child at index `i` and if `v`
@@ -732,7 +729,12 @@ class ExpandingListView : ListView {
                     val newHeight: Int = newBottom - newTop
                     val oldHeight: Int = oldBottom - oldTop
                     val deltaHeight: Int = oldHeight - newHeight
-                    mTranslate = getTopAndBottomTranslations(oldTop, oldBottom, deltaHeight, false)
+                    mTranslate = getTopAndBottomTranslations(
+                        top = oldTop,
+                        bottom = oldBottom,
+                        yDelta = deltaHeight,
+                        isExpanding = false
+                    )
                     val currentTop: Int = view.top
                     val futureTop: Int = oldTop + mTranslate[0]
                     var firstChildStartTop: Int = getChildAt(0).top
