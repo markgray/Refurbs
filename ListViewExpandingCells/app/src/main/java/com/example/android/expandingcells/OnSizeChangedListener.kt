@@ -15,15 +15,17 @@
  */
 package com.example.android.expandingcells
 
+import android.view.View
+
 /**
  * A listener used to update the list data object when the corresponding expanding
  * layout experiences a size change.
  */
 interface OnSizeChangedListener {
     /**
-     * Called from the `onSizeChanged` override of the `ExpandingLayout`
+     * Called from the [View.onSizeChanged] override of the [ExpandingLayout]
      *
-     * @param newHeight new height of the `View`
+     * @param newHeight new height of the [View]
      */
     fun onSizeChanged(newHeight: Int)
 }

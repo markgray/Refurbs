@@ -671,52 +671,46 @@ class ExpandingListView : ListView {
              *  variable `val old` with the array stored under the key `v` in [HashMap] of [View] to
              *  [IntArray] variable `oldCoordinates`.
              *
-             *  *
-             * If `old` is not equal to null (the `View v` was present before and after
-             * the collapse) we set the top Y of `v` to `old[0]` and clear the has transient
-             * state flag of `v`. Otherwise the cell is present in the ListView after the collapse
-             * but not before the collapse then the bounds are calculated using the bottom and top
-             * translation of the collapsing cell: We set `int delta` to `yTranslateBottom`
-             * if `i` is greater than `index` (it is after the collapsing cell) or to
-             * `-yTranslateTop` if is before it. We then set the top Y of `v` to the current
-             * top plus `delta` and the bottom Y to the current bottom plus delta.
+             *  * If `old` is not equal to `null` (the [View] variable `v` was present before and
+             *  after the collapse) we set the top Y of `v` to `old[0]` and clear the has transient
+             *  state flag of `v`. Otherwise the cell is present in the [ListView] after the collapse
+             *  but not before the collapse so the bounds are calculated using the bottom and top
+             *  translation of the collapsing cell: We set [Int] variable `val delta` to
+             *  `yTranslateBottom` if `i` is greater than `index` (it is after the collapsing cell)
+             *  or to `-yTranslateTop` if is before it. We then set the top Y of `v` to the current
+             *  top plus `delta` and the bottom Y to the current bottom plus delta.
              *
+             * We initialize [View] variable `val expandingLayout` by finding the view in `view`
+             * with id [R.id.expanding_layout] and initialize [ArrayList] of [Animator] variable
+             * `val animations` with a new instance. Then we loop over [Int] variable `var i` for
+             * all our `childCountLocal` children:
              *
-             * We initialize `View expandingLayout` by finding the view in `view` with id
-             * R.id.expanding_layout and initialize `ArrayList <Animator> animations` with a new
-             * instance. Then we loop over `int i` for all our `childCountLocal` children:
+             *  * We initialize [View] variable `val v` with our child at index `i` and if `v` is
+             *  not equal to `view` (the collapsing view) we set [Float] variable `val diff` to
+             *  `-yTranslateBottom` if `i` is greater than `index` (it is after the collapsing view)
+             *  or to `yTranslateTop` if it is before it.
              *
-             *  *
-             * We initialize `View v` with our child at index `i` and if `v`
-             * is not equal to `view` (the collapsing view) we set `float diff` to
-             * `-yTranslateBottom` if `i` is greater than `index` (it is
-             * after the collapsing view) or to `yTranslateTop` if it is before it.
+             *  * We add the [Animator] returned by our [getAnimation] method that will animate the
+             *  top and bottom Y of `v` by `diff` to `animations`.
              *
-             *  *
-             * We add the `Animator` returned by our `getAnimation` method that will
-             * animate the top and bottom Y of `v` by `diff` to `animations`.
+             * When done looping through our children we add the [Animator] returned by our
+             * [getAnimation] method that will animate the top Y or `view` by `yTranslateTop` and
+             * the bottom Y by `-yTranslateBottom` to `animations`. We then add an [ObjectAnimator]
+             * that will animate the alpha of `expandingLayout` from 1 to 0 (fade it out). We then
+             * disable our [ListView] and set it to be un-clickable. We initialize [AnimatorSet]
+             * variable `val s` with a new instance, set it to play `animations` at the same time,
+             * and add an anonymous [AnimatorListenerAdapter] to it whose
+             * [AnimatorListenerAdapter.onAnimationEnd] override sets the visibility of
+             * `expandingLayout` to GONE, and sets the layout params of `view` to MATCH_PARENT (`w`)
+             * by WRAP_CONTENT (`h`). It then sets the [ExpandableListItem.isExpanded] property of
+             * `viewObject` to `false` (collapsed), enables our [ListView] and sets it to be clickable.
+             * Finally it sets the alpha of `expandingLayout` back to 1 just in case the view is
+             * reused by a cell that was expanded.
              *
+             * Having set up [AnimatorSet] variable `s` we start it running and return `true` so
+             * that the drawing will proceed.
              *
-             * When done looping through our children we add the `Animator` returned by our
-             * `getAnimation` method that will animate the top Y or `view` by `yTranslateTop`
-             * and the bottom Y by `-yTranslateBottom` to `animations`. We then add an
-             * `ObjectAnimator` that will animate the alpha of `expandingLayout` from 1 to 0
-             * (fade it out). We then disable our `ListView` and set it to be un-clickable. We
-             * initialize `AnimatorSet s` with a new instance, set it to play `animations`
-             * at the same time, and add an anonymous `AnimatorListenerAdapter` to it whose
-             * `onAnimationEnd` override sets the visibility of `expandingLayout` to GONE,
-             * and sets the layout params of `view` to MATCH_PARENT by WRAP_CONTENT. It then calls
-             * the `setExpanded` method of `viewObject` to set its expanded state false (collapsed),
-             * enables our `ListView` and sets it to be clickable. Finally it sets the alpha of
-             * `expandingLayout` back to 1 just in case the view is reused by a cell that was expanded.
-             *
-             *
-             * Having set up `AnimatorSet s` we start it running and return true so that the
-             * drawing will proceed.
-             *
-             *
-             *
-             * @return Return true to proceed with the current drawing pass, or false to cancel.
+             * @return Return `true` to proceed with the current drawing pass, or `false` to cancel.
              */
             override fun onPreDraw(): Boolean {
                 if (!mShouldRemoveObserver) {
@@ -813,19 +807,21 @@ class ExpandingListView : ListView {
                 s.playTogether(animations)
                 s.addListener(object : AnimatorListenerAdapter() {
                     /**
-                     * Notifies the end of the animation. We set the visibility of `expandingLayout` to
-                     * GONE, and set the layout params of `view` to be MATCH_PARENT by WRAP_CONTENT.
-                     * We call the `setExpanded` method of `viewObject` with false to clear its
-                     * expanded state to collapsed. We enable our `ListView` and set it to be clickable.
-                     * Finally we set the alpha of `expandingLayout` back to 1 just in case the view
-                     * is reused to display a cell that is in the expanded state.
+                     * Notifies the end of the animation. We set the visibility of `expandingLayout`
+                     * GONE, and set the layout params of `view` to be MATCH_PARENT (`w`) by
+                     * WRAP_CONTENT (`h`). We set the [ExpandableListItem.isExpanded] property of
+                     * `viewObject` to `false` (collapsed). We enable our [ListView] and set it to
+                     * be clickable. Finally we set the alpha of `expandingLayout` back to 1 just in
+                     * case the view is reused to display a cell that is in the expanded state.
                      *
                      * @param animation The animation which reached its end.
                      */
                     override fun onAnimationEnd(animation: Animator) {
                         expandingLayout.visibility = GONE
-                        view.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,
-                            LayoutParams.WRAP_CONTENT)
+                        view.layoutParams = LayoutParams(
+                            /* w = */ LayoutParams.MATCH_PARENT,
+                            /* h = */ LayoutParams.WRAP_CONTENT
+                        )
                         viewObject.isExpanded = false
                         isEnabled = true
                         isClickable = true
@@ -842,30 +838,37 @@ class ExpandingListView : ListView {
     }
 
     /**
-     * This method takes some view and the values by which its top and bottom bounds should be changed
-     * by. Given these parameters, an animation which will animate these bound changes is created and
-     * returned. We initialize `int top` with the top Y coordinate of `view` and `bottom`
-     * with the bottom Y coordinate. We initialize `int endTop` to `top` plus `translateTop`
-     * and `int endBottom` to `bottom` plus `translateBottom`. We initialize
-     * `PropertyValuesHolder translationTop` with an instance which will animate the "top" property
-     * from `top` to `endTop` and `PropertyValuesHolder translationBottom` with an
-     * instance which will animate the "bottom" property from `bottom` to `endBottom`. Finally
-     * we return an `ObjectAnimator` which will apply the animations `translationTop` and
-     * `translationBottom` to `view`.
+     * This method takes some [View] parameter [view] and the values by which its top and bottom
+     * bounds should be changed by. Given these parameters, an animation which will animate these
+     * bound changes is created and returned. We initialize [Int] variables `val top` with the top Y
+     * coordinate of [view] and `val bottom` with the bottom Y coordinate. We initialize [Int]
+     * variable `val endTop` to `top` plus `translateTop` and [Int] variable `val endBottom` to
+     * `bottom` plus `translateBottom`. We initialize [PropertyValuesHolder] variable
+     * `val translationTop` with an instance which will animate the "top" property from `top` to
+     * `endTop` and [PropertyValuesHolder] variable `val translationBottom` with an instance which
+     * will animate the "bottom" property from `bottom` to `endBottom`. Finally we return an
+     * [ObjectAnimator] which will apply the animations `translationTop` and `translationBottom` to
+     * [view].
      *
-     * @param view `View` whose top and bottom Y value is to be animated
-     * @param translateTop how much the current top of `view` should be translated
-     * @param translateBottom how much the current bottom of `view` should be translated
-     * @return an `Animator` which will animate the "top" and "bottom" properties of
-     * `view` by the correct amount.
+     * @param view the [View] whose top and bottom Y value is to be animated
+     * @param translateTop how much the current top of [view] should be translated
+     * @param translateBottom how much the current bottom of [view] should be translated
+     * @return an [Animator] which will animate the "top" and "bottom" properties of [view] by the
+     * correct amount.
      */
     private fun getAnimation(view: View, translateTop: Float, translateBottom: Float): Animator {
-        val top = view.top
-        val bottom = view.bottom
-        val endTop = (top + translateTop).toInt()
-        val endBottom = (bottom + translateBottom).toInt()
-        val translationTop = PropertyValuesHolder.ofInt("top", top, endTop)
-        val translationBottom = PropertyValuesHolder.ofInt("bottom", bottom, endBottom)
+        val top: Int = view.top
+        val bottom: Int = view.bottom
+        val endTop: Int = (top + translateTop).toInt()
+        val endBottom: Int = (bottom + translateBottom).toInt()
+        val translationTop: PropertyValuesHolder = PropertyValuesHolder.ofInt(
+            /* propertyName = */ "top",
+            /* ...values = */ top, endTop
+        )
+        val translationBottom: PropertyValuesHolder = PropertyValuesHolder.ofInt(
+            /* propertyName = */ "bottom",
+            /* ...values = */ bottom, endBottom
+        )
         return ObjectAnimator.ofPropertyValuesHolder(view, translationTop, translationBottom)
     }
 }
