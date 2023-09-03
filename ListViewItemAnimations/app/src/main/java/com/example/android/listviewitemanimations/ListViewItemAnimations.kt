@@ -38,11 +38,10 @@ import android.widget.ListView
 import java.util.Collections
 
 /**
- * This example shows how to use a swipe effect to remove items from a ListView,
- * and how to use animations to complete the swipe as well as to animate the other
- * items in the list into their final places. This code works on run times back to Gingerbread
- * (Android 2.3), by using the android.view.animation classes on earlier releases.
- *
+ * This example shows how to use a swipe effect to remove items from a [ListView], and how to use
+ * animations to complete the swipe as well as to animate the other items in the list into their
+ * final places. This code works on run times back to Gingerbread (Android 2.3), by using the
+ * android.view.animation classes on earlier releases.
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on the DevBytes playlist in the android developers channel on YouTube at
@@ -52,32 +51,32 @@ import java.util.Collections
 @SuppressLint("UseSparseArrays")
 class ListViewItemAnimations : Activity() {
     /**
-     * `StableArrayAdapter` holding the list of cheeses for our `ListView`
+     * [StableArrayAdapter] holding the list of cheeses for our [ListView]
      */
     var mAdapter: StableArrayAdapter? = null
 
     /**
-     * `ListView` with id R.id.list_view in our layout displaying our cheeses.
+     * [ListView] with id [R.id.list_view] in our layout which displays our cheeses.
      */
     var mListView: ListView? = null
 
     /**
-     * `BackgroundContainer` with id R.id.listViewBackground, holds our `ListView`
+     * [BackgroundContainer] with id [R.id.listViewBackground], holds our [ListView]
      */
     var mBackgroundContainer: BackgroundContainer? = null
 
     /**
-     * Flag indicating that the user is swiping an item displayed in our `ListView` ACTION_MOVE
+     * Flag indicating that the user is swiping an item displayed in our [ListView] - ACTION_MOVE
      */
     var mSwiping: Boolean = false
 
     /**
-     * Flag indicating that the user has pressed an item displayed in our `ListView` ACTION_DOWN
+     * Flag indicating that the user has pressed an item displayed in our [ListView] - ACTION_DOWN
      */
     var mItemPressed: Boolean = false
 
     /**
-     * Maps the item id of a child of our `ListView` to its top Y coordinate (does not include
+     * Maps the item id of a child of our [ListView] to its top Y coordinate (does not include
      * the item being removed).
      */
     var mItemIdTopMap: HashMap<Long, Int> = HashMap()
@@ -99,17 +98,17 @@ class ListViewItemAnimations : Activity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_list_view_item_animations.
-     * We initialize our field `BackgroundContainer mBackgroundContainer` by finding the view
-     * with id R.id.listViewBackground, and `ListView mListView` by finding the view with id
-     * R.id.list_view. We allocate a new instance for `ArrayList<String> cheeseList` then add
-     * all the cheeses in the array `String[] Cheeses.CheeseStrings` to it. We initialize our
-     * field `StableArrayAdapter mAdapter` with a new instance which will use `cheeseList`
-     * as its dataset, displaying them using the layout R.layout.opaque_text_view with our field
-     * `OnTouchListener mTouchListener` as its `OnTouchListener`. Finally we set the adapter
+     * then we set our content view to our layout file [R.layout.activity_list_view_item_animations].
+     * We initialize our [BackgroundContainer] field [mBackgroundContainer] by finding the view with
+     * id [R.id.listViewBackground], and [ListView] field [mListView] by finding the view with id
+     * [R.id.list_view]. We allocate a new instance for [ArrayList] of [String] to initialize variable
+     * `val cheeseList` then add all the cheeses in the [Array] of [String] field [Cheeses.sCheeseStrings]
+     * to it. We initialize our [StableArrayAdapter] field [mAdapter] with a new instance which will
+     * use `cheeseList` as its dataset, displaying them using the layout [R.layout.opaque_text_view]
+     * with our [OnTouchListener] field [mTouchListener] as its [OnTouchListener]. Finally we set the adapter
      * of `mListView` to be `mAdapter`.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,13 +124,13 @@ class ListViewItemAnimations : Activity() {
     /**
      * Returns true if the current runtime is Honeycomb or later
      */
-    @get:SuppressLint("ObsoleteSdkInt")
+    @get:SuppressLint("ObsoleteSdkInt") // Left in to remind us when reusing the code.
     private val isRuntimePostGingerbread: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB
 
     /**
-     * `OnTouchListener` used for every view that the `getView` override of our
-     * `StableArrayAdapter` returns to its caller.
+     * [OnTouchListener] used for every view that the [StableArrayAdapter.getView] override of our
+     * [StableArrayAdapter] returns to its caller.
      */
     private val mTouchListener: OnTouchListener = object : OnTouchListener {
         /**
