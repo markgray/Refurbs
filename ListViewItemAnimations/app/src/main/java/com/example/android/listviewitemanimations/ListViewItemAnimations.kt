@@ -18,6 +18,7 @@
 package com.example.android.listviewitemanimations
 
 import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -28,6 +29,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewConfiguration
+import android.view.ViewPropertyAnimator
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -134,90 +136,85 @@ class ListViewItemAnimations : Activity() {
      */
     private val mTouchListener: OnTouchListener = object : OnTouchListener {
         /**
-         * X coordinate of the initial ACTION_DOWN event we received for the swiping being done currently
+         * X coordinate of the initial ACTION_DOWN event we received for the "swiping" that is
+         * currently being done.
          */
-        var mDownX = 0f
+        var mDownX: Float = 0f
 
         /**
-         * Distance in pixels a touch can wander before we think the user is scrolling, set by a call
-         * to the `getScaledTouchSlop` method of the `ViewConfiguration` of our current
-         * `ListViewItemAnimations` instance.
+         * Distance in pixels a touch can wander before we think the user is scrolling, set by a
+         * call to the [ViewConfiguration.getScaledTouchSlop] method of the [ViewConfiguration]
+         * of our current [ListViewItemAnimations] instance.
          */
-        private var mSwipeSlop = -1
+        private var mSwipeSlop: Int = -1
 
         /**
-         * Called when a touch event is dispatched to a view. If our field `mSwipeSlop` is less
-         * than 0 we initialize it to the value returned by the `getScaledTouchSlop` method of
-         * the `ViewConfiguration` of our current `ListViewItemAnimations` instance. Then
-         * we switch on the action of our parameter `MotionEvent event`:
+         * Called when a touch event is dispatched to a view. If our [Int] field [mSwipeSlop] is
+         * less than 0 we initialize it to the value returned by the
+         * [ViewConfiguration.getScaledTouchSlop] method of the [ViewConfiguration] of our current
+         * [ListViewItemAnimations] instance. Then we switch on the action of our [MotionEvent]
+         * parameter [event]:
          *
-         *  *
-         * ACTION_DOWN: if our flag `mAnimating` is true we return true having done nothing
-         * (we are already responding to a swipe, and multi-item swipes are not handled).
-         * Otherwise we set our flag `mItemPressed` to true, set `mDownX` to the
-         * X coordinate of `event` and break.
+         *  * [MotionEvent.ACTION_DOWN]: if our [Boolean] flag field [mAnimating] is `true` we
+         *  return true having done nothing (we are already responding to a swipe, and multi-item
+         *  swipes are not handled). Otherwise we set our [Boolean] flag field [mItemPressed] to
+         *  `true`, and set [Float] field [mDownX] to the X coordinate of [event].
          *
-         *  *
-         * ACTION_CANCEL: We call our method `setSwipePosition` to set the X translation
-         * of `View v` to 0, set our flag `mItemPressed` to false and break.
+         *  * [MotionEvent.ACTION_CANCEL]: We call our method [setSwipePosition] to set the X
+         *  translation of [View] parameter [v] to 0, and set our [Boolean] field [mItemPressed]
+         *  to `false`.
          *
-         *  *
-         * ACTION_MOVE: if our flag `mAnimating` is true we return true having done nothing
-         * (I do not see how this can happen, but if you are fast enough I suppose you could
-         * conceivably start another swipe while the animation of a previous on is in progress,
-         * but since the `ListView` is disabled and un-clickable during the animation I
-         * do not think it possible). Otherwise we initialize `float x` with the X coordinate
-         * of `event` and if we are running on a device newer than Gingerbread we add the
-         * X translation of `v` to `x`. We set `float deltaX` to `x` minus
-         * `mDownX`, and `float deltaXAbs` to the absolute value of `deltaX`.
-         * If our `mSwiping` is false (we are not already in the middle of a swipe) we
-         * check if `deltaXAbs` is greater than `mSwipeSlop` and if so we set
-         * `mSwiping` to true, call the `requestDisallowInterceptTouchEvent(true)`
-         * method of `mListView` to prevent it from intercepting touch events until this
-         * one is over, and then call the `showBackground` method of `mBackgroundContainer`
-         * to have it start to show through the `ListView` from the top Y coordinate of
-         * `v` for the height of `v`. Then if `mSwiping` is now true we call
-         * our `setSwipePosition` method to translate the X position on the screen of
-         * `v` to `deltaX`. In any case we now break.
+         *  * [MotionEvent.ACTION_MOVE]: if our [Boolean] field [mAnimating] is `true` we return
+         *  `true` having done nothing (I do not see how this can happen, but if you are fast enough
+         *  I suppose you could conceivably start another swipe while the animation of a previous
+         *  one is in progress, but since the [ListView] is disabled and un-clickable during the
+         *  animation I do not think it possible). Otherwise we initialize [Float] variable
+         *  `val x` with the X coordinate of [event] and if we are running on a device newer than
+         *  Gingerbread we add the X translation of [View] parameter [v] to `x`. We set [Float]
+         *  variable `val deltaX` to `x` minus [Float] field [mDownX], and [Float] variable
+         *  `val deltaXAbs` to the absolute value of `deltaX`. If our [Boolean] field [mSwiping]
+         *  is `false` (we are not already in the middle of a swipe) we check if `deltaXAbs` is
+         *  greater than [Float] field [mSwipeSlop] and if so we set [mSwiping] to `true`, call the
+         *  [ListView.requestDisallowInterceptTouchEvent] method of  method of [ListView] field
+         *  [mListView] with `true` to prevent it from intercepting touch events until this one is
+         *  over, and then call the [BackgroundContainer.showBackground] method of
+         *  [mBackgroundContainer] to have it start to show through the [ListView] from the top Y
+         *  coordinate of [View] paramter [v] for the height of [v]. Then if [mSwiping] is now
+         *  `true` we call our [setSwipePosition] method to translate the X position on the screen
+         *  of [v] to `deltaX`.
          *
-         *  *
-         * ACTION_UP: if our flag `mAnimating` is true we return true having done nothing
-         * (we are already animating the movement of a view off or back onto the screen).
-         * Otherwise we branch on the value of our flag `mSwiping`:
+         *  * [MotionEvent.ACTION_UP]: if our [Boolean] field [mAnimating] is `true` we return
+         *  `true` having done nothing (we are already animating the movement of a view off or
+         *  back onto the screen). Otherwise we branch on the value of our [Boolean] flag field
+         *  [mSwiping]:
          *
-         *  *
-         * true: (the item has been moved already) We set `float x` to the X coordinate
-         * of `event` and if our device is post Gingerbread we add the X translation
-         * of `v` to `x`. We set `float deltaX` to `x` minus
-         * `mDownX`, and `float deltaXAbs` to the absolute value of `deltaX`.
-         * We declare `float fractionCovered`, `float endX`, and `boolean remove`.
-         * If `deltaXAbs` is greater than one quarter of the width of `v` we animate
-         * it off the screen by setting `fractionCovered` to `deltaXAbs` divided by
-         * the width of `v`, setting `endX` to minus the width of `v` if
-         * `deltaX` is less than 0, or to the width of `v` if it is not, and setting
-         * `remove` to true. If it is less than a quarter off the screen we animate it back
-         * by setting `fractionCovered` to 1 minus `deltaXAbs` divided by the width of
-         * `v`, setting `endX` 0, and setting `remove` to false. In either case
-         * we set `long duration` to the quantity 1 minus `fractionCovered` times
-         * SWIPE_DURATION then call our `animateSwipe` method to animate the X coordinate of
-         * `v` to `endX` with a duration of `duration`, and remove it if our flag
-         * `remove` is true.
+         *  * `true`: (the item has been moved already) We set [Float] variable `val x` to the X
+         *  coordinate of [MotionEvent] parameter [event] and if our device is post Gingerbread we
+         *  add the X translation of [View] parameter [v] to `x`. We set [Float] variable
+         *  `val deltaX` to `x` minus [Float] field [mDownX], and [Float] variable `val deltaXAbs`
+         *  to the absolute value of `deltaX`. We declare [Float] variable `val fractionCovered`,
+         *  [Float] variable `val endX`, and [Boolean] variable `val remove`. If `deltaXAbs` is
+         *  greater than one quarter of the width of [View] parameter [v] we animate it off the
+         *  screen by setting `fractionCovered` to `deltaXAbs` divided by the width of [v], setting
+         *  `endX` to minus the width of [v] if `deltaX` is less than 0, or to the width of [v] if
+         *  it is not, and setting `remove` to `true`. If it is less than a quarter off the screen
+         *  we animate it back by setting `fractionCovered` to 1 minus `deltaXAbs` divided by the
+         *  width of [v], setting `endX` 0, and setting `remove` to `false`. In either case we set
+         *  [Long] variable `val duration` to the quantity 1 minus `fractionCovered` times
+         *  [SWIPE_DURATION] then call our [animateSwipe] method to animate the X coordinate of [v]
+         *  to `endX` with a duration of `duration`, and remove it if our flag `remove` is true.
          *
-         *  *
-         * false: (the item has not been moved yet) We set our flag `mItemPressed` to false.
+         *  * `false`: (the item has not been moved yet) We set our [Boolean] flag field
+         *  [mItemPressed] to `false`.
          *
+         *  * default: We return `false`.
          *
-         * We then break.
+         * If we reach the end of our `when` switch without returning we return `true` to consume
+         * the event.
          *
-         *  *
-         * default: We return false.
-         *
-         *
-         * We return true to consume the event.
-         *
-         * @param v The view the touch event has been dispatched to.
-         * @param event The MotionEvent object containing full information about the event.
-         * @return True if the listener has consumed the event, false otherwise.
+         * @param v The [View] the touch event has been dispatched to.
+         * @param event The [MotionEvent] object containing full information about the event.
+         * @return `true` if the listener has consumed the event, `false` otherwise.
          */
         @SuppressLint("NewApi", "ClickableViewAccessibility")
         override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -302,47 +299,44 @@ class ListViewItemAnimations : Activity() {
     }
 
     /**
-     * Animates a swipe of the item either back into place or out of the ListView container.
-     * NOTE: This is a simplified version of swipe behavior, for the purposes of this demo
-     * about animation. A real version should use velocity (via the VelocityTracker class)
-     * to send the item off or back at an appropriate speed. First we set our flag `mAnimating`
-     * to true, then we disable our `ListView mListView`. We then branch on whether our device
-     * is running Gingerbread or newer:
+     * Animates a swipe of the item either back into place or out of the [ListView] container.
+     * *NOTE:* This is a simplified version of swipe behavior, for the purposes of this demo
+     * about animation. A real version should use velocity (via the `VelocityTracker` class)
+     * to send the item off or back at an appropriate speed. First we set our [Boolean] field
+     * [mAnimating] to `true`, then we disable our [ListView] field [mListView]. We then branch on
+     * whether our device is running Gingerbread or newer:
      *
-     *  *
-     * Post Gingerbread: We obtain a `ViewPropertyAnimator` for `view`, set its
-     * duration to our parameter `long duration`, cause it to animate the alpha of
-     * `view` to 0 if `remove` is true or to 1 if it is false, cause it to animate
-     * the X translation to `endX` and set its `AnimatorListener` to an anonymous
-     * `AnimatorListenerAdapter` whose `onAnimationEnd` override sets the alpha
-     * of `view` back to 1, and its X translation to 0. Then if `remove` is true
-     * calls our `animateOtherViews` method to animate the other views in the ListView
-     * container (not including `view`) into their final positions. If `remove` is
-     * false we call the `hideBackground` method of `mBackgroundContainer` to hide
-     * the background again, set the flags `mSwiping`, and `mAnimating` to false
-     * and enable `mAnimating` again. In either case we then set `mItemPressed` to
-     * false.
+     *  * Post Gingerbread: We obtain a [ViewPropertyAnimator] for [View] parameter [view], set its
+     *  duration to our [Long] parameter [duration], cause it to animate the alpha of [view] to 0 if
+     *  [Boolean] parameter [remove] is `true` or to 1 if it is `false`, cause it to animate the X
+     *  translation to [Float] parameter [endX] and set its [AnimatorListener] to an anonymous
+     *  [AnimatorListenerAdapter] whose [AnimatorListenerAdapter.onAnimationEnd] override sets the
+     *  alpha of [view] back to 1, and its X translation to 0. Then if [remove] is `true` calls our
+     *  [animateOtherViews] method to animate the other views in the [ListView] container (not
+     *  including [view]) into their final positions. If [remove] is false we call the
+     *  [BackgroundContainer.hideBackground] method of [mBackgroundContainer] to hide the background
+     *  again, set the [Boolean] flag fields [mSwiping], and [mAnimating] to `false` and enable
+     *  [ListView] field [mListView] again. In either case we then set [Boolean] field [mItemPressed]
+     *  to `false`.
      *
-     *  *
-     * Before Gingerbread: We initialize `TranslateAnimation swipeAnim` with an instance
-     * which will animate the X coordinate from `mCurrentX` to `endX` with no change
-     * to the Y coordinate. We initialize `AlphaAnimation alphaAnim` with an instance which
-     * will animate the alpha from `mCurrentAlpha` to 0 if `remove` is true or to 1
-     * if it is false. We initialize `AnimationSet set` with an instance which will share
-     * the interpreter with all the animations in it. We then add `swipeAnim`, and
-     * `swipeAnim` to `set`, set its duration to `duration`, and start it
-     * running now on `view`. We then call our `setAnimationEndAction` method to
-     * set the `AnimationListener` of `set` to an anonymous `AnimationListenerAdapter`
-     * whose `onAnimationEnd` override runs an anonymous `Runnable` we pass it which
-     * handles changes to the other views in the `ListView` brought about when `view`
-     * is either removed or returned to its original position.
+     *  * Before Gingerbread: We initialize [TranslateAnimation] variable `val swipeAnim` with an
+     *  instance which will animate the X coordinate from [Float] field [mCurrentX] to [Float]
+     *  parameter [endX] with no change to the Y coordinate. We initialize [AlphaAnimation] variable
+     *  `val alphaAnim` with an instance which will animate the alpha from [Float] field
+     *  [mCurrentAlpha] to 0 if [Boolean] parameter [remove] is `true` or to 1 if it is `false`. We
+     *  initialize [AnimationSet] variable `val set` with an instance which will share the
+     *  interpolator with all the animations in it. We then add `swipeAnim`, and `swipeAnim` to
+     *  `set`, set its duration to [Long] parameter [duration], and start it running now on [view].
+     *  We then call our [setAnimationEndAction] method to set the [AnimationListener] of `set` to
+     *  an anonymous [AnimationListenerAdapter] whose [AnimationListenerAdapter.onAnimationEnd]
+     *  override runs an anonymous [Runnable] we pass it which handles changes to the other views in
+     *  the [ListView] brought about when [view] is either removed or returned to its original
+     *  position.
      *
-     *
-     *
-     * @param view `View` that is being swiped
-     * @param endX Y coordinate that it is being swiped to (0 or plus or minus the width of view)
+     * @param view the [View] that is being swiped
+     * @param endX the X coordinate that it is being swiped to (0 or plus or minus the width of view)
      * @param duration duration in milliseconds of the animation
-     * @param remove true if the view is being swiped out of the ListView, false if back into it
+     * @param remove `true` if the view is being swiped out of the [ListView], `false` if back into it
      */
     @SuppressLint("NewApi")
     private fun animateSwipe(view: View, endX: Float, duration: Long, remove: Boolean) {
