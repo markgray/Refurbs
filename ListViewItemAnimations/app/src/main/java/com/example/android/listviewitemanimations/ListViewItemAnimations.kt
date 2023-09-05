@@ -30,6 +30,7 @@ import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewConfiguration
 import android.view.ViewPropertyAnimator
+import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -350,19 +351,16 @@ class ListViewItemAnimations : Activity() {
                      * setting the alpha of `view` to 1 and its X translation to 0. Then we
                      * branch on the value of `remove`:
                      *
-                     *  *
-                     * true: (`view` was removed) We call our method `animateOtherViews`
-                     * to remove the item displayed in `view` from our adapter and animate the
-                     * other views into place to close the gap left where `view` used to be.
+                     *  * `true`: (`view` was removed) We call our method [animateOtherViews]
+                     *  to remove the item displayed in `view` from our adapter and animate the
+                     *  other views into place to close the gap left where `view` used to be.
                      *
-                     *  *
-                     * false: (`view` was animated back to its original position) we call the
-                     * `hideBackground` method of `mBackgroundContainer` to have it hide
-                     * the area underneath `view`, set `mSwiping` and `mAnimating`
-                     * to false and enable our `ListView mListView`.
+                     *  * `false`: (`view` was animated back to its original position) we call the
+                     *  [BackgroundContainer.hideBackground] method of [mBackgroundContainer] to
+                     *  have it hide the area underneath `view`, set [Boolean] fields [mSwiping]
+                     *  and [mAnimating] to `false` and enable our [ListView] field [mListView].
                      *
-                     *
-                     * In both cases we set our flag `mItemPressed` to false.
+                     * In both cases we set our [Boolean] flag field [mItemPressed] to `false`.
                      *
                      * @param animation The animation which reached its end.
                      */
@@ -404,30 +402,28 @@ class ListViewItemAnimations : Activity() {
     }
 
     /**
-     * Sets the horizontal position and translucency of the view being swiped. We set `float fraction`
-     * to the absolute value of `deltaX` divided by the width of `view` then branch on the
-     * SDK version of the device we are running on:
+     * Sets the horizontal position and translucency of the view being swiped. We set [Float] variable
+     * `val fraction` to the absolute value of [Float] parameter [deltaX] divided by the width of
+     * [View] parameter [view] then branch on the SDK version of the device we are running on:
      *
-     *  *
-     * Post Gingerbread: We translate the X position of `view` by `deltaX` and set
-     * its alpha to 1 minus `fraction`
+     *  * Post Gingerbread: We translate the X position of [view] by [deltaX] and set its alpha to
+     *  1 minus `fraction`
      *
-     *  *
-     * Gingerbread (or earlier): We initialize `TranslateAnimation swipeAnim` with an instance
-     * which will move the X coordinate to `deltaX` without moving the Y coordinate. We then
-     * set `mCurrentX` to `deltaX` and `mCurrentAlpha` to 1 minus `fraction`.
-     * We initialize `AlphaAnimation alphaAnim` to an instance which will animate alpha to
-     * `mCurrentAlpha`, and initialize `AnimationSet set` to an instance which will share
-     * its interpolator between its animations. We add `swipeAnim` and `alphaAnim` to
-     * `set`, call its `setFillAfter(true)` method so that transformation that this animation
-     * performs will persist when it is finished, and call its `setFillEnabled(true)` method
-     * so that the animation will take the value of fillBefore into account (the start value of the
-     * animation will not be set). Finally we start `set` running on `view`.
+     *  * Gingerbread (or earlier): We initialize [TranslateAnimation] variable `val swipeAnim` with
+     *  an instance which will move the X coordinate to [deltaX] without moving the Y coordinate. We
+     *  then set [Float] field [mCurrentX] to [deltaX] and [Float] field [mCurrentAlpha] to 1 minus
+     *  `fraction`. We initialize [AlphaAnimation] variable `val alphaAnim` to an instance which will
+     *  animate alpha to [mCurrentAlpha], and initialize [AnimationSet] variable `val set` to an
+     *  instance which will share its interpolator between its animations. We add `swipeAnim` and
+     *  `alphaAnim` to `set`, call its [AnimationSet.setFillAfter] method with `true` (kotlin
+     *  `fillAfter` property) so that transformation that this animation performs will persist when
+     *  it is finished, and call its [AnimationSet.setFillEnabled] method with `true` (kolin
+     *  `isFillEnabled` property) so that the animation will take the [Boolean] value set by a call
+     *  to [AnimationSet.setFillBefore] into account (the start value of the animation will not be
+     *  set). Finally we start `set` running on [View] parameter [view].
      *
-     *
-     *
-     * @param view `View` that is being swiped.
-     * @param deltaX How far `view` has moved from its original position.
+     * @param view the [View] that is being swiped.
+     * @param deltaX How far [View] parametr [view] has moved from its original position.
      */
     @SuppressLint("NewApi")
     private fun setSwipePosition(view: View, deltaX: Float) {
@@ -441,7 +437,7 @@ class ListViewItemAnimations : Activity() {
             mCurrentX = deltaX
             mCurrentAlpha = (1 - fraction)
             val alphaAnim = AlphaAnimation(mCurrentAlpha, mCurrentAlpha)
-            val set = AnimationSet(true)
+            val set = AnimationSet(/* shareInterpolator = */ true)
             set.addAnimation(swipeAnim)
             set.addAnimation(alphaAnim)
             set.fillAfter = true
@@ -451,21 +447,20 @@ class ListViewItemAnimations : Activity() {
     }
 
     /**
-     * This method animates all other views in the `ListView listView` container (not including
-     * `View viewToRemove`) into their final positions. It is called before `viewToRemove`
-     * has been removed from the adapter, and before layout has been run. The approach here is to
-     * figure out where everything is now, remove `viewToRemove` from the adapter, allow layout
-     * to run, figure out where everything is after layout, and then to run animations between all of
-     * those start/end positions. First we initialize `int firstVisiblePosition` with the position
-     * of the first visible view in our parameter `ListView listView`. Then we loop over `int i`
-     * for all the children in `listView`, setting `View child` to the child view at position
-     * `i`, setting `int position` to `firstVisiblePosition` plus `i`, and
-     * setting `long itemId` to the item id of the item at position `position` in our
-     * `StableArrayAdapter mAdapter`. Then if `child` is not equal to our parameter
-     * `View viewToRemove` we add the top Y coordinate of `child` to our field
-     * `HashMap<Long, Integer> mItemIdTopMap` under the key `itemId` and loop back to try
-     * the next child.
-     *
+     * This method animates all other views in the [ListView] parameter [listView] container (not
+     * including [View] parameter [viewToRemove]) into their final positions. It is called before
+     * [viewToRemove] has been removed from the adapter, and before layout has been run. The approach
+     * here is to figure out where everything is now, remove [viewToRemove] from the adapter, allow
+     * layout to run, figure out where everything is after layout, and then to run animations between
+     * all of those start/end positions. First we initialize [Int] variable `val firstVisiblePosition`
+     * with the position of the first visible view in our [ListView] parameter [listView]. Then we
+     * loop over [Int] variable `var i` for all the children in [listView], setting [View] variable
+     * `val child` to the child view at position `i`, setting [Int] variable `val position` to
+     * `firstVisiblePosition` plus `i`, and setting [Long] variable `val itemId` to the item id of
+     * the item at position `position` in our [StableArrayAdapter] field [mAdapter]. Then if `child`
+     * is not equal to our [View] parameter [viewToRemove] we add the top Y coordinate of `child` to
+     * our [HashMap] of [Long] to [Int] field [mItemIdTopMap] under the key `itemId` and loop back
+     * to try the next child.
      *
      * When done locating the top Y coordinates of the children that will remain, we set `int position`
      * to the position in `mListView` that `viewToRemove` occupies, then remove the item
@@ -478,22 +473,22 @@ class ListViewItemAnimations : Activity() {
      * @param viewToRemove the `View` containing the item being removed.
      */
     private fun animateOtherViews(listView: ListView?, viewToRemove: View) {
-        val firstVisiblePosition = listView!!.firstVisiblePosition
+        val firstVisiblePosition: Int = listView!!.firstVisiblePosition
         for (i in 0 until listView.childCount) {
-            val child = listView.getChildAt(i)
-            val position = firstVisiblePosition + i
-            val itemId = mAdapter!!.getItemId(position)
+            val child: View = listView.getChildAt(i)
+            val position: Int = firstVisiblePosition + i
+            val itemId: Long = mAdapter!!.getItemId(position)
             if (child !== viewToRemove) {
                 mItemIdTopMap[itemId] = child.top
             }
         }
         // Delete the item from the adapter
-        val position = mListView!!.getPositionForView(viewToRemove)
+        val position: Int = mListView!!.getPositionForView(viewToRemove)
         mAdapter!!.remove(mAdapter!!.getItem(position))
 
         // After layout runs, capture position of all itemIDs, compare to pre-layout
         // positions, and animate changes
-        val observer = listView.viewTreeObserver
+        val observer: ViewTreeObserver = listView.viewTreeObserver
         observer.addOnPreDrawListener(object : OnPreDrawListener {
             /**
              * Callback method to be invoked when the view tree is about to be drawn. At this point, all
@@ -547,21 +542,21 @@ class ListViewItemAnimations : Activity() {
             override fun onPreDraw(): Boolean {
                 observer.removeOnPreDrawListener(this)
                 var firstAnimation = true
-                val firstVisiblePositionLocal = listView.firstVisiblePosition
+                val firstVisiblePositionLocal: Int = listView.firstVisiblePosition
                 for (i in 0 until listView.childCount) {
-                    val child = listView.getChildAt(i)
-                    val positionLocal = firstVisiblePositionLocal + i
-                    val itemId = mAdapter!!.getItemId(positionLocal)
-                    var startTop = mItemIdTopMap[itemId]
-                    val top = child.top
+                    val child: View = listView.getChildAt(i)
+                    val positionLocal: Int = firstVisiblePositionLocal + i
+                    val itemId: Long = mAdapter!!.getItemId(positionLocal)
+                    var startTop: Int? = mItemIdTopMap[itemId]
+                    val top: Int = child.top
                     if (startTop == null) {
                         // Animate new views along with the others. The catch is that they did not
                         // exist in the start state, so we must calculate their starting position
                         // based on whether they're coming in from the bottom (i > 0) or top.
-                        val childHeight = child.height + listView.dividerHeight
+                        val childHeight: Int = child.height + listView.dividerHeight
                         startTop = top + (if (i > 0) childHeight else -childHeight)
                     }
-                    val delta = startTop - top
+                    val delta: Int = startTop - top
                     if (delta != 0) {
                         @Suppress("ObjectLiteralToLambda")
                         val endAction: Runnable? = if (firstAnimation) {
