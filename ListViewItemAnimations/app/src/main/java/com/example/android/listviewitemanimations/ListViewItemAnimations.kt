@@ -462,15 +462,16 @@ class ListViewItemAnimations : Activity() {
      * our [HashMap] of [Long] to [Int] field [mItemIdTopMap] under the key `itemId` and loop back
      * to try the next child.
      *
-     * When done locating the top Y coordinates of the children that will remain, we set `int position`
-     * to the position in `mListView` that `viewToRemove` occupies, then remove the item
-     * displayed there from `mAdapter`. We then initialize `ViewTreeObserver observer` with
-     * the `ViewTreeObserver` of `listView` and add an anonymous `OnPreDrawListener`
-     * to it whose `onPreDraw` override animates the remaining views to close the gap left when
-     * `viewToRemove` was removed.
+     * When done locating the top Y coordinates of the children that will remain, we set [Int]
+     * variable `val position` to the position in [ListView] field [mListView] that [View] parameter
+     * [viewToRemove] occupies, then remove the item displayed there from [StableArrayAdapter] field
+     * [mAdapter]. We then initialize [ViewTreeObserver] variable `val observer` with the
+     * [ViewTreeObserver] of [ListView] parameter [listView] and add an anonymous [OnPreDrawListener]
+     * to it whose [OnPreDrawListener.onPreDraw] override animates the remaining views to close the
+     * gap left when [viewToRemove] was removed.
      *
-     * @param listView the `ListView` whose views we are animating.
-     * @param viewToRemove the `View` containing the item being removed.
+     * @param listView the [ListView] whose views we are animating.
+     * @param viewToRemove the [View] containing the item being removed.
      */
     private fun animateOtherViews(listView: ListView?, viewToRemove: View) {
         val firstVisiblePosition: Int = listView!!.firstVisiblePosition
@@ -491,53 +492,45 @@ class ListViewItemAnimations : Activity() {
         val observer: ViewTreeObserver = listView.viewTreeObserver
         observer.addOnPreDrawListener(object : OnPreDrawListener {
             /**
-             * Callback method to be invoked when the view tree is about to be drawn. At this point, all
-             * views in the tree have been measured and given a frame. First we remove ourselves as a
-             * `OnPreDrawListener`. We initialize `boolean firstAnimation` to true, and
-             * initialize `int firstVisiblePosition` with the position in the adapter of the first
-             * visible item in `listView`. We then loop over `int i` for all the children
-             * in `listView`:
+             * Callback method to be invoked when the view tree is about to be drawn. At this point,
+             * all views in the tree have been measured and given a frame. First we remove ourselves
+             * as a [OnPreDrawListener]. We initialize [Boolean] variable `var firstAnimation` to
+             * `true`, and initialize [Int] variable `val firstVisiblePositionLocal` with the position
+             * in the adapter of the first visible item in [listView]. We then loop over [Int] variable
+             * `var i` for all the children in [listView]:
              *
-             *  *
-             * We initialize `View child` with the `i`'th child of `listView`,
-             * initialize `int position` to `firstVisiblePosition` plus `i`,
-             * initialize `long itemId` with the item id of the item at position `position`
-             * in `mAdapter`, initialize `Integer startTop` to the value stored under
-             * the key `itemId` in `mItemIdTopMap`, and initialize `int top` with
-             * the top Y coordinate of `child`.
+             *  * We initialize [View] variable `val child` with the `i`'th child of [listView],
+             *  initialize [Int] variable `val positionLocal` to `firstVisiblePositionLocal` plus
+             *  `i`, initialize [Long] variable `val itemId` with the item id of the item at position
+             *  `positionLocal` in [StableArrayAdapter] field [mAdapter], initialize [Int] variable
+             *  `var startTop` to the value stored under the key `itemId` in [HashMap] of [Long] to
+             *  [Int] field [mItemIdTopMap], and initialize [Int] variable `val top` with the top Y
+             *  coordinate of `child`.
              *
-             *  *
-             * If `startTop` is null the child is a new view so we initialize `int childHeight`
-             * to the height of `child` plus the divider height used by `listView`. We then
-             * set `startTop` to `top` plus `childHeight` if `i` is greater than
-             * 0 or to `top` minus `childHeight` if it is zero.
+             *  * If `startTop` is `null` the child is a new view so we initialize [Int] variable
+             *  `val childHeight` to the height of `child` plus the divider height used by `listView`.
+             *  We then set `startTop` to `top` plus `childHeight` if `i` is greater than 0 or to
+             *  `top` minus `childHeight` if it is zero.
              *
-             *  *
-             * We then initialize `int delta` to `startTop` minus `top` and if
-             * `delta` is not equal to 0 we need to move the child:
+             *  * We then initialize [Int] variable `val delta` to `startTop` minus `top` and if
+             *  `delta` is not equal to 0 we need to move the child:
              *
-             *  *
-             * If `firstAnimation` is true we initialize `Runnable endAction`
-             * with an anonymous `Runnable` whose `run` override hides the
-             * background of `mBackgroundContainer`, sets `mSwiping` and
-             * `mAnimating` to false and enables `mListView`. If it is false
-             * we initialize `endAction` to null.
+             *  * If `firstAnimation` is `true` we initialize [Runnable] variable `val endAction`
+             *  with an anonymous [Runnable] whose [Runnable.run] override hides the background of
+             *  [BackgroundContainer] field [mBackgroundContainer], sets [Boolean] fields [mSwiping]
+             *  and [mAnimating] to `false` and enables [ListView] field [mListView]. If it is `false`
+             *  we initialize `endAction` to null.
              *
-             *  *
-             * We set `firstAnimation` to false
+             *  * We set `firstAnimation` to `false`
              *
-             *  *
-             * We call our `moveView` method to animate the translate of `child`
-             * from `delta` to 0 in its Y coordinate, running `endAction` when
-             * done if it is not null.
+             *  * We call our [moveView] method to animate the translation of `child` from `delta`
+             *  to 0 in its Y coordinate, running `endAction` when done if it is not `null`.
              *
+             * Having animated the child views into their new position we clear [HashMap] of [Long]
+             * to [Int] field [mItemIdTopMap] and return `true` to the caller to proceed with the
+             * current drawing pass.
              *
-             *
-             *
-             * Having animated the child views into their new position we clear `mItemIdTopMap` and
-             * return true to the caller to proceed with the current drawing pass.
-             *
-             * @return Return true to proceed with the current drawing pass, or false to cancel.
+             * @return Return `true` to proceed with the current drawing pass, or `false` to cancel.
              */
             override fun onPreDraw(): Boolean {
                 observer.removeOnPreDrawListener(this)
@@ -587,44 +580,49 @@ class ListViewItemAnimations : Activity() {
 
     /**
      * Animate a view between start and end X/Y locations, using either old (pre-3.0) or new animation
-     * APIs. We copy our parameter `endAction` to initialize `Runnable finalEndAction`.
-     * We branch on whether we are running on a post Gingerbread device or not:
+     * APIs. We copy our [Runnable] parameter [endAction] to initialize our [Runnable] variables
+     * `var endActionLocal` and  `val finalEndAction`. We branch on whether we are running on a post
+     * Gingerbread device or not:
      *
-     *  *
-     * Post Gingerbread device: we set the duration of the underlying animator that animates
-     * properties of `view` to MOVE_DURATION (150ms) (Uh? this does nothing?) If our
-     * parameter `startX` is not equal to our parameter `endX` (never happens?)
-     * we initialize `ObjectAnimator anim` with an instance which will animate the TRANSLATION_X
-     * property of `view` from `startX` to `endX`, set its duration to MOVE_DURATION,
-     * start it running and call our `setAnimatorEndAction` method to set the `AnimatorListener`
-     * of `anim` to `endAction` if it is not null, then we set `endAction` to null.
-     * If our parameter `startY` is not equal to our parameter `endY` we initialize
-     * `ObjectAnimator anim` with an instance which will animate the TRANSLATION_Y property
-     * of `view` from `startY` to `endY`, set its duration to MOVE_DURATION,
-     * start it running and call our `setAnimatorEndAction` method to set the `AnimatorListener`
-     * of `anim` to `endAction` if it is not null.
+     *  * Post Gingerbread device: we set the duration of the underlying animator that animates
+     *  properties of [View] parameter [view] to MOVE_DURATION (150ms) (Uh? this does nothing?) If
+     *  our [Float] parametr [startX] is not equal to our parameter [Float] parameter [endX] (never
+     *  happens?) we initialize [ObjectAnimator] variable `val anim` with an instance which will
+     *  animate the TRANSLATION_X property of [view] from [startX] to [endX], set its duration to
+     *  [MOVE_DURATION], start it running and call our [setAnimatorEndAction] method to set the
+     *  [AnimatorListener] of `anim` to `endActionLocal` if it is not `null`, then we set
+     *  `endActionLocal` to `null`. If our [Float] parameter [startY] is not equal to our [Float]
+     *  parameter [endY] we initialize [ObjectAnimator] `val anim` with an instance which will
+     *  animate the TRANSLATION_Y property of [view] from [startY] to [endY], set its duration to
+     *  [MOVE_DURATION], start it running and call our [setAnimatorEndAction] method to set the
+     *  [AnimatorListener] of `anim` to `endActionLocal` if it is not null.
      *
-     *  *
-     * Gingerbread (or earlier?) device: We initialize `TranslateAnimation translator` with
-     * an instance which will translate from `startX` to `endX` in the X dimension
-     * and from `startY` to `endY` in the Y dimension, set its duration to MOVE_DURATION
-     * and instruct `view` to start the animation. Then if `endAction` is not null
-     * we fetch the animation currently associated with `view` and set its `AnimationListener`
-     * to an anonymous `AnimationListenerAdapter` whose `onAnimationEnd` runs `finalEndAction`.
+     *  * Gingerbread (or earlier?) device: We initialize [TranslateAnimation] variable`val translator`
+     *  with an instance which will translate from [startX] to [endX] in the X dimension and from
+     *  [startY] to [endY] in the Y dimension, set its duration to [MOVE_DURATION] and instruct
+     *  [view] to start the animation. Then if `endActionLocal` is not `null` we fetch the animation
+     *  currently associated with [view] and set its [AnimationListener] to an anonymous
+     *  [AnimationListenerAdapter] whose [AnimationListenerAdapter.onAnimationEnd] override runs
+     *  `finalEndAction` by calling its [Runnable.run] override.
      *
-     *
-     *
-     * @param view `View` that is to be moved
+     * @param view   the [View] that is to be moved
      * @param startX starting X coordinate
      * @param endX   ending  X coordinate
      * @param startY starting Y coordinate
      * @param endY   ending  Y coordinate
-     * @param endAction `Runnable` to run when the animation is done.
+     * @param endAction [Runnable] to run when the animation is done.
      */
     @SuppressLint("NewApi")
-    private fun moveView(view: View, startX: Float, endX: Float, startY: Float, endY: Float, endAction: Runnable?) {
-        var endActionLocal = endAction
-        val finalEndAction = endActionLocal
+    private fun moveView(
+        view: View,
+        startX: Float,
+        endX: Float,
+        startY: Float,
+        endY: Float,
+        endAction: Runnable?
+    ) {
+        var endActionLocal: Runnable? = endAction
+        val finalEndAction: Runnable? = endActionLocal
         if (isRuntimePostGingerbread) {
             view.animate().duration = MOVE_DURATION.toLong()
             if (startX != endX) {
@@ -635,7 +633,7 @@ class ListViewItemAnimations : Activity() {
                 endActionLocal = null
             }
             if (startY != endY) {
-                val anim = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, startY, endY)
+                val anim: ObjectAnimator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, startY, endY)
                 anim.duration = MOVE_DURATION.toLong()
                 anim.start()
                 setAnimatorEndAction(anim, endActionLocal)
@@ -661,13 +659,13 @@ class ListViewItemAnimations : Activity() {
     }
 
     /**
-     * If our parameter `Runnable endAction` is not null we add an anonymous `AnimatorListener`
-     * to our parameter `Animator animator` which will call the `run` override of our
-     * parameter `endAction`.
+     * If our [Runnable] parameter [endAction] is not `null` we add an anonymous [AnimatorListener]
+     * to our [Animator] parameter [animator] which will call the [Runnable.run] override of
+     * [endAction].
      *
-     * @param animator `Animator` whose `AnimatorListener` list we wish to add to
-     * @param endAction `Runnable` to run in the `onAnimationEnd` override of the
-     * anonymous `AnimatorListener` we add to `animator`
+     * @param animator the [Animator] whose [AnimatorListener] list we wish to add to
+     * @param endAction the [Runnable] to run in the [AnimatorListener.onAnimationEnd] override of
+     * anonymous [AnimatorListener] we add to [animator]
      */
     @SuppressLint("NewApi")
     private fun setAnimatorEndAction(animator: Animator, endAction: Runnable?) {
