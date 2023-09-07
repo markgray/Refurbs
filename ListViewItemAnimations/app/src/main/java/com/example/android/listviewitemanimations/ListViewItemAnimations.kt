@@ -679,13 +679,13 @@ class ListViewItemAnimations : Activity() {
     }
 
     /**
-     * If our parameter `Runnable endAction` is not null we set an anonymous `AnimatorListener`
-     * to our parameter `Animation animation` which will call the `run` override of our
-     * parameter `endAction`.
+     * If our [Runnable] parameter [endAction] is not `null` we set an anonymous [AnimatorListener]
+     * on our [Animation] parameter [animation] which will call the [Runnable.run] override of our
+     * parameter [endAction].
      *
-     * @param animation `Animation` whose `AnimatorListener` list we wish to add to
-     * @param endAction `Runnable` to run in the `onAnimationEnd` override of the
-     * anonymous `AnimatorListener` we add to `animator`
+     * @param animation the [Animation] whose [AnimatorListener] list we wish to add to
+     * @param endAction the [Runnable] to run in the [AnimatorListener.onAnimationEnd] override of
+     * the anonymous [AnimatorListener] we add to [animator]
      */
     private fun setAnimationEndAction(animation: Animation, endAction: Runnable?) {
         if (endAction != null) {
@@ -698,7 +698,7 @@ class ListViewItemAnimations : Activity() {
     }
 
     /**
-     * Utility, to avoid having to implement every method in AnimationListener in
+     * Utility, to avoid having to implement every method in [AnimationListener] in
      * every implementation class
      */
     internal open class AnimationListenerAdapter : AnimationListener {
@@ -726,9 +726,10 @@ class ListViewItemAnimations : Activity() {
 
     companion object {
         /**
-         * Value used to calculate the duration of the X translation animation when animating the swiping
-         * out of a view when the user released the view with more than a quarter of its width off the
-         * screen or its return to the list when the user released the view before a quarter of its width.
+         * Value used to calculate the duration of the X translation animation when animating the
+         * swiping out of a view when the user released the view with more than a quarter of its
+         * width off the screen or its return to the list when the user released the view before
+         * a quarter of its width.
          */
         private const val SWIPE_DURATION = 250
 
