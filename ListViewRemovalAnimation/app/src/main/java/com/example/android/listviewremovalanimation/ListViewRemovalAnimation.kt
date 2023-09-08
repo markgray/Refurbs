@@ -26,6 +26,7 @@ import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewConfiguration
 import android.view.ViewPropertyAnimator
+import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.widget.ListView
 import java.util.Collections
@@ -275,37 +276,78 @@ class ListViewRemovalAnimation : Activity() {
      * everything is now, then allow layout to run, then figure out where everything is after
      * layout, and then to run animations between all of those start/end positions.
      *
+     * We initialize [Int] variable `val firstVisiblePosition` to the position within the adapter's
+     * data set of [ListView] parameter [listview] of the first item displayed on screen. Then we
+     * loop over [Int] variable `var i` for all of the [ListView.getChildCount] (kotlin `childCount`
+     * property) children of [listview] setting [View] variable `val child` to the `i`'th child of
+     * [listview]. Then is `child` is not equal to [viewToRemove] we initialize [Int] variable
+     * `val position` to `firstVisiblePosition` plus `i`, and initialize [Long] variable `val itemId`
+     * to the row id associated with the position `position` that is returned by the
+     * [StableArrayAdapter.getItemId] method of [StableArrayAdapter] field [mAdapter]. We then store
+     * `top` Y coordinate of `child` under the key `itemId` in our [HashMap] of [Long] to [Int] field
+     * [mItemIdTopMap]. When done storing all of the `top` Y coordinates of all of the children apart
+     * from [viewToRemove] we initialize [Int] variable `val position` to the position of [viewToRemove]
+     * within the adapter's data set of [listview], then call the [StableArrayAdapter.remove] method
+     * of [mAdapter] to have it remove the data object in position `position` from its dataset. We
+     * initialize [ViewTreeObserver] variable `val observer` with the [ViewTreeObserver] for the
+     * hierarchy of [listview]. Then we add an anonymous [OnPreDrawListener] to `observer` whose
+     * [OnPreDrawListener.onPreDraw] override will be invoked when the view tree is about to be
+     * drawn, and it will animate all of the children that remain after [viewToRemove] is removed
+     * into their new positions.
+     *
      * @param listview the [ListView] that we are removing [viewToRemove] from.
      * @param viewToRemove the [View] that is being removed.
      */
     private fun animateRemoval(listview: ListView?, viewToRemove: View) {
-        val firstVisiblePosition = listview!!.firstVisiblePosition
+        val firstVisiblePosition: Int = listview!!.firstVisiblePosition
         for (i in 0 until listview.childCount) {
-            val child = listview.getChildAt(i)
+            val child: View = listview.getChildAt(i)
             if (child !== viewToRemove) {
-                val position = firstVisiblePosition + i
-                val itemId = mAdapter!!.getItemId(position)
+                val position: Int = firstVisiblePosition + i
+                val itemId: Long = mAdapter!!.getItemId(position)
                 mItemIdTopMap[itemId] = child.top
             }
         }
         // Delete the item from the adapter
-        val position = mListView!!.getPositionForView(viewToRemove)
+        val position: Int = mListView!!.getPositionForView(viewToRemove)
         mAdapter!!.remove(mAdapter!!.getItem(position))
-        val observer = listview.viewTreeObserver
+        val observer: ViewTreeObserver = listview.viewTreeObserver
         observer.addOnPreDrawListener(object : OnPreDrawListener {
+            /**
+             * Callback method to be invoked when the view tree is about to be drawn. At this point,
+             * all views in the tree have been measured and given a frame. Clients can use this to
+             * adjust their scroll bounds or even to request a new layout before drawing occurs.
+             *
+             * First we remove ourselves as a [OnPreDrawListener] from [ViewTreeObserver] variable
+             * `observer`, then we initialize our [Int] variable `val firstVisiblePositionLocal` to
+             * the position within the adapter's data set of [ListView] parameter [listview] of the
+             * first item displayed on screen. Then we loop over [Int] variable `var i` for all of
+             * the [ListView.getChildCount] (kotlin `childCount` property) children of [listview]
+             * setting [View] variable `val child` to the `i`'th child of [listview]. We then
+             * initialize [Int] variable `val positionLocal` to `firstVisiblePositionLocal` plus `i`,
+             * and initialize [Long] variable `val itemId` to the row id associated with the position
+             * `positionLocal` that is returned by the [StableArrayAdapter.getItemId] method of
+             * [StableArrayAdapter] field [mAdapter]. We initialze [Int] variable `var startTop`
+             * to the [Int] stored under the key `itemId` in [HashMap] of [Long] to [Int] field
+             * [mItemIdTopMap] (this the the `top` Y coordinate of `child` before [viewToRemove] was
+             * removed). Then we initialize [Int] variable `val top` to the current `top` Y coordinate
+             * of `child` (now that [viewToRemove] is gone).
+             *
+             * @return `true` to proceed with the current drawing pass, or `false` to cancel.
+             */
             override fun onPreDraw(): Boolean {
                 observer.removeOnPreDrawListener(this)
                 var firstAnimation = true
-                val firstVisiblePositionLocal = listview.firstVisiblePosition
+                val firstVisiblePositionLocal: Int = listview.firstVisiblePosition
                 for (i in 0 until listview.childCount) {
-                    val child = listview.getChildAt(i)
-                    val positionLocal = firstVisiblePositionLocal + i
-                    val itemId = mAdapter!!.getItemId(positionLocal)
-                    var startTop = mItemIdTopMap[itemId]
-                    val top = child.top
+                    val child: View = listview.getChildAt(i)
+                    val positionLocal: Int = firstVisiblePositionLocal + i
+                    val itemId: Long = mAdapter!!.getItemId(positionLocal)
+                    var startTop: Int? = mItemIdTopMap[itemId]
+                    val top: Int = child.top
                     if (startTop != null) {
                         if (startTop != top) {
-                            val delta = startTop - top
+                            val delta: Int = startTop - top
                             child.translationY = delta.toFloat()
                             child.animate().setDuration(MOVE_DURATION.toLong()).translationY(0f)
                             if (firstAnimation) {
@@ -321,9 +363,9 @@ class ListViewRemovalAnimation : Activity() {
                         // Animate new views along with the others. The catch is that they did not
                         // exist in the start state, so we must calculate their starting position
                         // based on neighboring views.
-                        val childHeight = child.height + listview.dividerHeight
+                        val childHeight: Int = child.height + listview.dividerHeight
                         startTop = top + if (i > 0) childHeight else -childHeight
-                        val delta = startTop - top
+                        val delta: Int = startTop - top
                         child.translationY = delta.toFloat()
                         child.animate().setDuration(MOVE_DURATION.toLong()).translationY(0f)
                         if (firstAnimation) {
