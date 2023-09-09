@@ -22,21 +22,22 @@ import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ListView
+import android.widget.TextView
 
 /**
- * The stable `ArrayAdapter` used by our `ListView`
- * Our constructor. First we call our super's 3 argument constructor, then we save our parameter
- * `OnTouchListener listener` in our field `mTouchListener`. We then loop over `int i`
- * for all of the strings in our parameter `List<String> objects` storing `i` under the
- * key of the string fetched from position `i` in `objects` in our field
- * `HashMap<String, Integer> mIdMap`.
+ * The stable [ArrayAdapter] used by our [ListView].
+ * Our constructor. First we call our super's 3 argument constructor. In our `init` block we loop
+ * over [Int] variable `var i` for all of the strings in our [List] of [String] parameter `objects`
+ * storing `i` under the key of the string fetched from position `i` in `objects` in our [HashMap]
+ * of [String] to [Int] field [mIdMap].
  *
- * @param context            The current context.
- * @param textViewResourceId The resource ID for a layout file containing a TextView to use when
- * instantiating views.
- * @param objects            The objects to represent in the ListView.
- * @param mTouchListener           `OnTouchListener` to use for each item view that our
- * `getView` override returns.
+ * @param context            The current [Context].
+ * @param textViewResourceId The resource ID for a layout file containing a [TextView] to use when
+ *                           instantiating views.
+ * @param objects            The objects to represent in the [ListView].
+ * @param mTouchListener     the [OnTouchListener] to use for each item view that our [getView]
+ * override returns.
  */
 class StableArrayAdapter(
     context: Context?,
@@ -49,9 +50,6 @@ class StableArrayAdapter(
      */
     var mIdMap: HashMap<String?, Int> = HashMap()
 
-    /**
-     *
-     */
     init {
         for (i in objects.indices) {
             mIdMap[objects[i]] = i
@@ -59,9 +57,9 @@ class StableArrayAdapter(
     }
 
     /**
-     * Returns the row id associated with the specified position in the list. We initialize `String item`
-     * with the string at position `position` in our dataset, then return the `Integer`
-     * stored under the key `item` in our field `HashMap<String, Integer> mIdMap`.
+     * Returns the row id associated with the specified position in the list. We initialize [String]
+     * variable `val item` with the string at position [position] in our dataset, then return the
+     * [Int] stored under the key `item` in our [HashMap] of [String] to [Int] field [mIdMap].
      *
      * @param position The position of the item within the adapter's data set whose row id we want.
      * @return The id of the item at the specified position.
@@ -73,9 +71,9 @@ class StableArrayAdapter(
 
     /**
      * Indicates whether the item ids are stable across changes to the underlying data. Our item ids
-     * are stable, so we return true.
+     * are stable, so we return `true`.
      *
-     * @return True if the same id always refers to the same object.
+     * @return `true` if the same id always refers to the same object.
      */
     override fun hasStableIds(): Boolean {
         return true
@@ -83,15 +81,15 @@ class StableArrayAdapter(
 
     /**
      * Get a View that displays the data at the specified position in the data set. We initialize
-     * `View view` with the `View` that our super's implementation of `getView`
-     * returns, and if this `View` is not the view passed us in `View convertView` we
-     * set its `OnTouchListener` to our field `OnTouchListener`. Finally we return
+     * [View] variable `val view` with the [View] that our super's implementation of `getView`
+     * returns, and if this [View] is not the view passed us in [View] parameter [convertView] we
+     * set its [OnTouchListener] to our [OnTouchListener] field [mTouchListener]. Finally we return
      * `view` to the caller.
      *
      * @param position The position of the item within the adapter's data set whose view we want.
-     * @param convertView The old view to reuse, if possible.
+     * @param convertView The old [View] to reuse, if possible.
      * @param parent The parent that this view will eventually be attached to
-     * @return A View corresponding to the data at the specified position.
+     * @return A [View] corresponding to the data at the specified position.
      */
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = super.getView(position, convertView, parent)

@@ -30,6 +30,7 @@ import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.widget.ListView
 import java.util.Collections
+import java.util.HashMap
 
 /**
  * This example shows what goes wrong when a view that is chosen to be deleted when that view is on
@@ -331,7 +332,42 @@ class ListViewRemovalAnimation : Activity() {
              * to the [Int] stored under the key `itemId` in [HashMap] of [Long] to [Int] field
              * [mItemIdTopMap] (this the the `top` Y coordinate of `child` before [viewToRemove] was
              * removed). Then we initialize [Int] variable `val top` to the current `top` Y coordinate
-             * of `child` (now that [viewToRemove] is gone).
+             * of `child` (now that [viewToRemove] is gone). Now we branch on whether `startTop` is
+             * `null`:
+             *
+             *  * `startTop` is NOT `null` (the `child` [View] was visible before [viewToRemove] was
+             *  removed) if `startTop` is not equal to `top` we need to move the `child` [View] so
+             *  we initialize our [Int] variable `val delta` to `startTop` minus `top`. Then we set
+             *  the `translationY` property of `child` to `delta`, and add a [ViewPropertyAnimator]
+             *  to `child` of duration [MOVE_DURATION] (150ms) which will animate the `translationY`
+             *  property back to 0f (thus moving it to the position that `child` will be in when the
+             *  [ListView] is drawn without [viewToRemove] in it). If `firstAnimation` is `true` we
+             *  add [Runnable] to take place when the animation ends and in that [Runnable] we call
+             *  the [BackgroundContainer.hideBackground] method of [mBackgroundContainer] to have it
+             *  stop drawing its shadowed background, then we set [Boolean] field [mSwiping] to
+             *  `false`, and enable [ListView] field [mListView]. Having added the end action we
+             *  we `firstAnimation` to `false` to avoid adding the end action again.
+             *
+             *  * `startTop` is `null` (`child` is a new [View] which was not on the screen before
+             *  [viewToRemove] was removed) We initialize our [Int] variable `val childHeight` to
+             *  the `height` property of `child` plus the `dividerHeight` property of [ListView]
+             *  parameter [listview]. Then if `i` is greater than 0 we set `startTop` to `top`
+             *  plus `childHeight`, or the `top` minus `childHeight` if it is no greater than 0.
+             *  Next we initialize our [Int] variable `val delta` to `startTop` minus `top` and set
+             *  the `translationY` property of `child` to `delta`, and add a [ViewPropertyAnimator]
+             *  to `child` of duration [MOVE_DURATION] (150ms) which will animate the `translationY`
+             *  property back to 0f (thus moving it to the position that `child` will be in when the
+             *  [ListView] is drawn without [viewToRemove] in it). If `firstAnimation` is `true` we
+             *  add [Runnable] to take place when the animation ends and in that [Runnable] we call
+             *  the [BackgroundContainer.hideBackground] method of [mBackgroundContainer] to have it
+             *  stop drawing its shadowed background, then we set [Boolean] field [mSwiping] to
+             *  `false`, and enable [ListView] field [mListView]. Having added the end action we
+             *  we `firstAnimation` to `false` to avoid adding the end action again.
+             *
+             * Having animated the movement of all the other views when [viewToRemove] is removed
+             * we call the [HashMap.clear] method of [HashMap] of [Long] to [Int] field [mItemIdTopMap]
+             * to remove all of the mappings from the map, and return `true` to proceed with the
+             * current drawing pass.
              *
              * @return `true` to proceed with the current drawing pass, or `false` to cancel.
              */
