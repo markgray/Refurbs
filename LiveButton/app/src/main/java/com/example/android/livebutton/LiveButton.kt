@@ -17,10 +17,14 @@
 
 package com.example.android.livebutton
 
+import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
+import android.view.View.OnTouchListener
+import android.view.ViewPropertyAnimator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.Button
@@ -30,7 +34,6 @@ import android.widget.Button
  * the button animates into its pressed state and animates back out of it, overshooting
  * end state before resolving.
  *
- *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on the DevBytes playlist in the android developers channel on YouTube at
  * [DevBytes](https://www.youtube.com/playlist?list=PLWz5rJ2EKKc_XOgcRukSoKKjewFJZrKV0).
@@ -38,24 +41,24 @@ import android.widget.Button
  */
 class LiveButton : Activity() {
     /**
-     * `TimeInterpolator` used for the ACTION_DOWN movement of the button
+     * [DecelerateInterpolator] used for the ACTION_DOWN movement of the button
      */
     var sDecelerator: DecelerateInterpolator = DecelerateInterpolator()
 
     /**
-     * `TimeInterpolator` used for the ACTION_UP movement of the button, with an overshoot of 10f
+     * [OvershootInterpolator] used for the ACTION_UP movement of the button, with an overshoot of 10f
      */
     var sOvershooter: OvershootInterpolator = OvershootInterpolator(10f)
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_overshoot. We initialize our
-     * variable `Button clickMeButton` by finding the view with id R.id.clickMe ("Click me!")
-     * and set the duration of its `ViewPropertyAnimator` to 200ms. Finally we set its `OnTouchListener`
-     * to an anonymous class which animates its scaling properties when an ACTION_DOWN or ACTION_UP
-     * `MotionEvent` is received.
+     * then we set our content view to our layout file [R.layout.activity_overshoot]. We initialize
+     * our [Button] variable `val clickMeButton` by finding the view with id [R.id.clickMe]
+     * ("Click me!") and set the duration of its [ViewPropertyAnimator] to 200ms. Finally we set its
+     * [OnTouchListener] to an anonymous class which animates its scaling properties when an
+     * ACTION_DOWN or ACTION_UP [MotionEvent] is received.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,18 +70,19 @@ class LiveButton : Activity() {
 
             /**
              * Called when a touch event is dispatched to a view. This allows listeners to get a
-             * chance to respond before the target view. If the action of our parameter `MotionEvent arg1`
-             * is ACTION_DOWN we set the `TimeInterpolator` of the `ViewPropertyAnimator`
-             * of `clickMeButton` to `DecelerateInterpolator sDecelerator` and have it animate
-             * the scaleX property to .7f and the scaleY property to .7f or if the action is ACTION_UP
-             * we set the `TimeInterpolator` of the `ViewPropertyAnimator` of `clickMeButton`
-             * to `OvershootInterpolator sOvershooter` and have it animate the scaleX property to 1f
-             * and the scaleY property to 1f as well. Whether the action was one we wanted or not we return
-             * false to the caller so that the event will be passed on to the view.
+             * chance to respond before the target view. If the action of our [MotionEvent] parameter
+             * [arg1] is [MotionEvent.ACTION_DOWN] we set the [TimeInterpolator] of the
+             * [ViewPropertyAnimator] of `clickMeButton` to [DecelerateInterpolator] field
+             * [sDecelerator] and have it animate the `scaleX` property to .7f and the `scaleY`
+             * property to .7f or if the action is [MotionEvent.ACTION_UP] we set the [TimeInterpolator]
+             * of the [ViewPropertyAnimator] of `clickMeButton` to [OvershootInterpolator] field
+             * [sOvershooter] and have it animate the `scaleX` property to 1f and the `scaleY`
+             * property to 1f as well. Whether the action was one we wanted or not we return
+             * `false` to the caller so that the event will be passed on to the view.
              *
-             * @param arg0 The view the touch event has been dispatched to.
-             * @param arg1 The MotionEvent object containing full information about the event.
-             * @return True if the listener has consumed the event, false otherwise.
+             * @param arg0 The [View] the touch event has been dispatched to.
+             * @param arg1 The [MotionEvent] object containing full information about the event.
+             * @return `true` if the listener has consumed the event, `false` otherwise.
              */
             if (arg1.action == MotionEvent.ACTION_DOWN) {
                 clickMeButton.animate().setInterpolator(sDecelerator).scaleX(.7f).scaleY(.7f)
