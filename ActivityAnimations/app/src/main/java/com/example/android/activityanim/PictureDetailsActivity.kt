@@ -25,6 +25,7 @@ import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.view.animation.AccelerateInterpolator
@@ -444,7 +445,12 @@ class PictureDetailsActivity : AppCompatActivity() {
         super.finish()
 
         // override transitions to skip the standard window animations
-        overridePendingTransition(0, 0)
+        if (Build.VERSION.SDK_INT >= 34) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, 0, 0)
+        } else {
+            @Suppress("DEPRECATION") // Needed for SDK older than 34
+            overridePendingTransition(0, 0)
+        }
     }
 
     companion object {

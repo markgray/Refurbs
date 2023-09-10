@@ -21,6 +21,7 @@ import android.content.Intent
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -217,7 +218,12 @@ class ActivityAnimations : AppCompatActivity() {
 
         // Override transitions: we don't want the normal window animation in addition
         // to our custom one
-        overridePendingTransition(0, 0)
+        if (Build.VERSION.SDK_INT >= 34) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, 0, 0)
+        } else {
+            @Suppress("DEPRECATION") // Needed for SDK older than 34
+            overridePendingTransition(0, 0)
+        }
     }
 
     companion object {
