@@ -28,13 +28,12 @@ import android.widget.TextView
 import com.example.android.lunarlander.LunarView.LunarThread
 
 /**
- * This is a simple LunarLander activity that houses a single LunarView. It
+ * This is a simple LunarLander activity that houses a single [LunarView]. It
  * demonstrates...
  *
  *  * animating by calling invalidate() from draw()
  *  * loading and drawing resources
  *  * handling onPause() in an animation
- *
  */
 class LunarLander : Activity() {
     /**
@@ -43,40 +42,32 @@ class LunarLander : Activity() {
     private var mLunarThread: LunarThread? = null
 
     /**
-     * A handle to the View in which the game is running.
+     * A handle to the [View] in which the game is running.
      */
     private var mLunarView: LunarView? = null
 
     /**
      * Invoked during init to give the Activity a chance to set up its Menu. We add the following
-     * `MenuItem` entries to our parameter `Menu menu`:
+     * [MenuItem] entries to our [Menu] parameter [menu]:
      *
-     *  *
-     * MENU_START: "Start"
+     *  * [MENU_START]: "Start"
      *
-     *  *
-     * MENU_STOP: "Stop"
+     *  * [MENU_STOP]: "Stop"
      *
-     *  *
-     * MENU_PAUSE: "Pause"
+     *  * [MENU_PAUSE]: "Pause"
      *
-     *  *
-     * MENU_RESUME: "Resume"
+     *  * [MENU_RESUME]: "Resume"
      *
-     *  *
-     * MENU_EASY: "Easy"
+     *  * [MENU_EASY]: "Easy"
      *
-     *  *
-     * MENU_MEDIUM: "Medium"
+     *  * [MENU_MEDIUM]: "Medium"
      *
-     *  *
-     * MENU_HARD: "Hard"
+     *  * [MENU_HARD]: "Hard"
      *
+     * Then return `true` so that the menu will be displayed.
      *
-     * Then return true so that the menu will be displayed.
-     *
-     * @param menu the Menu to which entries may be added
-     * @return true so that the menu will be displayed.
+     * @param menu the [Menu] to which entries may be added
+     * @return `true` so that the menu will be displayed.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
@@ -91,25 +82,21 @@ class LunarLander : Activity() {
     }
 
     /**
-     * Invoked when the user selects an item from the Menu. We switch on the item id of our parameter
-     * `MenuItem item`:
+     * Invoked when the user selects an item from the Menu. We switch on the item id of our [MenuItem]
+     * parameter [item]:
      *
-     *  *
-     * MENU_START: "Start" we call the `doStart` method of our field `LunarThread mLunarThread`
-     * to start the game running, and return true to consume the event.
+     *  * [MENU_START]: "Start" we call the [LunarThread.doStart] method of our [LunarThread] field
+     *  [mLunarThread] to start the game running, and return `true` to consume the event.
      *
-     *  *
-     * MENU_STOP: "Stop" we call the `setState` method of our field `LunarThread mLunarThread`
-     * to set the game state to STATE_LOSE, and display the string "Stopped", then return true to consume
-     * the event.
+     *  * [MENU_STOP]: "Stop" we call the [LunarThread.setState] method of our [LunarThread] field
+     *  [mLunarThread] to set the game state to [LunarView.STATE_LOSE], and display the string
+     *  "Stopped", then return `true` to consume the event.
      *
-     *  *
-     * MENU_PAUSE: "Pause" we call the `pause` method of our field `LunarThread mLunarThread`
-     * to pause the game then return true to consume the event.
+     *  * [MENU_PAUSE]: "Pause" we call the [LunarThread.pause] method of our [LunarThread] field
+     *  [mLunarThread] to pause the game then return `true` to consume the event.
      *
-     *  *
-     * MENU_RESUME: "Resume" we call the `unpause` method of our field `LunarThread mLunarThread`
-     * to unpause the game then return true to consume the event.
+     *  * [MENU_RESUME]: "Resume" we call the [LunarThread.unpause] method of our [LunarThread] field
+     *  [mLunarThread] to unpause the game then return `true` to consume the event.
      *
      *  *
      * MENU_EASY: "Easy" we call the `setDifficulty` method of our field `LunarThread mLunarThread`
