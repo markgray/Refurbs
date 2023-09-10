@@ -17,10 +17,12 @@
 
 package com.example.android.activenotifications
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
 
@@ -97,9 +99,14 @@ class ActiveNotificationsActivity : MainActivity() {
      * with a new instance of `IntentFilter` for the action ACTION_NOTIFICATION_DELETE as the
      * `Intent` broadcasts to be received.
      */
+    @SuppressLint("UnspecifiedRegisterReceiverFlag") // Needed for SDK older than TIRAMISU
     override fun onResume() {
         super.onResume()
-        registerReceiver(mDeleteReceiver, IntentFilter(ACTION_NOTIFICATION_DELETE))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mDeleteReceiver, IntentFilter(ACTION_NOTIFICATION_DELETE), RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(mDeleteReceiver, IntentFilter(ACTION_NOTIFICATION_DELETE))
+        }
     }
 
     /**
