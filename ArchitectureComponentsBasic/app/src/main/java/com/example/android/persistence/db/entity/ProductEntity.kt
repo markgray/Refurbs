@@ -60,7 +60,7 @@ class ProductEntity : Product {
      * @return the value in our field [id]
      */
     override fun getId(): Int {
-        return id
+        return this.id
     }
 
     /**
@@ -78,7 +78,7 @@ class ProductEntity : Product {
      * @return the value in our field `String name`
      */
     override fun getName(): String {
-        return name!!
+        return this.name!!
     }
 
     /**
@@ -96,7 +96,7 @@ class ProductEntity : Product {
      * @return the value in our [String] field [description].
      */
     override fun getDescription(): String {
-        return description!!
+        return this.description!!
     }
 
     /**
@@ -114,7 +114,7 @@ class ProductEntity : Product {
      * @return value in our [Int] field [price].
      */
     override fun getPrice(): Int {
-        return price
+        return this.price
     }
 
     /**
@@ -140,7 +140,7 @@ class ProductEntity : Product {
      * @param description value to set our [String] field [description] to.
      * @param price value to set our [Int] field [price] to
      */
-    constructor(id: Int, name: String?, description: String?, price: Int) {
+    constructor(id: Int, name: String, description: String, price: Int) {
         this.id = id
         this.name = name
         this.description = description
