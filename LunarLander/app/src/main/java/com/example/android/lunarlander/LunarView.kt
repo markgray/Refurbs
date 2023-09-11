@@ -40,7 +40,6 @@ import android.widget.TextView
 /**
  * View that draws, takes keystrokes, etc. for a simple LunarLander game.
  *
- *
  * Has a mode which RUNNING, PAUSED, etc. Has a x, y, dx, dy, ... capturing the
  * current ship physics. All x/y etc. are measured with (0,0) at the lower left.
  * updatePhysics() advances the physics based on realtime. draw() renders the
@@ -65,37 +64,22 @@ internal class LunarView constructor(
     attrs: AttributeSet?
 ) : SurfaceView(context, attrs), SurfaceHolder.Callback {
     /**
-     * Our animation thread.
-     * Our constructor. First we save our three parameters `SurfaceHolder surfaceHolder`,
-     * `Context context`, and `Handler handler` in our fields `mSurfaceHolder`,
-     * `mContext`, and `mHandler` respectively. Then we initialize `Resources res`
-     * with a `Resources` instance for the application's package and use it to load the png
-     * with resource id R.drawable.lander_plain into our field `Drawable mLanderImage`, the
-     * png with resource id R.drawable.lander_firing into our field `Drawable mFiringImage`,
-     * and the png with resource id R.drawable.lander_crashed into our field `Drawable mCrashedImage`.
-     * We then load our field `Bitmap mBackgroundImage` by decoding the png with resource id
-     * R.drawable.earthrise. We initialize our field `int mLanderWidth` with the width of
-     * `mLanderImage` and our field `int mLanderHeight` with its height. We initialize
-     * `Paint mLinePaint` with a new instance, enable its anti-alias flag, and set its color
-     * to green. We initialize `Paint mLinePaintBad` with a new instance, enable its anti-alias flag,
-     * and set its color to a greenish red. We set our field `int mWinsInARow` to 0, and set
-     * our field `int mDifficulty` to DIFFICULTY_MEDIUM. We initialize `double mX` to
-     * `mLanderWidth`, `double mY` to 2 times `mLanderHeight`, `double mFuel`
-     * to PHYS_FUEL_INIT, `double mDX` to 0, `double mDY` to 0, `double mHeading`
-     * to 0, and `boolean mEngineFiring` to true.
+     * Our animation thread constructor.
      *
-     * @param mSurfaceHolder `SurfaceHolder` for the `SurfaceView` of the `LunarView`
-     * which is constructing us.
-     * @param context       `Context` the `LunarView` is running in, used to access resources.
-     * @param handler       `Handler` we can send messages to in order to interact with the
-     * status `TextView`
+     * @param mSurfaceHolder the [SurfaceHolder] for the [SurfaceView] of the [LunarView]
+     * which is constructing us, which is the surface manager object we interact with
+     * @param context       [Context] the [LunarView] is running in, used to access resources.
+     * @param handler       [Handler] we can send messages to in order to interact with the
+     * status [TextView]
      */
     internal inner class LunarThread(
-        /**
-         * Handle to the surface manager object we interact with
-         */
-        private val mSurfaceHolder: SurfaceHolder, context: Context, handler: Handler) : Thread() {
+        private val mSurfaceHolder: SurfaceHolder,
+        context: Context,
+        handler: Handler
+    ) : Thread() {
+
         // Member (state) fields
+
         /**
          * The drawable to use as the background of the animation canvas
          */
@@ -104,16 +88,16 @@ internal class LunarView constructor(
         /**
          * Current height of the surface/canvas.
          *
-         * @see .setSurfaceSize
+         * @see [setSurfaceSize]
          */
-        private var mCanvasHeight = 1
+        private var mCanvasHeight: Int = 1
 
         /**
          * Current width of the surface/canvas.
          *
-         * @see .setSurfaceSize
+         * @see [setSurfaceSize]
          */
-        private var mCanvasWidth = 1
+        private var mCanvasWidth: Int = 1
 
         /**
          * What to draw for the Lander when it has crashed
@@ -121,7 +105,7 @@ internal class LunarView constructor(
         private val mCrashedImage: Drawable
 
         /**
-         * Current difficulty -- amount of fuel, allowed angle, etc. Default is MEDIUM.
+         * Current difficulty -- amount of fuel, allowed angle, etc. Default is [DIFFICULTY_MEDIUM].
          */
         private var mDifficulty: Int
 
@@ -153,22 +137,22 @@ internal class LunarView constructor(
         /**
          * Allowed angle.
          */
-        private var mGoalAngle = 0
+        private var mGoalAngle: Int = 0
 
         /**
          * Allowed speed.
          */
-        private var mGoalSpeed = 0
+        private var mGoalSpeed: Int = 0
 
         /**
          * Width of the landing pad.
          */
-        private var mGoalWidth = 0
+        private var mGoalWidth: Int = 0
 
         /**
          * X of the landing pad.
          */
-        private var mGoalX = 0
+        private var mGoalX: Int = 0
 
         /**
          * Message handler used by thread to interact with TextView
@@ -201,7 +185,7 @@ internal class LunarView constructor(
         private var mLastTime: Long = 0
 
         /**
-         * Paint to draw the lines on screen.
+         * [Paint] to draw the lines on screen.
          */
         private val mLinePaint: Paint
 
@@ -213,17 +197,17 @@ internal class LunarView constructor(
         /**
          * The state of the game. One of READY, RUNNING, PAUSE, LOSE, or WIN
          */
-        var mMode = 0
+        var mMode: Int = 0
 
         /**
          * Currently rotating, -1 left, 0 none, 1 right.
          */
-        private var mRotating = 0
+        private var mRotating: Int = 0
 
         /**
          * Indicate whether the surface has been created & is ready to draw
          */
-        private var mRun = false
+        private var mRun: Boolean = false
 
         /**
          * Lock to synchronise access to the `boolean mRun` field.
@@ -251,7 +235,21 @@ internal class LunarView constructor(
         private var mY: Double
 
         /**
-         *
+         * First we save our parameters: `Context` parmeter `context`, and `Handler` parmeter `handler`
+         * in our fields `mContext`, and `mHandler` respectively. Then we initialize `Resources`
+         * variable `val res` with a `Resources` instance for the application's package and use it
+         * to load the png with resource id `R.drawable.lander_plain` into our `Drawable` field
+         * `mLanderImage`, the png with resource id R.drawable.lander_firing into our field Drawable
+         * mFiringImage, and the png with resource id R.drawable.lander_crashed into our field
+         * Drawable mCrashedImage. We then load our field Bitmap mBackgroundImage by decoding the
+         * png with resource id R.drawable.earthrise. We initialize our field int mLanderWidth with
+         * the width of mLanderImage and our field int mLanderHeight with its height. We initialize
+         * Paint mLinePaint with a new instance, enable its anti-alias flag, and set its color to
+         * green. We initialize Paint mLinePaintBad with a new instance, enable its anti-alias flag,
+         * and set its color to a greenish red. We set our field int mWinsInARow to 0, and set our
+         * field int mDifficulty to DIFFICULTY_MEDIUM. We initialize double mX to mLanderWidth,
+         * double mY to 2 times mLanderHeight, double mFuel to PHYS_FUEL_INIT, double mDX to 0,
+         * double mDY to 0, double mHeading to 0, and boolean mEngineFiring to true.
          */
         init {
             // get handles to some important objects
@@ -290,12 +288,12 @@ internal class LunarView constructor(
             mLinePaintBad.setARGB(255, 120, 180, 0)
             mScratchRect = RectF(0f, 0f, 0f, 0f)
             mWinsInARow = 0
-            mDifficulty = Companion.DIFFICULTY_MEDIUM
+            mDifficulty = DIFFICULTY_MEDIUM
 
             // initial show-up of lander (not yet playing)
             mX = mLanderWidth.toDouble()
             mY = (mLanderHeight * 2).toDouble()
-            mFuel = Companion.PHYS_FUEL_INIT.toDouble()
+            mFuel = PHYS_FUEL_INIT.toDouble()
             mDX = 0.0
             mDY = 0.0
             mHeading = 0.0
@@ -304,18 +302,16 @@ internal class LunarView constructor(
 
         /**
          * Starts the game, setting parameters for the current difficulty. In a block that is synchronized
-         * on our field `SurfaceHolder mSurfaceHolder` we:
+         * on our [SurfaceHolder] field  mSurfaceHolder` we:
          *
-         *  *
-         * Set our field `double mFuel` to PHYS_FUEL_INIT, set our field `boolean mEngineFiring`
-         * to false, set our field `int mGoalWidth` to `mLanderWidth` times TARGET_WIDTH,
-         * set our field `int mGoalSpeed` to TARGET_SPEED, set our field `int mGoalAngle`
-         * to TARGET_ANGLE, and initialize our variable `int speedInit` to PHYS_SPEED_INIT
-         * (these are all the values used for DIFFICULTY_MEDIUM). Now we branch on the value of
-         * our field `int mDifficulty`:
+         *  * Set our [Double] field [mFuel] to [PHYS_FUEL_INIT], set our [Boolean] field [mEngineFiring]
+         *  to `false`, set our [Int] field [mGoalWidth] to [mLanderWidth] times [TARGET_WIDTH], set
+         *  our [Int] field [mGoalSpeed] to [TARGET_SPEED], set our [Int] field [mGoalAngle] to
+         *  [TARGET_ANGLE], and initialize our [Int] variable `var speedInit` to [PHYS_SPEED_INIT]
+         *  (these are all the values used for [DIFFICULTY_MEDIUM]). Now we branch on the value of
+         *  our [Int] field [mDifficulty]:
          *
-         *  *
-         * DIFFICULTY_EASY: we multiply `mFuel` by 3/2, multiply `mGoalWidth` by
+         *  * [DIFFICULTY_EASY]: we multiply `mFuel` by 3/2, multiply `mGoalWidth` by
          * 4/3, multiply `mGoalSpeed` by by 3/2, multiply `mGoalAngle` by 4/3,
          * and multiply `speedInit` by 3/4
          *
@@ -354,21 +350,21 @@ internal class LunarView constructor(
             synchronized(mSurfaceHolder) {
 
                 // First set the game for Medium difficulty
-                mFuel = Companion.PHYS_FUEL_INIT.toDouble()
+                mFuel = PHYS_FUEL_INIT.toDouble()
                 mEngineFiring = false
-                mGoalWidth = (mLanderWidth * Companion.TARGET_WIDTH).toInt()
-                mGoalSpeed = Companion.TARGET_SPEED
-                mGoalAngle = Companion.TARGET_ANGLE
-                var speedInit = Companion.PHYS_SPEED_INIT
+                mGoalWidth = (mLanderWidth * TARGET_WIDTH).toInt()
+                mGoalSpeed = TARGET_SPEED
+                mGoalAngle = TARGET_ANGLE
+                var speedInit = PHYS_SPEED_INIT
 
                 // Adjust difficulty params for EASY/HARD
-                if (mDifficulty == Companion.DIFFICULTY_EASY) {
+                if (mDifficulty == DIFFICULTY_EASY) {
                     mFuel = mFuel * 3 / 2
                     mGoalWidth = mGoalWidth * 4 / 3
                     mGoalSpeed = mGoalSpeed * 3 / 2
                     mGoalAngle = mGoalAngle * 4 / 3
                     speedInit = speedInit * 3 / 4
-                } else if (mDifficulty == Companion.DIFFICULTY_HARD) {
+                } else if (mDifficulty == DIFFICULTY_HARD) {
                     mFuel = mFuel * 7 / 8
                     mGoalWidth = mGoalWidth * 3 / 4
                     mGoalSpeed = mGoalSpeed * 7 / 8
@@ -389,7 +385,7 @@ internal class LunarView constructor(
                     mGoalX = (Math.random() * (mCanvasWidth - mGoalWidth)).toInt()
                 } while (Math.abs(mGoalX - (mX - (mLanderWidth shr 1))) <= mCanvasHeight / 6f)
                 mLastTime = System.currentTimeMillis() + 100
-                setState(Companion.STATE_RUNNING)
+                setState(STATE_RUNNING)
             }
         }
 
@@ -399,7 +395,7 @@ internal class LunarView constructor(
          * int mMode we call our `setState` method to set the game state to STATE_PAUSE.
          */
         fun pause() {
-            synchronized(mSurfaceHolder) { if (mMode == Companion.STATE_RUNNING) setState(Companion.STATE_PAUSE) }
+            synchronized(mSurfaceHolder) { if (mMode == STATE_RUNNING) setState(STATE_PAUSE) }
         }
 
         /**
@@ -460,23 +456,23 @@ internal class LunarView constructor(
         @Synchronized
         fun restoreState(savedState: Bundle) {
             synchronized(mSurfaceHolder) {
-                setState(Companion.STATE_PAUSE)
+                setState(STATE_PAUSE)
                 mRotating = 0
                 mEngineFiring = false
-                mDifficulty = savedState.getInt(Companion.KEY_DIFFICULTY)
-                mX = savedState.getDouble(Companion.KEY_X)
-                mY = savedState.getDouble(Companion.KEY_Y)
-                mDX = savedState.getDouble(Companion.KEY_DX)
-                mDY = savedState.getDouble(Companion.KEY_DY)
-                mHeading = savedState.getDouble(Companion.KEY_HEADING)
-                mLanderWidth = savedState.getInt(Companion.KEY_LANDER_WIDTH)
-                mLanderHeight = savedState.getInt(Companion.KEY_LANDER_HEIGHT)
-                mGoalX = savedState.getInt(Companion.KEY_GOAL_X)
-                mGoalSpeed = savedState.getInt(Companion.KEY_GOAL_SPEED)
-                mGoalAngle = savedState.getInt(Companion.KEY_GOAL_ANGLE)
-                mGoalWidth = savedState.getInt(Companion.KEY_GOAL_WIDTH)
-                mWinsInARow = savedState.getInt(Companion.KEY_WINS)
-                mFuel = savedState.getDouble(Companion.KEY_FUEL)
+                mDifficulty = savedState.getInt(KEY_DIFFICULTY)
+                mX = savedState.getDouble(KEY_X)
+                mY = savedState.getDouble(KEY_Y)
+                mDX = savedState.getDouble(KEY_DX)
+                mDY = savedState.getDouble(KEY_DY)
+                mHeading = savedState.getDouble(KEY_HEADING)
+                mLanderWidth = savedState.getInt(KEY_LANDER_WIDTH)
+                mLanderHeight = savedState.getInt(KEY_LANDER_HEIGHT)
+                mGoalX = savedState.getInt(KEY_GOAL_X)
+                mGoalSpeed = savedState.getInt(KEY_GOAL_SPEED)
+                mGoalAngle = savedState.getInt(KEY_GOAL_ANGLE)
+                mGoalWidth = savedState.getInt(KEY_GOAL_WIDTH)
+                mWinsInARow = savedState.getInt(KEY_WINS)
+                mFuel = savedState.getDouble(KEY_FUEL)
             }
         }
 
@@ -517,7 +513,7 @@ internal class LunarView constructor(
                 try {
                     c = mSurfaceHolder.lockCanvas(null)
                     synchronized(mSurfaceHolder) {
-                        if (mMode == Companion.STATE_RUNNING) updatePhysics()
+                        if (mMode == STATE_RUNNING) updatePhysics()
                         // Critical section. Do not allow mRun to be set false until
                         // we are sure all canvas draw operations are complete.
                         //
@@ -591,20 +587,20 @@ internal class LunarView constructor(
         fun saveState(map: Bundle?) {
             synchronized(mSurfaceHolder) {
                 if (map != null) {
-                    map.putInt(Companion.KEY_DIFFICULTY, mDifficulty)
-                    map.putDouble(Companion.KEY_X, mX)
-                    map.putDouble(Companion.KEY_Y, mY)
-                    map.putDouble(Companion.KEY_DX, mDX)
-                    map.putDouble(Companion.KEY_DY, mDY)
-                    map.putDouble(Companion.KEY_HEADING, mHeading)
-                    map.putInt(Companion.KEY_LANDER_WIDTH, mLanderWidth)
-                    map.putInt(Companion.KEY_LANDER_HEIGHT, mLanderHeight)
-                    map.putInt(Companion.KEY_GOAL_X, mGoalX)
-                    map.putInt(Companion.KEY_GOAL_SPEED, mGoalSpeed)
-                    map.putInt(Companion.KEY_GOAL_ANGLE, mGoalAngle)
-                    map.putInt(Companion.KEY_GOAL_WIDTH, mGoalWidth)
-                    map.putInt(Companion.KEY_WINS, mWinsInARow)
-                    map.putDouble(Companion.KEY_FUEL, mFuel)
+                    map.putInt(KEY_DIFFICULTY, mDifficulty)
+                    map.putDouble(KEY_X, mX)
+                    map.putDouble(KEY_Y, mY)
+                    map.putDouble(KEY_DX, mDX)
+                    map.putDouble(KEY_DY, mDY)
+                    map.putDouble(KEY_HEADING, mHeading)
+                    map.putInt(KEY_LANDER_WIDTH, mLanderWidth)
+                    map.putInt(KEY_LANDER_HEIGHT, mLanderHeight)
+                    map.putInt(KEY_GOAL_X, mGoalX)
+                    map.putInt(KEY_GOAL_SPEED, mGoalSpeed)
+                    map.putInt(KEY_GOAL_ANGLE, mGoalAngle)
+                    map.putInt(KEY_GOAL_WIDTH, mGoalWidth)
+                    map.putInt(KEY_WINS, mWinsInARow)
+                    map.putDouble(KEY_FUEL, mFuel)
                 }
             }
         }
@@ -733,7 +729,7 @@ internal class LunarView constructor(
              */
             synchronized(mSurfaceHolder) {
                 mMode = mode
-                if (mMode == Companion.STATE_RUNNING) {
+                if (mMode == STATE_RUNNING) {
                     val msg = mHandler.obtainMessage()
                     val b = Bundle()
                     b.putString("text", "")
@@ -746,10 +742,10 @@ internal class LunarView constructor(
                     val res = mContext!!.resources
                     var str: CharSequence = ""
                     when (mMode) {
-                        Companion.STATE_READY -> str = res.getText(R.string.mode_ready)
-                        Companion.STATE_PAUSE -> str = res.getText(R.string.mode_pause)
-                        Companion.STATE_LOSE -> str = res.getText(R.string.mode_lose)
-                        Companion.STATE_WIN -> str = (res.getString(R.string.mode_win_prefix)
+                        STATE_READY -> str = res.getText(R.string.mode_ready)
+                        STATE_PAUSE -> str = res.getText(R.string.mode_pause)
+                        STATE_LOSE -> str = res.getText(R.string.mode_lose)
+                        STATE_WIN -> str = (res.getString(R.string.mode_win_prefix)
                             + mWinsInARow + " "
                             + res.getString(R.string.mode_win_suffix))
                     }
@@ -759,7 +755,7 @@ internal class LunarView constructor(
                         $str
                         """.trimIndent()
                     }
-                    if (mMode == Companion.STATE_LOSE) mWinsInARow = 0
+                    if (mMode == STATE_LOSE) mWinsInARow = 0
                     val msg = mHandler.obtainMessage()
                     val b = Bundle()
                     b.putString("text", str.toString())
@@ -799,7 +795,7 @@ internal class LunarView constructor(
         fun unpause() {
             // Move the real time clock up to now
             synchronized(mSurfaceHolder) { mLastTime = System.currentTimeMillis() + 100 }
-            setState(Companion.STATE_RUNNING)
+            setState(STATE_RUNNING)
         }
 
         /**
@@ -860,11 +856,11 @@ internal class LunarView constructor(
                     // ready-to-start -> start
                     doStart()
                     return true
-                } else if (mMode == Companion.STATE_PAUSE && okStart) {
+                } else if (mMode == STATE_PAUSE && okStart) {
                     // paused -> running
                     unpause()
                     return true
-                } else if (mMode == Companion.STATE_RUNNING) {
+                } else if (mMode == STATE_RUNNING) {
                     // center/space -> fire
                     when (keyCode) {
                         KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_SPACE -> {
@@ -872,16 +868,19 @@ internal class LunarView constructor(
                             return true
                             // left/q -> left
                         }
+
                         KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_Q -> {
                             mRotating = -1
                             return true
                             // right/w -> right
                         }
+
                         KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.KEYCODE_W -> {
                             mRotating = 1
                             return true
                             // up -> pause
                         }
+
                         KeyEvent.KEYCODE_DPAD_UP -> {
                             pause()
                             return true
@@ -917,7 +916,7 @@ internal class LunarView constructor(
             doKeyUp(keyCode: Int, msg: KeyEvent?): Boolean {
             var handled = false
             synchronized(mSurfaceHolder) {
-                if (mMode == Companion.STATE_RUNNING) {
+                if (mMode == STATE_RUNNING) {
                     if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER
                         || keyCode == KeyEvent.KEYCODE_SPACE) {
                         setFiring(false)
@@ -1002,33 +1001,33 @@ internal class LunarView constructor(
             val xLeft = mX.toInt() - mLanderWidth / 2
 
             // Draw the fuel gauge
-            val fuelWidth = (Companion.UI_BAR * mFuel / Companion.PHYS_FUEL_MAX).toInt()
-            mScratchRect[4f, 4f, (4 + fuelWidth).toFloat()] = (4 + Companion.UI_BAR_HEIGHT).toFloat()
+            val fuelWidth = (UI_BAR * mFuel / PHYS_FUEL_MAX).toInt()
+            mScratchRect[4f, 4f, (4 + fuelWidth).toFloat()] = (4 + UI_BAR_HEIGHT).toFloat()
             canvas.drawRect(mScratchRect, mLinePaint)
 
             // Draw the speed gauge, with a two-tone effect
             val speed = Math.hypot(mDX, mDY)
-            val speedWidth = (Companion.UI_BAR * speed / Companion.PHYS_SPEED_MAX).toInt()
+            val speedWidth = (UI_BAR * speed / PHYS_SPEED_MAX).toInt()
             if (speed <= mGoalSpeed) {
-                mScratchRect[(4 + Companion.UI_BAR + 4).toFloat(), 4f, (
-                    4 + Companion.UI_BAR + 4 + speedWidth).toFloat()] = (4 + Companion.UI_BAR_HEIGHT).toFloat()
+                mScratchRect[(4 + UI_BAR + 4).toFloat(), 4f, (
+                    4 + UI_BAR + 4 + speedWidth).toFloat()] = (4 + UI_BAR_HEIGHT).toFloat()
                 canvas.drawRect(mScratchRect, mLinePaint)
             } else {
                 // Draw the bad color in back, with the good color in front of
                 // it
-                mScratchRect[(4 + Companion.UI_BAR + 4).toFloat(), 4f, (
-                    4 + Companion.UI_BAR + 4 + speedWidth).toFloat()] = (4 + Companion.UI_BAR_HEIGHT).toFloat()
+                mScratchRect[(4 + UI_BAR + 4).toFloat(), 4f, (
+                    4 + UI_BAR + 4 + speedWidth).toFloat()] = (4 + UI_BAR_HEIGHT).toFloat()
                 canvas.drawRect(mScratchRect, mLinePaintBad)
-                val goalWidth = Companion.UI_BAR * mGoalSpeed / Companion.PHYS_SPEED_MAX
-                mScratchRect[(4 + Companion.UI_BAR + 4).toFloat(), 4f, (4 + Companion.UI_BAR + 4 + goalWidth).toFloat()] = (
-                    4 + Companion.UI_BAR_HEIGHT).toFloat()
+                val goalWidth = UI_BAR * mGoalSpeed / PHYS_SPEED_MAX
+                mScratchRect[(4 + UI_BAR + 4).toFloat(), 4f, (4 + UI_BAR + 4 + goalWidth).toFloat()] = (
+                    4 + UI_BAR_HEIGHT).toFloat()
                 canvas.drawRect(mScratchRect, mLinePaint)
             }
 
             // Draw the landing pad
-            canvas.drawLine(mGoalX.toFloat(), (1 + mCanvasHeight - Companion.TARGET_PAD_HEIGHT).toFloat(),
+            canvas.drawLine(mGoalX.toFloat(), (1 + mCanvasHeight - TARGET_PAD_HEIGHT).toFloat(),
                 (
-                    mGoalX + mGoalWidth).toFloat(), (1 + mCanvasHeight - Companion.TARGET_PAD_HEIGHT).toFloat(),
+                    mGoalX + mGoalWidth).toFloat(), (1 + mCanvasHeight - TARGET_PAD_HEIGHT).toFloat(),
                 mLinePaint)
 
 
@@ -1036,7 +1035,7 @@ internal class LunarView constructor(
             canvas.save()
             canvas.rotate(mHeading.toFloat(), mX.toFloat(), mCanvasHeight
                 - mY.toFloat())
-            if (mMode == Companion.STATE_LOSE) {
+            if (mMode == STATE_LOSE) {
                 mCrashedImage.setBounds(xLeft, yTop,
                     xLeft + mLanderWidth, yTop + mLanderHeight)
                 mCrashedImage.draw(canvas)
@@ -1143,7 +1142,7 @@ internal class LunarView constructor(
 
             // mRotating -- update heading
             if (mRotating != 0) {
-                mHeading += mRotating * (Companion.PHYS_SLEW_SEC * elapsed)
+                mHeading += mRotating * (PHYS_SLEW_SEC * elapsed)
 
                 // Bring things back into the range 0..360
                 if (mHeading < 0) mHeading += 360.0 else if (mHeading >= 360) mHeading -= 360.0
@@ -1151,12 +1150,12 @@ internal class LunarView constructor(
 
             // Base accelerations -- 0 for x, gravity for y
             var ddx = 0.0
-            var ddy = -Companion.PHYS_DOWN_ACCEL_SEC * elapsed
+            var ddy = -PHYS_DOWN_ACCEL_SEC * elapsed
             if (mEngineFiring) {
                 // taking 0 as up, 90 as to the right
                 // cos(deg) is ddy component, sin(deg) is ddx component
                 var elapsedFiring = elapsed
-                var fuelUsed = elapsedFiring * Companion.PHYS_FUEL_SEC
+                var fuelUsed = elapsedFiring * PHYS_FUEL_SEC
 
                 // tricky case where we run out of fuel partway through the
                 // time that has elapsed
@@ -1170,7 +1169,7 @@ internal class LunarView constructor(
                 mFuel -= fuelUsed
 
                 // have this much acceleration from the engine
-                val accel = Companion.PHYS_FIRE_ACCEL_SEC * elapsedFiring
+                val accel = PHYS_FIRE_ACCEL_SEC * elapsedFiring
                 val radians = 2 * Math.PI * mHeading / 360
                 ddx = Math.sin(radians) * accel
                 ddy += Math.cos(radians) * accel
@@ -1188,11 +1187,11 @@ internal class LunarView constructor(
             mLastTime = now
 
             // Evaluate if we have landed ... stop the game
-            val yLowerBound = (Companion.TARGET_PAD_HEIGHT + (mLanderHeight shr 1)
-                - Companion.TARGET_BOTTOM_PADDING).toDouble()
+            val yLowerBound = (TARGET_PAD_HEIGHT + (mLanderHeight shr 1)
+                - TARGET_BOTTOM_PADDING).toDouble()
             if (mY <= yLowerBound) {
                 mY = yLowerBound
-                var result = Companion.STATE_LOSE
+                var result = STATE_LOSE
                 var message: CharSequence? = ""
                 val res = mContext!!.resources
                 val speed = Math.hypot(mDX, mDY)
@@ -1201,7 +1200,7 @@ internal class LunarView constructor(
 
                 // "Hyperspace" win -- upside down, going fast,
                 // puts you back at the top.
-                if (onGoal && Math.abs(mHeading - 180) < mGoalAngle && speed > Companion.PHYS_SPEED_HYPERSPACE) {
+                if (onGoal && Math.abs(mHeading - 180) < mGoalAngle && speed > PHYS_SPEED_HYPERSPACE) {
                     mWinsInARow++
                     doStart()
                     return
@@ -1214,7 +1213,7 @@ internal class LunarView constructor(
                 } else if (speed > mGoalSpeed) {
                     message = res.getText(R.string.message_too_fast)
                 } else {
-                    result = Companion.STATE_WIN
+                    result = STATE_WIN
                     mWinsInARow++
                 }
                 setState(result, message)
