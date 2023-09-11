@@ -18,6 +18,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -26,7 +27,8 @@
         android:id="@+id/intro_fragment"
         android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:ignore="FragmentTagUsage" />
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
@@ -36,5 +38,6 @@
         android:id="@+id/log_fragment"
         android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:ignore="FragmentTagUsage" />
 </LinearLayout>
