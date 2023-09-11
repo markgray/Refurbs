@@ -102,7 +102,6 @@ class MainActivity : SampleActivityBase() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             logFragment.logView!!.setTextAppearance(R.style.Log)
         } else {
-            @Suppress("DEPRECATION") // Needed for SDK less than M
             logFragment.logView!!.setTextAppearance(this, R.style.Log)
         }
         logFragment.logView!!.setBackgroundColor(Color.WHITE)
