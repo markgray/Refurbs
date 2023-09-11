@@ -24,6 +24,7 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.TextView
 import com.example.android.lunarlander.LunarView.LunarThread
 
@@ -98,24 +99,23 @@ class LunarLander : Activity() {
      *  * [MENU_RESUME]: "Resume" we call the [LunarThread.unpause] method of our [LunarThread] field
      *  [mLunarThread] to unpause the game then return `true` to consume the event.
      *
-     *  *
-     * MENU_EASY: "Easy" we call the `setDifficulty` method of our field `LunarThread mLunarThread`
-     * to set the difficulty to DIFFICULTY_EASY then return true to consume the event.
+     *  * [MENU_EASY]: "Easy" we call the [LunarThread.setDifficulty] method of our [LunarThread]
+     *  field  [mLunarThread] to set the difficulty to [LunarView.DIFFICULTY_EASY] then return
+     *  `true` to consume the event.
      *
-     *  *
-     * MENU_MEDIUM: "Medium" we call the `setDifficulty` method of our field `LunarThread mLunarThread`
-     * to set the difficulty to DIFFICULTY_MEDIUM then return true to consume the event.
+     *  * [MENU_MEDIUM]: "Medium" we call the [LunarThread.setDifficulty] method of our [LunarThread]
+     *  field  [mLunarThread] to set the difficulty to [LunarView.DIFFICULTY_MEDIUM] then return
+     *  `true` to consume the event.
      *
-     *  *
-     * MENU_HARD: "Hard" we call the `setDifficulty` method of our field `LunarThread mLunarThread`
-     * to set the difficulty to DIFFICULTY_HARD then return true to consume the event.
+     *  * [MENU_HARD]: "Hard" we call the [LunarThread.setDifficulty] method of our [LunarThread]
+     *  field [mLunarThread] to set the difficulty to [LunarView.DIFFICULTY_HARD] then return `true`
+     *  to consume the event.
      *
-     *
-     * If the menu item id is not one we recognise we return false to allow normal menu processing to
-     * proceed.
+     * If the menu item id is not one we recognise we return `false` to allow normal menu processing
+     * to proceed.
      *
      * @param item the Menu entry which was selected
-     * @return true if the Menu item was legit (and we consumed it), false otherwise
+     * @return `true` if the Menu item was legit (and we consumed it), `false` otherwise
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -159,20 +159,20 @@ class LunarLander : Activity() {
 
     /**
      * Invoked when the Activity is created. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.lunar_layout. We initialize our field
-     * `LunarView mLunarView` by finding the view with id R.id.lunar, and initialize our field
-     * `LunarThread mLunarThread` with the handle to the animation thread returned by the
-     * `getThread` method of `mLunarView`. We then call the `setTextView` method of
-     * `mLunarView` to have it set the `TextView` it uses for status messages to the view
-     * we find with id the R.id.text. If our parameter `Bundle savedInstanceState` is null we
-     * were just launched so we call the `setState` method of `mLunarThread` to have it
-     * set the game state to STATE_READY. If `savedInstanceState` is not null we call the
-     * `restoreState` method of `mLunarThread` to have it restore its state from the
-     * data that has been saved in `savedInstanceState`. Finally we set the `OnClickListener`
-     * of `mLunarView` to an anonymous class which simulates a keypad when the view is clicked.
+     * then we set our content view to our layout file [R.layout.lunar_layout]. We initialize our
+     * [LunarView] field [mLunarView] by finding the view with id [R.id.lunar], and initialize our
+     * [LunarThread] field [mLunarThread] with the handle to the animation thread returned by the
+     * [LunarView.thread] property of [mLunarView]. We then call the [LunarView.setTextView] method
+     * of [mLunarView] to have it set the [TextView] it uses for status messages to the view we find
+     * with the id [R.id.text]. If our [Bundle] parameter [savedInstanceState] is `null` we were
+     * just launched so we call the [LunarThread.setState] method of [mLunarThread] to have it
+     * set the game state to [LunarView.STATE_READY]. If [savedInstanceState] is not `null` we call
+     * the [LunarThread.restoreState] method of [mLunarThread] to have it restore its state from the
+     * data that has been saved in [savedInstanceState]. Finally we set the [OnClickListener] of
+     * [mLunarView] to an anonymous class which simulates a keypad when the view is clicked.
      *
-     * @param savedInstanceState a Bundle containing state saved from a previous
-     * execution, or null if this is a new execution
+     * @param savedInstanceState a [Bundle] containing state saved from a previous
+     * execution, or `null` if this is a new execution
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -195,32 +195,31 @@ class LunarLander : Activity() {
             mLunarThread!!.restoreState(savedInstanceState)
             Log.w(this.javaClass.name, "SIS is nonnull")
         }
-        mLunarView!!.setOnClickListener(object : View.OnClickListener {
+        mLunarView!!.setOnClickListener(object : OnClickListener {
             /**
              * Whether the rocket engine is firing or not.
              */
             private var firing = false
 
             /**
-             * Called when `LunarView mLunarView` is clicked. If `LunarThread mLunarThread`
-             * is not null branch on the value of the `mMode` field of `mLunarThread`:
+             * Called when [LunarView] field [mLunarView] is clicked. If [LunarThread] field
+             * [mLunarThread] is not `null` we branch on the value of the [LunarThread.mMode] field
+             * of [mLunarThread]:
              *
-             *  *
-             * not STATE_RUNNING: We call the `setDifficulty` method of `mLunarThread`
-             * to set the difficulty level to DIFFICULTY_EASY, then we call the `dispatchKeyEvent`
-             * method to fake an ACTION_DOWN action of the KEYCODE_DPAD_UP keycode `KeyEvent`
-             * followed by an ACTION_UP of the same key.
+             *  * not [LunarView.STATE_RUNNING]: We call the [LunarThread.setDifficulty] method of
+             *  [mLunarThread] to set the difficulty level to [LunarView.DIFFICULTY_EASY], then we
+             *  call the [dispatchKeyEvent] method to fake an [KeyEvent.ACTION_DOWN] action of the
+             *  [KeyEvent.KEYCODE_DPAD_UP] keycode [KeyEvent] followed by an [KeyEvent.ACTION_UP]
+             *  of the same key.
              *
-             *  *
-             * STATE_RUNNING: We branch on the value of our field `boolean firing` faking an
-             * ACTION_DOWN action of the KEYCODE_DPAD_CENTER keycode if it is false (starting the
-             * rocket engine firing) and set `firing` to true, and if `firing` is already
-             * true we fake an ACTION_UP action of the KEYCODE_DPAD_CENTER keycode (stopping the
-             * rocket engine) then set `firing` to false.
+             *  * [LunarView.STATE_RUNNING]: We branch on the value of our [Boolean] field [firing]
+             *  faking an [KeyEvent.ACTION_DOWN] action of the [KeyEvent.KEYCODE_DPAD_CENTER] keycode
+             *  if it is `false` (starting the rocket engine firing) and set [firing] to true, and
+             *  if [firing] is already `true` we fake an [KeyEvent.ACTION_UP] action of the
+             *  [KeyEvent.KEYCODE_DPAD_CENTER] keycode (stopping the rocket engine) then set [firing]
+             *  to `false`.
              *
-             *
-             *
-             * @param v The view that was clicked and held.
+             * @param v The [View] that was clicked and held.
              */
             override fun onClick(v: View) {
                 if (mLunarThread != null) {
@@ -248,8 +247,8 @@ class LunarLander : Activity() {
 
     /**
      * Invoked when the Activity loses user focus. We fetch a handle to the animation thread of
-     * `LunarView mLunarView` and call its `pause` method to pause the game, then we call
-     * our super's implementation of `onPause`.
+     * [LunarView] field [mLunarView] and call its [LunarThread.pause] method to pause the game,
+     * then we call our super's implementation of `onPause`.
      */
     override fun onPause() {
         mLunarView!!.thread.pause() // pause game when Activity pauses
@@ -259,10 +258,10 @@ class LunarLander : Activity() {
     /**
      * Notification that something is about to happen, to give the Activity a chance to save state.
      * First we call our super's implementation of `onSaveInstanceState`, then we call the
-     * `saveState` method of `mLunarThread` to have it save the game state in our parameter
-     * `Bundle outState`.
+     * [LunarThread.saveState] method of [LunarThread] field [mLunarThread] to have it save the
+     * game state in our [Bundle] parameter [outState].
      *
-     * @param outState a Bundle into which this Activity should save its state
+     * @param outState a [Bundle] into which this Activity should save its state
      */
     override fun onSaveInstanceState(outState: Bundle) {
         // just have the View's thread save its state into our Bundle
@@ -273,17 +272,17 @@ class LunarLander : Activity() {
 
     companion object {
         /**
-         * Menu item id for selecting DIFFICULTY_EASY difficulty
+         * Menu item id for selecting [LunarView.DIFFICULTY_EASY] difficulty
          */
         private const val MENU_EASY = 1
 
         /**
-         * Menu item id for selecting DIFFICULTY_HARD difficulty
+         * Menu item id for selecting [LunarView.DIFFICULTY_HARD] difficulty
          */
         private const val MENU_HARD = 2
 
         /**
-         * Menu item id for selecting DIFFICULTY_MEDIUM difficulty
+         * Menu item id for selecting [LunarView.DIFFICULTY_MEDIUM] difficulty
          */
         private const val MENU_MEDIUM = 3
 
