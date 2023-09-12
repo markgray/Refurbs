@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("SameParameterValue", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress("SameParameterValue", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate", "SameParameterValue", "SameParameterValue")
 
 package com.example.android.common.logger
 
@@ -88,6 +88,7 @@ class LogView : AppCompatTextView, LogNode {
      * for instance.
      * @return The fully concatenated String as a StringBuilder
      */
+    @Suppress("SameParameterValue")
     private fun appendIfNotNull(source: StringBuilder, addStr: String?, delimiter: String): StringBuilder {
         var delimiterLocal: String? = delimiter
         if (addStr != null) {
