@@ -26,6 +26,7 @@ import androidx.appcompat.widget.AppCompatTextView
 /**
  * Simple TextView which is used to output log data received through the LogNode interface.
  */
+@Suppress("SameParameterValue")
 class LogView : AppCompatTextView, LogNode {
     constructor(context: Context?) : super(context!!)
     constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
