@@ -311,40 +311,31 @@ internal class LunarView constructor(
          *  (these are all the values used for [DIFFICULTY_MEDIUM]). Now we branch on the value of
          *  our [Int] field [mDifficulty]:
          *
-         *  * [DIFFICULTY_EASY]: we multiply `mFuel` by 3/2, multiply `mGoalWidth` by
-         * 4/3, multiply `mGoalSpeed` by by 3/2, multiply `mGoalAngle` by 4/3,
-         * and multiply `speedInit` by 3/4
+         *  * [DIFFICULTY_EASY]: we multiply [Double] field [mFuel] by 3/2, multiply [Int] field
+         *  [mGoalWidth] by 4/3, multiply [Int] field [mGoalSpeed] by by 3/2, multiply [Int] field
+         *  [mGoalAngle] by 4/3, and multiply [Int] variable `speedInit` by 3/4
          *
-         *  *
-         * DIFFICULTY_HARD: we multiply `mFuel` by 7/8, multiply `mGoalWidth` by
-         * 3/4, multiply `mGoalSpeed` by by 7/8, and multiply `speedInit` by 4/3
+         *  * [DIFFICULTY_HARD]: we multiply [Double] field [mFuel] by 7/8, multiply [Int] field
+         *  [mGoalWidth] by 3/4, multiply [Int] field [mGoalSpeed] by by 7/8, and multiply [Int]
+         *  variable `speedInit` by 4/3
          *
+         *  * We initialize our [Double] field [mX] to half of our [Int] field [mCanvasWidth], and
+         *  initialize our [Double] field [mY] to our [Int] field [mCanvasHeight] minus half of our
+         *  [Int] field [mLanderHeight] (this is the initial location for the lander sprite).
          *
+         *  * We now start the rocket ship moving with a little random motion by setting our [Double]
+         *  field [mDY] (the velocity in the Y direction) to a random number between 0 and 1.0 times
+         *  minus `speedInit`, [Double] field [mDX] (the velocity in the X direction) to a random
+         *  number between 0 and 1.0 times 2 times `speedInit` and subtract `speedInit` from that
+         *  value, and we set our [Double] field [mHeading] to 0.
          *
-         *  *
-         * We initialize our field `double mX` to half of our field `int mCanvasWidth`,
-         * and initialize our field `double mY` to our field `int mCanvasHeight` minus
-         * half of our field `int mLanderHeight` (this is the initial location for the lander
-         * sprite).
+         *  * Then we loop setting our [Int] field [mGoalX] to a random number between 0 and 1.0
+         *  times the quantity [Int] field [mCanvasWidth] minus [Int] field [mGoalWidth] until this
+         *  value is farther than [Int] field [mCanvasHeight] divided by 6 from the center.
          *
-         *  *
-         * We now start the rocket ship moving with a little random motion by setting our field
-         * `double mDY` (the velocity in the Y direction) to a random number between 0
-         * and 1.0 times minus `speedInit`, `double mDX` (the velocity in the X direction)
-         * to a random number between 0 and 1.0 times 2 times `speedInit` and subtract
-         * `speedInit` from that value, and we set our field `double mHeading` to 0.
-         *
-         *  *
-         * Then we loop setting our field `int mGoalX` to a random number between 0 and
-         * 1.0 times the quantity `mCanvasWidth` minus `mGoalWidth` until this value
-         * is farther than `mCanvasHeight` divided by 6 from the center.
-         *
-         *  *
-         * Finally we initialize our field `long mLastTime` to the current system time in
-         * milliseconds plus 100, and call our `setState` method to set the game state to
-         * STATE_RUNNING.
-         *
-         *
+         *  * Finally we initialize our [Long] field [mLastTime] to the current system time in
+         *  milliseconds plus 100, and call our [setState] method to set the game state to
+         *  [STATE_RUNNING].
          */
         fun doStart() {
             synchronized(mSurfaceHolder) {
@@ -355,7 +346,7 @@ internal class LunarView constructor(
                 mGoalWidth = (mLanderWidth * TARGET_WIDTH).toInt()
                 mGoalSpeed = TARGET_SPEED
                 mGoalAngle = TARGET_ANGLE
-                var speedInit = PHYS_SPEED_INIT
+                var speedInit: Int = PHYS_SPEED_INIT
 
                 // Adjust difficulty params for EASY/HARD
                 if (mDifficulty == DIFFICULTY_EASY) {
@@ -390,46 +381,44 @@ internal class LunarView constructor(
         }
 
         /**
-         * Pauses the physics update & animation. In a block that is synchronized on our field
-         * `SurfaceHolder mSurfaceHolder` if our current game state `int mMode` is
-         * int mMode we call our `setState` method to set the game state to STATE_PAUSE.
+         * Pauses the physics update & animation. In a block that is synchronized on our
+         * [SurfaceHolder] field [mSurfaceHolder], if the current game state in [Int] field
+         * [mMode] is [STATE_RUNNING] we call our [setState] method to set the game state to
+         * [STATE_PAUSE].
          */
         fun pause() {
             synchronized(mSurfaceHolder) { if (mMode == STATE_RUNNING) setState(STATE_PAUSE) }
         }
 
         /**
-         * Restores game state from the indicated Bundle. Typically called when the Activity is being
-         * restored after having been previously destroyed. In a block that is synchronized on our field
-         * `SurfaceHolder mSurfaceHolder` we:
+         * Restores game state from the [Bundle] parameter [savedState]. Typically called when the
+         * Activity is being restored after having been previously destroyed. In a block that is
+         * synchronized on our [SurfaceHolder] field [mSurfaceHolder] we:
          *
-         *  *
-         * Call our `setState` method to set the game state to STATE_PAUSE.
+         *  * Call our [setState] method to set the game state to [STATE_PAUSE].
          *
-         *  *
-         * Set our field `int mRotating` to 0, and our field `boolean mEngineFiring`
-         * to false.
+         *  * Set our [Int] field [mRotating] to 0, and our [Boolean] field [mEngineFiring] to `false`.
          *
-         *  *
-         * Load our field `int mDifficulty` with the value stored under the key KEY_DIFFICULTY in our parameter `Bundle savedState`
+         *  * Load our [Int] field [mDifficulty] with the value stored under the key [KEY_DIFFICULTY]
+         *  in our [Bundle] parameter [savedState]
          *
-         *  *
-         * Load our field `double mX` with the value stored under the key KEY_X in our parameter `Bundle savedState`
+         *  * Load our [Double] field [mX] with the value stored under the key [KEY_X] in our
+         *  [Bundle] parameter [savedState]
          *
-         *  *
-         * Load our field `double mY` with the value stored under the key KEY_Y in our parameter `Bundle savedState`
+         *  * Load our [Double] field [mY] with the value stored under the key [KEY_Y] in our
+         *  [Bundle] parameter [savedState]
          *
-         *  *
-         * Load our field `double mDX` with the value stored under the key KEY_DX in our parameter `Bundle savedState`
+         *  * Load our [Double] field [mDX] with the value stored under the key [KEY_DX] in our
+         *  [Bundle] parameter [savedState]
          *
-         *  *
-         * Load our field `double mDY` with the value stored under the key KEY_DY in our parameter `Bundle savedState`
+         *  * Load our [Double] field [mDY] with the value stored under the key [KEY_DY] in our
+         *  [Bundle] parameter [savedState]
          *
-         *  *
-         * Load our field `double mHeading` with the value stored under the key KEY_HEADING in our parameter `Bundle savedState`
+         *  * Load our [Double] field [mHeading] with the value stored under the key [KEY_HEADING]
+         *  in our [Bundle] parameter  [savedState]
          *
-         *  *
-         * Load our field `int mLanderWidth` with the value stored under the key KEY_LANDER_WIDTH in our parameter `Bundle savedState`
+         *  * Load our [Int] field [mLanderWidth] with the value stored under the key [KEY_LANDER_WIDTH]
+         *  in our [Bundle] parameter [savedState]
          *
          *  *
          * Load our field `int mLanderHeight` with the value stored under the key KEY_LANDER_HEIGHT in our parameter `Bundle savedState`
