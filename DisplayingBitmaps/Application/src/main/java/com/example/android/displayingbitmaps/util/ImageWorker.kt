@@ -404,7 +404,7 @@ abstract class ImageWorker protected constructor(context: Context) {
 
         /**
          * Once the image is processed, associates it to the imageView. First we initialize our
-         * [BitmapDrawable] variable `var valueLocal` to our [BitmapDrawable] parameter [value], and
+         * [BitmapDrawable] variable `var valueLocal` to our [BitmapDrawable] parameter [result], and
          * our [Boolean] variable `var success` to `false`. If cancel was called on this task or the
          * [mExitTasksEarly] "exit early" flag is set we set `valueLocal` to `null` (we will not
          * bother to update our image view). We then initialize [ImageView] variable `val imageView`
@@ -415,12 +415,12 @@ abstract class ImageWorker protected constructor(context: Context) {
          * Finally if [OnImageLoadedListener] field [mOnImageLoadedListener] is not null we call its
          * [OnImageLoadedListener.onImageLoaded] method with our `success` variable.
          *
-         * @param value [BitmapDrawable] downloaded by [doInBackground] method (or retrieved from
+         * @param result [BitmapDrawable] downloaded by [doInBackground] method (or retrieved from
          * disk cache).
          */
-        override fun onPostExecute(value: BitmapDrawable?) {
+        override fun onPostExecute(result: BitmapDrawable?) {
             //BEGIN_INCLUDE(complete_background_work)
-            var valueLocal: BitmapDrawable? = value
+            var valueLocal: BitmapDrawable? = result
             var success = false
             // if cancel was called on this task or the "exit early" flag is set then we're done
             if (isCancelled || mExitTasksEarly) {
@@ -444,10 +444,10 @@ abstract class ImageWorker protected constructor(context: Context) {
          * [mPauseWorkLock] we call its [Object.notifyAll] method to wake all threads waiting for
          * [mPauseWorkLock].
          *
-         * @param value [BitmapDrawable] returned from [doInBackground] method.
+         * @param result [BitmapDrawable] returned from [doInBackground] method.
          */
-        override fun onCancelled(value: BitmapDrawable?) {
-            super.onCancelled(value) // docs say we should not call?
+        override fun onCancelled(result: BitmapDrawable?) {
+            super.onCancelled(result) // docs say we should not call?
             synchronized(mPauseWorkLock) { mPauseWorkLock.notifyAll() }
         }
 
