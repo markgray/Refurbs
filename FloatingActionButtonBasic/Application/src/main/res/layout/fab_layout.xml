@@ -33,7 +33,8 @@
                 android:layout_height="@dimen/fab_icon_size"
                 android:src="@drawable/fab_icons"
                 android:layout_gravity="center"
-                android:duplicateParentState="true"/>
+                android:duplicateParentState="true"
+            android:importantForAccessibility="no" />
 
     </com.example.android.floatingactionbuttonbasic.FloatingActionButton>
 
@@ -53,7 +54,8 @@
                 android:layout_height="@dimen/fab_icon_size"
                 android:src="@drawable/fab_icons"
                 android:layout_gravity="center"
-                android:duplicateParentState="true"/>
+                android:duplicateParentState="true"
+            android:importantForAccessibility="no" />
 
     </com.example.android.floatingactionbuttonbasic.FloatingActionButton>
 </FrameLayout>
