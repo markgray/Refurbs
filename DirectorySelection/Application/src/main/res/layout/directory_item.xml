@@ -16,7 +16,8 @@
 -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
                 android:layout_height="@dimen/directory_item_height"
         >
 
@@ -25,15 +26,15 @@
                   android:orientation="horizontal"
                   android:layout_centerVertical="true"
                   android:gravity="center_vertical"
-            >
+        tools:ignore="UselessParent">
         <ImageView android:id="@+id/entry_image"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:src="@drawable/ic_folder_grey600_36dp"
-                />
+            android:importantForAccessibility="no" />
         <LinearLayout android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
-                      android:layout_marginLeft="@dimen/margin_medium"
+                      android:layout_marginStart="@dimen/margin_medium"
                       android:orientation="vertical"
                 >
             <View android:id="@+id/divisor"
