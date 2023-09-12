@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "HasPlatformType", "DEPRECATION", "UNUSED_CHANGED_VALUE", "ReplaceJavaStaticMethodWithKotlinAnalog", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress("unused", "DEPRECATION", "UNUSED_CHANGED_VALUE", "ReplaceJavaStaticMethodWithKotlinAnalog", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
 
 package com.example.android.interactivechart
 
