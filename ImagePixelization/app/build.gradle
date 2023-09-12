@@ -12,7 +12,6 @@ android {
     defaultConfig {
         applicationId "com.example.android.imagepixelization"
         minSdkVersion 21
-        //noinspection EditedTargetSdkVersion
         targetSdkVersion 34
     }
 
