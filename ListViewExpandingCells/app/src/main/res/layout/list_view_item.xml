@@ -31,7 +31,8 @@
             android:layout_width="0dp"
             android:gravity="center_vertical"
             android:layout_weight="1"
-            android:scaleType="center"/>
+            android:scaleType="center"
+            android:importantForAccessibility="no" />
 
         <TextView
             android:id="@+id/title_view"
