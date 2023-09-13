@@ -6,7 +6,6 @@ android {
     defaultConfig {
         applicationId "com.example.android.listviewanimations"
         minSdkVersion 21
-        //noinspection EditedTargetSdkVersion
         targetSdkVersion 34
     }
 
