@@ -420,27 +420,25 @@ internal class LunarView constructor(
          *  * Load our [Int] field [mLanderWidth] with the value stored under the key [KEY_LANDER_WIDTH]
          *  in our [Bundle] parameter [savedState]
          *
-         *  *
-         * Load our field `int mLanderHeight` with the value stored under the key KEY_LANDER_HEIGHT in our parameter `Bundle savedState`
+         *  * Load our [Int] field [mLanderHeight] with the value stored under the key [KEY_LANDER_HEIGHT]
+         *  in our [Bundle] parameter [savedState]
          *
-         *  *
-         * Load our field `int mGoalX` with the value stored under the key KEY_GOAL_X in our parameter `Bundle savedState`
+         *  * Load our [Int] field [mGoalX] with the value stored under the key [KEY_GOAL_X] in our
+         *  [Bundle] parameter [savedState]
          *
-         *  *
-         * Load our field `int mGoalSpeed` with the value stored under the key KEY_GOAL_SPEED in our parameter `Bundle savedState`
+         *  * Load our [Int] field [mGoalSpeed] with the value stored under the key [KEY_GOAL_SPEED]
+         *  in our [Bundle] parameter [savedState]
          *
-         *  *
-         * Load our field `int mGoalWidth` with the value stored under the key KEY_GOAL_WIDTH in our parameter `Bundle savedState`
+         *  * Load our [Int] field [mGoalWidth] with the value stored under the key [KEY_GOAL_WIDTH]
+         *  in our [Bundle] parameter [savedState]
          *
-         *  *
-         * Load our field `int mWinsInARow` with the value stored under the key KEY_WINS in our parameter `Bundle savedState`
+         *  * Load our [Int] field [mWinsInARow] with the value stored under the key [KEY_WINS] in
+         *  our [Bundle] parameter [savedState]
          *
-         *  *
-         * And Load our field `double mFuel` with the value stored under the key KEY_FUEL in our parameter `Bundle savedState`
+         *  * And Load our [Double] field [mFuel] with the value stored under the key [KEY_FUEL] in
+         *  our [Bundle] parameter [savedState]
          *
-         *
-         *
-         * @param savedState Bundle containing the game state
+         * @param savedState [Bundle] containing the game state
          */
         @Synchronized
         fun restoreState(savedState: Bundle) {
@@ -466,35 +464,28 @@ internal class LunarView constructor(
         }
 
         /**
-         * Called when our `start` method is called in our `surfaceCreated` override, this
-         * method calls our `updatePhysics` method to update the position, speed and fuel of the
-         * rocket if the game is in the STATE_RUNNING state, it then calls our `doDraw` method
-         * whether we are running or not to draw to the surface. To do all this we loop as long as
-         * our field `boolean mRun` is true:
+         * Called when our [start] method is called in our [surfaceCreated] override, this method
+         * calls our [updatePhysics] method to update the position, speed and fuel of the rocket if
+         * the game is in the [STATE_RUNNING] state, it then calls our [doDraw] method whether we
+         * are running or not to draw to the surface. To do all this we loop as long as our [Boolean]
+         * field [mRun] is `true`:
          *
-         *  *
-         * First we set our variable `Canvas c` to null.
+         *  * First we initialize our [Canvas] variable `var c` to null.
          *
-         *  *
-         * Then wrapped in a try block whose finally block calls the `unlockCanvasAndPost`
-         * method of our field `SurfaceHolder mSurfaceHolder` with `c` if it is not null
-         * to make sure our Surface is not left in an inconsistent state we ...
+         *  * Then wrapped in a try block whose finally block calls the
+         *  [SurfaceHolder.unlockCanvasAndPost] method of our [SurfaceHolder]
+         *  field [mSurfaceHolder] with `c` if it is not `null` to make sure
+         *  our Surface is not left in an inconsistent state we ...
          *
-         *  *
-         * Set `c` to the `Canvas` returned when the `lockCanvas` method
-         * of `mSurfaceHolder` is called to start editing the pixels in the surface
-         * (`c` can then be used to draw on the surface).
+         *  * Set `c` to the [Canvas] returned when the [SurfaceHolder.lockCanvas] method of
+         *  [mSurfaceHolder] is called to start editing the pixels in the surface (`c` can then
+         *  be used to draw on the surface).
          *
-         *  *
-         * In a block synchronized on `mSurfaceHolder` if our field `mMode`
-         * is in STATE_RUNNING (the game is running) we call our `updatePhysics`
-         * method to update the physics of the game, and then in a block synchronized
-         * on our field `mRunLock` if our field `mRun` is still true we
-         * call our method `doDraw` to draw the game to `Canvas c`.
-         *
-         *
-         *
-         *
+         *  * In a block synchronized on [mSurfaceHolder] if our [Int] field [mMode] is in
+         *  [STATE_RUNNING] (the game is running) we call our [updatePhysics] method to update
+         *  the physics of the game, and then in a block synchronized on our field [mRunLock]
+         *  if our field [mRun] is still `true` we call our method [doDraw] to draw the game to
+         *  [Canvas] variable `c`.
          */
         override fun run() {
             while (mRun) {
@@ -521,82 +512,66 @@ internal class LunarView constructor(
         }
 
         /**
-         * Dump game state to the provided Bundle. Typically called when the Activity is being suspended.
-         * In a block synchronized on our field `SurfaceHolder mSurfaceHolder` we:
+         * Dump game state to the provided Bundle. Typically called when the Activity is being
+         * suspended. In a block synchronized on our [SurfaceHolder] field [mSurfaceHolder] we:
          *
-         *  *
-         * First make sure that our parameter `Bundle map` is not null, doing nothing more if it is.
+         *  * First make sure that our [Bundle] parameter [outState] is not `null`, doing nothing more
+         *  if it is.
          *
-         *  *
-         * We store our field `int mDifficulty` under the key KEY_DIFFICULTY in `map`
+         *  * We store our [Int] field [mDifficulty] under the key [KEY_DIFFICULTY] in [outState]
          *
-         *  *
-         * We store our field `double mX` under the key KEY_X in `map`
+         *  * We store our [Double] field [mX] under the key [KEY_X] in [outState]
          *
-         *  *
-         * We store our field `double mY` under the key KEY_Y in `map`
+         *  * We store our [Double] field [mY] under the key [KEY_Y] in [outState]
          *
-         *  *
-         * We store our field `double mDX` under the key KEY_DX in `map`
+         *  * We store our [Double] field [mDX] under the key [KEY_DX] in [outState]
          *
-         *  *
-         * We store our field `double mDY` under the key KEY_DY in `map`
+         *  * We store our [Double] field [mDY] under the key [KEY_DY] in [outState]
          *
-         *  *
-         * We store our field `double mHeading` under the key KEY_HEADING in `map`
+         *  * We store our [Double] field [mHeading] under the key [KEY_HEADING] in [outState]
          *
-         *  *
-         * We store our field `int mLanderWidth` under the key KEY_LANDER_WIDTH in `map`
+         *  * We store our [Int] field [mLanderWidth] under the key [KEY_LANDER_WIDTH] in [outState]
          *
-         *  *
-         * We store our field `int mLanderHeight` under the key KEY_LANDER_HEIGHT in `map`
+         *  * We store our [Int] field [mLanderHeight] under the key [KEY_LANDER_HEIGHT] in [outState]
          *
-         *  *
-         * We store our field `int mGoalX` under the key KEY_GOAL_X in `map`
+         *  * We store our [Int] field [mGoalX] under the key [KEY_GOAL_X] in [outState]
          *
-         *  *
-         * We store our field `int mGoalSpeed` under the key KEY_GOAL_SPEED in `map`
+         *  * We store our [Int] field [mGoalSpeed] under the key [KEY_GOAL_SPEED] in [outState]
          *
-         *  *
-         * We store our field `int mGoalAngle` under the key KEY_GOAL_ANGLE in `map`
+         *  * We store our [Int] field [mGoalAngle] under the key [KEY_GOAL_ANGLE] in [outState]
          *
-         *  *
-         * We store our field `int mGoalWidth` under the key KEY_GOAL_WIDTH in `map`
+         *  * We store our [Int] field [mGoalWidth] under the key [KEY_GOAL_WIDTH] in [outState]
          *
-         *  *
-         * We store our field `int mWinsInARow` under the key KEY_WINS in `map`
+         *  * We store our [Int] field [mWinsInARow] under the key [KEY_WINS] in [outState]
          *
-         *  *
-         * and we store our field `double mFuel` under the key KEY_FUEL in `map`
+         *  * and we store our [Double] field [mFuel] under the key [KEY_FUEL] in [outState]
          *
-         *
-         *
-         * @param map `Bundle` to store the game state variables in
+         * @param outState [Bundle] to store the game state variables in
          */
-        fun saveState(map: Bundle?) {
+        fun saveState(outState: Bundle?) {
             synchronized(mSurfaceHolder) {
-                if (map != null) {
-                    map.putInt(KEY_DIFFICULTY, mDifficulty)
-                    map.putDouble(KEY_X, mX)
-                    map.putDouble(KEY_Y, mY)
-                    map.putDouble(KEY_DX, mDX)
-                    map.putDouble(KEY_DY, mDY)
-                    map.putDouble(KEY_HEADING, mHeading)
-                    map.putInt(KEY_LANDER_WIDTH, mLanderWidth)
-                    map.putInt(KEY_LANDER_HEIGHT, mLanderHeight)
-                    map.putInt(KEY_GOAL_X, mGoalX)
-                    map.putInt(KEY_GOAL_SPEED, mGoalSpeed)
-                    map.putInt(KEY_GOAL_ANGLE, mGoalAngle)
-                    map.putInt(KEY_GOAL_WIDTH, mGoalWidth)
-                    map.putInt(KEY_WINS, mWinsInARow)
-                    map.putDouble(KEY_FUEL, mFuel)
+                if (outState != null) {
+                    outState.putInt(KEY_DIFFICULTY, mDifficulty)
+                    outState.putDouble(KEY_X, mX)
+                    outState.putDouble(KEY_Y, mY)
+                    outState.putDouble(KEY_DX, mDX)
+                    outState.putDouble(KEY_DY, mDY)
+                    outState.putDouble(KEY_HEADING, mHeading)
+                    outState.putInt(KEY_LANDER_WIDTH, mLanderWidth)
+                    outState.putInt(KEY_LANDER_HEIGHT, mLanderHeight)
+                    outState.putInt(KEY_GOAL_X, mGoalX)
+                    outState.putInt(KEY_GOAL_SPEED, mGoalSpeed)
+                    outState.putInt(KEY_GOAL_ANGLE, mGoalAngle)
+                    outState.putInt(KEY_GOAL_WIDTH, mGoalWidth)
+                    outState.putInt(KEY_WINS, mWinsInARow)
+                    outState.putDouble(KEY_FUEL, mFuel)
                 }
             }
         }
 
         /**
-         * Sets the current difficulty. In a block synchronized on our field `SurfaceHolder mSurfaceHolder`
-         * we set our field `int mDifficulty` to our parameter `difficulty`.
+         * Sets the current difficulty. In a block synchronized on our [SurfaceHolder] field
+         * [mSurfaceHolder] we set our [Int] field [mDifficulty] to our [Int] parameter [difficulty].
          *
          * @param difficulty new difficulty to use.
          */
@@ -605,11 +580,11 @@ internal class LunarView constructor(
         }
 
         /**
-         * Sets if the engine is currently firing. In a block synchronized on our field
-         * `SurfaceHolder mSurfaceHolder` we set our field `boolean mEngineFiring`
-         * to our parameter `firing`.
+         * Sets if the engine is currently firing. In a block synchronized on our [SurfaceHolder]
+         * field [mSurfaceHolder] we set our [Boolean] field [mEngineFiring] to our [Boolean]
+         * parameter [firing].
          *
-         * @param firing true to start the rocket firing, false to stop it.
+         * @param firing `true` to start the rocket firing, `false` to stop it.
          */
         fun setFiring(firing: Boolean) {
             synchronized(mSurfaceHolder) { mEngineFiring = firing }
