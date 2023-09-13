@@ -72,7 +72,8 @@ limitations under the License.
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:onClick="finishJob"
-            android:text="@string/finish_job_button_text"/>
+            android:text="@string/finish_job_button_text"
+            tools:ignore="UsingOnClickInXml" />
 
         <TableLayout
             android:layout_width="match_parent"
@@ -237,7 +238,8 @@ limitations under the License.
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:onClick="scheduleJob"
-            android:text="@string/schedule_job_button_text"/>
+            android:text="@string/schedule_job_button_text"
+            tools:ignore="UsingOnClickInXml" />
         <Button
             android:id="@+id/cancel_button"
             android:layout_width="match_parent"
@@ -245,6 +247,7 @@ limitations under the License.
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:onClick="cancelAllJobs"
-            android:text="@string/cancel_all_jobs_button_text"/>
+            android:text="@string/cancel_all_jobs_button_text"
+            tools:ignore="UsingOnClickInXml" />
     </LinearLayout>
 </ScrollView>

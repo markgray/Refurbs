@@ -23,6 +23,7 @@ import android.util.Log
  * Helper class which wraps Android's native Log utility in the Logger interface.  This way
  * normal DDMS output can be one of the many targets receiving and outputting logs simultaneously.
  */
+@Suppress("unused")
 class LogWrapper : LogNode {
     /**
      * For piping:  The next node to receive Log data after this one has done its work.
