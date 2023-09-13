@@ -1613,6 +1613,7 @@ class JetBoyView constructor(
          * @return        We always return `true`, which is in turn returned to the caller of our
          * [onKeyDown] override in [JetBoy] to prevent this event from being propagated further.
          */
+        @Suppress("SameReturnValue")
         fun doKeyDown(keyCode: Int, msg: KeyEvent): Boolean {
             mEventQueue.add(KeyGameEvent(keyCode, false, msg))
             return true
@@ -1629,6 +1630,7 @@ class JetBoyView constructor(
          * @return        We always return `true`, which is in turn returned to the caller of our
          * [onKeyDown] override in [JetBoy] to prevent this event from being propagated further.
          */
+        @Suppress("SameReturnValue")
         fun doKeyUp(keyCode: Int, msg: KeyEvent): Boolean {
             mEventQueue.add(KeyGameEvent(keyCode, true, msg))
             return true
