@@ -612,6 +612,7 @@ class ListViewItemAnimations : Activity() {
      * @param endY   ending  Y coordinate
      * @param endAction [Runnable] to run when the animation is done.
      */
+    @Suppress("SameParameterValue")
     @SuppressLint("NewApi")
     private fun moveView(
         view: View,
