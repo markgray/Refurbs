@@ -14,8 +14,9 @@
      limitations under the License.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
-  	android:layout_width="wrap_content" 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingLeft="6dip"
@@ -31,13 +32,16 @@
         android:layout_height="wrap_content" 
         android:autoText="true"
         android:capitalize="sentences"
-        android:scrollHorizontally="true" />
+        android:scrollHorizontally="true"
+        tools:ignore="Autofill,Deprecated,LabelFor,TextFields"
+        android:importantForAutofill="no" />
    		
     <Button android:id="@+id/ok"
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content" 
         android:layout_gravity="right"
         android:text="@string/button_ok"
-        android:onClick="onClickOk" />
+        android:onClick="onClickOk"
+        tools:ignore="RtlHardcoded" />
    		
 </LinearLayout>
