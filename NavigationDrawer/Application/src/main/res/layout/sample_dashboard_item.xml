@@ -35,7 +35,7 @@
                 style="@style/Widget.SampleDashboard.Item.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hello world" />
+                android:text="@string/hello_world" />
 
             <TextView
                 android:id="@android:id/text2"
