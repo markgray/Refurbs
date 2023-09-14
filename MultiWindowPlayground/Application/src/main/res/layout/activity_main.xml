@@ -55,7 +55,7 @@
                 style="@style/TextWarning"
                 android:paddingTop="@dimen/content_vertical_dividing_padding"
                 android:paddingBottom="@dimen/content_vertical_dividing_padding"
-                android:text="Enable multi-window mode to see this sample in action!" />
+                android:text="@string/enable_multi_window_mode_to_see_this_sample_in_action" />
 
             <TextView
                 android:layout_width="wrap_content"

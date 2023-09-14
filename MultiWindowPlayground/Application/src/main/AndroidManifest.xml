@@ -51,6 +51,7 @@
             android:name="com.android.multiwindowplayground.activities.MinimumSizeActivity"
             android:launchMode="singleInstance"
             android:taskAffinity="">
+            <!--suppress AndroidElementNotAllowed -->
             <layout
                 android:defaultWidth="750dp"
                 android:defaultHeight="500dp"

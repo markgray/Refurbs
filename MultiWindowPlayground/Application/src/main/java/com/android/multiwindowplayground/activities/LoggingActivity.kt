@@ -158,7 +158,6 @@ abstract class LoggingActivity : AppCompatActivity() {
      */
     @Deprecated("Deprecated in Java")
     override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean) {
-        @Suppress("DEPRECATION")
         super.onMultiWindowModeChanged(isInMultiWindowMode)
         Log.d(mLogTag, "onMultiWindowModeChanged: $isInMultiWindowMode")
     }

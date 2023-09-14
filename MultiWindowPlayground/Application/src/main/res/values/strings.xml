@@ -63,4 +63,5 @@
         \n\nNote that this Activity was launched in a different task, otherwise the properties from
         the Activity that launched this one would have been applied.
     </string>
+    <string name="enable_multi_window_mode_to_see_this_sample_in_action">Enable multi-window mode to see this sample in action!</string>
 </resources>
