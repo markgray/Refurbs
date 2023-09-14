@@ -385,6 +385,7 @@ class NetworkFragment : Fragment() {
          * @throws IOException if an I/O error occurs
          */
         @Throws(IOException::class)
+        @Suppress("SameParameterValue")
         private fun readStream(stream: InputStream, maxLength: Int): String? {
             var result: String? = null
             // Read InputStream using the UTF-8 charset.
