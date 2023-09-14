@@ -19,6 +19,7 @@ package com.example.android.lunarlander
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -35,6 +36,7 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import android.view.View
 import android.widget.TextView
 
 /**
@@ -591,13 +593,13 @@ internal class LunarView constructor(
         }
 
         /**
-         * Used to signal the thread whether it should be running or not. Passing true allows the
-         * thread to run; passing false will shut it down if it's already running. Calling start()
-         * after this was most recently called with false will result in an immediate shutdown.
-         * In a block synchronized on our field `Object mRunLock` we set our field
-         * `boolean mRun` to our parameter `b`.
+         * Used to signal the thread whether it should be running or not. Passing `true` allows the
+         * thread to run; passing `false` will shut it down if it's already running. Calling start()
+         * after this was most recently called with `false` will result in an immediate shutdown.
+         * In a block synchronized on our field [Any] field [mRunLock] we set our [Boolean] field
+         * [mRun] to our [Boolean] parameter [b].
          *
-         * @param b true to run, false to shut down
+         * @param b `true` to run, `false` to shut down
          */
         fun setRunning(b: Boolean) {
             // Do not allow mRun to be modified while any canvas operations
@@ -607,77 +609,65 @@ internal class LunarView constructor(
 
         /**
          * Sets the game mode. That is, whether we are running, paused, in the failure state, in the
-         * victory state, etc. In a block synchronized on our field `SurfaceHolder mSurfaceHolder`
-         * we call our method `setState(int, CharSequence)` with null for the second parameter.
+         * victory state, etc. In a block synchronized on our [SurfaceHolder] field [mSurfaceHolder]
+         * we call our method [setState] with our [Int] parameter [mode] as its `mode` argument and
+         * with `null` for the its `message` argument.
          *
-         * @see .setState
          * @param mode one of the STATE_* constants
          */
         fun setState(mode: Int) {
-            synchronized(mSurfaceHolder) { setState(mode, null) }
+            synchronized(mSurfaceHolder) { setState(mode = mode, message = null) }
         }
 
         /**
          * Sets the game mode. That is, whether we are running, paused, in the failure state, in the
-         * victory state, etc. In a block synchronized on our field `SurfaceHolder mSurfaceHolder`
-         * we set our field `int mMode` to our parameter `int mode`. We then branch on the
+         * victory state, etc. In a block synchronized on our [SurfaceHolder] field [mSurfaceHolder]
+         * we set our [Int] field [mMode] to our [Int] parameter [mode]. We then branch on the
          * value of this new mode:
          *
-         *  *
-         * STATE_RUNNING: We initialize our variable `Message msg` with an instance from
-         * the global message pool initialized to target `Handler mHandler`. We then
-         * initialize our variable `Bundle b` with a new instance, store an empty string
-         * in it under the key "text", store the int INVISIBLE under the key "viz", and set the
-         * data of `msg` to `b`. We then push `msg` onto the end of the message
-         * queue of `mHandler` after all pending messages before the current time (It will
-         * be received in `handleMessage`, in the thread attached to this handler).
+         *  * [STATE_RUNNING]: We initialize our [Message] variable `val msg` with an instance from
+         *  the global message pool initialized to target [Handler] field [mHandler]. We then
+         *  initialize our [Bundle] variable `val b` with a new instance, store an empty string
+         *  in it under the key "text", store the [Int] const [View.INVISIBLE] under the key "viz",
+         *  and set the data of `msg` to `b`. We then push `msg` onto the end of the message queue
+         *  of [mHandler] after all pending messages before the current time (It will be received in
+         *  [Handler.handleMessage], in the thread attached to this handler).
          *
-         *  *
-         * Any other state: We set our field `int mRotating` to 0 (stop rotating), set our
-         * field `boolean mEngineFiring` to false (stop the rocket engine), initialize our
-         * variable `Resources res` with a Resources instance for the application's package,
-         * and initialize `CharSequence str` to the empty string. We then set the value
-         * of `str` based on the value of our game state `mMode`:
+         *  * Any other state: We set our [Int] field [mRotating] to 0 (stop rotating), set our
+         *  [Boolean] field [mEngineFiring] to `false` (stop the rocket engine), initialize our
+         *  [Resources] variable `val res` with a [Resources] instance for the application's package,
+         *  and initialize [CharSequence] variable `var str` to the empty string. We then set the
+         *  value of `str` based on the value of our game state `mMode`:
          *
-         *  *
-         * STATE_READY: We set `str` to the string with resource id R.string.mode_ready
+         *  * [STATE_READY]: We set `str` to the string with resource id [R.string.mode_ready]
+         *  ("Lunar Lander Press Up To Play")
          *
-         *  *
-         * STATE_PAUSE: We set `str` to the string with resource id R.string.mode_pause
+         *  * [STATE_PAUSE]: We set `str` to the string with resource id [R.string.mode_pause]
+         *  ("Paused Press Up To Play")
          *
-         *  *
-         * STATE_LOSE: We set `str` to the string with resource id R.string.mode_lose
+         *  * [STATE_LOSE]: We set `str` to the string with resource id [R.string.mode_lose]
+         *  ("Game Over Press Up To Play")
          *
-         *  *
-         * STATE_WIN: We set `str` to a string formed by concatenating the string
-         * with resource id R.string.mode_win_prefix followed by the string value of our
-         * field `int mWinsInARow` followed by the string with resource id
-         * R.string.mode_win_suffix
+         *  * [STATE_WIN]: We set `str` to a string formed by concatenating the string with resource
+         *  id [R.string.mode_win_prefix] followed by the string value of our [Int] field [mWinsInARow]
+         *  followed by the string with resource id [R.string.mode_win_suffix] ("Success! [mWinsInARow]
+         *  in a row Press Up To Play")
          *
          *
-         *  *
-         * If our parameter `CharSequence message` is not null we set `str` to the
-         * string created by concatenating `message` followed by a newline character,
-         * followed by `str`.
+         *  * If our [CharSequence] parameter [message] is not `null` we set `str` to the string
+         *  created by concatenating [message] followed by a newline character, followed by `str`.
          *
-         *  *
-         * If the new value of our field `mMode` is STATE_LOSE, we set our field
-         * `mWinsInARow` to 0.
+         *  * If the new value of our [Int] field [mMode] is [STATE_LOSE], we set our [Int] field
+         *  [mWinsInARow] to 0.
          *
-         *  *
-         * We initialize our variable `Message msg` with an instance from the global
-         * message pool initialized to target `Handler mHandler`. We then initialize
-         * our variable `Bundle b` with a new instance, store `str` in it under
-         * the key "text", store the int VISIBLE under the key "viz", and set the data of
-         * `msg` to `b`
+         *  * We initialize our [Message] variable `val msg` with an instance from the global message
+         *  pool initialized to target [Handler] field [mHandler]. We then initialize our [Bundle]
+         *  variable `val b` with a new instance, store `str` in it under the key "text", store the
+         *  [Int] const [View.VISIBLE] under the key "viz", and set the data of `msg` to `b`
          *
-         *  *
-         * We then push `msg` onto the end of the message queue of `mHandler`
-         * after all pending messages before the current time (It will be received in
-         * `handleMessage`, in the thread attached to this handler).
-         *
-         *
-         *
+         *  * We then push `msg` onto the end of the message queue of [mHandler] after all pending
+         *  messages before the current time (It will be received in [Handler.handleMessage], in the
+         *  thread attached to this handler).
          *
          * @param mode one of the STATE_* constants
          * @param message string to add to screen or null
@@ -731,9 +721,9 @@ internal class LunarView constructor(
         }
 
         /**
-         * Callback invoked when the surface dimensions change. In a block synchronized on our field
-         * `SurfaceHolder mSurfaceHolder` we store our parameter `int width` in our field
-         * `int mCanvasWidth`, and our parameter `int height` in our field `int mCanvasHeight`.
+         * Callback invoked when the surface dimensions change. In a block synchronized on our
+         * [SurfaceHolder] field [mSurfaceHolder] we store our [Int] parameter [width] in our [Int]
+         * field [mCanvasWidth], and our parameter `int height` in our field `int mCanvasHeight`.
          * Finally we resize our field `Bitmap mBackgroundImage` to be `width` by `height`.
          *
          * @param width  new width of our surface
