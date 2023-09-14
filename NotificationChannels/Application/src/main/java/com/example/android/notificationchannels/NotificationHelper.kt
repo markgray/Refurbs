@@ -148,6 +148,7 @@ internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
      *
      * @return The small icon resource id
      */
+    @Suppress("SameReturnValue")
     private val smallIcon: Int
         get() = android.R.drawable.stat_notify_chat
 
