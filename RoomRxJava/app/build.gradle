@@ -8,7 +8,6 @@ android {
     defaultConfig {
         applicationId "com.example.android.persistence"
         minSdkVersion 21
-        //noinspection EditedTargetSdkVersion
         targetSdkVersion 34
         versionCode 1
         versionName "1.0"
@@ -32,8 +31,8 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
 
     // Support libraries
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -41,14 +40,14 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
 
     // Architecture components
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.6.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    annotationProcessor 'androidx.lifecycle:lifecycle-common:2.6.1'
+    annotationProcessor 'androidx.lifecycle:lifecycle-common:2.6.2'
     implementation 'androidx.room:room-runtime:2.5.2'
     annotationProcessor 'androidx.room:room-compiler:2.5.2'
     ksp "androidx.room:room-compiler:2.5.2"
     implementation 'androidx.room:room-rxjava2:2.5.2'
-    implementation "androidx.annotation:annotation:1.6.0"
+    implementation "androidx.annotation:annotation:1.7.0"
 
     // RxJava
     implementation "io.reactivex.rxjava2:rxandroid:2.0.1"
