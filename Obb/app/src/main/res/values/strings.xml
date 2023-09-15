@@ -29,9 +29,9 @@
     <string name="obb_already_mounted">OBB already mounted!</string>
     <string name="obb_not_mounted">OBB is not mounted!</string>
 
-    <string name="failed_to_start_mount">Failed to start mount process...</string>
-    <string name="failed_to_start_unmount">Failed to start unmount process...</string>
+    <string name="failed_to_start_mount">Failed to start mount process…</string>
+    <string name="failed_to_start_unmount">Failed to start unmount process…</string>
 
-    <string name="attempting_mount">Attempting to mount...</string>
-    <string name="attempting_unmount">Attempting to unmount...</string>
+    <string name="attempting_mount">Attempting to mount…</string>
+    <string name="attempting_unmount">Attempting to unmount…</string>
 </resources>
