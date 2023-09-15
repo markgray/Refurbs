@@ -12,7 +12,6 @@ android {
     defaultConfig {
         applicationId "com.example.android.requestduringlayout"
         minSdkVersion 16
-        //noinspection EditedTargetSdkVersion
         targetSdkVersion 34
     }
 
