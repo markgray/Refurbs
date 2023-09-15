@@ -17,6 +17,7 @@
 
 package com.example.android.pictureinpicture
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
 import android.app.RemoteAction
@@ -351,11 +352,13 @@ class MainActivity : AppCompatActivity() {
      * @param configuration            The new configuration of the activity with the state
      * `isInPictureInPictureMode`.
      */
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean, configuration: Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, configuration)
         if (isInPictureInPictureMode) {
             // Starts receiving events from action items in PiP mode.
+            @SuppressLint("UnspecifiedRegisterReceiverFlag")
             mReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent?) {
                     if (intent == null
