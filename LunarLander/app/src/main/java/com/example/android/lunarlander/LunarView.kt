@@ -723,8 +723,8 @@ internal class LunarView constructor(
         /**
          * Callback invoked when the surface dimensions change. In a block synchronized on our
          * [SurfaceHolder] field [mSurfaceHolder] we store our [Int] parameter [width] in our [Int]
-         * field [mCanvasWidth], and our parameter `int height` in our field `int mCanvasHeight`.
-         * Finally we resize our field `Bitmap mBackgroundImage` to be `width` by `height`.
+         * field [mCanvasWidth], and our [Int] parameter [height] in our [Int] field [mCanvasHeight].
+         * Finally we resize our [Bitmap] field [mBackgroundImage] to be `width` by `height`.
          *
          * @param width  new width of our surface
          * @param height new height of our surface
@@ -741,10 +741,10 @@ internal class LunarView constructor(
         }
 
         /**
-         * Resumes from a pause. In a block synchronized on our field `SurfaceHolder mSurfaceHolder`
-         * we set our field `long mLastTime` to the current system time in milliseconds plus 100.
-         * After exiting the synchronized block we call our method `setState` to set the game state
-         * to STATE_RUNNING.
+         * Resumes from a pause. In a block synchronized on our [SurfaceHolder] field [mSurfaceHolder]
+         * we set our [Long] field [mLastTime] to the current system time in milliseconds plus 100.
+         * After exiting the synchronized block we call our method [setState] to set the game state
+         * to [STATE_RUNNING].
          */
         fun unpause() {
             // Move the real time clock up to now
@@ -753,51 +753,43 @@ internal class LunarView constructor(
         }
 
         /**
-         * Handles a key-down event. In a block synchronized on our field `SurfaceHolder mSurfaceHolder`
-         * we initialize our variable `boolean okStart` to false. Then we set it to true if the
-         * value of our parameter `int keyCode` is KEYCODE_DPAD_UP, KEYCODE_DPAD_DOWN, or KEYCODE_S.
-         * We then branch based on the following conditions:
+         * Handles a key-down event. In a block synchronized on our [SurfaceHolder] field
+         * [mSurfaceHolder] we initialize our [Boolean] variable `var okStart` to false. Then we set
+         * it to `true` if the value of our [Int] parameter [keyCode] is [KeyEvent.KEYCODE_DPAD_UP],
+         * [KeyEvent.KEYCODE_DPAD_DOWN], or [KeyEvent.KEYCODE_S]. We then branch based on the
+         * following conditions:
          *
-         *  *
-         * `okStart` is true and our field `mMode` is STATE_READY, STATE_LOSE, or
-         * STATE_WIN: (ready-to-start -> start) we call our method `doStart` and return
-         * true to consume the event.
+         *  * `okStart` is true and our [Int] field [mMode] is [STATE_READY], [STATE_LOSE], or
+         *  [STATE_WIN]: (ready-to-start -> start) we call our method [doStart] and return `true`
+         *  to consume the event.
          *
-         *  *
-         * Our field `mMode` is STATE_PAUSE and `okStart` is true: (paused -> running)
-         * we call our method `unpause` to resume the paused game and return true to
-         * consume the event.
+         *  * Our [Int] field [mMode] is [STATE_PAUSE] and `okStart` is `true`: (paused -> running)
+         *  we call our method [unpause] to resume the paused game and return `true` to consume the
+         *  event.
          *
-         *  *
-         * Our field `mMode` is STATE_RUNNING: (game is running) We branch on the value of
-         * our parameter `keyCode`:
+         *  * Our [Int] field [mMode] is [STATE_RUNNING]: (game is running) We branch on the value
+         *  of our [Int] parameter [keyCode]:
          *
-         *  *
-         * KEYCODE_DPAD_CENTER or KEYCODE_SPACE: (center/space -> fire) We call our
-         * method `setFiring(true)` to start the rocket engine and return true
-         * to consume the event.
+         *  - [KeyEvent.KEYCODE_DPAD_CENTER] or [KeyEvent.KEYCODE_SPACE]: (center/space -> fire) We
+         *  call our method [setFiring] with `true` to start the rocket engine and return `true` to
+         *  consume the event.
          *
-         *  *
-         * KEYCODE_DPAD_LEFT or KEYCODE_Q: (left/q -> left) We set our field `int mRotating`
-         * to -1 and return true to consume the event.
+         *  - [KeyEvent.KEYCODE_DPAD_LEFT] or [KeyEvent.KEYCODE_Q]: (left/q -> left) We set our [Int]
+         *  field `[mRotating] to -1 and return `true` to consume the event.
          *
-         *  *
-         * KEYCODE_DPAD_RIGHT or KEYCODE_W: (right/w -> right) We set our field `int mRotating`
-         * to 1 and return true to consume the event.
+         *  * [KeyEvent.KEYCODE_DPAD_RIGHT] or [KeyEvent.KEYCODE_W]: (right/w -> right) We set our
+         *  [Int] field [mRotating] to 1 and return `true` to consume the event.
          *
-         *  *
-         * KEYCODE_DPAD_UP: (up -> pause) We call our method `pause` to pause the game
-         * and return true to consume the event.
+         *  * [KeyEvent.KEYCODE_DPAD_UP]: (up -> pause) We call our method [pause] to pause the game
+         *  and return `true` to consume the event.
          *
-         *
-         *
-         *
-         * If the parameter `keyCode` is not one we are interested in at this point in the game
-         * we return false to the caller to allow the event to be handled by the next receiver.
+         * If the [Int] parameter [keyCode] is not one we are interested in at this point in the
+         * game we return `false` to the caller to allow the event to be handled by the next
+         * receiver.
          *
          * @param keyCode the key that was pressed
          * @param msg     the original event object
-         * @return true if we consumed the event, false if the key is not one we use.
+         * @return `true` if we consumed the event, `false` if the key is not one we use.
          */
         fun  // parameter msg is unused
             doKeyDown(keyCode: Int, msg: KeyEvent?): Boolean {
@@ -866,8 +858,7 @@ internal class LunarView constructor(
          * @param msg     the original event object
          * @return true if the key was handled and consumed, or else false
          */
-        fun  // parameter msg is unused
-            doKeyUp(keyCode: Int, msg: KeyEvent?): Boolean {
+        fun doKeyUp(keyCode: Int, msg: KeyEvent?): Boolean {
             var handled = false
             synchronized(mSurfaceHolder) {
                 if (mMode == STATE_RUNNING) {
@@ -875,7 +866,10 @@ internal class LunarView constructor(
                         || keyCode == KeyEvent.KEYCODE_SPACE) {
                         setFiring(false)
                         handled = true
-                    } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_Q || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT || keyCode == KeyEvent.KEYCODE_W) {
+                    } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT
+                        || keyCode == KeyEvent.KEYCODE_Q
+                        || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
+                        || keyCode == KeyEvent.KEYCODE_W) {
                         mRotating = 0
                         handled = true
                     }
