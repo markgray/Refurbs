@@ -326,6 +326,7 @@ class PermissionRequestFragment : Fragment(), ConfirmationDialogFragment.Listene
      *
      * @param monitor `ConsoleMonitor` to post message to
      */
+    @Suppress("unused")
     fun setConsoleMonitor(monitor: ConsoleMonitor?) {
         mConsoleMonitor = monitor
     }
