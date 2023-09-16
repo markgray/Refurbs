@@ -510,6 +510,7 @@ class SnakeView : TileView {
             // and try again
             found = !collision
         }
+        @Suppress("KotlinConstantConditions")
         if (newCoord == null) {
             Log.e(TAG, "Somehow ended up with a null newCoord!")
         }
