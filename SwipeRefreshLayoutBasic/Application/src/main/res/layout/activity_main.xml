@@ -15,7 +15,8 @@
   -->
 <LinearLayout
       xmlns:android="http://schemas.android.com/apk/res/android"
-      android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:id="@+id/sample_main_layout">
@@ -46,7 +47,8 @@
               android:name="com.example.android.common.logger.LogFragment"
               android:id="@+id/log_fragment"
               android:layout_width="match_parent"
-              android:layout_height="match_parent" />
+              android:layout_height="match_parent"
+            tools:ignore="FragmentTagUsage" />
 
     </ViewAnimator>
 
