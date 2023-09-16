@@ -838,25 +838,22 @@ internal class LunarView constructor(
         }
 
         /**
-         * Handles a key-up event. First we set our variable `boolean handled` to false, then
-         * in a block synchronized on our field `SurfaceHolder mSurfaceHolder` if our field
-         * `int mMode` is STATE_RUNNING (game is running) we branch on the value of our parameter
-         * `int keyCode`:
+         * Handles a key-up event. First we set our [Boolean] variable `var handled` to `false`, then
+         * in a block synchronized on our [SurfaceHolder] field [mSurfaceHolder] if our [Int] field
+         * [mMode] is [STATE_RUNNING] (game is running) we branch on the value of our [Int] parameter
+         * [keyCode]:
          *
-         *  *
-         * KEYCODE_DPAD_CENTER or KEYCODE_SPACE: We call our method `setFiring(false)` to
-         * stop the rocket engine firing, and set `handled` to true.
+         *  * [KeyEvent.KEYCODE_DPAD_CENTER] or [KeyEvent.KEYCODE_SPACE]: We call our method
+         *  [setFiring] with `false` to stop the rocket engine firing, and set `handled` to `true`.
          *
-         *  *
-         * KEYCODE_DPAD_LEFT, KEYCODE_Q, KEYCODE_DPAD_RIGHT or KEYCODE_W: We set our field
-         * `int mRotating` to 0, and set `handled` to true.
-         *
+         *  * [KeyEvent.KEYCODE_DPAD_LEFT], [KeyEvent.KEYCODE_Q], [KeyEvent.KEYCODE_DPAD_RIGHT] or
+         *  [KeyEvent.KEYCODE_W]: We set our [Int] field [mRotating] to 0, and set `handled` to `true`.
          *
          * Having exited the synchronized block we return `handled` to the caller.
          *
          * @param keyCode the key that was pressed
          * @param msg     the original event object
-         * @return true if the key was handled and consumed, or else false
+         * @return `true` if the key was handled and consumed, or else `false`
          */
         fun doKeyUp(keyCode: Int, msg: KeyEvent?): Boolean {
             var handled = false
@@ -879,12 +876,12 @@ internal class LunarView constructor(
         }
 
         /**
-         * Draws the ship, fuel/speed bars, and background to the provided Canvas. First we have our
-         * parameter `Canvas canvas` draw our background image `Bitmap mBackgroundImage`
-         * on itself at (0,0). Then we initialize our variable `int yTop` (the top Y coordinate
-         * for the drawing of the rocket ship) to our field `mCanvasHeight` minus the quantity
-         * `mY` (the Y location of the ship) plus half of the lander height `mLanderHeight`.
-         * We we initialize our variable `int xLeft` (the left X coordinate for the drawing of
+         * Draws the ship, fuel/speed bars, and background to the provided [Canvas]. First we have
+         * our [Canvas] parameter [canvas] draw the background image in our [Bitmap] field
+         * [mBackgroundImage] on itself at (0,0). Then we initialize our [Int] variable `val yTop`
+         * (the top Y coordinate for the drawing of the rocket ship) to our [Int] field [mCanvasHeight]
+         * minus the quantity [Double] field [mY] (the Y location of the ship) plus half of the lander
+         * height [Int] field [mLanderHeight]. We initialize our variable `int xLeft` (the left X coordinate for the drawing of
          * the rocket ship) to our field `mX` (the X location of the ship) minus half of the width
          * of the ship `mLanderWidth`. We then draw the fuel gauge by initializing our variable
          * `int fuelWidth` to the width of the bar given by UI_BAR times the fraction of fuel
@@ -945,30 +942,47 @@ internal class LunarView constructor(
             // Draw the background image. Operations on the Canvas accumulate
             // so this is like clearing the screen.
             canvas!!.drawBitmap(mBackgroundImage, 0f, 0f, null)
-            val yTop = mCanvasHeight - (mY.toInt() + mLanderHeight / 2)
-            val xLeft = mX.toInt() - mLanderWidth / 2
+            val yTop: Int = mCanvasHeight - (mY.toInt() + mLanderHeight / 2)
+            val xLeft: Int = mX.toInt() - mLanderWidth / 2
 
             // Draw the fuel gauge
-            val fuelWidth = (UI_BAR * mFuel / PHYS_FUEL_MAX).toInt()
-            mScratchRect[4f, 4f, (4 + fuelWidth).toFloat()] = (4 + UI_BAR_HEIGHT).toFloat()
+            val fuelWidth: Int = (UI_BAR * mFuel / PHYS_FUEL_MAX).toInt()
+            mScratchRect.set(
+                /* left = */ 4f,
+                /* top = */ 4f,
+                /* right = */ (4 + fuelWidth).toFloat(),
+                /* bottom = */ (4 + UI_BAR_HEIGHT).toFloat()
+            )
             canvas.drawRect(mScratchRect, mLinePaint)
 
             // Draw the speed gauge, with a two-tone effect
-            val speed = Math.hypot(mDX, mDY)
-            val speedWidth = (UI_BAR * speed / PHYS_SPEED_MAX).toInt()
+            val speed: Double = Math.hypot(mDX, mDY)
+            val speedWidth: Int = (UI_BAR * speed / PHYS_SPEED_MAX).toInt()
             if (speed <= mGoalSpeed) {
-                mScratchRect[(4 + UI_BAR + 4).toFloat(), 4f, (
-                    4 + UI_BAR + 4 + speedWidth).toFloat()] = (4 + UI_BAR_HEIGHT).toFloat()
+                mScratchRect.set(
+                    /* left = */ (4 + UI_BAR + 4).toFloat(),
+                    /* top = */ 4f,
+                    /* right = */ (4 + UI_BAR + 4 + speedWidth).toFloat(),
+                    /* bottom = */ (4 + UI_BAR_HEIGHT).toFloat()
+                )
                 canvas.drawRect(mScratchRect, mLinePaint)
             } else {
                 // Draw the bad color in back, with the good color in front of
                 // it
-                mScratchRect[(4 + UI_BAR + 4).toFloat(), 4f, (
-                    4 + UI_BAR + 4 + speedWidth).toFloat()] = (4 + UI_BAR_HEIGHT).toFloat()
+                mScratchRect.set(
+                    /* left = */ (4 + UI_BAR + 4).toFloat(),
+                    /* top = */ 4f,
+                    /* right = */ (4 + UI_BAR + 4 + speedWidth).toFloat(),
+                    /* bottom = */ (4 + UI_BAR_HEIGHT).toFloat()
+                )
                 canvas.drawRect(mScratchRect, mLinePaintBad)
-                val goalWidth = UI_BAR * mGoalSpeed / PHYS_SPEED_MAX
-                mScratchRect[(4 + UI_BAR + 4).toFloat(), 4f, (4 + UI_BAR + 4 + goalWidth).toFloat()] = (
-                    4 + UI_BAR_HEIGHT).toFloat()
+                val goalWidth: Int = UI_BAR * mGoalSpeed / PHYS_SPEED_MAX
+                mScratchRect.set(
+                    /* left = */ (4 + UI_BAR + 4).toFloat(),
+                    /* top = */ 4f,
+                    /* right = */ (4 + UI_BAR + 4 + goalWidth).toFloat(),
+                    /* bottom = */ (4 + UI_BAR_HEIGHT).toFloat()
+                )
                 canvas.drawRect(mScratchRect, mLinePaint)
             }
 
