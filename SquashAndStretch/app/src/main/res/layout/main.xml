@@ -26,6 +26,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:onClick="onButtonClick"
-        android:text="Click Me!" />
+        android:text="@string/click_me" />
 
 </RelativeLayout>

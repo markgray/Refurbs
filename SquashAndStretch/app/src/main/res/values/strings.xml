@@ -18,5 +18,6 @@
     <string name="app_name">SquashAndStretch</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_slow_animations">Slow</string>
+    <string name="click_me">Click Me!</string>
 
 </resources>
