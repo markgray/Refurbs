@@ -17,7 +17,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/move_to_back_container">
+    android:id="@+id/move_to_back_container"
+    tools:ignore="MergeRootFrame">
 
     <fragment class="com.example.android.slidingfragments.ImageFragment"
         android:id="@+id/move_fragment"
