@@ -30,6 +30,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.MotionEvent
@@ -159,7 +160,12 @@ class PlayerSetupActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.player_setup_layout)
-        overridePendingTransition(0, 0)
+        if (Build.VERSION.SDK_INT >= 34) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, 0, 0)
+        } else {
+            @Suppress("DEPRECATION") // Needed for SDK older than 34
+            overridePendingTransition(0, 0)
+        }
         mContainer = findViewById(R.id.container)
         mContainer!!.viewTreeObserver.addOnPreDrawListener(mPreDrawListener)
         mNameTV = findViewById(R.id.nameTV)
@@ -183,7 +189,12 @@ class PlayerSetupActivity : Activity() {
      */
     override fun finish() {
         super.finish()
-        overridePendingTransition(0, 0)
+        if (Build.VERSION.SDK_INT >= 34) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, 0, 0)
+        } else {
+            @Suppress("DEPRECATION") // Needed for SDK older than 34
+            overridePendingTransition(0, 0)
+        }
     }
 
     /**

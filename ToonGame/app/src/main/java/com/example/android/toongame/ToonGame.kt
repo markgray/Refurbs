@@ -27,6 +27,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -81,7 +82,12 @@ class ToonGame : Activity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        overridePendingTransition(0, 0)
+        if (Build.VERSION.SDK_INT >= 34) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, 0, 0)
+        } else {
+            @Suppress("DEPRECATION") // Needed for SDK older than 34
+            overridePendingTransition(0, 0)
+        }
         setContentView(R.layout.activity_toon_game)
         mStarter = findViewById(R.id.startButton)
         mContainer = findViewById(R.id.container)
@@ -283,7 +289,12 @@ class ToonGame : Activity() {
                     val intent = Intent(this@ToonGame,
                         PlayerSetupActivity::class.java)
                     startActivity(intent)
-                    overridePendingTransition(0, 0)
+                    if (Build.VERSION.SDK_INT >= 34) {
+                        overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, 0, 0)
+                    } else {
+                        @Suppress("DEPRECATION") // Needed for SDK older than 34
+                        overridePendingTransition(0, 0)
+                    }
                 }
             }
         view.removeCallbacks(mSquishRunnable)
@@ -376,6 +387,7 @@ class ToonGame : Activity() {
      * @param squash SCALE_Y squashing end value
      * @param stretch SCALE_X stretching end value.
      */
+    @Suppress("SameParameterValue")
     private fun squishyBounce(view: View?, startTY: Float, bottomTY: Float,
                               endTY: Float, squash: Float, stretch: Float) {
         view!!.pivotX = (view.width / 2).toFloat()
