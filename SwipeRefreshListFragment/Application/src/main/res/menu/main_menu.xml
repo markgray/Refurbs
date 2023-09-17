@@ -15,7 +15,8 @@
  limitations under the License.
 -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         A color scheme menu item used for demonstrating the use of SwipeRefreshLayout's color
@@ -26,7 +27,7 @@
     <item
           android:id="@+id/menu_color_scheme"
           android:title="@string/menu_color_scheme"
-          android:showAsAction="ifRoom">
+        app:showAsAction="ifRoom">
         <menu>
             <group android:checkableBehavior="single">
 
@@ -54,6 +55,6 @@
     <item
           android:id="@+id/menu_refresh"
           android:title="@string/menu_refresh"
-          android:showAsAction="never" />
+        app:showAsAction="never" />
 
 </menu>
