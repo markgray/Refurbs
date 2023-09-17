@@ -16,6 +16,7 @@
 package com.example.android.windowanimations
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 
 /**
@@ -45,6 +46,12 @@ class AnimatedSubActivity : Activity() {
      */
     override fun finish() {
         super.finish()
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        if (Build.VERSION.SDK_INT >= 34) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, R.anim.slide_in_right, R.anim.slide_out_right)
+        } else {
+            @Suppress("DEPRECATION") // Needed for SDK older than 34
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right)
+        }
+
     }
 }

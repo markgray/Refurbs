@@ -21,5 +21,8 @@
     <string name="title_activity_window_anim_sub">WindowAnimSubActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_sub">SubActivity</string>
+    <string name="default_animations">Default Animations</string>
+    <string name="translate_animations">Translate Animations</string>
+    <string name="scale_animations">Scale Animations</string>
 
 </resources>

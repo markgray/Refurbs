@@ -19,19 +19,19 @@
     android:layout_height="match_parent" >
 
     <Button android:id="@+id/defaultButton"
-        android:text="Default Animations"
+        android:text="@string/default_animations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:context=".WindowAnimations" />
 
     <Button android:id="@+id/translateButton"
-        android:text="Translate Animations"
+        android:text="@string/translate_animations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:context=".WindowAnimations" />
 
     <Button android:id="@+id/scaleButton"
-        android:text="Scale Animations"
+        android:text="@string/scale_animations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:context=".WindowAnimations" />
@@ -39,6 +39,7 @@
     <ImageView android:id="@+id/thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/thumbnail" />
+        android:src="@drawable/thumbnail"
+        android:importantForAccessibility="no" />
 
 </LinearLayout>

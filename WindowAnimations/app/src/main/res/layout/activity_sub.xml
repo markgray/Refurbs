@@ -24,7 +24,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:text="@string/activity_text"
-        android:textSize="40dip"
+        android:textSize="40sp"
         tools:context=".SubActivity" />
 
 </RelativeLayout>
