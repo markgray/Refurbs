@@ -28,7 +28,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn")
 
 package com.example.android.common.logger
 
@@ -110,7 +110,6 @@ class LogFragment : Fragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             logView!!.setTextAppearance(android.R.style.TextAppearance_Holo_Medium)
         } else {
-            @Suppress("DEPRECATION") // Needed for SDK less than M
             logView!!.setTextAppearance(activity, android.R.style.TextAppearance_Holo_Medium)
         }
         mScrollView!!.addView(logView)
