@@ -881,62 +881,60 @@ internal class LunarView constructor(
          * [mBackgroundImage] on itself at (0,0). Then we initialize our [Int] variable `val yTop`
          * (the top Y coordinate for the drawing of the rocket ship) to our [Int] field [mCanvasHeight]
          * minus the quantity [Double] field [mY] (the Y location of the ship) plus half of the lander
-         * height [Int] field [mLanderHeight]. We initialize our variable `int xLeft` (the left X coordinate for the drawing of
-         * the rocket ship) to our field `mX` (the X location of the ship) minus half of the width
-         * of the ship `mLanderWidth`. We then draw the fuel gauge by initializing our variable
-         * `int fuelWidth` to the width of the bar given by UI_BAR times the fraction of fuel
-         * remaining (`mFuel` divided PHYS_FUEL_MAX). We set our scratch rectangle `RectF mScratchRect`
+         * height [Int] field [mLanderHeight]. We initialize our [Int] variable `val xLeft` (the left
+         * X coordinate for the drawing of the rocket ship) to our field [mX] (the X location of the
+         * ship) minus half of the width of the ship [Int] field [mLanderWidth]. We then draw the
+         * fuel gauge by initializing our [Int] variable `val fuelWidth` to the width of the bar
+         * given by const [UI_BAR] (100)  times the fraction of fuel remaining ([Double] field [mFuel]
+         * divided by [PHYS_FUEL_MAX] (100)). We set our scratch rectangle [RectF] field [mScratchRect]
          * to have its left top corner at (4,4), and its right bottom corner at 4 plus `fuelWidth`
-         * for the X coordinate and 4 plus UI_BAR_HEIGHT for the Y coordinate, then have `canvas`
-         * draw `mScratchRect` on itself using `mLinePaint` as the `Paint`. We next
-         * want to draw the speed gauge with a two-tone effect and to do this we initialize `double speed`
-         * to the square root of `mDX` squared plus `mDY` squared (the length of the speed
-         * vector given the X velocity and Y velocity), then initialize `int speedWidth` to `speed`
-         * divided by PHYS_SPEED_MAX times the size of our UI bar UI_BAR. If `speed` is less than
-         * or equal to `mGoalSpeed` we set the rectangle `mScratchRect` to have its upper
-         * left corner at 4 plus UI_BAR plus 4 for the X coordinate, 4 for the Y coordinate and its
-         * bottom right corner at 4 plus UI_BAR plus 4 plus `speedWidth` for the X coordinate
-         * and 4 plus UI_BAR_HEIGHT for the Y coordinate. We then have `canvas` draw `mScratchRect`
-         * on itself using `mLinePaint` as the paint. If on the other hand `speed` is greater
-         * than `mGoalSpeed` we want to draw the bad color in back, with the good color in front
-         * of it, so we set the rectangle `mScratchRect` to have its upper left corner at 4 plus
-         * UI_BAR plus 4 for the X coordinate, 4 for the Y coordinate and its bottom right corner at 4
-         * plus UI_BAR plus 4 plus `speedWidth` for the X coordinate and 4 plus UI_BAR_HEIGHT for
-         * the Y coordinate. We then have `canvas` draw `mScratchRect` on itself using
-         * `mLinePaintBad` as the paint. We then initialize `int goalWidth` to be `mGoalSpeed`
-         * divided by `PHYS_SPEED_MAX` times UI_BAR, and set the rectangle `mScratchRect` to
-         * have its upper left corner at 4 plus UI_BAR plus 4 for the X coordinate, 4 for the Y coordinate and its
-         * bottom right corner at 4 plus UI_BAR plus 4 plus `goalWidth` for the X coordinate and 4 plus
-         * UI_BAR_HEIGHT for the Y coordinate. We then have `canvas` draw `mScratchRect` on itself
-         * using `mLinePaint` as the paint.
+         * for the X coordinate and 4 plus [UI_BAR_HEIGHT] for the Y coordinate, then have our [Canvas]
+         * parameter [canvas] draw [mScratchRect] on itself using [Paint] field [mLinePaint] as the
+         * [Paint]. We next want to draw the speed gauge with a two-tone effect and to do this we
+         * initialize [Double] variable `val speed` to the square root of [mDX] squared plus [mDY]
+         * squared (the length of the speed vector given the X velocity and Y velocity), then
+         * initialize [Int] variable `val speedWidth` to `speed` divided by [PHYS_SPEED_MAX] (120)
+         * times the size of our UI bar [UI_BAR] (100). If `speed` is less than or equal to [Int]
+         * field [mGoalSpeed] we set the rectangle [mScratchRect] to have its upper left corner at 4
+         * plus [UI_BAR] plus 4 for the X coordinate, 4 for the Y coordinate and its bottom right
+         * corner at 4 plus [UI_BAR] plus 4 plus `speedWidth` for the X coordinate and 4 plus
+         * [UI_BAR_HEIGHT] for the Y coordinate. We then have [canvas] draw [mScratchRect] on itself
+         * using [mLinePaint] as the [Paint]. If on the other hand `speed` is greater than [mGoalSpeed]
+         * we want to draw the bad color in back, with the good color in front of it, so we set the
+         * rectangle [mScratchRect] to have its upper left corner at 4 plus [UI_BAR] plus 4 for the
+         * X coordinate, 4 for the Y coordinate and its bottom right corner at 4 plus [UI_BAR] plus
+         * 4 plus `speedWidth` for the X coordinate and 4 plus [UI_BAR_HEIGHT] for the Y coordinate.
+         * We then have [canvas] draw [mScratchRect] on itself using [mLinePaintBad] as the paint.
+         * We then initialize [Int] variable `val goalWidth` to be [mGoalSpeed] divided by
+         * [PHYS_SPEED_MAX] times [UI_BAR], and set the rectangle [mScratchRect] to have its upper
+         * left corner at 4 plus [UI_BAR] plus 4 for the X coordinate, 4 for the Y coordinate and its
+         * bottom right corner at 4 plus [UI_BAR] plus 4 plus `goalWidth` for the X coordinate and 4
+         * plus [UI_BAR_HEIGHT] for the Y coordinate. We then have [canvas] draw [mScratchRect] on
+         * itself using [mLinePaint] as the [Paint].
          *
+         * We now want to draw the landing pad, so we have [canvas] draw a line on itself from
+         * ([mGoalX], 1+[mGoalX]-[TARGET_PAD_HEIGHT]) to
+         * ([mGoalX]+[mGoalWidth], 1+[mCanvasHeight]-[TARGET_PAD_HEIGHT]) using
+         * [mLinePaint] as the paint.
          *
-         * We now want to draw the landing pad, so we have `canvas` draw a line on itself from
-         * (`mGoalX`,1+`mGoalX`-TARGET_PAD_HEIGHT) to
-         * (`mGoalX`+`mGoalWidth`,1+`mCanvasHeight`-TARGET_PAD_HEIGHT) using
-         * `mLinePaint` as the paint.
+         * Now we want to draw the ship with its current rotation so we have [canvas] save the
+         * current matrix and clip onto a private stack, then rotate [canvas] by [mHeading] degrees
+         * around the point ([mX], [mCanvasHeight]-[mY]). If the game state in [Int] field [mMode]
+         * is [STATE_LOSE] we set the bounding rectangle of [mCrashedImage] to a rectangle whose
+         * left top corner is (`xLeft`, `yTop`) and whose right bottom corner is
+         * (`xLeft`+[mLanderWidth], `yTop`+[mLanderHeight]). We then have [mCrashedImage] draw
+         * itself on [canvas]. If on the other hand [mEngineFiring] is firing we set the bounding
+         * rectangle of [mFiringImage] to a rectangle whose left top corner is (`xLeft`, `yTop`) and
+         * whose right bottom corner is (`xLeft`+[mLanderWidth], `yTop`+[mLanderHeight]). We then
+         * have [mFiringImage] draw itself on [canvas]. If neither of these are `true` we set the
+         * bounding rectangle of [mLanderImage] to a rectangle whose left top corner is
+         * (`xLeft`, `yTop`) and whose right bottom corner is
+         * (`xLeft`+[mLanderWidth], `yTop`+[mLanderHeight]). We then have [mLanderImage] draw itself
+         * on [canvas].
          *
+         * Finally we have [canvas] restore its state to the values it placed on its stack.
          *
-         * Now we want to draw the ship with its current rotation so we have `canvas` save the
-         * current matrix and clip onto a private stack, then rotate `canvas` by `mHeading`
-         * degrees around the point (`mX`,`mCanvasHeight`-`mY`). If the game state
-         * `mMode` is STATE_LOSE we set the bounding rectangle of `mCrashedImage` to a
-         * rectangle whose left top corner is (`xLeft`,`yTop`) and whose right bottom corner
-         * is (`xLeft`+`mLanderWidth`,`yTop`+`mLanderHeight`). We then have
-         * `mCrashedImage` draw itself on `canvas`. If on the other hand `mEngineFiring`
-         * is firing we set the bounding rectangle of `mFiringImage` to a rectangle whose left
-         * top corner is (`xLeft`,`yTop`) and whose right bottom corner is
-         * (`xLeft`+`mLanderWidth`,`yTop`+`mLanderHeight`). We then have
-         * `mFiringImage` draw itself on `canvas`. If neither of these are true we set the
-         * bounding rectangle of `mLanderImage` to a rectangle whose left top corner is
-         * (`xLeft`,`yTop`) and whose right bottom corner is
-         * (`xLeft`+`mLanderWidth`,`yTop`+`mLanderHeight`). We then have
-         * `mLanderImage` draw itself on `canvas`.
-         *
-         *
-         * Finally we have `canvas` restore its state to the values it placed on its stack.
-         *
-         * @param canvas `Canvas` we are to draw to.
+         * @param canvas the [Canvas] we are to draw to.
          */
         private fun doDraw(canvas: Canvas?) {
             // Draw the background image. Operations on the Canvas accumulate
@@ -987,27 +985,45 @@ internal class LunarView constructor(
             }
 
             // Draw the landing pad
-            canvas.drawLine(mGoalX.toFloat(), (1 + mCanvasHeight - TARGET_PAD_HEIGHT).toFloat(),
-                (
-                    mGoalX + mGoalWidth).toFloat(), (1 + mCanvasHeight - TARGET_PAD_HEIGHT).toFloat(),
-                mLinePaint)
+            canvas.drawLine(
+                /* startX = */ mGoalX.toFloat(),
+                /* startY = */ (1 + mCanvasHeight - TARGET_PAD_HEIGHT).toFloat(),
+                /* stopX = */ (mGoalX + mGoalWidth).toFloat(),
+                /* stopY = */ (1 + mCanvasHeight - TARGET_PAD_HEIGHT).toFloat(),
+                /* paint = */ mLinePaint
+            )
 
 
             // Draw the ship with its current rotation
             canvas.save()
-            canvas.rotate(mHeading.toFloat(), mX.toFloat(), mCanvasHeight
-                - mY.toFloat())
+            canvas.rotate(
+                /* degrees = */ mHeading.toFloat(),
+                /* px = */ mX.toFloat(),
+                /* py = */ mCanvasHeight - mY.toFloat()
+            )
             if (mMode == STATE_LOSE) {
-                mCrashedImage.setBounds(xLeft, yTop,
-                    xLeft + mLanderWidth, yTop + mLanderHeight)
+                mCrashedImage.setBounds(
+                    /* left = */ xLeft,
+                    /* top = */ yTop,
+                    /* right = */ xLeft + mLanderWidth,
+                    /* bottom = */ yTop + mLanderHeight
+                )
                 mCrashedImage.draw(canvas)
             } else if (mEngineFiring) {
-                mFiringImage.setBounds(xLeft, yTop,
-                    xLeft + mLanderWidth, yTop + mLanderHeight)
+                mFiringImage.setBounds(
+                    /* left = */ xLeft,
+                    /* top = */ yTop,
+                    /* right = */ xLeft + mLanderWidth,
+                    /* bottom = */ yTop + mLanderHeight
+                )
                 mFiringImage.draw(canvas)
             } else {
-                mLanderImage.setBounds(xLeft, yTop,
-                    xLeft + mLanderWidth, yTop + mLanderHeight)
+                mLanderImage.setBounds(
+                    /* left = */ xLeft,
+                    /* top = */ yTop,
+                    /* right = */ xLeft + mLanderWidth,
+                    /* bottom = */ yTop + mLanderHeight
+                )
                 mLanderImage.draw(canvas)
             }
             canvas.restore()
@@ -1015,21 +1031,21 @@ internal class LunarView constructor(
 
         /**
          * Figures the lander state (x, y, fuel, ...) based on the passage of realtime. Does not
-         * `invalidate()`. Called at the start of `draw()`. Detects the end-of-game and
-         * sets the UI to the next state. First we initialize `long now` to the current system
-         * time in milliseconds, and if `mLastTime` is greater than this we return having done
-         * nothing (our game start sets `mLastTime` to 100ms in the future to delay the start
-         * of the game). Otherwise we initialize `double elapsed` to the quantity `now`
-         * minus `mLastTime` all divided by 1000.0 (the time that has elapsed since `mLastTime`
-         * in seconds). If our field `int mRotating` is not zero we want to update our heading
-         * so we add `mRotating` times PHYS_SLEW_SEC, times `elapsed` to our heading field
-         * `double mHeading`, and if it is less than 0 we normalize it by adding 360 degrees or
-         * if it is greater than or equal to 360 we normalize it by subtracting 360 degrees.
+         * [invalidate]. Called at the start of [draw]. Detects the end-of-game and sets the UI to
+         * the next state. First we initialize [Long] variable `val now` to the current system
+         * time in milliseconds, and if [Long] field [mLastTime] is greater than this we return
+         * having done nothing (our game start sets [mLastTime] to 100ms in the future to delay the
+         * start of the game). Otherwise we initialize [Double] variable `val elapsed` to the quantity
+         * `now` minus [mLastTime] all divided by 1000.0 (the time that has elapsed since [mLastTime]
+         * in seconds). If our [Int] field [mRotating] is not zero we want to update our heading so
+         * we add [mRotating] times [PHYS_SLEW_SEC], times `elapsed` to our heading [Double] field
+         * [mHeading], and if it is less than 0 we normalize it by adding 360 degrees or if it is
+         * greater than or equal to 360 we normalize it by subtracting 360 degrees.
          *
-         *
-         * We next initialize our base accelerations `double ddx` (0 for x), and `double ddy`
-         * (gravity for y: minus PHYS_DOWN_ACCEL_SEC times `elapsed`). If `mEngineFiring` is
-         * true (the rocket engine is firing) we need to adjust these so we initialize `double elapsedFiring`
+         * We next initialize our base accelerations [Double] variable `var ddx` (0 for x), and
+         * [Double] variable `var ddy` (gravity for y: minus [PHYS_DOWN_ACCEL_SEC] times `elapsed`).
+         * If [mEngineFiring] is `true` (the rocket engine is firing) we need to adjust these so we
+         * initialize `double elapsedFiring`
          * to `elapsed` and initialize `double fuelUsed` to `elapsedFiring` times
          * `PHYS_FUEL_SEC`. If `fuelUsed` (the amount of fuel we used) is greater than
          * `mFuel` (the amount of fuel we had left) we have to adjust for the fact we ran out
@@ -1094,13 +1110,13 @@ internal class LunarView constructor(
          * `message` (if we lost that is, it is still the empty string if we won).
          */
         private fun updatePhysics() {
-            val now = System.currentTimeMillis()
+            val now: Long = System.currentTimeMillis()
 
             // Do nothing if mLastTime is in the future.
             // This allows the game-start to delay the start of the physics
             // by 100ms or whatever.
             if (mLastTime > now) return
-            val elapsed = (now - mLastTime) / 1000.0
+            val elapsed: Double = (now - mLastTime) / 1000.0
 
             // mRotating -- update heading
             if (mRotating != 0) {
@@ -1112,7 +1128,7 @@ internal class LunarView constructor(
 
             // Base accelerations -- 0 for x, gravity for y
             var ddx = 0.0
-            var ddy = -PHYS_DOWN_ACCEL_SEC * elapsed
+            var ddy: Double = -PHYS_DOWN_ACCEL_SEC * elapsed
             if (mEngineFiring) {
                 // taking 0 as up, 90 as to the right
                 // cos(deg) is ddy component, sin(deg) is ddx component
