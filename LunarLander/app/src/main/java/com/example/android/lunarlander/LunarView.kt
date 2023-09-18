@@ -1045,42 +1045,40 @@ internal class LunarView constructor(
          * We next initialize our base accelerations [Double] variable `var ddx` (0 for x), and
          * [Double] variable `var ddy` (gravity for y: minus [PHYS_DOWN_ACCEL_SEC] times `elapsed`).
          * If [mEngineFiring] is `true` (the rocket engine is firing) we need to adjust these so we
-         * initialize `double elapsedFiring`
-         * to `elapsed` and initialize `double fuelUsed` to `elapsedFiring` times
-         * `PHYS_FUEL_SEC`. If `fuelUsed` (the amount of fuel we used) is greater than
-         * `mFuel` (the amount of fuel we had left) we have to adjust for the fact we ran out
-         * of fuel partway through the time that has elapsed, and if so we set `elapsedFiring`
-         * to `mFuel` divided by `fuelUsed` times `elapsed` (the amount of time our
-         * fuel lasted during this time period), and set `fuelUsed` to `mFuel`. We then
-         * set `mEngineFiring` to false. Having corrected the `fuelUsed` if needed we subtract
-         * it from `mFuel` then initialize `double accel` to PHYS_FIRE_ACCEL_SEC times
-         * `elapsedFiring` (acceleration from the engine), and initialize `double radians`
-         * to 2 times pi times `mHeading` divided by 360 (our heading in radians). We then set
-         * `ddx` to the sin of `radians` times `accel` and `ddy` to the cosine
-         * of `radians` times `accel`.
+         * initialize [Double] variable `var elapsedFiring` to `elapsed` and initialize [Double]
+         * variable `var fuelUsed` to `elapsedFiring` times [PHYS_FUEL_SEC]. If `fuelUsed` (the
+         * amount of fuel we used) is greater than [Double] field [mFuel] (the amount of fuel we
+         * had left) we have to adjust for the fact we ran out of fuel partway through the time
+         * that has elapsed, and if so we set `elapsedFiring` to [mFuel] divided by `fuelUsed`
+         * times `elapsed` (the amount of time our fuel lasted during this time period), and set
+         * `fuelUsed` to [mFuel]. We then set [mEngineFiring] to `false`. Having corrected the
+         * `fuelUsed` if needed we subtract it from [mFuel] then initialize [Double] variable
+         * `val accel` to [PHYS_FIRE_ACCEL_SEC] times `elapsedFiring` (acceleration from the
+         * engine), and initialize [Double] variable `val radians` to 2 times pi times [Double]
+         * field [mHeading] divided by 360 (our heading in radians). We then set `ddx` to the sin
+         * of `radians` times `accel` and `ddy` to the cosine of `radians` times `accel`.
          *
+         * Having updated `ddx` and `ddy` if the rocket engine was firing, we initialize [Double]
+         * variable `val dxOld` to [Double] field [mDX] and [Double] variable `val dyOld` to [Double]
+         * field [mDY], add `ddx` to [mDX] and `ddy` to [mDY] (the speeds for the end of the period)
+         * then update the position ([mX], [mY]) based on average speed during the period (ie. add
+         * `elapsed` times the quantity [mDX] plus `dxOld` all divided by 2 to [mX], and add `elapsed`
+         * times the quantity [mDY] plus `dyOld` all divided by 2 to to [mY]). We then set our [Long]
+         * field [mLastTime] to `now`.
          *
-         * Having updated `ddx` and `ddy` if the rocket engine was firing, we initialize
-         * `double dxOld` to `mDX` and `double dyOld` to `mDY`, add `ddx`
-         * to `mDX` and `ddy` to `mDY` (the speeds for the end of the period) then
-         * update the position (`mX`,`mY`) based on average speed during the period (ie.
-         * add `elapsed` times the quantity `mDX` plus `dxOld` all divided by 2 to
-         * `mX`, and add `elapsed` times the quantity `mDY` plus `dyOld` all
-         * divided by 2 to to `mY`). We then set our field `mLastTime` to `now`.
-         *
-         *
-         * We now need to evaluate whether we have landed, so to do this we initialize `double yLowerBound`
-         * to TARGET_PAD_HEIGHT plus `mLanderHeight` divided by 2 minus TARGET_BOTTOM_PADDING and
-         * if `mY` is now less than or equal to `yLowerBound` the Eagle has landed and we
-         * need to see if we won or lost (if it is still greater the game goes on and our method is done).
-         * To determine if we won or lost we set `mY` to `yLowerBound`, initialize `int result`
-         * to STATE_LOSE, `CharSequence message` to the empty string, `Resources res` to a
-         * `Resources` instance for the application's package, `double speed` to the magnitude
-         * of the vector (`mDX`,`mDY`), and `boolean onGoal` to the value of the inequality
-         * `mGoalX` is less than or equal to `mX` minus half of `mLanderWidth`, and
-         * `mX` plus half of `mLanderWidth` is less than or equal to `mGoalX` plus
-         * `mGoalWidth` (when true we are on the landing pad). Next we check to see if we have
-         * achieved the oddball "Hyperspace" win (upside down, going fast) which happens when `onGoal`
+         * We now need to evaluate whether we have landed, so to do this we initialize [Double]
+         * variable `val yLowerBound` to [TARGET_PAD_HEIGHT] (8) plus [Int] field [mLanderHeight]
+         * divided by 2 minus [TARGET_BOTTOM_PADDING] (17) and if [mY] is now less than or equal to
+         * `yLowerBound` the Eagle has landed and we need to see if we won or lost (if it is still
+         * greater the game goes on and our method is done). To determine if we won or lost we set
+         * [mY] to `yLowerBound`, initialize [Int] variable `var result` to [STATE_LOSE], [CharSequence]
+         * variable `var message` to the empty string, [Resources] variable `val res` to a [Resources]
+         * instance for the application's package, [Double] variable `val speed` to the magnitude of
+         * the vector ([mDX],[mDY]), and [Boolean] variable `val onGoal` to the value of the inequality
+         * [mGoalX] is less than or equal to [mX] minus half of [mLanderWidth], and [mX] plus half of
+         * [mLanderWidth] is less than or equal to [mGoalX] plus [mGoalWidth] (when true we are on
+         * the landing pad). Next we check to see if we have achieved the oddball "Hyperspace" win
+         * (upside down, going fast) which happens when `onGoal`
          * is true and the absolute value of `mHeading` minus 180 is less than `mGoalAngle`
          * and `speed` is greater than PHYS_SPEED_HYPERSPACE, in which case we increment `mWinsInARow`
          * call our `doStart` method to restart the game back at the top and then we return.
@@ -1152,8 +1150,8 @@ internal class LunarView constructor(
                 ddx = Math.sin(radians) * accel
                 ddy += Math.cos(radians) * accel
             }
-            val dxOld = mDX
-            val dyOld = mDY
+            val dxOld: Double = mDX
+            val dyOld: Double = mDY
 
             // figure speeds for the end of the period
             mDX += ddx
@@ -1165,15 +1163,16 @@ internal class LunarView constructor(
             mLastTime = now
 
             // Evaluate if we have landed ... stop the game
-            val yLowerBound = (TARGET_PAD_HEIGHT + (mLanderHeight shr 1)
-                - TARGET_BOTTOM_PADDING).toDouble()
+            val yLowerBound: Double = (
+                TARGET_PAD_HEIGHT + (mLanderHeight shr 1) - TARGET_BOTTOM_PADDING
+                ).toDouble()
             if (mY <= yLowerBound) {
                 mY = yLowerBound
-                var result = STATE_LOSE
+                var result: Int = STATE_LOSE
                 var message: CharSequence? = ""
-                val res = mContext!!.resources
-                val speed = Math.hypot(mDX, mDY)
-                val onGoal = (mGoalX <= mX - mLanderWidth / 2f
+                val res: Resources = mContext!!.resources
+                val speed: Double = Math.hypot(mDX, mDY)
+                val onGoal: Boolean = (mGoalX <= mX - mLanderWidth / 2f
                     && mX + mLanderWidth / 2f <= mGoalX + mGoalWidth)
 
                 // "Hyperspace" win -- upside down, going fast,
