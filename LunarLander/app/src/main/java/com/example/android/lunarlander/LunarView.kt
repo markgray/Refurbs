@@ -48,14 +48,14 @@ import android.widget.TextView
  * ship, and does an invalidate() to prompt another draw() as soon as possible
  * by the system.
  *
- * Perform inflation from XML. First we call our super's constructor, then we initialize our variable
- * `SurfaceHolder holder` with the `SurfaceHolder` of our `SurfaceView` and add
- * 'this' as a `Callback` for it (we implement `SurfaceView.Callback`). Then we initialize
- * our field `LunarThread thread` with an anonymous class whose `handleMessage` override
- * sets the visibility of `TextView mStatusText` to the value stored in the data `Bundle`
- * of its parameter `Message m` under the key "viz", and sets the text of `TextView mStatusText`
- * to the value stored in the data `Bundle` under the key "text". We then enable the focus for
- * our `LunarView` so that we get key events before returning.
+ * Perform inflation from XML. First we call our super's constructor, then in our `init` block we
+ * initialize our [SurfaceHolder] variable `holder` with the [SurfaceHolder] of our [SurfaceView]
+ * and add 'this' as a `Callback` for it (we implement [SurfaceHolder.Callback]). Then we initialize
+ * our [LunarThread] field [thread] with an anonymous class whose [Handler.handleMessage] override
+ * sets the visibility of [TextView] field [mStatusText] to the value stored in the data [Bundle]
+ * of its [Message] parameter `m` under the key "viz", and sets the text of [TextView] field
+ * [mStatusText] to the value stored in the data [Bundle] under the key "text". We then enable the
+ * focus of our [LunarView] so that we get key events.
  *
  * @param context The Context the view is running in
  * @param attrs   The attributes of the XML tag that is inflating the view.
@@ -1078,33 +1078,28 @@ internal class LunarView constructor(
          * [mGoalX] is less than or equal to [mX] minus half of [mLanderWidth], and [mX] plus half of
          * [mLanderWidth] is less than or equal to [mGoalX] plus [mGoalWidth] (when true we are on
          * the landing pad). Next we check to see if we have achieved the oddball "Hyperspace" win
-         * (upside down, going fast) which happens when `onGoal`
-         * is true and the absolute value of `mHeading` minus 180 is less than `mGoalAngle`
-         * and `speed` is greater than PHYS_SPEED_HYPERSPACE, in which case we increment `mWinsInARow`
-         * call our `doStart` method to restart the game back at the top and then we return.
-         *
+         * (upside down, going fast) which happens when `onGoal` is `true` and the absolute value of
+         * [Double] field [mHeading] minus 180 is less than [Int] field [mGoalAngle] and `speed` is
+         * greater than [PHYS_SPEED_HYPERSPACE], in which case we increment [Int] field [mWinsInARow]
+         * call our [doStart] method to restart the game back at the top and then we return.
          *
          * In all other cases we need to evaluate whether we have failed to achieve our goals, so we
          * proceed to branch evaluating each in turn:
          *
-         *  *
-         * `onGoal` is false: (we have missed the landing pad) We set `message` to the
-         * string with resource id R.string.message_off_pad.
+         *  * `onGoal` is `false`: (we have missed the landing pad) We set `message` to the string
+         *  with resource id [R.string.message_off_pad] ("Off Landing Pad")
          *
-         *  *
-         * `mHeading` is greater than `mGoalAngle` or less than 360 minus `mGoalAngle`
-         * (Bad Angle) We set `message` to the string with resource id R.string.message_bad_angle.
+         *  * [Double] field [mHeading] is greater than [Int] field [mGoalAngle] or less than 360
+         *  minus [mGoalAngle] we set `message` to the string with resource id [R.string.message_bad_angle]
+         *  ("Bad Angle").
          *
-         *  *
-         * `speed` is greater than `mGoalSpeed` (Too Fast) We set `message` to the
-         * string with resource id R.string.message_too_fast.
+         *  * `speed` is greater than [Int] field [mGoalSpeed] we set `message` to the string with
+         *  resource id [R.string.message_too_fast] ("Too Fast").
          *
-         *  *
-         * If we succeed in avoiding loss due to the above tests we set `result` to STATE_WIN
-         * and increment `mWinsInARow`
+         *  * If we succeed in avoiding loss due to the above tests we set `result` to [STATE_WIN]
+         *  and increment [Int] field [mWinsInARow].
          *
-         *
-         * Finally we call our `setState` method to set the game state to `result` and display
+         * Finally we call our [setState] method to set the game state to `result` and display
          * `message` (if we lost that is, it is still the empty string if we won).
          */
         private fun updatePhysics() {
@@ -1209,23 +1204,25 @@ internal class LunarView constructor(
      * Pointer to the text view to display "Paused.." etc.
      */
     private var mStatusText: TextView? = null
-    /**
-     * Fetches the animation thread corresponding to this LunarView.
-     *
-     * @return the animation thread
-     */
+
     /**
      * The thread that actually draws the animation
      */
     val thread: LunarThread
 
     /**
-     *
+     * We initialize our `SurfaceHolder` variable `holder` with the `SurfaceHolder` of our `SurfaceView`
+     * and add 'this' as a Callback for it (we implement `SurfaceHolder.Callback`). Then we initialize
+     * our `LunarThread` field `thread` with an anonymous class whose `Handler.handleMessage` override
+     * sets the visibility of `TextView` field `mStatusText` to the value stored in the data Bundle of
+     * its Message parameter `m` under the key "viz", and sets the text of `TextView` field `mStatusText`
+     * to the value stored in the data Bundle under the key "text". We then enable the focus of our
+     * LunarView so that we get key events.
      */
     init {
 
         // register our interest in hearing about changes to our surface
-        val holder = holder
+        val holder: SurfaceHolder = holder
         holder.addCallback(this)
 
         // create thread only; it's started in surfaceCreated()
@@ -1239,8 +1236,8 @@ internal class LunarView constructor(
     }
 
     /**
-     * Standard override to get key-press events. We just return the value returned by the `doKeyDown`
-     * method of our field `LunarThread thread`.
+     * Standard override to get key-press events. We just return the value returned by the
+     * [LunarThread.doKeyDown] method of our [LunarThread] field [thread].
      *
      * @param keyCode a key code that represents the button pressed, from
      * [android.view.KeyEvent]
@@ -1253,8 +1250,8 @@ internal class LunarView constructor(
 
     /**
      * Standard override for key-up. We actually care about these, so we can turn off the engine or
-     * stop rotating. We just return the value returned by the `doKeyUp` method of our field
-     * `LunarThread thread`.
+     * stop rotating. We just return the value returned by the [LunarThread.doKeyUp] method of our
+     * [LunarThread] field [thread].
      *
      * @param keyCode A key code that represents the button pressed, from
      * [android.view.KeyEvent].
@@ -1267,21 +1264,21 @@ internal class LunarView constructor(
 
     /**
      * Standard window-focus override. Notice focus lost so we can pause on focus lost. e.g. user
-     * switches to take a call. If our parameter `boolean hasWindowFocus` is false (we have lost
-     * focus) we call the `pause` method of our field `LunarThread thread` to pause the
+     * switches to take a call. If our [Boolean] parameter [hasWindowFocus] is `false` (we have lost
+     * focus) we call the [LunarThread.pause] method of our [LunarThread] field [thread] to pause the
      * game.
      *
-     * @param hasWindowFocus True if the window containing this view now has
-     * focus, false otherwise.
+     * @param hasWindowFocus `true` if the window containing this view now has
+     * focus, `false` otherwise.
      */
     override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
         if (!hasWindowFocus) thread.pause()
     }
 
     /**
-     * Installs a pointer to the `TextView mStatusText` used for messages.
+     * Installs a pointer to the [TextView] field [mStatusText] used for messages.
      *
-     * @param textView `TextView` to use for our field `TextView mStatusText`
+     * @param textView the [TextView] to use for our [TextView] field [mStatusText]
      */
     fun setTextView(textView: TextView?) {
         mStatusText = textView
