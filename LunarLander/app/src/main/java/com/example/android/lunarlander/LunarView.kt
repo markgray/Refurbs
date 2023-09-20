@@ -23,6 +23,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.PixelFormat
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
@@ -1285,13 +1286,13 @@ internal class LunarView constructor(
     }
 
     /**
-     * This is called immediately after any structural changes (format or size) have been made to the
-     * surface. Callback invoked when the surface dimensions change. We just call the `setSurfaceSize`
-     * method of our field `LunarThread thread` to have it set its width to our parameter `int width`
-     * and its height to our parameter `int height`.
+     * This is called immediately after any structural changes (format or size) have been made
+     * to the surface. Callback invoked when the surface dimensions change. We just call the
+     * [LunarThread.setSurfaceSize] method of our [LunarThread] field [thread] to have it set
+     * its width to our [Int] parameter [width] and its height to our [Int] parameter [height].
      *
      * @param holder The SurfaceHolder whose surface has changed.
-     * @param format The new PixelFormat of the surface.
+     * @param format The new [PixelFormat] of the surface.
      * @param width  The new width of the surface.
      * @param height The new height of the surface.
      */
@@ -1301,11 +1302,12 @@ internal class LunarView constructor(
 
     /**
      * Callback invoked when the Surface has been created and is ready to be used. We first call the
-     * `setRunning(true)` method of our field `LunarThread thread` to signal the thread
-     * that it should be running (sets its field `boolean mRun` to true) then call its `start`
-     * method to have its `run` override called to actually start it running.
+     * [LunarThread.setRunning] method of our [LunarThread] field [thread]  with `true` to signal
+     * the thread that it should be running (sets its [Boolean] field [LunarThread.mRun] to `true`)
+     * then call its [LunarThread.start] method to have its [LunarThread.run] override called to
+     * actually start it running.
      *
-     * @param holder The SurfaceHolder whose surface is being created.
+     * @param holder The [SurfaceHolder] whose surface is being created.
      */
     override fun surfaceCreated(holder: SurfaceHolder) {
         // start the thread here so that we don't busy-wait in run()
@@ -1317,13 +1319,13 @@ internal class LunarView constructor(
     /**
      * Callback invoked when the Surface has been destroyed and must no longer be touched.
      * WARNING: after this method returns, the Surface/Canvas must never be touched again!
-     * We initialize our variable `boolean retry` to true then call the `setRunning(false)`
-     * method of our field `LunarThread thread` to signal the thread that it should stop running
-     * (sets its field `boolean mRun` to false). Then while our variable `retry` remains
-     * true we loop executing a try block intended to catch and log `InterruptedException` calling
-     * the `join` method of our field `LunarThread thread`, setting `retry` to false
-     * only when the `join` method returns having waited for the thread to die without being
-     * interrupted.
+     * We initialize our [Boolean] variable `var retry` to `true` then call the
+     * [LunarThread.setRunning] method of our [LunarThread] field [thread] with `false` to signal
+     * the thread that it should stop running (sets its [Boolean] field [LunarThread.mRun] to
+     * `false`). Then while our variable `retry` remains `true` we loop executing a try block
+     * intended to catch and log [InterruptedException] calling the [LunarThread.join] method of
+     * our [LunarThread] field [thread], setting `retry` to `false` only when the [LunarThread.join]
+     * method returns having waited for the thread to die without being interrupted.
      *
      * @param holder The SurfaceHolder whose surface is being destroyed.
      */
@@ -1349,6 +1351,7 @@ internal class LunarView constructor(
         const val TAG = "LunarView"
 
         //Difficulty setting constants
+
         /**
          * Easy difficulty: our fuel is multiplied by 3/2, our goals are larger, and our speed is slower.
          */
@@ -1363,7 +1366,9 @@ internal class LunarView constructor(
          * Medium difficulty, the default: fuel, goals and speed are the default values.
          */
         const val DIFFICULTY_MEDIUM = 2
+
         // Physics constants
+
         /**
          * Downward acceleration due to gravity.
          */
@@ -1408,7 +1413,9 @@ internal class LunarView constructor(
          * Maximum speed for our speed gauge.
          */
         const val PHYS_SPEED_MAX = 120
+
         // State-tracking constants
+
         /**
          * The player has lost the game.
          */
@@ -1433,7 +1440,9 @@ internal class LunarView constructor(
          * The player has won the game.
          */
         const val STATE_WIN = 5
+
         // Goal condition constants
+
         /**
          * Any angle greater than this is a "Crash".
          */
@@ -1458,7 +1467,9 @@ internal class LunarView constructor(
          * Width of our landing target.
          */
         const val TARGET_WIDTH = 1.6 // width of target
+
         // UI constants (i.e. the speed & fuel bars)
+
         /**
          * Width of the bar(s) in the X direction.
          */
@@ -1468,7 +1479,9 @@ internal class LunarView constructor(
          * Height of the bar(s) in the Y direction.
          */
         const val UI_BAR_HEIGHT = 10 // height of the bar(s)
+
         // Keys used for storing our state in the Bundle passed saveState, later restored in restoreState
+
         /**
          * Key used to store our field `int mDifficulty` (level of difficulty)
          */
