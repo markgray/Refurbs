@@ -101,12 +101,12 @@ class LogView : AppCompatTextView, LogNode {
     }
 
     /**
-     * The next LogNode in the chain.
+     * The next [LogNode] in the chain.
      */
     var next: LogNode? = null
 
     /**
-     * Outputs the string as a new line of log data in the LogView.
+     * Outputs the [String] parameter [s] as a new line of log data in the [LogView].
      */
     fun appendToLog(s: String) {
         append("\n$s")

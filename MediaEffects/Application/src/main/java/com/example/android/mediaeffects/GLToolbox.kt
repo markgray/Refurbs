@@ -24,11 +24,12 @@ import android.opengl.GLES20
  */
 object GLToolbox {
     /**
-     * Loads an OpenGL shader from its source code. We initialize `int shader` by using the method
-     * `glCreateShader` to create a shader of type `shaderType` (either GL_VERTEX_SHADER or
-     * GL_FRAGMENT_SHADER), saving the `GLuint` returned in order to reference it. If `shader`
-     * is not equal to 0, we call `glShaderSource` to replace the source code in the shader object
-     * `shader` with our parameter `String source`. We then call the method `glCompileShader`
+     * Loads an OpenGL shader from its source code. We initialize [Int] variable `val shader` by
+     * using the method [GLES20.glCreateShader] to create a shader of type of [Int] parameter
+     * [shaderType] (either [GLES20.GL_VERTEX_SHADER] or [GLES20.GL_FRAGMENT_SHADER]), saving the
+     * `GLuint` ([Int]) returned in order to reference it. If `shader` is not equal to 0, we call
+     * [GLES20.glShaderSource] to replace the source code in the shader object `shader` with our
+     * [String] parameter [source]. We then call the method `glCompileShader`
      * with `shader` as its argument to compile the source code string that has been stored in the
      * shader object. We allocate 1 int for `int[] compiled` then call the method `glGetShaderiv`
      * to fetch the GL_COMPILE_STATUS into `compiled` (sets it to GL_TRUE if the last compile operation
@@ -42,7 +43,7 @@ object GLToolbox {
      * @return value by which the loaded shader can be referenced
      */
     fun loadShader(shaderType: Int, source: String?): Int {
-        val shader = GLES20.glCreateShader(shaderType)
+        val shader: Int = GLES20.glCreateShader(shaderType)
         if (shader != 0) {
             GLES20.glShaderSource(shader, source)
             GLES20.glCompileShader(shader)
