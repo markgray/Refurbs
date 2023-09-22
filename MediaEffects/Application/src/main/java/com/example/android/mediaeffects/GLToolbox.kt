@@ -133,28 +133,27 @@ object GLToolbox {
     }
 
     /**
-     * Set texture parameters. We call the `glTexParameteri` method four times for the GL_TEXTURE_2D
-     * target texture of the active texture unit, setting the single-valued texture parameters:
+     * Set texture parameters. We call the [GLES20.glTexParameteri] method four times for the
+     * [GLES20.GL_TEXTURE_2D] target texture of the active texture unit, setting the single-valued
+     * texture parameters:
      *
-     *  *
-     * GL_TEXTURE_MAG_FILTER (The texture magnification function is used when the pixel being textured
-     * maps to an area less than or equal to one texture element) to GL_LINEAR (Returns the weighted
-     * average of the four texture elements that are closest to the center of the pixel being textured)
+     *  * [GLES20.GL_TEXTURE_MAG_FILTER] (The texture magnification function is used when the pixel
+     *  being textured maps to an area less than or equal to one texture element) to [GLES20.GL_LINEAR]
+     *  (Returns the weighted average of the four texture elements that are closest to the center of
+     *  the pixel being textured)
      *
-     *  *
-     * GL_TEXTURE_MIN_FILTER (The texture minifying function is used whenever the pixel being textured
-     * maps to an area greater than one texture element) to GL_LINEAR (Returns the weighted average of
-     * the four texture elements that are closest to the center of the pixel being textured)
+     *  * [GLES20.GL_TEXTURE_MIN_FILTER] (The texture minifying function is used whenever the pixel
+     *  being textured maps to an area greater than one texture element) to [GLES20.GL_LINEAR]
+     *  (Returns the weighted average of the four texture elements that are closest to the center
+     *  of the pixel being textured)
      *
-     *  *
-     * GL_TEXTURE_WRAP_S (Sets the wrap parameter for texture coordinate s) to GL_CLAMP_TO_EDGE (causes
-     * s coordinates to be clamped to the edge - textures stop at the last pixel when you fall off the edge).
+     *  * [GLES20.GL_TEXTURE_WRAP_S] (Sets the wrap parameter for texture coordinate s) to
+     *  [GLES20.GL_CLAMP_TO_EDGE] (causes s coordinates to be clamped to the edge - textures
+     *  stop at the last pixel when you fall off the edge).
      *
-     *  *
-     * GL_TEXTURE_WRAP_T (Sets the wrap parameter for texture coordinate t) to GL_CLAMP_TO_EDGE (causes
-     * t coordinates to be clamped to the edge - textures stop at the last pixel when you fall off the edge).
-     *
-     *
+     *  * [GLES20.GL_TEXTURE_WRAP_T] (Sets the wrap parameter for texture coordinate t) to
+     *  [GLES20.GL_CLAMP_TO_EDGE] (causes t coordinates to be clamped to the edge - textures
+     *  stop at the last pixel when you fall off the edge).
      */
     fun initTexParams() {
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,

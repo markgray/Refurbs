@@ -17,6 +17,7 @@
 
 package com.example.android.mediaeffects
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.effect.Effect
@@ -37,17 +38,17 @@ import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
 /**
- * `Fragment` which implements our demo.
+ * [Fragment] which implements our demo.
  */
 class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     /**
-     * `GLSurfaceView` which we render to.
+     * [GLSurfaceView] which we render to.
      */
     private var mEffectView: GLSurfaceView? = null
 
     /**
-     * Generated texture names we use, `mTextures[0]` for the original bitmap, `mTextures[1]`
-     * for the result of `applyEffect()`.
+     * Generated texture names we use: `mTextures[0]` for the original bitmap, `mTextures[1]`
+     * for the result of calling the [applyEffect] method.
      */
     private val mTextures = IntArray(2)
 
@@ -57,29 +58,29 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     private var mEffectContext: EffectContext? = null
 
     /**
-     * Current `Effect`, Effects are high-performance transformations that can be applied to
+     * Current [Effect], Effects are high-performance transformations that can be applied to
      * image frames via the use of textures which have had the transformation applied to them.
      */
     private var mEffect: Effect? = null
 
     /**
-     * Our instance of `TextureRenderer`, its methods do all our rendering for us.
+     * Our instance of [TextureRenderer], its methods do all our rendering for us.
      */
     private val mTexRenderer: TextureRenderer = TextureRenderer()
 
     /**
-     * Width of our bitmap R.drawable.puppy: drawable-nodpi/puppy.jpg
+     * Width of our [Bitmap] with ID  [R.drawable.puppy]: file `drawable-nodpi/puppy.jpg`
      */
     private var mImageWidth = 0
 
     /**
-     * Height of our bitmap R.drawable.puppy: drawable-nodpi/puppy.jpg
+     * Height of our [Bitmap] with ID  [R.drawable.puppy]: file `drawable-nodpi/puppy.jpg`
      */
     private var mImageHeight = 0
 
     /**
-     * Flag to indicate whether our `onDrawFrame` override has been called at least once so
-     * it knows to only do its initialization duties the first time it is called.
+     * Flag to indicate whether our [onDrawFrame] override has been called at least once so it knows
+     * to only do its initialization duties the first time it is called.
      */
     private var mInitialized = false
 
@@ -90,49 +91,53 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
 
     /**
      * Called to do initial creation of a fragment. We call our super's implementation of `onCreate`
-     * then we call the `setHasOptionsMenu(true)` method to report that this fragment would like to
-     * participate in populating the options menu by receiving a call to [.onCreateOptionsMenu] and
-     * related methods.
+     * then we call the [setHasOptionsMenu] method with `true` to report that this fragment would
+     * like to participate in populating the options menu by receiving a call to [onCreateOptionsMenu]
+     * and related methods.
      *
-     * @param savedInstanceState we wait until our `onViewCreated` override is called to use this
+     * @param savedInstanceState we wait until our [onViewCreated] override is called to use this
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        setHasOptionsMenu(/* hasMenu = */ true)
     }
 
     /**
-     * Called to have the fragment instantiate its user interface view. We return the view created by
-     * using our parameter `LayoutInflater inflater` to inflate our layout file R.layout.fragment_media_effects
-     * using our parameter `ViewGroup container` for the layout params without attaching to it.
+     * Called to have the fragment instantiate its user interface view. We return the view
+     * created by using our [LayoutInflater] parameter [inflater] to inflate our layout file
+     * [R.layout.fragment_media_effects] using our [ViewGroup] parameter [container] for the
+     * layout params without attaching to it.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to.  The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_media_effects, container, false)
     }
 
     /**
-     * Called immediately after [.onCreateView] has returned,
-     * but before any saved state has been restored in to the view. We initialize our field
-     * `GLSurfaceView mEffectView` by finding the view in our parameter `View view` with
-     * id R.id.effects_view, then we set its EGLContext client version to use to 2 in order to use
-     * OpenGL ES 2.0, set its renderer to this, and set its rendermode to RENDERMODE_WHEN_DIRTY.
-     * If our parameter `Bundle savedInstanceState` is not null we call our `setCurrentEffect`
-     * method to set our field `mCurrentEffect` to the int stored in `savedInstanceState`
-     * under the key STATE_CURRENT_EFFECT ("current_effect"), otherwise we call `setCurrentEffect`
-     * with R.id.none.
+     * Called immediately after [onCreateView] has returned, but before any saved state has been
+     * restored in to the view. We initialize our [GLSurfaceView] field [mEffectView] by finding
+     * the view in our [View] parameter [view] with id [R.id.effects_view], then we set the
+     * `EGLContext` client version it is to use to 2 in order to use OpenGL ES 2.0, set its renderer
+     * to this, and set its rendermode to [GLSurfaceView.RENDERMODE_WHEN_DIRTY]. If our [Bundle]
+     * parameter [savedInstanceState] is not null we call our [setCurrentEffect] method to set our
+     * [Int] field [mCurrentEffect] to the [Int] stored in [savedInstanceState] under the key
+     * [STATE_CURRENT_EFFECT] ("current_effect"), otherwise we call [setCurrentEffect] with
+     * [R.id.none].
      *
-     * @param view The View returned by [.onCreateView].
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param view The [View] returned by [onCreateView].
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
