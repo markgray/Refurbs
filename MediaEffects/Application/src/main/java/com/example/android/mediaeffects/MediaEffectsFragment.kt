@@ -153,12 +153,12 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     }
 
     /**
-     * Initialize the contents of the Fragment host's standard options menu. We use our parameter
-     * `MenuInflater inflater` to inflate our menu layout file R.menu.media_effects into our
-     * parameter `Menu menu`.
+     * Initialize the contents of the Fragment host's standard options menu. We use our [MenuInflater]
+     * parameter [inflater] to inflate our menu layout file [R.menu.media_effects] into our [Menu]
+     * parameter [menu].
      *
      * @param menu The options menu in which you place your items.
-     * @param inflater `MenuInflater` you can use to inflate xml menu layout files.
+     * @param inflater a [MenuInflater] you can use to inflate xml menu layout files.
      */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.media_effects, menu)
@@ -166,13 +166,13 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
 
     /**
      * This hook is called whenever an item in your options menu is selected. We call our method
-     * `setCurrentEffect` to set our field `mCurrentEffect` to the item id of our parameter
-     * `MenuItem item`, then we call the `requestRender` method of our field
-     * `GLSurfaceView mEffectView` to request that the renderer render a frame. Finally we return
-     * true to consume the event here.
+     * [setCurrentEffect] to set our [Int] field [mCurrentEffect] to the item id of our [MenuItem]
+     * parameter [item], then we call the [GLSurfaceView.requestRender] method of our [GLSurfaceView]
+     * field [mEffectView] to request that the renderer render a frame. Finally we return `true` to
+     * consume the event here.
      *
      * @param item The menu item that was selected.
-     * @return We return true to consume the event here.
+     * @return We return `true` to consume the event here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         setCurrentEffect(item.itemId)
@@ -182,11 +182,11 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
 
     /**
      * Called to ask the fragment to save its current dynamic state, so it can later be reconstructed
-     * in a new instance of its process is restarted. We store our field `int mCurrentEffect`
-     * under the key STATE_CURRENT_EFFECT ("current_effect") in our parameter `Bundle outState`
-     * (it will be restored by our `onViewCreated` override when our fragment is restarted).
+     * in a new instance of its process is restarted. We store our [Int] field [mCurrentEffect] under
+     * the key [STATE_CURRENT_EFFECT] ("current_effect") in our [Bundle] parameter [outState] (it
+     * will be restored by our [onViewCreated] override when our fragment is restarted).
      *
-     * @param outState Bundle in which to place your saved state.
+     * @param outState a [Bundle] in which to place your saved state.
      */
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(STATE_CURRENT_EFFECT, mCurrentEffect)
@@ -197,7 +197,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      *
      * @param gl the GL interface. Use `instanceof` to
      * test if the interface supports GL11 or higher interfaces.
-     * @param eglConfig the EGLConfig of the created surface. Can be used
+     * @param eglConfig the [EGLConfig] of the created surface. Can be used
      * to create matching pbuffers.
      */
     override fun onSurfaceCreated(gl: GL10, eglConfig: EGLConfig) {
@@ -205,8 +205,8 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     }
 
     /**
-     * Called when the surface changed size. If our field `TextureRenderer mTexRenderer` is not
-     * null we call its `updateViewSize` method with the new width and height.
+     * Called when the surface changed size. If our [TextureRenderer] field [mTexRenderer] is not
+     * `null` we call its [TextureRenderer.updateViewSize] method with the new width and height.
      *
      * @param gl the GL interface. Use `instanceof` to
      * test if the interface supports GL11 or higher interfaces.
@@ -218,20 +218,21 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     }
 
     /**
-     * Called to draw the current frame. If our field `boolean mInitialized` is false, this is
-     * the first time we have been called so we have to initialize our field `EffectContext mEffectContext`
-     * with a context within the current GL context created by the method `createWithCurrentGlContext`.
-     * We then call the `init` method of our field `TextureRenderer mTexRenderer` to initialize
-     * the OpenGL graphics engine to draw for us. Then we call our method `loadTextures` to allocate
-     * two texture names for our field `int[] mTextures` load our image file R.drawable.puppy
-     * (drawable-nodpi/puppy.jpg) into the texture named by `mTextures[0]` and do some other initialization
-     * necessary to use it as a texture. We then set our field `mInitialized` to true so we do not
-     * do this initialization the next time we are called. Whether it is the first or a subsequent call,
-     * if our field `mCurrentEffect` is not R.id.none, we call our method `initEffect` to
-     * initialize the chosen effect, and then call our method `applyEffect` to apply the effect
+     * Called to draw the current frame. If our [Boolean] field [mInitialized] is `false`, this is
+     * the first time we have been called so we have to initialize our [EffectContext] field
+     * [mEffectContext] with a context within the current GL context created by the method
+     * [EffectContext.createWithCurrentGlContext]. We then call the [TextureRenderer.init] method of
+     * our [TextureRenderer] field [mTexRenderer] to initialize the OpenGL graphics engine to draw
+     * for us. Then we call our method [loadTextures] to allocate two texture names for our [IntArray]
+     * field [mTextures], load our image file [R.drawable.puppy] (drawable-nodpi/puppy.jpg) into the
+     * texture named by `mTextures[0]` and do some other initialization necessary to use it as a
+     * texture. We then set our [Boolean] field [mInitialized] to `true` so we do not do this
+     * initialization the next time we are called. Whether it is the first or a subsequent call,
+     * if our [Int] field [mCurrentEffect] is not [R.id.none], we call our [initEffect] method to
+     * initialize the chosen effect, and then call our [applyEffect] method to apply the effect
      * to the texture with texture name `mTextures[0]` (our unmodified bitmap) to create a new
-     * texture for the texture name `mTextures[1]`. In either case we then call our method
-     * `renderResult` to draw our frame using the appropriate texture name.
+     * texture for the texture name `mTextures[1]`. In either case we then call our [renderResult]
+     * method to draw our frame using the appropriate texture name.
      *
      * @param gl the GL interface. Use `instanceof` to
      * test if the interface supports GL11 or higher interfaces.
@@ -253,7 +254,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     }
 
     /**
-     * Setter for our field `int mCurrentEffect`.
+     * Setter for our [Int] field [mCurrentEffect].
      *
      * @param effect one of the 24 possible effects (including R.id.none)
      */
@@ -263,22 +264,23 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
 
     /**
      * Creates two texture names, uploads a bitmap to one of the textures, and sets the texture
-     * parameters. First we call the `glGenTextures` method to generate 2 texture names for
-     * our field `int[] mTextures`. We initialize `Bitmap bitmap` by decoding the jpg
-     * with resource id R.drawable.puppy, set our field `mImageWidth` to the width of
-     * `bitmap` and `mImageHeight` to the height of `bitmap`, then call the
-     * `updateTextureSize` to update it with the new size. We call `glBindTexture` to
-     * bind the texture named `mTextures[0]` to GL_TEXTURE_2D (texture targets become aliases
-     * for the textures currently bound to them). We then call the `GLUtils.texImage2D` method
-     * to upload `bitmap` into GL_TEXTURE_2D (alias for `mTextures[0]` recall). Finally
-     * we call the `GLToolbox.initTexParams` method to set the texture parameters as we want them.
+     * parameters. First we call the [GLES20.glGenTextures] method to generate 2 texture names for
+     * our [IntArray] field [mTextures]. We initialize [Bitmap] variable `val bitmap` by decoding
+     * the jpg with resource id [R.drawable.puppy], set our [Int] field [mImageWidth] to the width
+     * of `bitmap` and [Int] fiedl [mImageHeight] to the height of `bitmap`, then call the
+     * [TextureRenderer.updateTextureSize] method of [TextureRenderer] field [mTexRenderer] to
+     * update it with the new size. We call the [GLES20.glBindTexture] method to bind the texture
+     * named `mTextures[0]` to [GLES20.GL_TEXTURE_2D] (texture targets become aliases for the
+     * textures currently bound to them). We then call the [GLUtils.texImage2D] method to upload
+     * `bitmap` into [GLES20.GL_TEXTURE_2D] (alias for `mTextures[0]` recall). Finally we call the
+     * [GLToolbox.initTexParams] method to set the texture parameters as we want them.
      */
     private fun loadTextures() {
         // Generate textures
         GLES20.glGenTextures(2, mTextures, 0)
 
         // Load input bitmap
-        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.puppy)
+        val bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.puppy)
         mImageWidth = bitmap.width
         mImageHeight = bitmap.height
         mTexRenderer.updateTextureSize(mImageWidth, mImageHeight)
@@ -292,29 +294,26 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     }
 
     /**
-     * Creates and initializes our field `Effect mEffect` for the effect chosen by our field
-     * `int mCurrentEffect`. We use the `getFactory` method of our field
-     * `EffectContext mEffectContext` to initialize `EffectFactory effectFactory` with
-     * the EffectFactory for that context. If our field `Effect mEffect` is not null we call
-     * its `release` method to release the effect and any resources associated with it. Then
-     * we switch on the value or our field `int mCurrentEffect`:
+     * Creates and initializes our [Effect] field [mEffect] for the effect chosen by our [Int] field
+     * [mCurrentEffect]. We use the [EffectContext.getFactory] method of our [EffectContext] field
+     * [mEffectContext] to initialize [EffectFactory] variable `val effectFactory` with the
+     * [EffectFactory] for that context. If our [Effect] field [mEffect] is not `null` we call
+     * its [Effect.release] method to release the effect and any resources associated with it. Then
+     * we `when` switch on the value or our [Int] field [mCurrentEffect]:
      *
-     *  *
-     * R.id.none: we just break having done nothing
+     *  * [R.id.none] ("None"): we do nothing
      *
-     *  *
-     * R.id.auto_fix: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_AUTOFIX (Attempts to auto-fix the image based on
-     * histogram equalization). We then set the parameter of `mEffect` with the key
-     * "scale" to 0.5 (scale of the adjustment, Zero means no adjustment, while 1 indicates
-     * the maximum amount of adjustment). Then we break.
+     *  * [R.id.auto_fix] ("Autofix"): we set our [Effect] field [mEffect] to the effect produced by
+     *  `effectFactory` for [EffectFactory.EFFECT_AUTOFIX] (Attempts to auto-fix the image based on
+     *  histogram equalization). We then set the parameter of [mEffect] with the key "scale" to 0.5
+     *  (scale of the adjustment, Zero means no adjustment, while 1 indicates the maximum amount of
+     *  adjustment).
      *
-     *  *
-     * R.id.bw: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_BLACKWHITE (Adjusts the range of minimal and maximal
-     * color pixel intensities). We then set the parameter of `mEffect` with the key
-     * "black" to .1f (value of the minimal pixel) and the parameter of `mEffect` with
-     * the key "white" to .7f (value of the maximal pixel). Then we break.
+     *  * [R.id.bw] ("Min/Max Color Intensity"): we set our [Effect] field [mEffect] to the effect
+     *  produced by `effectFactory` for [EffectFactory.EFFECT_BLACKWHITE] (Adjusts the range of
+     *  minimal and maximal color pixel intensities). We then set the parameter of [mEffect] with
+     *  the key "black" to .1f (value of the minimal pixel) and the parameter of [mEffect] with the
+     *  key "white" to .7f (value of the maximal pixel).
      *
      *  *
      * R.id.brightness: we set our field `Effect mEffect` to the effect produced by
@@ -447,7 +446,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      *
      */
     private fun initEffect() {
-        val effectFactory = mEffectContext!!.factory
+        val effectFactory: EffectFactory = mEffectContext!!.factory
         if (mEffect != null) {
             mEffect!!.release()
         }
