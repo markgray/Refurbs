@@ -315,79 +315,64 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      *  the key "black" to .1f (value of the minimal pixel) and the parameter of [mEffect] with the
      *  key "white" to .7f (value of the maximal pixel).
      *
-     *  *
-     * R.id.brightness: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_BRIGHTNESS (Adjusts the brightness of the image).
-     * We then set the parameter of `mEffect` with the key "brightness" to 2.0f (The
-     * brightness multiplier, 1.0 means no change, larger values will increase brightness).
-     * Then we break.
+     *  * [R.id.brightness] ("Brightness"): we set our [Effect] field [mEffect] to the effect
+     *  produced by `effectFactory` for [EffectFactory.EFFECT_BRIGHTNESS] (Adjusts the brightness
+     *  of the image). We then set the parameter of [mEffect] with the key "brightness" to 2.0f (The
+     *  brightness multiplier, 1.0 means no change, larger values will increase brightness).
      *
-     *  *
-     * R.id.contrast: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_CONTRAST (Adjusts the contrast of the image). We
-     * then set the parameter of `mEffect` with the key "contrast" to 1.4f (The
-     * contrast multiplier, 1.0 means no change larger values will increase contrast).
-     * Then we break.
+     *  * [R.id.contrast] ("Contrast"): we set our [Effect] field [mEffect] to the effect produced
+     *  by `effectFactory` for [EffectFactory.EFFECT_CONTRAST] (Adjusts the contrast of the image).
+     *  We then set the parameter of [mEffect] with the key "contrast" to 1.4f (The contrast
+     *  multiplier, 1.0 means no change larger values will increase contrast).
      *
-     *  *
-     * R.id.crossprocess: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_CROSSPROCESS (Applies a cross process effect on image,
-     * in which the red and green channels are enhanced while the blue channel is restricted).
-     * Then we break.
+     *  * [R.id.crossprocess] ("Cross Process"): we set our [Effect] field [mEffect] to the effect
+     *  produced by `effectFactory` for [EffectFactory.EFFECT_CROSSPROCESS] (Applies a cross process
+     *  effect on image, in which the red and green channels are enhanced while the blue channel is
+     *  restricted)..
      *
-     *  *
-     * R.id.documentary: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_DOCUMENTARY (Applies black and white documentary style
-     * effect on image). Then we break.
+     *  * [R.id.documentary] ("Documentary"): we set our [Effect] field [mEffect] to the effect
+     *  produced by `effectFactory` for [EffectFactory.EFFECT_DOCUMENTARY] (Applies black and white
+     *  documentary style effect on image).
      *
-     *  *
-     * R.id.duotone: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_DUOTONE (Representation of photo using only two color
-     * tones). We then set the parameter of `mEffect` with the key "first_color" to
-     * YELLOW (first color tone), and the parameter of `mEffect` with the key "second_color"
-     * to DKGRAY (second color tone). Then we break.
+     *  * [R.id.duotone] ("Duo Tone"): we set our [Effect] field [mEffect] to the effect produced by
+     *  `effectFactory` for [EffectFactory.EFFECT_DUOTONE] (Representation of photo using only two
+     *  color tones). We then set the parameter of [mEffect] with the key "first_color" to YELLOW
+     *  (first color tone), and the parameter of [mEffect] with the key "second_color" to DKGRAY
+     *  (second color tone).
      *
-     *  *
-     * R.id.filllight: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_FILLLIGHT (Applies back-light filling to the image).
-     * We then set the parameter of `mEffect` with the key "strength" to .8f (strength
-     * of the backlight, between 0 and 1, Zero means no change). Then we break.
+     *  * [R.id.filllight] ("Fill Light"): we set our [Effect] field [mEffect] to the effect
+     *  produced by `effectFactory` for [EffectFactory.EFFECT_FILLLIGHT] (Applies back-light
+     *  filling to the image). We then set the parameter of [mEffect] with the key "strength"
+     *  to .8f (strength of the backlight, between 0 and 1, Zero means no change).
      *
-     *  *
-     * R.id.fisheye: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_FISHEYE (Applies a fisheye lens distortion to the
-     * image). We then set the parameter of `mEffect` with the key "scale" to .5f
-     * (scale of the distortion, between 0 and 1, Zero means no distortion). Then we break.
+     *  * [R.id.fisheye] ("Fish Eye"): we set our [Effect] field [mEffect] to the effect produced
+     *  by `effectFactory` for [EffectFactory.EFFECT_FISHEYE] (Applies a fisheye lens distortion to
+     *  the image). We then set the parameter of [mEffect] with the key "scale" to .5f (scale of
+     *  the distortion, between 0 and 1, Zero means no distortion).
      *
-     *  *
-     * R.id.flipvert: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_FLIP (Flips image vertically and/or horizontally).
-     * We then set the parameter of `mEffect` with the key "vertical" to true (Whether
-     * to flip image vertically). Then we break.
+     *  * [R.id.flipvert] ("Flip Vertical"): we set our [Effect] field [mEffect] to the effect
+     *  produced by `effectFactory` for [EffectFactory.EFFECT_FLIP] (Flips image vertically and/or
+     *  horizontally). We then set the parameter of [mEffect] with the key "vertical" to `true`
+     *  (Whether to flip image vertically).
      *
-     *  *
-     * R.id.fliphor: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_FLIP (Flips image vertically and/or horizontally).
-     * We then set the parameter of `mEffect` with the key "horizontal" to true (Whether
-     * to flip image horizontally). Then we break.
+     *  * [R.id.fliphor] ("Flip Horizontal"): we set our [Effect] field [mEffect] to the effect
+     *  produced by `effectFactory` for [EffectFactory.EFFECT_FLIP] (Flips image vertically and/or
+     *  horizontally). We then set the parameter of [mEffect] with the key "horizontal" to `true`
+     *  (Whether to flip image horizontally).
      *
-     *  *
-     * R.id.grain: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_GRAIN (Applies film grain effect to image). We then
-     * set the parameter of `mEffect` with the key "strength" to 1.0f (strength of the
-     * grain effect, between 0 and 1, Zero means no change). Then we break.
+     *  * [R.id.grain] ("Grain"): we set our [Effect] field [mEffect] to the effect produced by
+     *  `effectFactory` for [EffectFactory.EFFECT_GRAIN] (Applies film grain effect to image). We
+     *  then set the parameter of [mEffect] with the key "strength" to 1.0f (strength of the grain
+     *  effect, between 0 and 1, Zero means no change).
      *
-     *  *
-     * R.id.grayscale: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_GRAYSCALE (Converts image to grayscale). Then we break.
+     *  * [R.id.grayscale] ("Grayscale"): we set our [Effect] field [mEffect] to the effect produced
+     *  by `effectFactory` for [EffectFactory.EFFECT_GRAYSCALE] (Converts image to grayscale).
      *
-     *  *
-     * R.id.lomoish: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_LOMOISH (Applies lomo-camera style effect to image,
-     * effect is inspired by photographs taken from an inexpensive Russian camera called the
-     * Lomo LC-A. The photos produced by Lomo carry high-contrast, increased saturation, and
-     * unique coloring due to “improper” color reproduction and dark blurry edges with a sharp
-     * center). Then we break.
+     *  * [R.id.lomoish] ("Lomoish"): we set our [Effect] field [mEffect] to the effect produced by
+     *  `effectFactory` for [EffectFactory.EFFECT_LOMOISH] (Applies lomo-camera style effect to
+     *  image, effect is inspired by photographs taken from an inexpensive Russian camera called the
+     *  Lomo LC-A. The photos produced by Lomo carry high-contrast, increased saturation, and unique
+     *  coloring due to “improper” color reproduction and dark blurry edges with a sharp center).
      *
      *  *
      * R.id.negative: we set our field `Effect mEffect` to the effect produced by
@@ -474,7 +459,9 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
             }
 
             R.id.crossprocess -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_CROSSPROCESS)
+
             R.id.documentary -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_DOCUMENTARY)
+
             R.id.duotone -> {
                 mEffect = effectFactory.createEffect(EffectFactory.EFFECT_DUOTONE)
                 mEffect!!.setParameter("first_color", Color.YELLOW)
@@ -507,9 +494,13 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
             }
 
             R.id.grayscale -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_GRAYSCALE)
+
             R.id.lomoish -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_LOMOISH)
+
             R.id.negative -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_NEGATIVE)
+
             R.id.posterize -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_POSTERIZE)
+
             R.id.rotate -> {
                 mEffect = effectFactory.createEffect(EffectFactory.EFFECT_ROTATE)
                 mEffect!!.setParameter("angle", 180)
@@ -521,7 +512,9 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
             }
 
             R.id.sepia -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_SEPIA)
+
             R.id.sharpen -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_SHARPEN)
+
             R.id.temperature -> {
                 mEffect = effectFactory.createEffect(EffectFactory.EFFECT_TEMPERATURE)
                 mEffect!!.setParameter("scale", .9f)
