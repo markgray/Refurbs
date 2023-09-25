@@ -27,38 +27,39 @@ import java.nio.FloatBuffer
  */
 class TextureRenderer {
     /**
-     * The OpenGL program object created by compiling and linking the vertex and fragment shader programs
-     * VERTEX_SHADER and FRAGMENT_SHADER, it is used in our `renderTexture` where a call to the
-     * `glUseProgram` method installs the program object as part of current rendering state.
+     * The OpenGL program object created by compiling and linking the vertex and fragment shader
+     * programs [VERTEX_SHADER] and [FRAGMENT_SHADER], it is used in our [renderTexture] method
+     * where a call to the [GLES20.glUseProgram] method installs the program object as part of
+     * current rendering state.
      */
     private var mProgram = 0
 
     /**
-     * location of the uniform variable in `mProgram` with the name "tex_sampler"
+     * Location of the uniform variable in [mProgram] with the name "tex_sampler"
      */
     private var mTexSamplerHandle = 0
 
     /**
-     * location of the attribute variable in `mProgram` with the name "a_texcoord"
+     * Location of the attribute variable in [mProgram] with the name "a_texcoord"
      */
     private var mTexCoordHandle = 0
 
     /**
-     * location of the attribute variable in `mProgram` with the name "a_position"
+     * Location of the attribute variable in [mProgram] with the name "a_position"
      */
     private var mPosCoordHandle = 0
 
     /**
-     * `FloatBuffer` we place our vertices defined in the array TEX_VERTICES in order to
-     * later bind them to the vertex attribute `mTexCoordHandle` with a call to the
-     * `glVertexAttribPointer` method.
+     * [FloatBuffer] we place our vertices defined in the array [TEX_VERTICES] in in order
+     * to later bind them to the vertex attribute [mTexCoordHandle] with a call to the
+     * [GLES20.glVertexAttribPointer] method.
      */
     private var mTexVertices: FloatBuffer? = null
 
     /**
-     * `FloatBuffer` we place our vertices defined in the array POS_VERTICES in order to
-     * later bind them to the vertex attribute `mPosCoordHandle` with a call to the
-     * `glVertexAttribPointer` method.
+     * [FloatBuffer] we place our vertices defined in the array [POS_VERTICES] in order to
+     * later bind them to the vertex attribute [mPosCoordHandle] with a call to the
+     * [GLES20.glVertexAttribPointer] method.
      */
     private var mPosVertices: FloatBuffer? = null
 

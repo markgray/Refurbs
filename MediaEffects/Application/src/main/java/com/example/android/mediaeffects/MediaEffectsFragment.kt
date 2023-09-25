@@ -374,61 +374,46 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      *  Lomo LC-A. The photos produced by Lomo carry high-contrast, increased saturation, and unique
      *  coloring due to “improper” color reproduction and dark blurry edges with a sharp center).
      *
-     *  *
-     * R.id.negative: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_NEGATIVE (Inverts the image colors). Then we break.
+     *  * [R.id.negative] ("Negative"): we set our [Effect] field [mEffect] to the effect produced
+     *  by `effectFactory` for [EffectFactory.EFFECT_NEGATIVE] (Inverts the image colors).
      *
-     *  *
-     * R.id.posterize: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_POSTERIZE (Applies posterization effect to image).
-     * Then we break.
+     *  * [R.id.posterize] ("Posterize"): we set our [Effect] field [mEffect] to the effect produced
+     *  by `effectFactory` for [EffectFactory.EFFECT_POSTERIZE] (Applies posterization effect to image).
      *
-     *  *
-     * R.id.rotate: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_ROTATE (Rotates the image, snaps to nearest 90 degrees).
-     * We then set the parameter of `mEffect` with the key "angle" to 180 (angle of
-     * rotation in degrees, will be rounded to the nearest multiple of 90). Then we break.
+     *  * [R.id.rotate] ("Rotate"): we set our [Effect] field [mEffect] to the effect produced by
+     *  `effectFactory` for [EffectFactory.EFFECT_ROTATE] (Rotates the image, snaps to nearest 90
+     *  degrees). We then set the parameter of [mEffect] with the key "angle" to 180 (angle of
+     *  rotation in degrees, will be rounded to the nearest multiple of 90).
      *
-     *  *
-     * R.id.saturate: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_SATURATE (Adjusts color saturation of image).
-     * We then set the parameter of `mEffect` with the key "scale" to .5f (scale of
-     * color saturation, between -1 and 1. 0 means no change, while -1 indicates full desaturation).
-     * Then we break.
+     *  * [R.id.saturate] ("Saturate"): we set our [Effect] field [mEffect] to the effect produced
+     *  by `effectFactory` for [EffectFactory.EFFECT_SATURATE] (Adjusts color saturation of image).
+     *  We then set the parameter of [mEffect] with the key "scale" to .5f (scale of color
+     *  saturation, between -1 and 1. 0 means no change, while -1 indicates full desaturation).
      *
-     *  *
-     * R.id.sepia: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_SEPIA (Converts image to sepia tone, Sepia toning is
-     * a specialized treatment to give a black-and-white photographic print a warmer tone and
-     * to enhance its archival qualities). Then we break.
+     *  * [R.id.sepia] ("Sepia"): we set our [Effect] field [mEffect] to the effect produced by
+     *  `effectFactory` for [EffectFactory.EFFECT_SEPIA] (Converts image to sepia tone, Sepia toning
+     *  is a specialized treatment to give a black-and-white photographic print a warmer tone and
+     *  to enhance its archival qualities).
      *
-     *  *
-     * R.id.sharpen: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_SHARPEN (Sharpens the image). Then we break.
+     *  * [R.id.sharpen] ("Sharpen"): we set our [Effect] field [mEffect] to the effect produced by
+     *  `effectFactory` for [EffectFactory.EFFECT_SHARPEN] (Sharpens the image).
      *
-     *  *
-     * R.id.temperature: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_TEMPERATURE (Adjusts color temperature of the image).
-     * We then set the parameter of `mEffect` with the key "scale" to .9f (value of color
-     * temperature, between 0 and 1, with 0 indicating cool, and 1 indicating warm. A value of
-     * of 0.5 indicates no change). Then we break.
+     *  * [R.id.temperature] ("Temperature"): we set our [Effect] field [mEffect] to the effect
+     *  produced by `effectFactory` for [EffectFactory.EFFECT_TEMPERATURE] (Adjusts color temperature
+     *  of the image). We then set the parameter of [mEffect] with the key "scale" to .9f (value of
+     *  color temperature, between 0 and 1, with 0 indicating cool, and 1 indicating warm. A value
+     *  of 0.5 indicates no change).
      *
-     *  *
-     * R.id.tint: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_TINT (Tints the photo with specified color).
-     * We then set the parameter of `mEffect` with the key "tint" to MAGENTA.
-     * Then we break.
+     *  * [R.id.tint] ("Tint"): we set our [Effect] field [mEffect] to the effect produced by
+     *  `effectFactory` for [EffectFactory.EFFECT_TINT] (Tints the photo with specified color).
+     *  We then set the parameter of `mEffect` with the key "tint" to MAGENTA.
      *
-     *  *
-     * R.id.vignette: we set our field `Effect mEffect` to the effect produced by
-     * `effectFactory` for EFFECT_VIGNETTE (Adds a vignette effect to image, i.e. fades
-     * away the outer image edges). We then set the parameter of `mEffect` with the key
-     * "scale" to .5f (scale of vignetting, between 0 and 1. 0 means no change). Then we break.
+     *  * [R.id.vignette] ("Vignette"): we set our [Effect] field [mEffect] to the effect produced
+     *  by `effectFactory` for [EffectFactory.EFFECT_VIGNETTE] (Adds a vignette effect to image,
+     *  i.e. fades away the outer image edges). We then set the parameter of [mEffect] with the key
+     *  "scale" to .5f (scale of vignetting, between 0 and 1. 0 means no change).
      *
-     *  *
-     * default: we just break.
-     *
-     *
+     *  * `else`: we do nothing.
      */
     private fun initEffect() {
         val effectFactory: EffectFactory = mEffectContext!!.factory
@@ -535,20 +520,21 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     }
 
     /**
-     * Applies the `Effect` contained in our field `Effect mEffect` to the texture whose
-     * name is in `mTextures[0]` saving the output in the texture whose name is in `mTextures[1]`,
-     * using `mImageWidth` as the input texture width and `mImageHeight` as the input texture
-     * height.
+     * Applies the [Effect] contained in our [Effect] field [mEffect] to the texture whose name is
+     * in `mTextures[0]` saving the output in the texture whose name is in `mTextures[1]`, using
+     * [Int] field [mImageWidth] as the input texture width and [Int] field [mImageHeight] as the
+     * input texture height.
      */
     private fun applyEffect() {
         mEffect!!.apply(mTextures[0], mImageWidth, mImageHeight, mTextures[1])
     }
 
     /**
-     * If the current effect ID in `mCurrentEffect` is not R.id.none we call the `renderTexture`
-     * method of our field `TextureRenderer mTexRenderer` with `mTextures[1]` as the texture to
-     * use (the texture which contains the result of applying the current effect), otherwise we call the
-     * `renderTexture` method with `mTextures[0]` as the texture (the original bitmap).
+     * If the current effect ID in [Int] field [mCurrentEffect] is not [R.id.none] we call the
+     * [TextureRenderer.renderTexture] method of our [TextureRenderer] field [mTexRenderer] with
+     * `mTextures[1]` as the texture to use (the texture which contains the result of applying the
+     * current [Effect]), otherwise we call the [TextureRenderer.renderTexture] method with
+     * `mTextures[0]` as the texture (the original bitmap).
      */
     private fun renderResult() {
         if (mCurrentEffect != R.id.none) {
@@ -562,9 +548,9 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
 
     companion object {
         /**
-         * Key under which the current media effect `mCurrentEffect` is stored in the `Bundle`
-         * passed to our `onSaveInstanceState` override, and from which it is restored again in our
-         * `onViewCreated` if we are being recreated from a previous state.
+         * Key under which the current media effect [mCurrentEffect] is stored in the [Bundle]
+         * passed to our [onSaveInstanceState] override, and from which it is restored again in our
+         * [onViewCreated] override if we are being recreated from a previous state.
          */
         private const val STATE_CURRENT_EFFECT = "current_effect"
     }
