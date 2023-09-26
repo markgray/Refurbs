@@ -18,6 +18,7 @@
 package com.example.android.mediaeffects
 
 import android.opengl.GLES20
+import android.opengl.GLSurfaceView
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -64,49 +65,52 @@ class TextureRenderer {
     private var mPosVertices: FloatBuffer? = null
 
     /**
-     * Current width of our surface which is set by our `updateViewSize` method to the width
-     * passed to the `onSurfaceChanged` override of the `MediaEffectsFragment` fragment.
+     * Current width of our surface which is set by our [updateViewSize] method to the width passed
+     * to the [GLSurfaceView.Renderer.onSurfaceChanged] override of the [MediaEffectsFragment]
+     * fragment.
      */
     private var mViewWidth = 0
 
     /**
-     * Current height of our surface which is set by our `updateViewSize` method to the height
-     * passed to the `onSurfaceChanged` override of the `MediaEffectsFragment` fragment.
+     * Current height of our surface which is set by our [updateViewSize] method to the height passed
+     * to the [GLSurfaceView.Renderer.onSurfaceChanged] override of the [MediaEffectsFragment]
+     * fragment.
      */
     private var mViewHeight = 0
 
     /**
-     * Current width of our texture which is set by our `updateTextureSize` method to the width
-     * of the bitmap we use as our texture as determined in the `loadTextures` method of the
-     * `MediaEffectsFragment` fragment.
+     * Current width of our texture which is set by our [updateTextureSize] method to the width of
+     * the bitmap we use as our texture as determined in the [MediaEffectsFragment.loadTextures]
+     * method of the [MediaEffectsFragment] fragment.
      */
     private var mTexWidth = 0
 
     /**
-     * Current height of our texture which is set by our `updateTextureSize` method to the height
-     * of the bitmap we use as our texture as determined in the `loadTextures` method of the
-     * `MediaEffectsFragment` fragment.
+     * Current height of our texture which is set by our [updateTextureSize] method to the height of
+     * the bitmap we use as our texture as determined in the [MediaEffectsFragment.loadTextures]
+     * method of the [MediaEffectsFragment] fragment.
      */
     private var mTexHeight = 0
 
     /**
-     * Initializes the OpenGL engine to do what needs to be done. We initialize our field `mProgram`
-     * with the reference to the compiled and linked program object that the method `GLToolbox.createProgram`
-     * creates from our shaders VERTEX_SHADER, and FRAGMENT_SHADER. We initialize `mTexSamplerHandle`
-     * with the location in `mProgram` of the uniform variable with the name "tex_sampler",
-     * `mTexCoordHandle` with the location in `mProgram` of the attribute variable with the
-     * name "a_texcoord", and `mPosCoordHandle` with the location in `mProgram` of the attribute
-     * variable with the name "a_position". We initialize `FloatBuffer mTexVertices` by allocating
-     * a direct byte buffer long enough to hold the TEX_VERTICES array, set its order to `nativeOrder`,
-     * then create a view of this byte buffer as a float buffer. We then bulk put all the vertex values
-     * in TEX_VERTICES into `mTexVertices`, chaining a call to `position(0)` to position the
+     * Initializes the OpenGL engine to do what needs to be done. We initialize our [Int] field
+     * [mProgram] with the reference to the compiled and linked program object that the method
+     * [GLToolbox.createProgram] creates from our shaders [VERTEX_SHADER], and [FRAGMENT_SHADER].
+     * We initialize [Int] field [mTexSamplerHandle] with the location in [mProgram] of the uniform
+     * variable with the name "tex_sampler", [Int] field [mTexCoordHandle] with the location in
+     * [mProgram] of the attribute variable with the name "a_texcoord", and [Int] field
+     * [mPosCoordHandle] with the location in [mProgram] of the attribute variable with the name
+     * "a_position". We initialize [FloatBuffer] field [mTexVertices] by allocating a direct byte
+     * buffer long enough to hold the [TEX_VERTICES] array, set its order to [ByteOrder.nativeOrder],
+     * then create a view of this byte buffer as a float buffer. We then bulk put all the vertex
+     * values in [TEX_VERTICES] into [mTexVertices], chaining a call to `position(0)` to position the
      * `FloatBuffer` back to the beginning. We initialize `FloatBuffer mPosVertices` by allocating
      * a direct byte buffer long enough to hold the POS_VERTICES array, set its order to `nativeOrder`,
      * then create a view of this byte buffer as a float buffer. We then bulk put all the vertex values
-     * in POS_VERTICES into `mPosVertices`, chaining a call to `position(0)` to position the
-     * `FloatBuffer` back to the beginning.
+     * in POS_VERTICES into `mPosVertices`, chaining a call to [FloatBuffer.position] to position
+     * the [FloatBuffer] back to its beginning (0).
      */
-    fun init() {
+    fun initialize() {
         // Create program
         mProgram = GLToolbox.createProgram(VERTEX_SHADER, FRAGMENT_SHADER)
 
@@ -127,18 +131,18 @@ class TextureRenderer {
     }
 
     /**
-     * Not actually used apparently. We call the `glDeleteProgram` to delete the program object
-     * `mProgram`.
+     * Not actually used apparently. We call the [GLES20.glDeleteProgram] method to delete the
+     * program object pointed to by [Int] field [mProgram].
      */
     fun tearDown() {
         GLES20.glDeleteProgram(mProgram)
     }
 
     /**
-     * Called from the `loadTextures` method of `MediaEffectsFragment` to set our texture
-     * width (`mTexWidth`) and texture height (`mTexHeight` to the bitmap's width and
-     * height. After doing this we call our method `computeOutputVertices` to calculate the
-     * correct values of the vertices in `FloatBuffer mPosVertices`.
+     * Called from the [MediaEffectsFragment.loadTextures] method of [MediaEffectsFragment] to set
+     * our texture width ([Int] field [mTexWidth]) and texture height ([Int] field [mTexHeight]) to
+     * the bitmap's width and height. After doing this we call our method [computeOutputVertices]
+     * to calculate the correct values of the vertices in [FloatBuffer] field [mPosVertices].
      *
      * @param texWidth new image width
      * @param texHeight new image height
@@ -150,10 +154,10 @@ class TextureRenderer {
     }
 
     /**
-     * Called from the `onSurfaceChanged` override of `MediaEffectsFragment` to set our
-     * view width (`mmViewWidth`) and view height (`mViewHeight` to the views width and
-     * height. After doing this we call our method `computeOutputVertices` to calculate the
-     * correct values of the vertices in `FloatBuffer mPosVertices`.
+     * Called from the [GLSurfaceView.Renderer.onSurfaceChanged] override of [MediaEffectsFragment]
+     * to set our view width ([Int] field [mViewWidth]) and view height ([Int] field [mViewHeight])
+     * to the views width and height. After doing this we call our method [computeOutputVertices]
+     * to calculate the correct values of the vertices in [FloatBuffer] field [mPosVertices].
      *
      * @param viewWidth new view width
      * @param viewHeight new view height
@@ -165,42 +169,41 @@ class TextureRenderer {
     }
 
     /**
-     * Called from the `renderResult` method of `MediaEffectsFragment` which is called by
-     * its `onDrawFrame` override to render the current frame, using the desired texture name.
-     * First we call the `glBindFramebuffer` method to bind the GL_FRAMEBUFFER target to the
-     * frame buffer 0 (the default framebuffer object provided by the windowing system). Then we
-     * call the `glUseProgram` method to install the program object `mProgram` as part
-     * of the current rendering state. We then call the `GLToolbox.checkGlError` method to
-     * check for any errors, throwing a RuntimeException if any occurred.
+     * Called from the [MediaEffectsFragment.renderResult] method of [MediaEffectsFragment] which is
+     * called by its [MediaEffectsFragment.onDrawFrame] override to render the current frame, using
+     * the desired texture name. First we call the [GLES20.glBindFramebuffer] method to bind the
+     * [GLES20.GL_FRAMEBUFFER] target to the frame buffer 0 (the default framebuffer object provided
+     * by the windowing system). Then we call the [GLES20.glUseProgram] method to install the program
+     * object pointed to by [Int] field [mProgram] as part of the current rendering state. We then
+     * call the [GLToolbox.checkGlError] method to check for any errors, throwing a [RuntimeException]
+     * if any occurred.
      *
+     * We next call the [GLES20.glViewport] method to set the viewport with (0,0) as the lower left
+     * corner in pixels, and with [Int] field [mViewWidth] and [Int] field [mViewHeight] as the width
+     * and height of the viewport. We then call the [GLToolbox.checkGlError] method to check for any
+     * errors, throwing a [RuntimeException] if any occurred.
      *
-     * We next call the `glViewport` method to set the viewport with (0,0) as the lower left
-     * corner in pixels, and with `mViewWidth` and `mViewHeight` as the width and height
-     * of the viewport. We then call the `GLToolbox.checkGlError` method to check for any errors,
-     * throwing a RuntimeException if any occurred.
+     * We call [GLES20.glDisable] to disable [GLES20.GL_BLEND] which disables blending of the
+     * computed fragment color values with the values in the color buffers. We call the
+     * [GLES20.glVertexAttribPointer] method to specify that the generic vertex attribute whose
+     * location is in [Int] field [mTexCoordHandle] (attribute variable "a_texcoord") is to use the
+     * array in [FloatBuffer] field [mTexVertices], and that there are 2 components per generic
+     * vertex attribute of type [GLES20.GL_FLOAT], they should not be normalized, and that the
+     * stride is 0. We then call the [GLES20.glEnableVertexAttribArray] method to enable the
+     * generic vertex attribute array pointed to by [Int] field [mTexCoordHandle] (when enabled,
+     * the values in the generic vertex attribute array will be accessed and used for rendering
+     * when calls are made to vertex array commands such as [GLES20.glDrawArrays] or
+     * [GLES20.glDrawElements]).
      *
-     *
-     * We call `glDisable` to disable GL_BLEND to disable blending of the computed fragment
-     * color values with the values in the color buffers. We call the `glVertexAttribPointer`
-     * method to specify that the generic vertex attribute whose location is in `mTexCoordHandle`
-     * (attribute variable "a_texcoord") is to use the array `mTexVertices`, and that there are
-     * 2 components per generic vertex attribute of type GL_FLOAT, they should not be normalized, and
-     * that the stride is 0. We then call the `glEnableVertexAttribArray` method to enable the
-     * generic vertex attribute array `mTexCoordHandle` (when enabled, the values in the generic
-     * vertex attribute array will be accessed and used for rendering when calls are made to vertex
-     * array commands such as glDrawArrays or glDrawElements).
-     *
-     *
-     * We call the `glVertexAttribPointer` method to specify that the generic vertex attribute
-     * whose location is in `mPosCoordHandle` (attribute variable "a_position") is to use the
-     * array `mPosVertices`, and that there are 2 components per generic vertex attribute of
-     * type GL_FLOAT, they should not be normalized, and that the stride is 0. We then call the
-     * `glEnableVertexAttribArray` method to enable the generic vertex attribute array
-     * `mPosCoordHandle` (when enabled, the values in the generic  vertex attribute array will
-     * be accessed and used for rendering when calls are made to vertex array commands such as
-     * glDrawArrays or glDrawElements). We then call the `GLToolbox.checkGlError` method to
-     * check for any errors, throwing a RuntimeException if any occurred.
-     *
+     * We call the [GLES20.glVertexAttribPointer] method to specify that the generic vertex attribute
+     * whose location is in [Int] field [mPosCoordHandle] (attribute variable "a_position") is to use
+     * the array in [FloatBuffer] field [mPosVertices], and that there are 2 components per generic
+     * vertex attribute of type [GLES20.GL_FLOAT], they should not be normalized, and that the stride
+     * is 0. We then call the [GLES20.glEnableVertexAttribArray] method to enable the generic vertex
+     * attribute array [mPosCoordHandle] (when enabled, the values in the generic  vertex attribute
+     * array will be accessed and used for rendering when calls are made to vertex array commands
+     * such as [GLES20.glDrawArrays] or [GLES20.glDrawElements]). We then call the [GLToolbox.checkGlError]
+     * method to check for any errors, throwing a [RuntimeException] if any occurred.
      *
      * We call the `glActiveTexture` method to select GL_TEXTURE0 to be the active texture unit,
      * then call the `GLToolbox.checkGlError` method to check for any errors, throwing a
@@ -237,11 +240,24 @@ class TextureRenderer {
         GLES20.glDisable(GLES20.GL_BLEND)
 
         // Set the vertex attributes
-        GLES20.glVertexAttribPointer(mTexCoordHandle, 2, GLES20.GL_FLOAT, false,
-            0, mTexVertices)
+        GLES20.glVertexAttribPointer(
+            /* indx = */ mTexCoordHandle,
+            /* size = */ 2,
+            /* type = */ GLES20.GL_FLOAT,
+            /* normalized = */ false,
+            /* stride = */ 0,
+            /* ptr = */ mTexVertices
+        )
         GLES20.glEnableVertexAttribArray(mTexCoordHandle)
-        GLES20.glVertexAttribPointer(mPosCoordHandle, 2, GLES20.GL_FLOAT, false,
-            0, mPosVertices)
+
+        GLES20.glVertexAttribPointer(
+            /* indx = */ mPosCoordHandle,
+            /* size = */ 2,
+            /* type = */ GLES20.GL_FLOAT,
+            /* normalized = */ false,
+            /* stride = */ 0,
+            /* ptr = */ mPosVertices
+        )
         GLES20.glEnableVertexAttribArray(mPosCoordHandle)
         GLToolbox.checkGlError("vertex attribute setup")
 

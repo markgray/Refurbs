@@ -221,7 +221,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * Called to draw the current frame. If our [Boolean] field [mInitialized] is `false`, this is
      * the first time we have been called so we have to initialize our [EffectContext] field
      * [mEffectContext] with a context within the current GL context created by the method
-     * [EffectContext.createWithCurrentGlContext]. We then call the [TextureRenderer.init] method of
+     * [EffectContext.createWithCurrentGlContext]. We then call the [TextureRenderer.initialize] method of
      * our [TextureRenderer] field [mTexRenderer] to initialize the OpenGL graphics engine to draw
      * for us. Then we call our method [loadTextures] to allocate two texture names for our [IntArray]
      * field [mTextures], load our image file [R.drawable.puppy] (drawable-nodpi/puppy.jpg) into the
@@ -241,7 +241,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
         if (!mInitialized) {
             //Only need to do this once
             mEffectContext = EffectContext.createWithCurrentGlContext()
-            mTexRenderer.init()
+            mTexRenderer.initialize()
             loadTextures()
             mInitialized = true
         }
