@@ -205,22 +205,22 @@ class TextureRenderer {
      * such as [GLES20.glDrawArrays] or [GLES20.glDrawElements]). We then call the [GLToolbox.checkGlError]
      * method to check for any errors, throwing a [RuntimeException] if any occurred.
      *
-     * We call the `glActiveTexture` method to select GL_TEXTURE0 to be the active texture unit,
-     * then call the `GLToolbox.checkGlError` method to check for any errors, throwing a
-     * RuntimeException if any occurred. We then call the `glBindTexture` method to bind the
-     * GL_TEXTURE_2D texture target to the texture with the name `texId` (texture targets become
-     * aliases for the textures currently bound to them). We then call the `GLToolbox.checkGlError`
-     * method to check for any errors, throwing a RuntimeException if any occurred. Then we call the
-     * `glUniform1i` method to specify the value of the uniform variable whose address is in
-     * `mTexSamplerHandle` (the uniform variable with the name "tex_sampler") to be 0 (the texture
-     * unit to use).
+     * We call the [GLES20.glActiveTexture] method to select [GLES20.GL_TEXTURE0] to be the active
+     * texture unit, then call the [GLToolbox.checkGlError] method to check for any errors, throwing
+     * a [RuntimeException] if any occurred. We then call the [GLES20.glBindTexture] method to bind
+     * the [GLES20.GL_TEXTURE_2D] texture target to the texture with the name of our [Int] parameter
+     * [texId] (texture targets become aliases for the textures currently bound to them). We then
+     * call the [GLToolbox.checkGlError] method to check for any errors, throwing a [RuntimeException]
+     * if any occurred. Then we call the [GLES20.glUniform1i] method to specify the value of the
+     * uniform variable whose address is in [Int] field [mTexSamplerHandle] (the uniform variable
+     * with the name "tex_sampler") to be 0 (the texture unit to use).
      *
-     *
-     * We call the `glClearColor` method to specify the red, green, blue, and alpha values used
-     * when the color buffers are cleared to be a black with a 1.0 alpha value. We call the `glClear`
-     * method to clear the GL_COLOR_BUFFER_BIT buffer. Finally we call the `glDrawArrays` method
-     * to render GL_TRIANGLE_STRIP primitives from its array data, using 0 as the starting index, and
-     * using 4 as the number of vertices to be rendered.
+     * We call the [GLES20.glClearColor] method to specify the red, green, blue, and alpha values
+     * used when the color buffers are cleared to be a black with a 1.0 alpha value. We call the
+     * [GLES20.glClear] method to clear the [GLES20.GL_COLOR_BUFFER_BIT] buffer (clears the color
+     * buffer). Finally we call the [GLES20.glDrawArrays] method to render [GLES20.GL_TRIANGLE_STRIP]
+     * primitives from its array data, using 0 as the starting index, and using 4 as the number of
+     * vertices to be rendered.
      *
      * @param texId Generated texture name to use
      */
@@ -275,32 +275,31 @@ class TextureRenderer {
     }
 
     /**
-     * Computes the vertices for the `FloatBuffer mPosVertices` which supplies the vertices for
-     * the attribute variable "a_position" which is used as the location of the current vertex. If
-     * `mPosVertices` is null we do nothing. Otherwise we calculate the image aspect ration
-     * `imgAspectRatio` to be `mTexWidth/mTexHeight`, and the view aspect ratio
-     * `viewAspectRatio` to be `mViewWidth/mViewHeight`, and the relative aspect ratio
-     * `relativeAspectRatio` to be `viewAspectRatio/imgAspectRatio`. We declare
-     * `x0, y0, x1, and y1` then we branch on the value of `relativeAspectRatio`:
+     * Computes the vertices for the [FloatBuffer] field [mPosVertices] which supplies the vertices
+     * for the attribute variable "a_position" which is used as the location of the current vertex.
+     * If [mPosVertices] is `null` we do nothing. Otherwise we calculate the image aspect ratio in
+     * [Float] variable `val imgAspectRatio` to be [Int] field [mTexWidth] divided by [Int] field
+     * [mTexHeight], and the view aspect ratio in [Float] variable `val viewAspectRatio` to be
+     * [Int] field [mViewWidth] divided by [Int] field [mViewHeight], and the relative aspect ratio
+     * in [Float] variable `val relativeAspectRatio` to be `viewAspectRatio` divided by `imgAspectRatio`.
+     * We declare [Float] variable `val x0`, `val y0`, `val x1`, and `val y1` then we branch on the
+     * value of `relativeAspectRatio`:
      *
-     *  *
-     * greater than 1.0f: we set `x0` to `-1.0f/relativeAspectRatio`, `y0`
-     * to -1.0f, `x1` to `1.0f/relativeAspectRatio`, and `y1` to 1.0f
+     *  * greater than 1.0f: we set `x0` to `-1.0f/relativeAspectRatio`, `y0` to -1.0f, `x1` to
+     *  `1.0f/relativeAspectRatio`, and `y1` to 1.0f
      *
-     *  *
-     * less then 1.0f: we set `x0` to -1.0, `y0` to `-relativeAspectRatio`,
-     * `x1` to 1.0f, and `y1` to `relativeAspectRatio`.
+     *  * less then 1.0f: we set `x0` to -1.0, `y0` to `-relativeAspectRatio`, `x1` to 1.0f, and
+     *  `y1` to `relativeAspectRatio`.
      *
-     *
-     * We allocate `float[] coords` to contain `x0, y0, x1, y0, x0, y1, x1, y1` then bulk
-     * copy it to `FloatBuffer mPosVertices`, chaining a call to `position` to reposition
-     * `mPosVertices` to its beginning.
+     * We initialize [FloatArray] variable `val coords` to contain `x0, y0, x1, y0, x0, y1, x1, y1`
+     * then bulk copy it to [FloatBuffer] field [mPosVertices], chaining to it a call to
+     * [FloatBuffer.position] to reposition [mPosVertices] to its beginning.
      */
     private fun computeOutputVertices() {
         if (mPosVertices != null) {
-            val imgAspectRatio = mTexWidth / mTexHeight.toFloat()
-            val viewAspectRatio = mViewWidth / mViewHeight.toFloat()
-            val relativeAspectRatio = viewAspectRatio / imgAspectRatio
+            val imgAspectRatio: Float = mTexWidth / mTexHeight.toFloat()
+            val viewAspectRatio: Float = mViewWidth / mViewHeight.toFloat()
+            val relativeAspectRatio: Float = viewAspectRatio / imgAspectRatio
             val x0: Float
             val y0: Float
             val x1: Float
@@ -316,7 +315,7 @@ class TextureRenderer {
                 x1 = 1.0f
                 y1 = relativeAspectRatio
             }
-            val coords = floatArrayOf(x0, y0, x1, y0, x0, y1, x1, y1)
+            val coords: FloatArray = floatArrayOf(x0, y0, x1, y0, x0, y1, x1, y1)
             mPosVertices!!.put(coords).position(0)
         }
     }
@@ -325,41 +324,32 @@ class TextureRenderer {
         /**
          * Our vertex shader code. Meaning of each line of code:
          *
-         *  *
-         * attribute vec4 a_position; Vertex attributes are used to communicate from "outside"
-         * to the vertex shader. Unlike uniform variables, values are provided per vertex (and
-         * not globally for all vertices). Its location is retrieved to set `mPosCoordHandle`
-         * and used as the index of the generic vertex attribute to be modified in a call to
-         * `glVertexAttribPointer` and `glEnableVertexAttribArray`.
+         *  * attribute vec4 a_position; Vertex attributes are used to communicate from "outside"
+         *  to the vertex shader. Unlike uniform variables, values are provided per vertex (and
+         *  not globally for all vertices). Its location is retrieved to set `mPosCoordHandle`
+         *  and used as the index of the generic vertex attribute to be modified in a call to
+         *  `glVertexAttribPointer` and `glEnableVertexAttribArray`.
          *
-         *  *
-         * attribute vec2 a_texcoord; The location of this attribute is retrieved to set `mTexCoordHandle`,
-         * and used as the index of the generic vertex attribute to be modified in a call to
-         * `glVertexAttribPointer` and `glEnableVertexAttribArray`.
+         *  * attribute vec2 a_texcoord; The location of this attribute is retrieved to set
+         *  `mTexCoordHandle`, and used as the index of the generic vertex attribute to be modified
+         *  in a call to `glVertexAttribPointer` and `glEnableVertexAttribArray`.
          *
-         *  *
-         * varying vec2 v_texcoord; Varying variables provide an interface between Vertex and
-         * Fragment Shader. Vertex Shaders compute values per vertex and fragment shaders compute
-         * values per fragment. If you define a varying variable in a vertex shader, its value
-         * will be interpolated (perspective-correct) over the primitive being rendered and you
-         * can access the interpolated value in the fragment shader.
+         *  * varying vec2 v_texcoord; Varying variables provide an interface between Vertex and
+         *  Fragment Shader. Vertex Shaders compute values per vertex and fragment shaders compute
+         *  values per fragment. If you define a varying variable in a vertex shader, its value
+         *  will be interpolated (perspective-correct) over the primitive being rendered and you
+         *  can access the interpolated value in the fragment shader.
          *
-         *  *
-         * void main() {  Starts the program
+         *  * void main() {  Starts the program
          *
-         *  *
-         * gl_Position = a_position; gl_Position is a built-in vertex shader output variable,
-         * whose type is defined by the OpenGL specification to be a vec4, this statement sets
-         * it to the value of our current attribute `a_position`,
+         *  * gl_Position = a_position; gl_Position is a built-in vertex shader output variable,
+         *  whose type is defined by the OpenGL specification to be a vec4, this statement sets
+         *  it to the value of our current attribute `a_position`,
          *
-         *  *
-         * v_texcoord = a_texcoord; Here we communicate the value of our attribute `a_texcoord`
-         * to our fragment shader using our shared `varying vec2 v_texcoord`.
+         *  * v_texcoord = a_texcoord; Here we communicate the value of our attribute `a_texcoord`
+         *  to our fragment shader using our shared `varying vec2 v_texcoord`.
          *
-         *  *
-         * } The end of our program.
-         *
-         *
+         *  * } The end of our program.
          */
         private const val VERTEX_SHADER = "attribute vec4 a_position;\n" +
             "attribute vec2 a_texcoord;\n" +
@@ -372,35 +362,27 @@ class TextureRenderer {
         /**
          * Our frament shader code. Meaning of each line of code:
          *
-         *  *
-         * precision mediump float; This determines how much precision the GPU uses when calculating
-         * floats. highp is high precision, and of course more intensive than mediump (medium
-         * precision) and lowp (low precision).
+         *  * precision mediump float; This determines how much precision the GPU uses when
+         *  calculating floats. highp is high precision, and of course more intensive than mediump
+         *  (medium precision) and lowp (low precision).
          *
-         *  *
-         * uniform sampler2D tex_sampler; Uniforms are so named because they do not change from
-         * one execution of a shader program to the next within a particular rendering call. A
-         * sampler2D is a 2D texture. The location of `tex_sampler` is saved by a call to
-         * `glGetUniformLocation` in `mTexSamplerHandle`. It is used in a call to
-         * `glUniform1i` which sets the texture unit to 0.
+         *  * uniform sampler2D tex_sampler; Uniforms are so named because they do not change from
+         *  one execution of a shader program to the next within a particular rendering call. A
+         *  sampler2D is a 2D texture. The location of `tex_sampler` is saved by a call to
+         *  `glGetUniformLocation` in `mTexSamplerHandle`. It is used in a call to
+         *  `glUniform1i` which sets the texture unit to 0.
          *
-         *  *
-         * varying vec2 v_texcoord; Varying variables provide an interface between Vertex and
-         * Fragment Shader. It is set to the value of its `attribute vec2 a_texcoord`.
+         *  * varying vec2 v_texcoord; Varying variables provide an interface between Vertex and
+         *  Fragment Shader. It is set to the value of its `attribute vec2 a_texcoord`.
          *
-         *  *
-         * void main() {  Start of our program.
+         *  * void main() {  Start of our program.
          *
-         *  *
-         * gl_FragColor = texture2D(tex_sampler, v_texcoord); `gl_FragColor` is a built-in output
-         * variable for setting the `vec4` fragment color. `texture2D` looks up the color
-         * for the coordinates given by `v_texcoord` using the sampler `tex_sampler` (which
-         * is just the texture we bound to GL_TEXTURE_2D for the default texture unit GL_TEXTURE0.
+         *  * gl_FragColor = texture2D(tex_sampler, v_texcoord); `gl_FragColor` is a built-in output
+         *  variable for setting the `vec4` fragment color. `texture2D` looks up the color for the
+         *  coordinates given by `v_texcoord` using the sampler `tex_sampler` (which is just the
+         *  texture we bound to GL_TEXTURE_2D for the default texture unit GL_TEXTURE0.
          *
-         *  *
-         * } The end of our program.
-         *
-         *
+         *  * } The end of our program.
          */
         private const val FRAGMENT_SHADER = "precision mediump float;\n" +
             "uniform sampler2D tex_sampler;\n" +
@@ -410,14 +392,14 @@ class TextureRenderer {
             "}\n"
 
         /**
-         * Vertices we copy to `FloatBuffer mTexVertices`
+         * Vertices we copy to [FloatBuffer] field [mTexVertices]
          */
         private val TEX_VERTICES = floatArrayOf(
             0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f
         )
 
         /**
-         * Vertices we copy to `FloatBuffer mPosVertices`
+         * Vertices we copy to [FloatBuffer] field [mPosVertices]
          */
         private val POS_VERTICES = floatArrayOf(
             -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, 1.0f, 1.0f, 1.0f
