@@ -48,33 +48,40 @@ object Conversations {
     )
 
     /**
-     * Returns an `Conversation[]` array containing `howManyConversations`, with each
-     * `Conversation` in the array containing an array of `List<String> messages` with
-     * `messagesPerConversation` members in it. First we create `Conversation[] conversations`
-     * intended to hold `howManyConversations`, then for each of these we create a `Conversation`
-     * with a random `conversationId`, a random `participantName` and `messagesPerConversation`
-     * random messages. We then return `Conversation[] conversations` to the caller.
+     * Returns an [Array] of [Conversation] containing [Int] parameter [howManyConversations], with
+     * each [Conversation] in the array containing a [List] of [String] field `messages` with [Int]
+     * parameter [messagesPerConversation] members in it. First we create [MutableList] of
+     * [Conversation] variable `val conversationsList` using [arrayListOf], then we loop over [Int]
+     * variable `var i` creating a [Conversation] with a random [Conversation.conversationId], a
+     * random [Conversation.participantName] and [Int] parameter [messagesPerConversation] random
+     * messages for its [Conversation.messages] field. We then return the [Array] of [Conversation]
+     * created by the [toTypedArray] extension function from `conversationsList` to the caller.
      *
      * @param howManyConversations how many separate conversations to create
      * @param messagesPerConversation how many messages in each conversation
-     * @return an array of one or more conversations
+     * @return an [Array] of one or more [Conversation]'s
      */
-    fun getUnreadConversations(howManyConversations: Int, messagesPerConversation: Int): Array<Conversation> {
+    fun getUnreadConversations(
+        howManyConversations: Int,
+        messagesPerConversation: Int
+    ): Array<Conversation> {
         val conversationsList: MutableList<Conversation> = arrayListOf()
         for (i in 0 until howManyConversations) {
             conversationsList += Conversation(
-                ThreadLocalRandom.current().nextInt(),
-                name(), makeMessages(messagesPerConversation))
+                conversationId = ThreadLocalRandom.current().nextInt(),
+                participantName = name(),
+                messages = makeMessages(messagesPerConversation)
+            )
         }
         return conversationsList.toTypedArray()
     }
 
     /**
-     * Constructs and returns a `List<String>` with `messagesPerConversation` random
-     * messages chosen from our `String[] MESSAGES` array.
+     * Constructs and returns a [List] of [String] with [Int] parameter [messagesPerConversation]
+     * random messages chosen from our [Array] of [String] field [MESSAGES].
      *
-     * @param messagesPerConversation number messages to create in the `List<String>` we return.
-     * @return a `List<String>` with `messagesPerConversation` random messages in it.
+     * @param messagesPerConversation number of messages to create in the [List] of [String] we return.
+     * @return a [List] of [String]` with [messagesPerConversation] random messages in it.
      */
     fun makeMessages(messagesPerConversation: Int): List<String> {
         val maxLen = MESSAGES.size
@@ -86,8 +93,8 @@ object Conversations {
     }
 
     /**
-     * Returns a random name from the `String[] PARTICIPANTS` array to use as the
-     * `String participantName` of a `Conversation`.
+     * Returns a random name from the [Array] of [String] field [PARTICIPANTS] to use as the
+     * [String] field  [Conversation.participantName] of a [Conversation].
      *
      * @return a random name chosen from the `String[] PARTICIPANTS` array.
      */

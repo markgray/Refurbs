@@ -1,9 +1,8 @@
 package com.example.android.messagingservice
 
 /**
- * Class containing a conversation consisting of `int conversationId`,
- * `String participantName`, one or more `List<String> messages`
- * and a `long timestamp`.
+ * Class containing a conversation consisting of [Int] field [conversationId], [String] field
+ * [participantName], one or more [List] of [String] field [messages] and a [Long] field [timestamp].
  *
  * Our `init` blocks initializes fields of this instance with parameters passed to our constructor.
  *
@@ -39,10 +38,9 @@ class Conversation(
     }
 
     /**
-     * Returns a `String` representation of the `Conversation` instance suitable for
-     * logging.
+     * Returns a [String] representation of the [Conversation] instance suitable for logging.
      *
-     * @return Loggable `String` representation of this `Conversation` instance.
+     * @return Loggable [String] representation of this [Conversation] instance.
      */
     override fun toString(): String {
         return "[Conversation: conversationId=" + conversationId +
