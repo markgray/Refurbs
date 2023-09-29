@@ -19,6 +19,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Button
 import androidx.core.app.NotificationManagerCompat
 
 /**
@@ -26,20 +27,20 @@ import androidx.core.app.NotificationManagerCompat
  */
 class MessageReadReceiver : BroadcastReceiver() {
     /**
-     * This method is called when the BroadcastReceiver is receiving an Intent broadcast for the
-     * "com.example.android.messagingservice.ACTION_MESSAGE_READ" action `Intent`. First we
-     * try to fetch the `int conversationId` which is stored in our `Intent intent`
-     * under the key CONVERSATION_ID ("conversation_id") defaulting to -1. If there is such an
-     * `int` we log the fact that the conversation was received, add it to our
-     * `MessageLogger` preference file, and cancel the notification for the `conversationId`.
-     * (This broadcast is created when the "Open app on phone" `Button` is pressed.)
+     * This method is called when the [BroadcastReceiver] is receiving an [Intent] broadcast for the
+     * "com.example.android.messagingservice.ACTION_MESSAGE_READ" action [Intent]. First we try to
+     * fetch the [Int] variable `val conversationId` which is stored in our [Intent] parameter
+     * [intent] under the key [CONVERSATION_ID] ("conversation_id") defaulting to -1. If there is
+     * such an [Int] we log the fact that the conversation was received, add it to our [MessageLogger]
+     * preference file, and cancel the notification for the `conversationId`. (This broadcast is
+     * created when the "Open app on phone" [Button] is pressed.)
      *
      * @param context The Context in which the receiver is running.
      * @param intent The Intent being received.
      */
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "onReceive")
-        val conversationId = intent.getIntExtra(CONVERSATION_ID, -1)
+        val conversationId: Int = intent.getIntExtra(CONVERSATION_ID, -1)
         if (conversationId != -1) {
             Log.d(TAG, "Conversation $conversationId was read")
             MessageLogger.logMessage(context, "Conversation $conversationId was read.")
@@ -52,11 +53,11 @@ class MessageReadReceiver : BroadcastReceiver() {
         /**
          * TAG for logging
          */
-        private val TAG = MessageReadReceiver::class.java.simpleName
+        private val TAG: String = MessageReadReceiver::class.java.simpleName
 
         /**
          * Key for `Intent` extra for an `int` conversation ID.
          */
-        private const val CONVERSATION_ID = "conversation_id"
+        private const val CONVERSATION_ID: String = "conversation_id"
     }
 }
