@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -31,16 +32,16 @@ import androidx.core.app.RemoteInput
  */
 class MessageReplyReceiver : BroadcastReceiver() {
     /**
-     * This method is called when the BroadcastReceiver is receiving an Intent broadcast for the
-     * "com.example.android.messagingservice.ACTION_MESSAGE_REPLY" action `Intent`. First we
-     * check to see if the action of the Intent we are receiving is MessagingService.REPLY_ACTION
+     * This method is called when the [BroadcastReceiver] is receiving an [Intent] broadcast for the
+     * "com.example.android.messagingservice.ACTION_MESSAGE_REPLY" action [Intent]. First we
+     * check to see if the action of the Intent we are receiving is [MessagingService.REPLY_ACTION]
      * ("com.example.android.messagingservice.ACTION_MESSAGE_REPLY") and ignore it if it is not.
-     * If it is, we fetch the `int conversationId` stored in the `Intent intent` under
-     * the key CONVERSATION_ID (defaulting to -1), then we call our method `getMessageText(intent)`
-     * to extract the `CharSequence reply` stored in the `Intent intent` in a `Bundle`
-     * under the key EXTRA_REMOTE_REPLY. If our `intent` contained a `conversationId` we
-     * log the reply, and add it to our `MessageLogger` preference file.
-     *
+     * If it is, we fetch the [Int] varialbe `val conversationId` stored in our [Intent] parameter
+     * [intent] under the key [MessagingService.CONVERSATION_ID] (defaulting to -1), then we call
+     * our method [getMessageText] to extract the [CharSequence] variable `val reply` stored in the
+     * [Intent] parameter [intent] in a [Bundle] under the key [MessagingService.EXTRA_REMOTE_REPLY].
+     * If our [intent] parameter contained a `conversationId` we log the reply, and add it to our
+     * [MessageLogger] preference file.
      *
      * Finally we update the notification to stop the progress spinner. This involves involves getting
      * a `NotificationManagerCompat notificationManager` instance from our `Context context`,
@@ -56,8 +57,8 @@ class MessageReplyReceiver : BroadcastReceiver() {
     @SuppressLint("MissingPermission") // TODO: Fix this with permission request.
     override fun onReceive(context: Context, intent: Intent) {
         if (MessagingService.REPLY_ACTION == intent.action) {
-            val conversationId = intent.getIntExtra(MessagingService.CONVERSATION_ID, -1)
-            val reply = getMessageText(intent)
+            val conversationId: Int = intent.getIntExtra(MessagingService.CONVERSATION_ID, -1)
+            val reply: CharSequence? = getMessageText(intent)
             if (conversationId != -1) {
                 Log.d(TAG, "Got reply ($reply) for ConversationId $conversationId")
                 MessageLogger.logMessage(context, "ConversationId: " + conversationId +
