@@ -39,32 +39,45 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 
 /**
  * The main fragment that shows the buttons and the text view containing the log.
  */
-class MessagingFragment
-/**
- * Empty constructor needed for `Fragment`.
- */
-    : Fragment(), View.OnClickListener {
-    private var mSendSingleConversation // Button in layout with ID R.id.send_1_conversation
-        : Button? = null
-    private var mSendTwoConversations // Button in layout with ID R.id.send_2_conversations
-        : Button? = null
-    private var mSendConversationWithThreeMessages // Button in layout with ID R.id.send_1_conversation_3_messages
-        : Button? = null
-    private var mDataPortView // TextView in layout used to display conversations
-        : TextView? = null
-    private var mClearLogButton // Button in layout with ID R.id.clear
-        : Button? = null
+class MessagingFragment : Fragment(), View.OnClickListener {
+    /**
+     * [Button] in layout with ID [R.id.send_1_conversation] ("Send 1 conversation with 1 message")
+     */
+    private var mSendSingleConversation: Button? = null
 
     /**
-     * Set in our `onServiceConnected` override in `ServiceConnection mConnection`, it
-     * is used to send a message to `MessagingService` using `Messenger.send(Message)`.
-     * The `IBinder service` used when constructing it in `ServiceConnection mConnection`
-     * is generated after we connect `mConnection` to our service `MessagingService` in
-     * our override in `onStart`. It is set back to null in `onServiceDisconnected`.
+     * [Button] in layout with ID [R.id.send_2_conversations] ("Send 2 conversations with 1 message")
+     */
+    private var mSendTwoConversations: Button? = null
+
+    /**
+     * [Button] in layout with ID [R.id.send_1_conversation_3_messages] ("Send 1 conversation with
+     * 3 messages")
+     */
+    private var mSendConversationWithThreeMessages: Button? = null
+
+    /**
+     * [TextView] in layout with ID [R.id.data_port] used to display conversations
+     */
+    private var mDataPortView: TextView? = null
+
+    /**
+     * [Button] in layout with ID [R.id.clear] ("Clear Log")
+     */
+    private var mClearLogButton: Button? = null
+
+    /**
+     * Set in the [ServiceConnection.onServiceConnected] override in [ServiceConnection] field
+     * [mConnection], it is used to send a `message` to [MessagingService] using [Messenger.send].
+     * The [IBinder] parameter `service` used when constructing it in [mConnection] is generated
+     * after we use the [FragmentActivity.bindService] method to connect [mConnection] to our
+     * [MessagingService] in our [onStart] override. It is set back to `null` in its
+     * [ServiceConnection.onServiceDisconnected] override.
      */
     private var mService: Messenger? = null
 
@@ -227,9 +240,11 @@ class MessagingFragment
      */
     override fun onStart() {
         super.onStart()
-        requireActivity().bindService(Intent(activity, MessagingService::class.java),
-                mConnection,
-                Context.BIND_AUTO_CREATE)
+        requireActivity().bindService(
+            Intent(activity, MessagingService::class.java),
+            mConnection,
+            Context.BIND_AUTO_CREATE
+        )
     }
 
     /**

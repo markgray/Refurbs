@@ -16,6 +16,7 @@
 package com.example.android.messagingservice
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -44,15 +45,17 @@ class MessageReplyReceiver : BroadcastReceiver() {
      * [MessageLogger] preference file.
      *
      * Finally we update the notification to stop the progress spinner. This involves involves getting
-     * a `NotificationManagerCompat notificationManager` instance from our `Context context`,
-     * building a `Notification repliedNotification` using a `new NotificationCompat.Builder(context)`
-     * using R.drawable.notification_icon as our small icon R.drawable.android_contact as our large icon,
-     * and the String "Replied" as the text. We then use the `notificationManager` to post the
+     * a [NotificationManagerCompat] variable `val notificationManager` instance from our [Context]
+     * parameter [context], building a [Notification] variable `val repliedNotification` using a
+     * [NotificationCompat.Builder] for our [Context] parameter [context] whose `channelId` is the
+     * "default" channel ID, with the drawable with ID [R.drawable.notification_icon] as its small
+     * icon, and with the drawable with ID [R.drawable.android_contact] as its large icon, and the
+     * [String] "Replied" as the text. We then use the `notificationManager` to post the
      * `repliedNotification` using the same `conversationId` (This has the effect of replacing
      * the notification that was replied to with our new "Replied" notification.)
      *
-     * @param context The Context in which the receiver is running.
-     * @param intent  The Intent being received.
+     * @param context The [Context] in which the receiver is running.
+     * @param intent  The [Intent] being received.
      */
     @SuppressLint("MissingPermission") // TODO: Fix this with permission request.
     override fun onReceive(context: Context, intent: Intent) {
@@ -78,27 +81,26 @@ class MessageReplyReceiver : BroadcastReceiver() {
     }
 
     /**
-     * Get the message text from the intent. First we get the remote input results bundle from the
-     * parameter `Intent intent` which was received by the `onReceive` callback of our
-     * `MessageReplyReceiver`. The returned Bundle contains a key/value for every result key
-     * populated by the remote input collector. Then we Use the `Bundle.getCharSequence(String)`
-     * method to retrieve the value stored under the key EXTRA_REMOTE_REPLY ("extra_remote_reply")
-     * and return that `CharSequence` to the caller.
+     * Get the message text from the [Intent] parameter [intent]. First we get the remote input
+     * results [Bundle] from our [Intent] parameter [intent] which was received by the [onReceive]
+     * callback of our [MessageReplyReceiver]. The returned [Bundle] contains a key/value for every
+     * result key populated by the remote input collector. Then we Use the [Bundle.getCharSequence]
+     * method to retrieve the value stored under the key [MessagingService.EXTRA_REMOTE_REPLY]
+     * ("extra_remote_reply") and return that [CharSequence] to the caller.
      *
-     * @param intent this is the `Intent` our `BroadcastReceiver` received.
-     * @return The `CharSequence` stored in the `Intent`'s results `Bundle` under
-     * the key EXTRA_REMOTE_REPLY ("extra_remote_reply") or null.
+     * @param intent this is the [Intent] our [BroadcastReceiver] received.
+     * @return The [CharSequence] stored in the [Intent]'s results [Bundle] under the key
+     * [MessagingService.EXTRA_REMOTE_REPLY] ("extra_remote_reply") or `null`.
      */
     private fun getMessageText(intent: Intent): CharSequence? {
-        val remoteInput = RemoteInput.getResultsFromIntent(intent)
-        return remoteInput?.getCharSequence(
-            MessagingService.EXTRA_REMOTE_REPLY)
+        val remoteInput: Bundle? = RemoteInput.getResultsFromIntent(intent)
+        return remoteInput?.getCharSequence(MessagingService.EXTRA_REMOTE_REPLY)
     }
 
     companion object {
         /**
          * TAG for logging
          */
-        private val TAG = MessageReplyReceiver::class.java.simpleName
+        private val TAG: String = MessageReplyReceiver::class.java.simpleName
     }
 }
