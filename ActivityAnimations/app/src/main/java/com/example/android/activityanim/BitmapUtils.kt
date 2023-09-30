@@ -126,6 +126,7 @@ class BitmapUtils {
      * @return a thumbnail image created from the original source bitmap whose maximum dimension is
      * given by our parameter `int maxDimension`
      */
+    @Suppress("SameParameterValue")
     private fun getThumbnail(original: Bitmap?, maxDimension: Int): Bitmap {
         val width = original!!.width
         val height = original.height
