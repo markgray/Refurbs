@@ -21,6 +21,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -82,30 +83,29 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     private var mService: Messenger? = null
 
     /**
-     * Flag indicating that we are bound to our service `MessagingService`, it is set in the
-     * `onServiceConnected` override in `ServiceConnection mConnection`, and cleared in
-     * `onServiceDisconnected`.
+     * Flag indicating that we are bound to our service `MessagingService`, it is set to `true` in
+     * the [ServiceConnection.onServiceConnected] override in [ServiceConnection] field [mConnection],
+     * and cleared in its [ServiceConnection.onServiceDisconnected] override.
      */
     private var mBound = false
 
     /**
-     * This is the `ServiceConnection` passed to `bindService` in `onStart` when
-     * we connect to the `MessagingService` `Service`. It receives information as the
-     * service is started and stopped (in particular, the `IBinder service` for the service
-     * we are bound to, which it uses to create `Messenger mService` which we will use to
-     * `send` `Message`'s to the `Service`).
+     * This is the [ServiceConnection] passed to the [FragmentActivity.bindService] method in our
+     * [onStart] override when we connect to the [MessagingService] Service. It receives information
+     * as the service is started and stopped (in particular, the [IBinder] `service` for the service
+     * we are bound to, which it uses to create [Messenger] field [mService] which we will use to
+     * `send` [Message]'s to the `Service`).
      */
     private val mConnection: ServiceConnection = object : ServiceConnection {
         /**
-         * Called when a connection to the Service has been established, with the
-         * [android.os.IBinder] of the communication channel to the Service
-         * which we use to create `Messenger mService`, we then set the
-         * `boolean mBound` flag to true, and finally we call our method
-         * `setButtonsState(true)` to enable the `Button`'s in our
-         * layout.
+         * Called when a connection to the Service has been established, with the [IBinder] of the
+         * communication channel to the Service in its [service] parameter which we use to create
+         * [Messenger] field [mService], we then set the [Boolean] field [mBound] flag to `true`,
+         * and finally we call our method [setButtonsState] with `true` to enable the [Button]'s
+         * in our layout.
          *
-         * @param name    The concrete component name of the service that has been connected.
-         * @param service The IBinder of the Service's communication channel, which you can now
+         * @param name    The concrete [ComponentName] of the service that has been connected.
+         * @param service The [IBinder] of the Service's communication channel, which you can now
          * make calls on.
          */
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
@@ -115,19 +115,17 @@ class MessagingFragment : Fragment(), View.OnClickListener {
         }
 
         /**
-         * Called when a connection to the Service has been lost.  This typically
-         * happens when the process hosting the service has crashed or been killed.
-         * This does *not* remove the ServiceConnection itself -- this
-         * binding to the service will remain active, and you will receive a call
-         * to [.onServiceConnected] when the Service is next running.
+         * Called when a connection to the Service has been lost. This typically happens when the
+         * process hosting the service has crashed or been killed. This does *not* remove the
+         * [ServiceConnection] itself -- this binding to the service will remain active, and you
+         * will receive a call to [ServiceConnection.onServiceConnected] when the Service is next
+         * running.
          *
+         * We set our [Messenger] field  [mService] to `null`, set our [Boolean] field [mBound]
+         * flag to `false`, and call our method  [setButtonsState] with `false` to disable the
+         * [Button]'s in our layout.
          *
-         * We set our field `Messenger mService` to null, set our `boolean mBound`
-         * flag to false, and call our method  `setButtonsState(false)` to disable the
-         * `Button`'s in our layout.
-         *
-         * @param name The concrete component name of the service whose
-         * connection has been lost.
+         * @param name The concrete [ComponentName] of the service whose connection has been lost.
          */
         override fun onServiceDisconnected(name: ComponentName) {
             mService = null
@@ -137,10 +135,10 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     }
 
     /**
-     * Whenever the contents our our `SharedPreferences` file changes, this
-     * `OnSharedPreferenceChangeListener` will check whether the change was
-     * to the String stored under the `MessageLogger.LOG_KEY` key ("message_data")
-     * and if so will update the text in `TextView mDataPortView`.
+     * Whenever the contents our our [SharedPreferences] file changes, this
+     * [OnSharedPreferenceChangeListener] will check whether the change was
+     * to the [String] stored under the [MessageLogger.LOG_KEY] key ("message_data")
+     * and if so will update the text in [TextView] field [mDataPortView] to it.
      */
     private val listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
         if (MessageLogger.LOG_KEY == key) {
@@ -149,29 +147,32 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     }
 
     /**
-     * Called to have the fragment instantiate its user interface view. First we inflate our layout
-     * file R.layout.fragment_message_me into `View rootView`. Then we locate the `Button`
-     * R.id.send_1_conversation to initialize our field `Button mSendSingleConversation` and set
-     * its `OnClickListener` to "this", we locate the `Button` R.id.send_2_conversations
-     * to initialize our field `Button mSendTwoConversations` and set its `OnClickListener`
-     * to "this", and locate the `Button` R.id.send_1_conversation_3_messages to initialize our
-     * field `Button mSendConversationWithThreeMessages` and set its `OnClickListener`
-     * to "this". We initialize our field `TextView mDataPortView` by locating the `TextView`
-     * R.id.data_port and set its movement method to `new ScrollingMovementMethod()` (A movement
-     * method that interprets movement keys by scrolling the text buffer). We initialize our field
-     * `Button mClearLogButton` by locating the `Button` R.id.clear and set its
-     * `OnClickListener` to this. We call our method `setButtonsState(false)` to disable
-     * the `Button`'s until after we connect to our `MessagingService`. Finally we return
-     * `View rootView` to the caller.
+     * Called to have the fragment instantiate its user interface view. First we use our [LayoutInflater]
+     * parameter [inflater] to inflate our layout file [R.layout.fragment_message_me] into our [View]
+     * variable `val rootView`. Then we locate the [Button] with ID [R.id.send_1_conversation] to
+     * initialize our [Button] field [mSendSingleConversation] and set its [View.OnClickListener] to
+     * "this", we locate the [Button] with ID [R.id.send_2_conversations] to initialize our [Button]
+     * field [mSendTwoConversations] and set its [View.OnClickListener] to "this", and locate the
+     * [Button] with ID [R.id.send_1_conversation_3_messages] to initialize our [Button] field
+     * [mSendConversationWithThreeMessages] and set its [View.OnClickListener] to "this". We
+     * initialize our [TextView] field [mDataPortView] by locating the [TextView] with ID
+     * [R.id.data_port] and set its movement method to a new instance of [ScrollingMovementMethod]
+     * (A movement method that interprets movement keys by scrolling the text buffer). We initialize
+     * our [Button] field [mClearLogButton] by locating the [Button] with ID [R.id.clear] and set its
+     * [View.OnClickListener] to `this`. We call our method [setButtonsState] with `false` to disable
+     * the [Button]'s until after we connect to our [MessagingService]. Finally we return [View]
+     * variable `rootView` to the caller.
      *
-     * @param inflater           The LayoutInflater object that can be used to inflate any
-     * views in the fragment,
-     * @param container          If non-null, this is the parent view that the fragment's
-     * UI should be attached to.
-     * @param savedInstanceState We do not override onSaveInstanceState so do not use.
-     * @return Return the View for the fragment's UI, or null.
+     * @param inflater The [LayoutInflater] object that can be used to inflate any views in the fragment
+     * @param container If non-`null`, this is the parent view that the fragment's UI will be attached to.
+     * @param savedInstanceState We do not override [onSaveInstanceState] so do not use.
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         requestNotificationPermission()
         val rootView = inflater.inflate(R.layout.fragment_message_me, container, false)
         mSendSingleConversation = rootView.findViewById(R.id.send_1_conversation)
@@ -188,6 +189,12 @@ class MessagingFragment : Fragment(), View.OnClickListener {
         return rootView
     }
 
+    /**
+     * This method checks whether our app has been granted [POST_NOTIFICATIONS]
+     * ("android.permission.POST_NOTIFICATIONS") and if not it calls the
+     * [ActivityResultLauncher.launch] method of [ActivityResultLauncher] field
+     * [actionRequestPermission] to request the permission.
+     */
     private fun requestNotificationPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), POST_NOTIFICATIONS)
             != PackageManager.PERMISSION_GRANTED
