@@ -789,11 +789,11 @@ internal class LunarView constructor(
          * receiver.
          *
          * @param keyCode the key that was pressed
-         * @param msg     the original event object
+         * @param ignoredMsg     the original event object
          * @return `true` if we consumed the event, `false` if the key is not one we use.
          */
-        fun  // parameter msg is unused
-            doKeyDown(keyCode: Int, msg: KeyEvent?): Boolean {
+        @Suppress("UNUSED_PARAMETER")
+        fun doKeyDown(keyCode: Int, ignoredMsg: KeyEvent?): Boolean {
             synchronized(mSurfaceHolder) {
                 var okStart = keyCode == KeyEvent.KEYCODE_DPAD_UP
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) okStart = true
@@ -853,10 +853,11 @@ internal class LunarView constructor(
          * Having exited the synchronized block we return `handled` to the caller.
          *
          * @param keyCode the key that was pressed
-         * @param msg     the original event object
+         * @param ignoredMsg     the original event object
          * @return `true` if the key was handled and consumed, or else `false`
          */
-        fun doKeyUp(keyCode: Int, msg: KeyEvent?): Boolean {
+        @Suppress("UNUSED_PARAMETER")
+        fun doKeyUp(keyCode: Int, ignoredMsg: KeyEvent?): Boolean {
             var handled = false
             synchronized(mSurfaceHolder) {
                 if (mMode == STATE_RUNNING) {
