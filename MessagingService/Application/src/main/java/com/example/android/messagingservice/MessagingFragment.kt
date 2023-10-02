@@ -204,20 +204,28 @@ class MessagingFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    /**
+     * This [ActivityResultLauncher] calls the [registerForActivityResult] method to register a
+     * request to start an activity for a result, designated by the contract
+     * [ActivityResultContracts.RequestMultiplePermissions] which requests the permissions
+     * passed it in the the [Array] of [String] passed to its [ActivityResultLauncher.launch]
+     * method by our [requestNotificationPermission] method.
+     */
     private val actionRequestPermission: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
 
         }
 
     /**
-     * Called when a view whose `OnClickListener` has been set to "this" has been clicked.
-     * We branch based on which `Button` has been clicked"
+     * Called when a view whose [View.OnClickListener] has been set to `this` has been clicked.
+     * We branch based on which [Button] has been clicked"
      *
-     *  * `mSendSingleConversation` we send 1 conversation with 1 message
-     *  * `mSendTwoConversations` we send 2 conversations with 1 message each
-     *  * `mSendConversationWithThreeMessages` we send 1 conversation with 3 messages
-     *  * `mClearLogButton` we clear our log from our shared preference file and set the
-     * text of our `TextView mDataPortView` to the cleared value returned to us
+     *  * [mSendSingleConversation] we send 1 conversation with 1 message
+     *  * [mSendTwoConversations] we send 2 conversations with 1 message each
+     *  * [mSendConversationWithThreeMessage[mSendConversationWithThreeMessages] we send 1
+     *  conversation with 3 messages
+     *  * [mClearLogButton] we clear our log from our shared preference file and set the
+     *  text of our [TextView] field [mDataPortView] to the cleared value returned to us
      *
      *
      * @param view The view that was clicked.
@@ -236,14 +244,15 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     }
 
     /**
-     * Called when the Fragment is visible to the user. First we call through to our super's implementation
-     * of `onStart`, then we connect to the application service `MessagingService`, creating
-     * it if needed. This defines a dependency between the application and the service. The field
-     * `ServiceConnection mConnection` will receive the service object when it is created and be
-     * told if it dies and restarts. The service will be considered required by the system only for as
-     * long as the calling context exists. For example, if this Context is an Activity that is stopped,
-     * the service will not be required to continue running until the Activity is resumed. The BIND_AUTO_CREATE
-     * flag will automatically create the service as long as the binding exists.
+     * Called when the [Fragment] is visible to the user. First we call through to our super's
+     * implementation of `onStart`, then we connect to the application service [MessagingService],
+     * creating it if needed. This defines a dependency between the application and the service.
+     * The [ServiceConnection] field [mConnection] will receive the service object when it is
+     * created and be told if it dies and restarts. The service will be considered required by the
+     * system only for as long as the calling context exists. For example, if this [Context] is an
+     * Activity that is stopped, the service will not be required to continue running until the
+     * Activity is resumed. The [Context.BIND_AUTO_CREATE] flag will automatically create the
+     * service as long as the binding exists.
      */
     override fun onStart() {
         super.onStart()
@@ -255,9 +264,9 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     }
 
     /**
-     * Called when the Fragment is no longer resumed. First we call through to our super's implementation
-     * of `onPause`, then we retrieve the shared preference file in order to unregister our
-     * `SharedPreferences.OnSharedPreferenceChangeListener listener`.
+     * Called when the [Fragment] is no longer resumed. First we call through to our super's
+     * implementation of `onPause`, then we retrieve the shared preference file in order to
+     * unregister our [SharedPreferences.OnSharedPreferenceChangeListener] field [listener].
      */
     override fun onPause() {
         super.onPause()
@@ -267,7 +276,7 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     /**
      * Called when the fragment is visible to the user and actively running. First we call through to
      * our super's implementation of `onResume`, then we retrieve the messages saved in our
-     * shared preference file and set the text of `TextView mDataPortView` to it.
+     * shared preference file and set the text of [TextView] field [mDataPortView] to it.
      */
     override fun onResume() {
         super.onResume()
@@ -276,9 +285,10 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     }
 
     /**
-     * Called when the Fragment is no longer started. First we call through to our super's implementation
-     * of `onStop`, then if we have bound to our service `MessagingService` we disconnect
-     * `ServiceConnection mConnection`.
+     * Called when the [Fragment] is no longer started. First we call through to our super's
+     * implementation of `onStop`, then if our [Boolean] field [mBound] it `true` we have bound to
+     * our service [MessagingService] so we call the [FragmentActivity.unbindService] method to
+     * disconnect [ServiceConnection] field [mConnection].
      */
     override fun onStop() {
         super.onStop()
