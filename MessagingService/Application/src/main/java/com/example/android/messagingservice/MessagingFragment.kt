@@ -299,20 +299,25 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     }
 
     /**
-     * Tells our `MessagingService` to send its dummy notifications to our devices (mobile and
-     * paired smart watch, car etc.) If we are bound to our service `MessagingService` we create
-     * a `Message msg` for a `MessagingService.MSG_SEND_NOTIFICATION` action adding the
-     * `int`'s `howManyConversations` and `messagesPerConversation` to it. Then
-     * wrapped in a try block intended to catch `RemoteException` we use our field
-     * `Messenger mService` to send `msg` to our service `MessagingService`.
+     * Tells our [MessagingService] to send its dummy notifications to our devices (mobile and
+     * paired smart watch, car etc.) If our [Boolean] field [mBound] is `true`, we are bound to
+     * our service [MessagingService] so we create a [Message] variable `val msg` for a
+     * [MessagingService.MSG_SEND_NOTIFICATION] action adding our [Int] parameter [howManyConversations]
+     * as the `arg1` value and [Int] parameter [messagesPerConversation] as the `arg2` value. Then
+     * wrapped in a try block intended to catch [RemoteException] we use the [Messenger.send] method
+     * of our [Messenger] field [mService] to send `msg` to our [MessagingService] service.
      *
      * @param howManyConversations How many separate "conversations" to send notifications about
      * @param messagesPerConversation How many messages in each conversation
      */
     private fun sendMsg(howManyConversations: Int, messagesPerConversation: Int) {
         if (mBound) {
-            val msg = Message.obtain(null, MessagingService.MSG_SEND_NOTIFICATION,
-                howManyConversations, messagesPerConversation)
+            val msg = Message.obtain(
+                /* h = */ null,
+                /* what = */ MessagingService.MSG_SEND_NOTIFICATION,
+                /* arg1 = */ howManyConversations,
+                /* arg2 = */ messagesPerConversation
+            )
             try {
                 mService!!.send(msg)
             } catch (e: RemoteException) {
@@ -323,11 +328,10 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     }
 
     /**
-     * Convenience function to enable or disable the three `Button`'s in our UI:
-     * `mSendSingleConversation`, `mSendTwoConversations` and
-     * `mSendConversationWithThreeMessages`
+     * Convenience function to enable or disable the three [Button]'s in our UI:
+     * [mSendSingleConversation], [mSendTwoConversations] and [mSendConversationWithThreeMessages]
      *
-     * @param enable true to enable the `Button`'s false to disable
+     * @param enable `true` to enable the [Button]'s `false` to disable
      */
     private fun setButtonsState(enable: Boolean) {
         mSendSingleConversation!!.isEnabled = enable
@@ -344,6 +348,5 @@ class MessagingFragment : Fragment(), View.OnClickListener {
          * [String] used to request the "POST_NOTIFICATIONS" permission.
          */
         const val POST_NOTIFICATIONS: String = "android.permission.POST_NOTIFICATIONS"
-
     }
 }

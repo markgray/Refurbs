@@ -20,6 +20,7 @@ package com.example.android.messagingservice
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Handler
@@ -34,26 +35,26 @@ import com.example.android.messagingservice.R.string
 import java.lang.ref.WeakReference
 
 /**
- * Service defined in AndroidManifest.xml used to create and send remote notifications.
+ * [Service] defined in AndroidManifest.xml used to create and send remote notifications.
  */
 class MessagingService : Service() {
     /**
-     * NotificationManagerCompat instance for the Application Context created in `onCreate`.
+     * [NotificationManagerCompat] instance for the Application [Context] created in [onCreate].
      */
     private var mNotificationManager: NotificationManagerCompat? = null
 
     /**
-     * `Messenger` pointing to our `IncomingHandler` Handler for incoming messages from
-     * clients. Any Message objects sent through this Messenger will appear in the Handler as if
-     * `Handler.sendMessage(Message)` had been called directly.
+     * [Messenger] pointing to our [IncomingHandler] custom [Handler] whose [IBinder] recieves and
+     * forwards incoming messages from clients. Any Message objects sent through this [Messenger]
+     * will appear in the [IncomingHandler] as if [Handler.sendMessage] had been called directly.
      */
     private val mMessenger = Messenger(IncomingHandler(this))
 
     /**
-     * Called by the system when the service is first created. We just initialize our field
-     * `NotificationManagerCompat mNotificationManager` with a new instance of
-     * `NotificationManagerCompat` using  the context of the single, global Application
-     * object of the current process (This generally should only be used if you need a Context
+     * Called by the system when the service is first created. We just initialize our
+     * [NotificationManagerCompat] field [mNotificationManager] with a new instance of
+     * [NotificationManagerCompat] using  the [Context] of the single, global Application
+     * object of the current process (This generally should only be used if you need a [Context]
      * whose lifecycle is separate from the current context, that is tied to the lifetime of
      * the process rather than the current component.)
      */
@@ -63,12 +64,12 @@ class MessagingService : Service() {
     }
 
     /**
-     * Return the communication channel to the service. We simply return the IBinder that our field
-     * `Messenger mMessenger` is using to communicate with its associated Handler which is an
-     * instance of our `IncomingHandler` class.
+     * Return the communication channel to the service. We simply return the [IBinder] that our
+     * [Messenger] field [mMessenger] is using to communicate with its associated [Handler] (which
+     * is an instance of our [IncomingHandler] class in our case).
      *
-     * @param intent The Intent that was used to bind to this service,
-     * @return Return an IBinder through which clients can call on to the service.
+     * @param intent The [Intent] that was used to bind to this service,
+     * @return Return an [IBinder] through which clients can call on to the service.
      */
     override fun onBind(intent: Intent): IBinder? {
         Log.d(TAG, "onBind")
@@ -76,16 +77,16 @@ class MessagingService : Service() {
     }
 
     /**
-     * Creates an intent that will be triggered when a message is marked as read. This method is a
-     * convenience method to produce the `Intent` which will be received by the broadcast
-     * receiver `MessageReadReceiver`. We simply return the result of creating a new instance
-     * of `Intent` which we modify by chaining to it a call to `addFlags` for the flag
-     * FLAG_INCLUDE_STOPPED_PACKAGES, followed by a chain call to `setAction` to set the action
-     * to READ_ACTION, and finishing up with a call to `putExtra` which stores our parameter
-     * `int id` as an extra under the key CONVERSATION_ID.
+     * Creates an [Intent] that will be triggered when a message is marked as read. This method is a
+     * convenience method to produce the [Intent] which will be received by the broadcast receiver
+     * [MessageReadReceiver]. We simply return the result of creating a new instance of [Intent]
+     * which we modify by chaining to it a call to [Intent.addFlags] to add the flag
+     * [Intent.FLAG_INCLUDE_STOPPED_PACKAGES], followed by a chain call to [Intent.setAction]
+     * to set the action to [READ_ACTION], and finishing up with a call to [Intent.putExtra] which
+     * stores our [Int] parameter [id] as an extra under the key [CONVERSATION_ID].
      *
      * @param id Conversation ID of message in question
-     * @return READ_ACTION `Intent` with Conversation ID as an `int` extra.
+     * @return READ_ACTION [Intent] with our Conversation ID parameter [id] as an [Int] extra.
      */
     private fun getMessageReadIntent(id: Int): Intent {
         return Intent()
