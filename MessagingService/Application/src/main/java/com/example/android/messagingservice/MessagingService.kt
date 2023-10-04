@@ -23,6 +23,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
@@ -96,16 +97,16 @@ class MessagingService : Service() {
     }
 
     /**
-     * Creates an Intent that will be triggered when a voice reply is received. This method is a
-     * convenience method to produce the `Intent` which will be received by the broadcast
-     * receiver `MessageReplyReceiver`. We simply return the result of creating a new instance
-     * of `Intent` which we modify by chaining to it a call to `addFlags` for the flag
-     * FLAG_INCLUDE_STOPPED_PACKAGES, followed by a chain call to `setAction` to set the action
-     * to REPLY_ACTION, and finishing up with a call to `putExtra` which stores our parameter
-     * `int id` as an extra under the key CONVERSATION_ID.
+     * Creates an [Intent] that will be triggered when a voice reply is received. This method is a
+     * convenience method to produce the [Intent] which will be received by the broadcast
+     * receiver [MessageReplyReceiver]. We simply return the result of creating a new instance
+     * of [Intent] which we modify by chaining to it a call to [Intent.addFlags] for the flag
+     * [Intent.FLAG_INCLUDE_STOPPED_PACKAGES], followed by a chained call to [Intent.setAction] to
+     * set the action to [REPLY_ACTION], and finishing up with a chained call to [Intent.putExtra]
+     * which stores our [Int] parameter [conversationId] as an extra under the key [CONVERSATION_ID].
      *
      * @param conversationId Conversation ID of message in question
-     * @return REPLY_ACTION `Intent` with Conversation ID as an `int` extra.
+     * @return [REPLY_ACTION] action [Intent] with our parameter [conversationId] as an [Int] extra.
      */
     private fun getMessageReplyIntent(conversationId: Int): Intent {
         return Intent()
@@ -116,16 +117,16 @@ class MessagingService : Service() {
 
     /**
      * Creates and sends notifications for requested number of conversations and messages. First we
-     * use the method `Conversations.getUnreadConversations` to create an array of the number
-     * of conversations and messages requested: `Conversations.Conversation[] conversations`.
-     * Then for each `Conversations.Conversation conv` in that array we call our method
-     * `sendNotificationForConversation(conv)`.
+     * use the method [Conversations.getUnreadConversations] to create an array of the number
+     * of conversations and messages requested to initialize [Array] of [Conversation] variable
+     * `val conversations`. Then for each [Conversation] variable `var conv` in that [Array] we call
+     * our method [sendNotificationForConversation].
      *
      * @param howManyConversations    how many conversations to create and notify about
      * @param messagesPerConversation how many messages in each conversation
      */
     private fun sendNotification(howManyConversations: Int, messagesPerConversation: Int) {
-        val conversations = Conversations.getUnreadConversations(
+        val conversations: Array<Conversation> = Conversations.getUnreadConversations(
             howManyConversations, messagesPerConversation)
         for (conv in conversations) {
             sendNotificationForConversation(conv)
@@ -133,41 +134,44 @@ class MessagingService : Service() {
     }
 
     /**
-     * This method builds a remote notification for a `Conversations.Conversation conversation`
-     * and sends it. First we create a broadcast Intent `PendingIntent readPendingIntent` which
-     * will be dispatched to `MessageReadReceiver` when the notification is read. We build a
-     * `RemoteInput remoteInput` to receive voice input from the remote device with the reply
-     * to be contained in the `Bundle` under the key EXTRA_REMOTE_REPLY ("extra_remote_reply"),
-     * and the label on the remote device set to the String reply ("Reply"). We create a Broadcast
-     * intent `PendingIntent replyIntent` for the reply using the conversation ID as the
-     * requestCode, a message reply Intent created by our method `getMessageReplyIntent`, and
-     * the flag FLAG_UPDATE_CURRENT (Flag indicating that if the described PendingIntent already
-     * exists, then keep it but replace its extra data with what is in this new Intent.) We next build
-     * a Remote Input enabled action which includes R.drawable.notification_icon as its icon, the
-     * String reply ("Reply") as its label, and our `replyIntent` then add `remoteInput`
+     * This method builds a remote notification for its [Conversation] parameter [conversation]
+     * and sends it. First we create a broadcast [Intent] to initialize [PendingIntent] variable
+     * `val readPendingIntent` which will be dispatched to [MessageReadReceiver] when the
+     * notification is read. We build a [RemoteInput] variable `val remoteInput` to receive voice
+     * input from the remote device with the reply to be contained in the [Bundle] under the key
+     * [EXTRA_REMOTE_REPLY] ("extra_remote_reply"), and the label on the remote device set to the
+     * [String] with ID [string.reply] ("Reply"). We create a Broadcast intent to initialize
+     * [PendingIntent] variable `val replyIntent` for the reply using the [Conversation.conversationId]
+     * of [Conversation] parameter [conversation] as the requestCode, a message reply [Intent]
+     * created by our method [getMessageReplyIntent], and the flag [PendingIntent.FLAG_UPDATE_CURRENT]
+     * (Flag indicating that if the described [PendingIntent] already exists, then keep it but
+     * replace its extra data with what is in this new [Intent].) We next build a Remote Input
+     * enabled action which includes [R.drawable.notification_icon] as its icon, the String with
+     * ID [string.reply] ("Reply") as its label, and our `replyIntent` then add `remoteInput`
      * as the input to be collected from the user when this action is sent. We next create an
-     * `UnreadConversation.Builder unreadConvBuilder`, set the timestamp of the most recent
-     * message to the timestamp of our parameter `conversation`, set its Read Pending Intent
-     * to `readPendingIntent` and its Reply Action to the pending intent and remote input
-     * which will convey the reply to this notification: `replyIntent`, and `remoteInput`.
-     * We create `StringBuilder messageForNotification`, then proceed to iterate over all of
-     * the messages in `Conversations.Conversation conversation` adding them to the Builder
-     * `unreadConvBuilder` and appending them to `messageForNotification`. Next we create
-     * `NotificationCompat.Builder builder`, set its small icon to R.drawable.notification_icon,
-     * set its large icon to R.drawable.android_contact, set its content text to the String
-     * `messageForNotification.toString()`, set the time the event occurred to the timestamp
-     * of `conversation`, set its content title to the `participantName` of the
-     * `conversation`, set its content Intent to `readPendingIntent`, extend it with
-     * a `CarExtender` whose unread conversation is set to `unreadConvBuilder.build()`,
-     * whose color is set to R.color.default_color_light, and lastly add the action
-     * `actionReplyByRemoteInput` to `NotificationCompat.Builder builder`. We log that
-     * we are sending the notification, then use `mNotificationManager` to post the notification
-     * using the `conversationId` of the `conversation` as the notification ID and
-     * `builder.build()` as the `Notification`.
+     * [NotificationCompat.CarExtender.UnreadConversation.Builder] to initiaizle variable
+     * `val unreadConvBuilder`, set the timestamp of the most recent message to the timestamp of our
+     * [Conversation] parameter [conversation], set its Read Pending Intent to `readPendingIntent`
+     * and its Reply Action to the pending intent and remote input which will convey the reply to
+     * this notification: `replyIntent`, and `remoteInput`. We create [StringBuilder] variable
+     * `val messageForNotification`, then proceed to iterate over all of the messages in
+     * [Conversation] parameter [conversation] adding them to the Builder `unreadConvBuilder` and
+     * appending them to `messageForNotification`. Next we create [NotificationCompat.Builder]
+     * variable `val builder`, set its small icon to [R.drawable.notification_icon], set its large
+     * icon to [R.drawable.android_contact], set its content text to the [String] returned by the
+     * [toString] method of [StringBuilder] variable `messageForNotification`, set the time the
+     * event occurred to the [Conversation.timestamp] field of [conversation], set its content title
+     * to the [Conversation.participantName] of the [conversation], set its content [Intent] to
+     * `readPendingIntent`, extend it with a [NotificationCompat.CarExtender] whose unread
+     * conversation is set to `unreadConvBuilder.build`, whose color is set to [R.color.default_color_light],
+     * and lastly add the action `actionReplyByRemoteInput` to [NotificationCompat.Builder] `builder`.
+     * We log that we are sending the notification, then use [NotificationManagerCompat] field
+     * [mNotificationManager] to post the notification using the [Conversation.conversationId] of
+     * the [conversation] as the notification ID and `builder.build()` as the `Notification`.
      *
-     * @param conversation Class containing a conversation consisting of `int conversationId`,
-     * `String participantName`, one or more `List<String> messages`
-     * and a `long timestamp`.
+     * @param conversation Class containing a conversation consisting of [Int] field
+     * [Conversation.conversationId], [String] field [Conversation.participantName], one or more
+     * [List] of [String] field [Conversation.messages] and a [Long] field [Conversation.timestamp].
      */
     @SuppressLint("MissingPermission", "LaunchActivityFromNotification") // TODO: Fix by adding permission request.
     private fun sendNotificationForConversation(conversation: Conversation) {
