@@ -236,17 +236,16 @@ class MessagingService : Service() {
     }
 
     /**
-     * Handler for incoming messages from clients.
-     * Constructor. Initializes the field `WeakReference<MessagingService> mReference`
-     * with its parameter in our `init` block.
+     * Constructor for our [Handler] for incoming messages from clients.
+     * It just initializes the [WeakReference] to [MessagingService] field [mReference]
+     * with its [MessagingService] parameter `service` in its `init` block.
      *
-     * @param service The instance of `MessagingService` we will be Handling (called using
-     * "this" in the initialization of the the `MessagingService` field
-     * `Messenger mMessenger`
+     * @param service The instance of [MessagingService] we will be Handling (called using
+     * `this` in the initialization of its [Messenger] field [mMessenger]
      */
     private class IncomingHandler(service: MessagingService) : Handler() {
         /**
-         * Weak reference to our `MessagingService` class
+         * Weak reference to our [MessagingService] class
          */
         private val mReference: WeakReference<MessagingService>
 
