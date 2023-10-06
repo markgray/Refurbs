@@ -254,24 +254,26 @@ class MessagingService : Service() {
         }
 
         /**
-         * Handle messages here. These are messages sent from `MessagingFragment`'s method
-         * `sendMsg`. First we retrieve our `MessagingService` reference from the
-         * `WeakReference<MessagingService> mReference` into `MessagingService service`.
-         * Then if the message code is not MSG_SEND_NOTIFICATION we call through to our super's
-         * implementation of `handleMessage`, if it is a MSG_SEND_NOTIFICATION message we
-         * extract `int howManyConversations` from `msg.arg1` (defaulting to 1 if it is
-         * 0 or less), and `int messagesPerConversation` from `msg.arg2` (defaulting to
-         * 1 if it is 0 or less). If `service` is not null (`get` returns null if the
-         * `WeakReference` has been garbage collected), we use `service` to send a
-         * notification as instructed by the arguments in our `Message msg`.
+         * Handle messages here. These are messages sent from [MessagingFragment]'s method
+         * [MessagingFragment.sendMsg]. First we retrieve our [MessagingService] reference from the
+         * [WeakReference] of [MessagingService] field [mReference] into [MessagingService] variable
+         * `val service`. Then if the [Message.what] message code of our [Message] parameter [msg]
+         * is not [MSG_SEND_NOTIFICATION] we pass the call to our super's implementation of
+         * `handleMessage`, if it is a [MSG_SEND_NOTIFICATION] message we use the [Message.arg1]
+         * property of [msg] to initialize [Int] variable `val howManyConversations` (defaulting to
+         * 1 if it is 0 or less), and use the [Message.arg2] property to initialize [Int] variable
+         * `val messagesPerConversation` (defaulting to 1 if it is 0 or less). If `service` is not
+         * `null` ([WeakReference.get] returns `null` if the [WeakReference] has been garbage
+         * collected), we use `service` to send notifications as instructed by the arguments in our
+         * [Message] parameter [msg].
          *
-         * @param msg A [Message][android.os.Message] object
+         * @param msg A [Message] object
          */
         override fun handleMessage(msg: Message) {
-            val service = mReference.get()
+            val service: MessagingService? = mReference.get()
             if (msg.what == MSG_SEND_NOTIFICATION) {
-                val howManyConversations = if (msg.arg1 <= 0) 1 else msg.arg1
-                val messagesPerConversation = if (msg.arg2 <= 0) 1 else msg.arg2
+                val howManyConversations: Int = if (msg.arg1 <= 0) 1 else msg.arg1
+                val messagesPerConversation: Int = if (msg.arg2 <= 0) 1 else msg.arg2
                 service?.sendNotification(howManyConversations, messagesPerConversation)
             } else {
                 super.handleMessage(msg)
@@ -291,27 +293,27 @@ class MessagingService : Service() {
         private const val EOL = "\n"
 
         /**
-         * Intent action for remote reply that message has been read
+         * [Intent] action for remote reply that message has been read
          */
         private const val READ_ACTION = "com.example.android.messagingservice.ACTION_MESSAGE_READ"
 
         /**
-         * Intent action for Intent that will be triggered when a voice reply is received.
+         * [Intent] action for [Intent] that will be triggered when a voice reply is received.
          */
         const val REPLY_ACTION: String = "com.example.android.messagingservice.ACTION_MESSAGE_REPLY"
 
         /**
-         * Key for Intent extra containing conversation ID.
+         * Key for [Intent] extra containing conversation ID.
          */
         const val CONVERSATION_ID: String = "conversation_id"
 
         /**
-         * The Bundle key that refers to input collected from the user as a reply.
+         * The [Bundle] key that refers to input collected from the user as a reply.
          */
         const val EXTRA_REMOTE_REPLY: String = "extra_remote_reply"
 
         /**
-         * Used for `Message.what` message code to define what service is to be performed.
+         * Used for [Message.what] message code to define what service is to be performed.
          */
         const val MSG_SEND_NOTIFICATION: Int = 1
     }
