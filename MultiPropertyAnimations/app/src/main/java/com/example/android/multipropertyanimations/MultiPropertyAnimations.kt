@@ -21,10 +21,11 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import android.view.ViewPropertyAnimator
+import android.view.View.OnClickListener
 
 /**
  * This example shows various ways of animating multiple properties in parallel.
- *
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on the DevBytes playlist in the android developers channel on YouTube at
@@ -34,9 +35,9 @@ import android.view.View
 class MultiPropertyAnimations : Activity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_multi_property_animations
+     * then we set our content view to our layout file [R.layout.activity_multi_property_animations]
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,20 +45,21 @@ class MultiPropertyAnimations : Activity() {
     }
 
     /**
-     * A very manual approach to animation uses a ValueAnimator to animate a fractional value and
-     * then turns that value into the final property values which are then set directly on the target
-     * object. Specified as the `onClickListener` by an android:onClick="runValueAnimator" attribute
-     * for the first button in our layout. First we initialize `ValueAnimator anim` with an instance
-     * that will animate between 0 and 400, then add an anonymous `AnimatorUpdateListener` to it
-     * whose `onAnimationUpdate` override retrieves the current animation fraction from its parameter
-     * `ValueAnimator animator` and uses that fraction to interpolate how far between TX_START and
-     * TX_END to translate our parameter `View view` relative to its left position, and how far between
-     * TY_START and TY_END to translate our parameter `View view` relative to its top position.
-     *
+     * A very manual approach to animation that uses a [ValueAnimator] to animate a fractional value
+     * and then turns that value into the final property values which are then set directly on the
+     * target object. Specified as the [OnClickListener] by an android:onClick="runValueAnimator"
+     * attribute for the first button in our layout. First we initialize [ValueAnimator] variable
+     * `val anim` with an instance that will animate between 0f and 400f, then add an anonymous
+     * [ValueAnimator.AnimatorUpdateListener] to it whose
+     * [ValueAnimator.AnimatorUpdateListener.onAnimationUpdate] lambda override retrieves the current
+     * animation fraction from its [ValueAnimator] parameter `animator` and uses that fraction to
+     * interpolate how far between [TX_START] and [TX_END] to translate our [View] parameter [view]
+     * relative to its left position, and how far between [TY_START] and [TY_END] to translate our
+     * parameter [view] relative to its top position.
      *
      * Finally we start `anim` running.
      *
-     * @param view `View` that was clicked
+     * @param view the [View] that was clicked
      */
     fun runValueAnimator(view: View) {
         val anim = ValueAnimator.ofFloat(0f, 400f)
@@ -79,13 +81,14 @@ class MultiPropertyAnimations : Activity() {
     }
 
     /**
-     * ViewPropertyAnimator is the cleanest and most efficient way of animating View properties, even
-     * when there are multiple properties to be animated in parallel. Specified as the `onClickListener`
-     * by a android:onClick="runViewPropertyAnimator" attribute for the second button in our layout.
-     * We retrieve a `ViewPropertyAnimator` for our parameter `View view` and have it animate
-     * the "translationX" property to TX_END, and the "translationY" property to TY_END (it starts automatically).
+     * [ViewPropertyAnimator] is the cleanest and most efficient way of animating [View] properties,
+     * even when there are multiple properties to be animated in parallel. Specified as the
+     * [OnClickListener] by a android:onClick="runViewPropertyAnimator" attribute for the second
+     * button in our layout. We use the [View.animate] method of [View] parameter [view] to retrieve
+     * a [ViewPropertyAnimator] object for [view] and have it animate the "translationX" property to
+     * [TX_END], and the "translationY" property to [TY_END] (it starts automatically).
      *
-     * @param view `View` that was clicked
+     * @param view the [View] that was clicked
      */
     fun runViewPropertyAnimator(view: View) {
         view.animate().translationX(TX_END).translationY(TY_END)
