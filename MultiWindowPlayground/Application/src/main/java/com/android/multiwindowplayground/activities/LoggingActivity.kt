@@ -25,16 +25,19 @@ import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import com.android.multiwindowplayground.R
 import com.example.android.common.logger.Log
 import com.example.android.common.logger.LogFragment
+import com.example.android.common.logger.LogNode
+import com.example.android.common.logger.LogView
 import com.example.android.common.logger.LogWrapper
 import com.example.android.common.logger.MessageOnlyLogFilter
 
 /**
  * Activity that logs all key lifecycle callbacks to [Log].
- * Output is also logged to the UI into a [LogFragment] through [.initializeLogging]
- * and [.stopLogging].
+ * Output is also logged to the UI into a [LogFragment] through [initializeLogging]
+ * and [stopLogging].
  */
 abstract class LoggingActivity : AppCompatActivity() {
     /**
@@ -46,7 +49,7 @@ abstract class LoggingActivity : AppCompatActivity() {
      * Called when the activity is starting. First we call through to our super's implementation of
      * `onCreate`, then we log the fact that we were called.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,12 +57,12 @@ abstract class LoggingActivity : AppCompatActivity() {
     }
 
     /**
-     * This is the same as [.onPostCreate] but is called for activities
+     * This is the same as [onPostCreate] but is called for activities
      * created with the attribute [android.R.attr.persistableMode] set to
      * `persistAcrossReboots`. First we call through to our super's implementation of
      * `onCreate`, then we log the fact that we were called.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      * @param persistentState The data coming from the PersistableBundle first
      * saved in [.onSaveInstanceState]. We do not override
      * `onSaveInstanceState` so do not use.
@@ -80,8 +83,8 @@ abstract class LoggingActivity : AppCompatActivity() {
     }
 
     /**
-     * Perform any final cleanup before an activity is destroyed. First we call through to our super's
-     * implementation of `onDestroy`, then we log the fact that we were called.
+     * Perform any final cleanup before an activity is destroyed. First we call through to our
+     * super's implementation of `onDestroy`, then we log the fact that we were called.
      */
     override fun onDestroy() {
         super.onDestroy()
@@ -89,9 +92,9 @@ abstract class LoggingActivity : AppCompatActivity() {
     }
 
     /**
-     * Called after [.onRestoreInstanceState], [.onRestart], or [.onPause], for your
-     * activity to start interacting with the user. First we call through to our super's implementation
-     * of `onResume`, then we log the fact that we were called.
+     * Called after [onRestoreInstanceState], [onRestart], or [onPause], for your activity to start
+     * interacting with the user. First we call through to our super's implementation of `onResume`,
+     * then we log the fact that we were called.
      */
     override fun onResume() {
         super.onResume()
@@ -111,7 +114,7 @@ abstract class LoggingActivity : AppCompatActivity() {
     }
 
     /**
-     * Called when activity start-up is complete (after [.onStart] and [.onRestoreInstanceState]
+     * Called when activity start-up is complete (after [onStart] and [onRestoreInstanceState]
      * have been called). First we call through to our super's implementation of `onPostCreate`,
      * then we log the fact that we were called.
      *
@@ -123,11 +126,10 @@ abstract class LoggingActivity : AppCompatActivity() {
     }
 
     /**
-     * Called after [.onCreate]  or after [.onRestart] when the activity had been
-     * stopped, but is now again being displayed to the user.  It will be followed by [.onResume].
-     * First we call through to our super's implementation of `onPostCreate`, next we call our
-     * method `initializeLogging` to set up targets to receive log data. Finally we log the fact
-     * that we were called.
+     * Called after [onCreate]  or after [onRestart] when the activity had been stopped, but is now
+     * again being displayed to the user.  It will be followed by [onResume]. First we call through
+     * to our super's implementation of `onPostCreate`, next we call our method [initializeLogging]
+     * to set up targets to receive log data. Finally we log the fact that we were called.
      */
     override fun onStart() {
         super.onStart()
@@ -138,9 +140,10 @@ abstract class LoggingActivity : AppCompatActivity() {
 
     /**
      * Called when you are no longer visible to the user. First we call through to our super's
-     * implementation of `onStop`, next we call our method `stopLogging` to stop our
-     * logging (it does this by setting the LogNode data will be sent to null). Finally we log the
-     * fact that we were called (since the LogNode data will be sent to is null, nothing happens).
+     * implementation of `onStop`, next we call our method [stopLogging] to stop our logging
+     * (it does this by setting the [LogNode] the data will be sent to ([Log.logNode]) to `null`).
+     * Finally we log the fact that we were called (since the [LogNode] data will be sent to is
+     * `null`, nothing happens, but why not).
      */
     override fun onStop() {
         super.onStop()
@@ -154,22 +157,25 @@ abstract class LoggingActivity : AppCompatActivity() {
      * visa-versa. First we call through to our super's implementation of `onMultiWindowModeChanged`,
      * then we log the fact that we were called.
      *
-     * @param isInMultiWindowMode True if the activity is in multi-window mode.
+     * @param isInMultiWindowMode `true` if the activity is in multi-window mode.
      */
-    @Deprecated("Deprecated in Java")
+    @Deprecated("Deprecated in Java") // TODO: replace with onMultiWindowModeChanged(boolean, Configuration)
     override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean) {
         super.onMultiWindowModeChanged(isInMultiWindowMode)
         Log.d(mLogTag, "onMultiWindowModeChanged: $isInMultiWindowMode")
     }
+
     // Logging and UI methods below.
+
     /**
-     * Set up targets to receive log data. We initialize `LogWrapper logWrapper` with a new
-     * instance, and set it as the LogNode that log data will be sent to. We create a new instance
-     * for `MessageOnlyLogFilter msgFilter` (strips out everything except the message text)
-     * and set it as the LogNode that `logWrapper` will next send data to. We then create
-     * `LogFragment logFragment` by using the FragmentManager for interacting with fragments
-     * associated with this activity to find the fragment with the resource id R.id.log_fragment,
-     * and set its `LogView` as the LogNode that `msgFilter` will send data to.
+     * Set up targets to receive log data. We initialize [LogWrapper] variable `val logWrapper` with
+     * a new instance, and set it as the [LogNode] that log data will be sent to. We create a new
+     * instance for [MessageOnlyLogFilter] variable `val msgFilter` (strips out everything except
+     * the message text) and set it as the [LogNode] that `logWrapper` will next send data to. We
+     * then create [LogFragment] variable `val logFragment` by using the [FragmentManager] for
+     * interacting with fragments associated with this activity to find the fragment with the
+     * resource id [R.id.log_fragment], and set its [LogView] as the [LogNode] that `msgFilter`
+     * will send data to.
      */
     fun initializeLogging() {
         // Using Log, front-end to the logging chain, emulates android.util.log method signatures.
@@ -188,16 +194,17 @@ abstract class LoggingActivity : AppCompatActivity() {
     }
 
     /**
-     * Stops logging. We set the LogNode that log data will be sent to to null.
+     * Stops logging. We set the [LogNode] that log data will be sent to to `null`.
      */
     fun stopLogging() {
         Log.logNode = null
     }
 
     /**
-     * Set the description text if a TextView with the id `description` is available.
-     * We initialize `TextView description` by finding the view with id R.id.description and
-     * if this is not null we set its text to the string with resource id `textId`.
+     * Set the description text if a TextView with the resource id [R.id.description] is available.
+     * We initialize [TextView] variable `val description` by finding the view with id
+     * [R.id.description] and if this is not `null` we set its text to the string with the
+     * resource id in our [Int] parameter [textId].
      *
      * @param textId resource ID of string we are to display
      */
@@ -208,9 +215,9 @@ abstract class LoggingActivity : AppCompatActivity() {
     }
 
     /**
-     * Set the background color for the description text. We initialize `View scrollView` by
-     * finding the view with id R.id.scrollview and if this is not null we set its background to
-     * the color with resource ID `colorId`.
+     * Set the background color for the description text. We initialize [View] variable
+     * `val scrollView` by finding the view with id [R.id.scrollview] and if this is not `null`
+     * we set its background to the color with the resource ID in our [Int] parameter [colorId].
      *
      * @param colorId resource id of the color to use.
      */

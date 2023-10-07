@@ -19,20 +19,21 @@ import android.os.Bundle
 import com.android.multiwindowplayground.R
 
 /**
- * In free-form mode, this activity is to be launched within a defined bounds on screen.
- * This property is set as part of the Intent that starts this activity.
+ * This activity has been launched with a launch bounds set in its intent. The bounds define the
+ * area into which the activity should be launched. Note that this flag only applies in free-form
+ * mode.
  *
  * @see com.android.multiwindowplayground.MainActivity.onStartLaunchBoundsActivity
  */
 class LaunchBoundsActivity : LoggingActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_logging.
-     * We set our background color to R.color.lime (0x9E9D24), then call the `setDescription`
-     * method to set the description text in the view with id R.id.description to the string with
-     * resource ID R.string.activity_bounds_description
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_logging].
+     * We set our background color to [R.color.lime] (0x9E9D24), then call the [setDescription]
+     * method to set the description text in the view with id [R.id.description] to the string with
+     * resource ID [R.string.activity_bounds_description]
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -19,20 +19,21 @@ import android.os.Bundle
 import com.android.multiwindowplayground.R
 
 /**
- * This activity is the most basic, simple use case and is to be launched without any special
- * flags or settings.
+ * This activity is the most basic, simple use case and is to be launched in a new task without any
+ * special flags or options.
  *
  * @see com.android.multiwindowplayground.MainActivity.onStartBasicActivity
  */
 class BasicActivity : LoggingActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_logging.
-     * We set our background color to R.color.gray (0x424242), then call the `setDescription`
-     * method to set the description text in the view with id R.id.description to the string with
-     * resource ID R.string.activity_description_basic
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_logging].
+     * We set our background color to [R.color.gray] (0x424242), then call the [setDescription]
+     * method to set the description text in the view with id [R.id.description] to the string with
+     * resource ID [R.string.activity_description_basic] ("This Activity was launched in a new task
+     * without any additional flags or options.")
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

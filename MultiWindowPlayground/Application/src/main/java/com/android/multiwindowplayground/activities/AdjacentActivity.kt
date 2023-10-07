@@ -16,23 +16,28 @@
 package com.android.multiwindowplayground.activities
 
 import android.os.Bundle
+import android.content.Intent
 import com.android.multiwindowplayground.R
 
 /**
- * This Activity is to be launched adjacent to another Activity using the
- * [android.content.Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT].
+ * This Activity is to be launched adjacent to another Activity using the flag
+ * [Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT]. If possible, it has been launched
+ * into the adjacent area from the activity that started it. This is only a hint
+ * to the system. For example - if the application is not in split-screen mode,
+ * it will be launched full-screen. If it is launched in the same task as the
+ * initial Activity, it will retain its activity properties and its location.
  *
  * @see com.android.multiwindowplayground.MainActivity.onStartAdjacentActivity
  */
 class AdjacentActivity : LoggingActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_logging.
-     * We set our background color to R.color.teal (0x00695C), then call the `setDescription`
-     * method to set the description text in the view with id R.id.description to the string with
-     * resource ID R.string.activity_adjacent_description
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_logging].
+     * We set our background color to [R.color.teal] (0x00695C), then call the [setDescription]
+     * method to set the description text in the view with id [R.id.description] to the string with
+     * resource ID [R.string.activity_adjacent_description] (See above comment for its value)
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

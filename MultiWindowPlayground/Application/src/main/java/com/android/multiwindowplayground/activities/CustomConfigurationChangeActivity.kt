@@ -20,19 +20,22 @@ import android.os.Bundle
 import com.android.multiwindowplayground.R
 
 /**
- * This activity handles configuration changes itself. The list of configuration changes that are
- * supported is defined in its AndroidManifest definition. Each configuration change triggers a
- * call to [.onConfigurationChanged], which is logged in the [ ].
+ * This activity handles configuration changes itself. In the AndroidManifest, this activity
+ * has been configured to receive callbacks for screenSize, smallestScreenSize, screenLayout,
+ * and orientation changes. Try resizing this activity to different sizes to see which
+ * configuration properties change. Each configuration change triggers a call to
+ * [onConfigurationChanged], which is logged in the our [LoggingActivity] super's
+ * override of `onConfigurationChanged`.
  *
  * @see com.android.multiwindowplayground.MainActivity.onStartCustomConfigurationActivity
  */
 class CustomConfigurationChangeActivity : LoggingActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_logging.
-     * We set our background color to R.color.cyan (0x00838F), then call the `setDescription`
-     * method to set the description text in the view with id R.id.description to the string with
-     * resource ID R.string.activity_custom_description
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_logging].
+     * We set our background color to [R.color.cyan] (0x00838F), then call the [setDescription]
+     * method to set the description text in the view with id [R.id.description] to the string with
+     * resource ID [R.string.activity_custom_description]
      *
      * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
      */
@@ -45,9 +48,9 @@ class CustomConfigurationChangeActivity : LoggingActivity() {
 
     /**
      * Called by the system when the device configuration changes while your activity is running. We
-     * just call through to our super's implementation of `onConfigurationChanged`.
+     * just call through to our super's ([LoggingActivity]) implementation of `onConfigurationChanged`.
      *
-     * @param newConfig The new device configuration.
+     * @param newConfig The new device [Configuration].
      */
     @Suppress("RedundantOverride")
     override fun onConfigurationChanged(newConfig: Configuration) {
