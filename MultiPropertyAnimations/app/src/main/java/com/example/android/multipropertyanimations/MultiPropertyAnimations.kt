@@ -95,13 +95,14 @@ class MultiPropertyAnimations : Activity() {
     }
 
     /**
-     * Multiple ObjectAnimator objects can be created and run in parallel. Specified as the `onClickListener`
-     * by a android:onClick="runObjectAnimators" attribute for the third button in our layout. We create
-     * an `ObjectAnimator` that will animate the TRANSLATION_X property of our parameter `View view`
-     * to TX_END and start it running, then create an `ObjectAnimator` that will animate the TRANSLATION_Y
-     * property of our parameter `View view` to TY_END and start it running.
+     * Multiple ObjectAnimator objects can be created and run in parallel. Specified as the
+     * [OnClickListener] by a android:onClick="runObjectAnimators" attribute for the third button
+     * in our layout. We create an [ObjectAnimator] that will animate the [View.TRANSLATION_X]
+     * property of our [View] parameter [view] to [TX_END] and start it running, then create an
+     * [ObjectAnimator] that will animate the [View.TRANSLATION_Y] property of our [View] parameter
+     * [view] to [TY_END] and start it running.
      *
-     * @param view `View` that was clicked
+     * @param view the [View] that was clicked
      */
     fun runObjectAnimators(view: View) {
         ObjectAnimator.ofFloat(view, View.TRANSLATION_X, TX_END).start()
@@ -110,15 +111,16 @@ class MultiPropertyAnimations : Activity() {
     }
 
     /**
-     * Using PropertyValuesHolder objects enables the use of a single ObjectAnimator per target, even
-     * when there are multiple properties being animated on that target. Specified as the `onClickListener`
-     * by a android:onClick="runObjectAnimator" attribute for the fourth button in our layout. We initialize
-     * `PropertyValuesHolder pvhTX` with an instance which will animate the TRANSLATION_X property
-     * to TX_END, and `PropertyValuesHolder pvhTY` with an instance which will animate the TRANSLATION_Y
-     * property to TY_END. Then we create an `ObjectAnimator` from them that will animate these properties
-     * of our parameter `View view` and start it running.
+     * Using [PropertyValuesHolder] objects enables the use of a single [ObjectAnimator] per target,
+     * even when there are multiple properties being animated on that target. Specified as the
+     * [OnClickListener] by a android:onClick="runObjectAnimator" attribute for the fourth button
+     * in our layout. We initialize [PropertyValuesHolder] variable `val pvhTX` with an instance
+     * which will animate the [View.TRANSLATION_X] property to [TX_END], and [PropertyValuesHolder]
+     * variable `val pvhTY` with an instance which will animate the [View.TRANSLATION_Y] property to
+     * [TY_END]. Then we create an [ObjectAnimator] from them that will animate these properties
+     * of our [View] parameter [view] and start it running.
      *
-     * @param view `View` that was clicked
+     * @param view the [View] that was clicked
      */
     fun runObjectAnimator(view: View?) {
         val pvhTX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, TX_END)
