@@ -19,19 +19,19 @@ import android.os.Bundle
 import com.android.multiwindowplayground.R
 
 /**
- * This Activity is defined as unresizable in the AndroidManifest.
- * This means that this activity is always launched full screen and will not be resized by the
- * system.
+ * This activity is set as unresizable in the AndroidManifest. This is done by setting the
+ * `resizeableActivity` property to `false` for this activity. This means that this activity
+ * is always launched full screen and will not be resized by the system.
  *
  * @see com.android.multiwindowplayground.MainActivity.onStartUnresizableClick
  */
 class UnresizableActivity : LoggingActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_logging.
-     * We set our background color to R.color.purple (0x512DA8), then call the `setDescription`
-     * method to set the description text in the view with id R.id.description to the string with
-     * resource ID R.string.activity_description_unresizable
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_logging].
+     * We set our background color to [R.color.purple] (0x512DA8), then call the [setDescription]
+     * method to set the description text in the view with id [R.id.description] to the string with
+     * resource ID [R.string.activity_description_unresizable]
      *
      * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
      */

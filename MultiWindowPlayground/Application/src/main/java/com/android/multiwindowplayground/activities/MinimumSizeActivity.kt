@@ -19,19 +19,22 @@ import android.os.Bundle
 import com.android.multiwindowplayground.R
 
 /**
- * This Activity has a minimum size defined in the AndroidManifest.
+ * This activity has a minimum size. It was launched into the top/end corner with a a default size
+ * of 750dp by 500dp, with a minimum size of 750dp as defined in its layout attribute in the
+ * AndroidManifest definition. Note that this Activity was launched in a different task, otherwise
+ * the properties from the Activity that launched this one would have been applied.
  *
  * @see com.android.multiwindowplayground.MainActivity.onStartMinimumSizeActivity
  */
 class MinimumSizeActivity : LoggingActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_logging.
-     * We set our background color to R.color.pink (0xC2185B), then call the `setDescription`
-     * method to set the description text in the view with id R.id.description to the string with
-     * resource ID R.string.activity_minimum_description
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_logging].
+     * We set our background color to [R.color.pink] (0xC2185B), then call the [setDescription]
+     * method to set the description text in the view with id [R.id.description] to the string with
+     * resource ID [R.string.activity_minimum_description]
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

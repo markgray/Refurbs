@@ -23,6 +23,8 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
+import android.widget.Button
 import com.android.multiwindowplayground.activities.AdjacentActivity
 import com.android.multiwindowplayground.activities.BasicActivity
 import com.android.multiwindowplayground.activities.CustomConfigurationChangeActivity
@@ -37,13 +39,13 @@ import com.android.multiwindowplayground.activities.UnresizableActivity
 class MainActivity : LoggingActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_main.
-     * We initialize `View multiDisabledMessage` by finding the view with resource id
-     * R.id.warning_multiwindow_disabled. If the `isInMultiWindowMode` method returns false
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main].
+     * We initialize [View] variable `val multiDisabledMessage` by finding the view with resource id
+     * [R.id.warning_multiwindow_disabled]. If the [isInMultiWindowMode] method returns `false`
      * (the activity is NOT in multi-window mode) we set the visibility of `multiDisabledMessage`
-     * to VISIBLE, otherwise we set its visibility to GONE.
+     * to [View.VISIBLE], otherwise we set its visibility to [View.GONE].
      *
-     * @param savedInstanceState We do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState We do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,15 +60,15 @@ class MainActivity : LoggingActivity() {
     }
 
     /**
-     * Starts the activity `UnresizableActivity`. First we log the fact that we were called.
-     * We initialize `Intent intent` with a new instance intended to execute the hard-coded
-     * class name `UnresizableActivity`. We set the flag FLAG_ACTIVITY_NEW_TASK (the activity
-     * will become the start of a new task on the history stack, rather than replacing us). We then
-     * call `startActivity` to launch the intent's activity.
+     * Starts the activity [UnresizableActivity]. First we log the fact that we were called.
+     * We initialize [Intent] variable `val intent` with a new instance intended to execute the
+     * hard-coded class name [UnresizableActivity]. We set the flag [Intent.FLAG_ACTIVITY_NEW_TASK]
+     * (the activity will become the start of a new task on the history stack, rather than replacing
+     * us). We then call [startActivity] to launch the intent's activity.
      *
-     * @param view view that was clicked: the Button in our layout with ID start_unresizable ("Start
-     * unresizable Activity") specifies us with an android:onClick="onStartUnresizableClick"
-     * attribute.
+     * @param view the [View] that was clicked: the [Button] in our layout file with resource ID
+     * [R.id.start_unresizable] ("Start unresizable Activity") specifies us as its [OnClickListener]
+     * with an android:onClick="onStartUnresizableClick" attribute.
      */
     fun onStartUnresizableClick(view: View?) {
         Log.d(mLogTag, "** starting UnresizableActivity")
@@ -83,13 +85,13 @@ class MainActivity : LoggingActivity() {
     }
 
     /**
-     * Starts the activity `MinimumSizeActivity`. First we log the fact that we were called.
-     * We then call `startActivity` to launch a new `Intent` intended to execute the
-     * hard-coded class name `MinimumSizeActivity`.
+     * Starts the activity [MinimumSizeActivity]. First we log the fact that we were called. We then
+     * call [startActivity] to launch a new [Intent] intended to execute the hard-coded class name
+     * [MinimumSizeActivity].
      *
-     * @param view view that was clicked: the Button in our layout with ID start_minimumsize ("Start
-     * Activity with minimum size") specifies us with an android:onClick="onStartMinimumSizeActivity"
-     * attribute.
+     * @param view the [View] that was clicked: the [Button] in our layout file with resource ID
+     * [R.id.start_minimumsize] ("Start Activity with minimum size") specifies us as its
+     * [OnClickListener] with an android:onClick="onStartMinimumSizeActivity" attribute.
      */
     fun onStartMinimumSizeActivity(view: View?) {
         Log.d(mLogTag, "** starting MinimumSizeActivity")
@@ -97,16 +99,17 @@ class MainActivity : LoggingActivity() {
     }
 
     /**
-     * Starts the activity `AdjacentActivity`. First we log the fact that we were called. We
-     * initialize `Intent intent` with a new instance intended to execute the hard-coded class
-     * name `AdjacentActivity`. We add to `intent` the flags FLAG_ACTIVITY_LAUNCH_ADJACENT
-     * (new activity will be displayed adjacent to the one launching it) and FLAG_ACTIVITY_NEW_TASK
-     * (the activity will become the start of a new task on the history stack, rather than replacing us).
-     * We then call `startActivity` to launch the intent's activity.
+     * Starts the activity [AdjacentActivity]. First we log the fact that we were called. We
+     * initialize [Intent] variable `val intent` with a new instance intended to execute the
+     * hard-coded class name [AdjacentActivity]. We add to `intent` the flags
+     * [Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT] (new activity will be displayed adjacent to the one
+     * launching it) and [Intent.FLAG_ACTIVITY_NEW_TASK] (the activity will become the start of a
+     * new task on the history stack, rather than replacing us). We then call [startActivity] to
+     * launch the intent's activity.
      *
-     * @param view view that was clicked: the Button in our layout with ID start_adjacent ("Start
-     * Activity adjacent") specifies us with an android:onClick="onStartAdjacentActivity"
-     * attribute.
+     * @param view the [View] that was clicked: the [Button] in our layout file with resource ID
+     * [R.id.start_adjacent] ("Start Activity adjacent") specifies us as its [OnClickListener] with
+     * an android:onClick="onStartAdjacentActivity" attribute.
      */
     fun onStartAdjacentActivity(view: View?) {
         Log.d(mLogTag, "** starting AdjacentActivity")
@@ -124,19 +127,19 @@ class MainActivity : LoggingActivity() {
     }
 
     /**
-     * Starts the activity `LaunchBoundsActivity` (free-form multi-window mode is required for
-     * this to work, otherwise it just replaces this activity). First we log the fact that we were called.
-     * Then we initialize `Rect bounds` with a new instance whose upper left corner is (500,300)
-     * and whose lower right corner is (100,0). We initialize `ActivityOptions options` with a
-     * basic `ActivityOptions` instance that has no special animation associated with it. We then
-     * set the bounds (window size) that the activity should be launched in to `Rect bounds`.
-     * We initialize `Intent intent` with a new instance intended to execute the hard-coded class
-     * name `LaunchBoundsActivity`, and launch that new activity with a `Bundle` made from
-     * `options` as its options `Bundle`.
+     * Starts the activity [LaunchBoundsActivity] (free-form multi-window mode is required for this
+     * to work, otherwise it just replaces this activity). First we log the fact that we were called.
+     * Then we initialize [Rect] variable `val bounds` with a new instance whose upper left corner
+     * is (500,300) and whose lower right corner is (100,0). We initialize [ActivityOptions] variable
+     * `val options` with a basic [ActivityOptions] instance that has no special animation associated
+     * with it. We then set the bounds (window size) that the activity should be launched in to
+     * [Rect] variable `bounds`. We initialize [Intent] variable `val intent` with a new instance
+     * intended to execute the hard-coded class name [LaunchBoundsActivity], and launch that new
+     * activity with a [Bundle] made from `options` as its options [Bundle].
      *
-     * @param view view that was clicked: the Button in our layout with ID start_launchbounds ("Start
-     * Activity with launch bounds") specifies us with an android:onClick="onStartLaunchBoundsActivity"
-     * attribute.
+     * @param view the [View] that was clicked: the [Button] in our layout file with resource ID
+     * [R.id.start_launchbounds] ("Start Activity with launch bounds") specifies us as its
+     * [OnClickListener] with an android:onClick="onStartLaunchBoundsActivity" attribute.
      */
     fun onStartLaunchBoundsActivity(view: View?) {
         Log.d(mLogTag, "** starting LaunchBoundsActivity")
@@ -145,7 +148,7 @@ class MainActivity : LoggingActivity() {
         val bounds = Rect(500, 300, 100, 0)
 
         // Set the bounds as an activity option.
-        val options = ActivityOptions.makeBasic()
+        val options: ActivityOptions = ActivityOptions.makeBasic()
         options.launchBounds = bounds
 
         // Start the LaunchBoundsActivity with the specified options
@@ -154,9 +157,9 @@ class MainActivity : LoggingActivity() {
     }
 
     /**
-     * Starts the activity `BasicActivity`. First we log the fact that we were called.
-     * We then call `startActivity` to launch a new `Intent` intended to execute the
-     * hard-coded class name `BasicActivity`.
+     * Starts the activity [BasicActivity]. First we log the fact that we were called.
+     * We then call [startActivity] to launch a new [Intent] intended to execute the
+     * hard-coded class name [BasicActivity].
      *
      * @param view view that was clicked: the Button in our layout with ID button_start_basic ("Start
      * basic, default Activity") specifies us with an android:onClick="onStartBasicActivity"
@@ -171,13 +174,14 @@ class MainActivity : LoggingActivity() {
     }
 
     /**
-     * Starts the activity `CustomConfigurationChangeActivity`. First we log the fact that we
-     * were called. We then call `startActivity` to launch a new `Intent` intended to
-     * execute the hard-coded class name `CustomConfigurationChangeActivity`.
+     * Starts the activity [CustomConfigurationChangeActivity]. First we log the fact that we
+     * were called. We then call [startActivity] to launch a new [Intent] intended to execute
+     * the hard-coded class name [CustomConfigurationChangeActivity].
      *
-     * @param view view that was clicked: the Button in our layout with ID start_customconfiguration
-     * ("Start activity that handles configuration changes") specifies us with an
-     * android:onClick="onStartCustomConfigurationActivity" attribute.
+     * @param view the [View] that was clicked: the [Button] in our layout file with resource
+     * ID [R.id.start_customconfiguration] ("Start activity that handles configuration changes")
+     * specifies us as its [OnClickListener] with an android:onClick="onStartCustomConfigurationActivity"
+     * attribute.
      */
     fun onStartCustomConfigurationActivity(view: View?) {
         Log.d(mLogTag, "** starting CustomConfigurationChangeActivity")
