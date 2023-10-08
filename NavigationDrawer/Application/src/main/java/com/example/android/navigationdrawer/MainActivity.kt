@@ -32,26 +32,26 @@ import android.widget.TextView
  */
 class MainActivity : Activity(), AdapterView.OnItemClickListener {
     /**
-     * Data set of the sample activities we can launch, in our case only 1 `Sample` which
-     * launches the `NavigationDrawerActivity` activity.
+     * Data set of the sample activities we can launch, in our case only 1 [Sample] which
+     * launches the [NavigationDrawerActivity] activity.
      */
     private lateinit var mSamples: Array<Sample>
 
     /**
-     * `GridView` in our layout file with ID android.R.id.list
+     * [GridView] in our layout file with ID [android.R.id.list]
      */
     private var mGridView: GridView? = null
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_main. We
-     * initialize `Sample[] mSamples` with a new instance containing one `Sample` which
-     * is constructed to display the string with resource id R.string.navigationdraweractivity_title
-     * as the title, R.string.navigationdraweractivity_description as the description and the class
-     * of `NavigationDrawerActivity` as the hard-coded activity that will be launched if the
-     * item is clicked. We initialize our field `GridView mGridView` by finding the view with
-     * ID android.R.id.list, set its adapter to a new instance of `SampleAdapter`, and set its
-     * `OnItemClickListener` to this.
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. We
+     * initialize [Array] of [Sample] field [mSamples] with a new instance containing one [Sample]
+     * which is constructed to display the string with resource id [R.string.navigationdraweractivity_title]
+     * as the title, [R.string.navigationdraweractivity_description] as the description and the class
+     * of [NavigationDrawerActivity] as the hard-coded activity that will be launched if the
+     * item is clicked. We initialize our [GridView] field [mGridView] by finding the view with
+     * ID [android.R.id.list], set its adapter to a new instance of [SampleAdapter], and set its
+     * [AdapterView.OnItemClickListener] to this.
      *
      * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
      */
