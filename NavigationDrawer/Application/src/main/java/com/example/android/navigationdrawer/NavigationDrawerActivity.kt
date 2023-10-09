@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Intent
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -29,6 +30,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -38,50 +40,40 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.Locale
 
 /**
- * This example illustrates a common usage of the DrawerLayout widget
- * in the Android support library.
- *
- *
- *
- * When a navigation (left) drawer is present, the host activity should detect presses of
+ * This example illustrates a common usage of the DrawerLayout widget in the Android support
+ * library. When a navigation (left) drawer is present, the host activity should detect presses of
  * the action bar's Up affordance as a signal to open and close the navigation drawer. The
- * ActionBarDrawerToggle facilitates this behavior.
- * Items within the drawer should fall into one of two categories:
+ * [ActionBarDrawerToggle] facilitates this behavior. Items within the drawer should fall into one
+ * of two categories:
+ *  * **View switches**. A view switch follows the same basic policies as list or tab navigation in
+ *  that a view switch does not create navigation history. This pattern should only be used at the
+ *  root activity of a task, leaving some form of Up navigation active for activities further down
+ *  the navigation hierarchy.
  *
- *
- *
- *  * **View switches**. A view switch follows the same basic policies as
- * list or tab navigation in that a view switch does not create navigation history.
- * This pattern should only be used at the root activity of a task, leaving some form
- * of Up navigation active for activities further down the navigation hierarchy.
- *  * **Selective Up**. The drawer allows the user to choose an alternate
- * parent for Up navigation. This allows a user to jump across an app's navigation
- * hierarchy at will. The application should treat this as it treats Up navigation from
- * a different task, replacing the current task stack using TaskStackBuilder or similar.
- * This is the only form of navigation drawer that should be used outside of the root
- * activity of a task.
- *
- *
- *
+ *  * **Selective Up**. The drawer allows the user to choose an alternate parent for Up navigation.
+ *  This allows a user to jump across an app's navigation hierarchy at will. The application should
+ *  treat this as it treats Up navigation from a different task, replacing the current task stack
+ *  using `TaskStackBuilder` or similar. This is the only form of navigation drawer that should be
+ *  used outside of the root activity of a task.
  *
  * Right side drawers should be used for actions, not navigation. This follows the pattern
  * established by the Action Bar that navigation should be to the left and actions to the right.
- * An action should be an operation performed on the current contents of the window,
- * for example enabling or disabling a data overlay on top of the current content.
+ * An action should be an operation performed on the current contents of the window, for example
+ * enabling or disabling a data overlay on top of the current content.
  */
 class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickListener {
     /**
-     * View in our layout with ID R.id.drawer_layout (the entire layout file)
+     * View in our layout with ID [R.id.drawer_layout] (the entire layout file)
      */
     private var mDrawerLayout: DrawerLayout? = null
 
     /**
-     * `RecyclerView` in our layout with ID R.id.left_drawer
+     * [RecyclerView] in our layout with ID [R.id.left_drawer]
      */
     private var mDrawerList: RecyclerView? = null
 
     /**
-     * Our `ActionBarDrawerToggle`, which is configured to tie together the sliding drawer and
+     * Our [ActionBarDrawerToggle], which is configured to tie together the sliding drawer and
      * the action bar app icon, so the "Up" button opens the sliding drawer
      */
     private var mDrawerToggle: ActionBarDrawerToggle? = null
@@ -98,7 +90,7 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
     private var mTitle: CharSequence? = null
 
     /**
-     * Array of names of the planets, loaded from the string array resource R.array.planets_array,
+     * Array of names of the planets, loaded from the string array resource [R.array.planets_array],
      * and used as the data set that populates the list view of the drawer and to set the app title
      * when one of the planets is selected.
      */
@@ -106,32 +98,34 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_navigation_drawer.
-     * We initialize `CharSequence mTitle` and `CharSequence mDrawerTitle` with the action
-     * bar title. We initialize `String[] mPlanetTitles` by using a Resources instance for the
-     * application's package to read the string array associated with the resource ID R.array.planets_array
-     * (a list of the planet names). We initialize `DrawerLayout mDrawerLayout` by finding the
-     * view with id R.id.drawer_layout, and `RecyclerView mDrawerList` by finding the view with
-     * id R.id.left_drawer. We set the nine patch png with resource id R.drawable.drawer_shadow to be
-     * a custom shadow that overlays the main content of `mDrawerLayout` when the drawer opens.
-     * We call the `setHasFixedSize(true)` method of `mDrawerList` to improve performance
-     * by indicating that the list has fixed size. We set the adapter of `mDrawerList` to be a
-     * new instance of `PlanetAdapter` constructed to use `String[] mPlanetTitles` as its
-     * data set, and this as its `OnItemClickListener`. We retrieve a reference to this activity's
-     * ActionBar, to set home to be displayed as an "up" affordance, and enable the "home" button.
-     * We initialize our field `ActionBarDrawerToggle mDrawerToggle` with a new instance which
-     * uses our field `DrawerLayout mDrawerLayout` as its DrawerLayout object, the icon with
-     * resource id R.drawable.ic_drawer as the drawer image to replace 'Up' caret, the string with
-     * resource id R.string.drawer_open for the "open drawer" description for accessibility, and the
-     * string with resource id R.string.drawer_close as the "close drawer" description for accessibility.
-     * In this `ActionBarDrawerToggle` we override both `onDrawerClosed` and `onDrawerOpened`
-     * in order to set the title of the action bar to `mTitle` and invalidate the options menu so
-     * that our `onPrepareOptionsMenu` override will be called. We then set the `DrawerListener`
-     * of `DrawerLayout mDrawerLayout` to `mDrawerToggle`. If our parameter `savedInstanceState`
-     * is null this is the first time we were called so we call our `selectItem` method to select
-     * position 0 to display (Mercury).
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_navigation_drawer].
+     * We initialize [CharSequence] field [mTitle] and [CharSequence] field [mDrawerTitle] with the
+     * action bar title. We initialize [Array] of [String] field [mPlanetTitles] by using a [Resources]
+     * instance for the application's package to read the string array associated with the resource
+     * ID [R.array.planets_array] (a list of the planet names). We initialize [DrawerLayout] field
+     * [mDrawerLayout] by finding the view with id [R.id.drawer_layout], and [RecyclerView] field
+     * [mDrawerList] by finding the view with id [R.id.left_drawer]. We set the nine patch png with
+     * resource id [R.drawable.drawer_shadow] to be a custom shadow that overlays the main content
+     * of [mDrawerLayout] when the drawer opens. We call the [RecyclerView.setHasFixedSize] method
+     * of [RecyclerView] field [mDrawerList] with `true` to improve performance by indicating that
+     * the list has fixed size. We set the adapter of [mDrawerList] to be a new instance of
+     * [PlanetAdapter] constructed to use [Array] of [String] field [mPlanetTitles] as its data set,
+     * and `this` as its [PlanetAdapter.OnItemClickListener]. We retrieve a reference to this
+     * activity's [ActionBar], to set home to be displayed as an "up" affordance, and enable the
+     * "home" button. We initialize our [ActionBarDrawerToggle] field [mDrawerToggle] with a new
+     * instance which uses our [DrawerLayout] field [mDrawerLayout] as its [DrawerLayout] object,
+     * the icon with resource id [R.drawable.ic_drawer] as the drawer image to replace 'Up' caret,
+     * the string with resource id [R.string.drawer_open] for the "open drawer" description for
+     * accessibility, and the string with resource id [R.string.drawer_close] as the "close drawer"
+     * description for accessibility. In this [ActionBarDrawerToggle] we override both
+     * [DrawerLayout.DrawerListener.onDrawerClosed] and [DrawerLayout.DrawerListener.onDrawerOpened]
+     * in order to set the title of the action bar to [mTitle] and invalidate the options menu so
+     * that our [onPrepareOptionsMenu] override will be called. We then set the
+     * [DrawerLayout.DrawerListener] of [DrawerLayout]field [mDrawerLayout] to [mDrawerToggle].
+     * If our [Bundle] parameter [savedInstanceState] is `null` this is the first time we were
+     * called so we call our [selectItem] method to select position 0 to display (Mercury).
      *
-     * @param savedInstanceState If this is null, it is the first time we have been called, so we
+     * @param savedInstanceState If this is `null`, it is the first time we have been called, so we
      * select item 0 in our drawer.
      */
     override fun onCreate(savedInstanceState: Bundle?) {

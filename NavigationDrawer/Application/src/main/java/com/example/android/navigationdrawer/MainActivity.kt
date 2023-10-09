@@ -20,6 +20,7 @@ package com.example.android.navigationdrawer
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -71,10 +72,10 @@ class MainActivity : Activity(), AdapterView.OnItemClickListener {
     }
 
     /**
-     * Callback method to be invoked when an item in our `GridView mGridView` has been clicked.
-     * We call the method `startActivity` to launch the activity specified by the `Intent`
-     * in the `intent` field of the `Sample` in the `position` entry of our field
-     * `Sample[] mSamples`.
+     * Callback method to be invoked when an item in our [GridView] field [mGridView] has been
+     * clicked. We call the method [startActivity] to launch the activity specified by the [Intent]
+     * in the [Sample.intent] field of the [Sample] in the entry of our [Array] of [Sample] field
+     * [mSamples] whose index is our [Int] parameter [position].
      *
      * @param container The AdapterView where the click happened.
      * @param view The view within the `GridView` that was clicked
@@ -86,12 +87,12 @@ class MainActivity : Activity(), AdapterView.OnItemClickListener {
     }
 
     /**
-     * The adapter for our `GridView mGridView`.
+     * The adapter for our [GridView] field [mGridView].
      */
     private inner class SampleAdapter : BaseAdapter() {
         /**
-         * How many items are in the data set represented by this Adapter. This is just the length
-         * of our array `Sample[] mSamples`.
+         * How many items are in the data set represented by this Adapter. This is just the size
+         * of our [Array] of [Sample] field [mSamples].
          *
          * @return Count of items.
          */
@@ -101,7 +102,7 @@ class MainActivity : Activity(), AdapterView.OnItemClickListener {
 
         /**
          * Get the data item associated with the specified position in the data set. We return the
-         * entry in position `position` of our array `Sample[] mSamples`.
+         * entry at index [position] in our [Array] of [Sample] field [mSamples].
          *
          * @param position Position of the item whose data we want within the adapter's data set.
          * @return The data at the specified position.
@@ -112,7 +113,7 @@ class MainActivity : Activity(), AdapterView.OnItemClickListener {
 
         /**
          * Get the row id associated with the specified position in the list. We return the hashcode
-         * of the entry in position `position` of our array `Sample[] mSamples`.
+         * of the entry at index [position] of our [Array] of [Sample] field [mSamples].
          *
          * @param position The position of the item within the adapter's data set whose row id we want.
          * @return The id of the item at the specified position.
@@ -122,15 +123,16 @@ class MainActivity : Activity(), AdapterView.OnItemClickListener {
         }
 
         /**
-         * Get a View that displays the data at the specified position in the data set. If our parameter
-         * `convertView` is null, we set it to the view that the `LayoutInflater` instance
-         * for our context inflates from the layout file R.layout.sample_dashboard_item using our parameter
-         * `container` for the layout params without attaching to it. We find the view in `convertView`
-         * with id android.R.id.text1 and set its text to the resource id stored in the `titleResId`
-         * field of the entry in position `position` of our array `Sample[] mSamples`, and
-         * we find the view in `convertView` with id android.R.id.text2 and set its text to the
-         * resource id stored in the `descriptionResId` field of the entry in position `position`
-         * of our array `Sample[] mSamples`. Finally we return `convertView` to the caller.
+         * Get a View that displays the data at the specified position in the data set. If our [View]
+         * parameter [convertView] is `null`, we set it to the view that the [LayoutInflater] instance
+         * for our context inflates from the layout file [R.layout.sample_dashboard_item] using our
+         * [ViewGroup] parameter [container] for the layout params without attaching to it. We find
+         * the view in [convertView] with id [android.R.id.text1] and set its text to the [String]
+         * whose resource id is found in the [Sample.titleResId] field of the entry in position
+         * [position] in our [Array] of [Sample] field [mSamples], and we find the view in [convertView]
+         * with resource id [android.R.id.text2] and set its text to the [String] whose resource id
+         * is found in the [Sample.descriptionResId] field of the entry in position [position] of
+         * our [Array] of [Sample] field [mSamples]. Finally we return [convertView] to the caller.
          *
          * @param position The position of the item within the adapter's data set whose view we want.
          * @param convertView The old view to reuse, if possible.
@@ -140,49 +142,60 @@ class MainActivity : Activity(), AdapterView.OnItemClickListener {
         override fun getView(position: Int, convertView: View?, container: ViewGroup): View {
             var convertViewLocal = convertView
             if (convertViewLocal == null) {
-                convertViewLocal = layoutInflater
-                    .inflate(R.layout.sample_dashboard_item, container, false)
+                convertViewLocal = layoutInflater.inflate(
+                    R.layout.sample_dashboard_item,
+                    container,
+                    false
+                )
             }
-            (convertViewLocal!!.findViewById<View>(android.R.id.text1) as TextView).setText(
-                mSamples[position].titleResId)
-            (convertViewLocal.findViewById<View>(android.R.id.text2) as TextView).setText(
-                mSamples[position].descriptionResId)
+            (convertViewLocal!!
+                .findViewById<View>(android.R.id.text1) as TextView)
+                .setText(mSamples[position].titleResId)
+            (convertViewLocal
+                .findViewById<View>(android.R.id.text2) as TextView)
+                .setText(mSamples[position].descriptionResId)
             return convertViewLocal
         }
     }
 
     /**
-     * Class that holds the title, description and `Intent` for an activity that the user can
-     * launch by clicking on its entry in our `GridView mGridView`.
+     * Class that holds the title, description and [Intent] for an activity that the user can
+     * launch by clicking on its entry in our [GridView] field [mGridView].
      */
     private inner class Sample
     /**
      * This constructor just saves its arguments in the fields of the same name.
      *
-     * @param titleResId Resource id for the string to use as the title of this `Sample`
-     * @param descriptionResId Resource id for the string to use as the description of this `Sample`
-     * @param intent `Intent` that can be used to launch the activity of this `Sample`
-     */ private constructor(
+     * @param titleResId Resource id for the string to use as the title of this [Sample]
+     * @param descriptionResId Resource id for the string to use as the description of this [Sample]
+     * @param intent the [Intent] that can be used to launch the activity of this [Sample]
+     */
+    private constructor(
         /**
-         * Resource id for the string to use as the title of this `Sample`
+         * Resource id for the string to use as the title of this [Sample]
          */
         var titleResId: Int,
         /**
-         * Resource id for the string to use as the description of this `Sample`
+         * Resource id for the string to use as the description of this [Sample]
          */
         var descriptionResId: Int,
         /**
-         * `Intent` that can be used to launch the activity of this `Sample`
+         * `Intent` that can be used to launch the activity of this [Sample]
          */
         var intent: Intent) {
         /**
-         * This constructor creates an intent for the specific component specified by its `activityClass`
-         * and then calls our other constructor using that intent for its `Intent intent` parameter.
+         * This constructor creates an intent for the specific component specified by its
+         * [activityClass] parameter and then calls our other constructor using that [Intent]
+         * for its [Intent] parameter [intent].
          *
-         * @param titleResId Resource id for the string to use as the title of this `Sample`
-         * @param descriptionResId Resource id for the string to use as the description of this `Sample`
-         * @param activityClass `Class` of the `Activity` our `Intent` field should launch
+         * @param titleResId Resource id for the string to use as the title of this [Sample]
+         * @param descriptionResId Resource id for the string to use as the description of this [Sample]
+         * @param activityClass the [Class] of the [Activity] our [Intent] field should launch
          */
-        constructor(titleResId: Int, descriptionResId: Int, activityClass: Class<out Activity>) : this(titleResId, descriptionResId, Intent(this@MainActivity, activityClass))
+        constructor(
+            titleResId: Int,
+            descriptionResId: Int,
+            activityClass: Class<out Activity>
+        ) : this(titleResId, descriptionResId, Intent(this@MainActivity, activityClass))
     }
 }
