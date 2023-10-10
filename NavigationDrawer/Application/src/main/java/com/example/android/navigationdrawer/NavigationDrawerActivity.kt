@@ -25,6 +25,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -158,10 +159,10 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
         ) {
             /**
              * [DrawerLayout.DrawerListener] callback method. If you do not use your
-             * ActionBarDrawerToggle instance directly as your DrawerLayout's listener, you should call
-             * through to this method from your own listener object.
+             * [ActionBarDrawerToggle] instance directly as your DrawerLayout's listener,
+             * you should call through to this method from your own listener object.
              *
-             * @param view Drawer view that is now closed
+             * @param view Drawer [View] that is now closed
              */
             override fun onDrawerClosed(view: View) {
                 actionBar!!.title = mTitle
@@ -170,10 +171,10 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
 
             /**
              * [DrawerLayout.DrawerListener] callback method. If you do not use your
-             * ActionBarDrawerToggle instance directly as your DrawerLayout's listener, you should call
-             * through to this method from your own listener object.
+             * [ActionBarDrawerToggle] instance directly as your DrawerLayout's listener,
+             * you should call through to this method from your own listener object.
              *
-             * @param drawerView Drawer view that is now open
+             * @param drawerView Drawer [View] that is now open
              */
             override fun onDrawerOpened(drawerView: View) {
                 actionBar!!.title = mDrawerTitle
@@ -187,12 +188,12 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
     }
 
     /**
-     * Initialize the contents of the Activity's standard options menu. We use a `MenuInflater`
-     * for this context to inflate our menu layout file R.menu.navigation_drawer into our parameter
-     * `Menu menu` and return true to the caller so that the menu will be displayed.
+     * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater]
+     * for this context to inflate our menu layout file [R.menu.navigation_drawer] into our [Menu]
+     * parameter [menu] and return `true` to the caller so that the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
-     * @return You must return true for the menu to be displayed, which we do.
+     * @return You must return `true` for the menu to be displayed, which we do.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -201,19 +202,19 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
     }
 
     /**
-     * Prepare the Screen's standard options menu to be displayed. We initialize `drawerOpen`
-     * with the current open state of the `DrawerView` `mDrawerList` of our field
-     * `DrawerLayout mDrawerLayout`. Then we set the visibility of the view with item id
-     * R.id.action_websearch in our parameter `Menu menu` to visibile if `drawerOpen` is
-     * false or invisible if the drawer is open. Finally we call our super's implementation of
-     * `onPrepareOptionsMenu`.
+     * Prepare the Screen's standard options menu to be displayed. We initialize [Boolean] variable
+     * `val drawerOpen` with the current open state of the "DrawerView" of [DrawerLayout] field
+     * [mDrawerLayout], our [RecyclerView] field [mDrawerList]. Then we set the visibility of the
+     * view with item id [R.id.action_websearch] in our [Menu] parameter [menu] to visibile if
+     * `drawerOpen` is `false` or invisible if the drawer is open. Finally we return the value
+     * returned by our super's implementation of `onPrepareOptionsMenu`.
      *
-     * @param menu The options menu as last shown or first initialized by onCreateOptionsMenu().
-     * @return You must return true for the menu to be displayed
+     * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu].
+     * @return You must return `true` for the menu to be displayed
      */
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         // If the nav drawer is open, hide action items related to the content view
-        val drawerOpen = mDrawerLayout!!.isDrawerOpen(mDrawerList!!)
+        val drawerOpen: Boolean = mDrawerLayout!!.isDrawerOpen(mDrawerList!!)
         menu.findItem(R.id.action_websearch).isVisible = !drawerOpen
         return super.onPrepareOptionsMenu(menu)
     }
