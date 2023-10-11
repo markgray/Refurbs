@@ -28,8 +28,10 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -37,6 +39,8 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import java.util.Locale
 
@@ -221,26 +225,22 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
 
     /**
      * This hook is called whenever an item in your options menu is selected. First we call the
-     * `onOptionsItemSelected` method of `ActionBarDrawerToggle mDrawerToggle` and if it
-     * returns true (the action bar home/up action was selected) we return true to the caller since
-     * it has taken care of the event. Otherwise we switch on the item ID of our parameter `MenuItem item`:
+     * [ActionBarDrawerToggle.onOptionsItemSelected] method of [ActionBarDrawerToggle] field
+     * [mDrawerToggle] and if it returns `true` (the action bar home/up action was selected) we
+     * return `true` to the caller since it has taken care of the event. Otherwise we switch on
+     * the item ID of our [MenuItem] parameter [item]:
      *
-     *  *
-     * R.id.action_websearch: We construct `Intent intent` with the action ACTION_WEB_SEARCH,
-     * add the current title in the action bar as an extra under the key SearchManager.QUERY,
-     * then if the package manager is able to resolve an app for the `Intent intent` we
-     * start the activity of `intent`, if not we toast a message R.string.app_not_available
-     * (Sorry, there's no web browser available). Finally we return true to consume the event
-     * here.
+     *  * [R.id.action_websearch]: We construct [Intent] variable `val intent` with the action
+     *  [Intent.ACTION_WEB_SEARCH], add the current title in the action bar as an extra under the
+     *  key [SearchManager.QUERY], then if the package manager is able to resolve an app for the
+     *  [Intent] `intent` we start the activity of `intent`, if not we toast a message ("Sorry,
+     *  there's no web browser available"). Finally we return `true` to consume the event here.
      *
-     *  *
-     * default: we return the value returned by our super's implementation of `onOptionsItemSelected`
-     *
-     *
+     *  * any other item ID: we return the value returned by our super's implementation of
+     *  `onOptionsItemSelected`.
      *
      * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
+     * @return Return `false` to allow normal menu processing to proceed, `true` to consume it here.
      */
     @SuppressLint("QueryPermissionsNeeded")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -265,13 +265,14 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
     }
 
     /**
-     * The click listener for the RecyclerView in the navigation drawer. Each `TextView` in the
-     * `ViewHolder` for a list item in the `PlanetAdapter` has its `OnClickListener`
-     * set to an anonymous class which calls this override (we implement `PlanetAdapter.OnItemClickListener`).
-     * We just call our method `selectItem` with our parameter `position`.
+     * The click listener for the [RecyclerView] in the navigation drawer. Each [TextView] in the
+     * [PlanetAdapter.ViewHolder] for a list item in the [PlanetAdapter] has its [OnClickListener]
+     * set to an anonymous class which calls this override (we implement
+     * [PlanetAdapter.OnItemClickListener]). We just call our method [selectItem] with our [Int]
+     * parameter [position].
      *
-     * @param view View that was clicked
-     * @param position position in the `PlanetAdapter` `RecyclerView` that was clicked.
+     * @param view [View] that was clicked
+     * @param position position in the [PlanetAdapter] that was clicked.
      */
     override fun onClick(view: View, position: Int) {
         selectItem(position)
@@ -279,23 +280,24 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
 
     /**
      * Updates the main content to display the planet in the selected position. First we initialize
-     * `Fragment fragment` with a new instance of `PlanetFragment` for the planet in the
-     * position `position` of our array of planets. We initialize `FragmentManager fragmentManager`
-     * with the FragmentManager for interacting with fragments associated with this activity, then use
-     * it to begin `FragmentTransaction ft`. We ask `ft` to replace the fragment occupying
-     * the view with id R.id.content_frame with `fragment`, then request it to commit its transactions.
-     * We call our method `setTitle` to change the title in the action bar to the string in
-     * `mPlanetTitles[position]`, then order `DrawerLayout mDrawerLayout` to close the
-     * drawer containing `mDrawerList`.
+     * [Fragment] variable `val fragment` with a new instance of [PlanetFragment] for the planet in
+     * the position of our [Int] parameter [position] of our array of planets. We initialize
+     * [FragmentManager] variable `val fragmentManager` with the [FragmentManager] for interacting
+     * with fragments associated with this activity, then use it to begin [FragmentTransaction]
+     * variable `val ft`. We ask `ft` to replace the fragment occupying the view with id
+     * [R.id.content_frame] with `fragment`, then request it to commit its transactions. We call
+     * our method [setTitle] to change the title in the action bar to the string at index [position]
+     * in our [Array] of [String] field [mPlanetTitles]`, then order [DrawerLayout] field
+     * [mDrawerLayout] to close the drawer containing [RecyclerView] field [mDrawerList].
      *
-     * @param position position of the planet name in the array `String[] mPlanetTitles` we are
-     * to display.
+     * @param position position of the planet name in the [Array] of [String] field [mPlanetTitles]
+     * we are to display.
      */
     private fun selectItem(position: Int) {
         // update the main content by replacing fragments
         val fragment = PlanetFragment.newInstance(position)
-        val fragmentManager = supportFragmentManager
-        val ft = fragmentManager.beginTransaction()
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val ft: FragmentTransaction = fragmentManager.beginTransaction()
         ft.replace(R.id.content_frame, fragment)
         ft.commit()
 
@@ -305,9 +307,9 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
     }
 
     /**
-     * Sets the title of the action bar to the parameter `CharSequence title`. First we save
-     * our parameter in the field `CharSequence mTitle`, then we retrieve a reference to this
-     * activity's ActionBar and command it to change its title to `mTitle`.
+     * Sets the title of the action bar to our [CharSequence] parameter [title]. First we save
+     * our parameter in the [CharSequence] field [mTitle], then we retrieve a reference to this
+     * activity's [ActionBar] and command it to change its title to [mTitle].
      *
      * @param title string to set the title of the action bar to
      */
@@ -317,15 +319,12 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
     }
 
     /**
-     * Called when activity start-up is complete (after [.onStart] and
-     * [.onRestoreInstanceState] have been called).
-     *
-     *
-     * When using the ActionBarDrawerToggle, you must call it during
-     * onPostCreate() and onConfigurationChanged()...
-     * First we call our super's implementation of `onPostCreate`, then we call the `syncState`
-     * method of our field `ActionBarDrawerToggle mDrawerToggle` to Synchronize the state of the
-     * drawer indicator/affordance with the linked DrawerLayout.
+     * Called when activity start-up is complete (after [onStart] and [onRestoreInstanceState] have
+     * been called). When using the [ActionBarDrawerToggle], you must call it during [onPostCreate]
+     * and [onConfigurationChanged]. First we call our super's implementation of `onPostCreate`,
+     * then we call the [ActionBarDrawerToggle.syncState] method of our [ActionBarDrawerToggle]
+     * field  [mDrawerToggle] to Synchronize the state of the drawer indicator/affordance with the
+     * linked [DrawerLayout].
      *
      * @param savedInstanceState We do not override `onSaveInstanceState` so do not use.
      */
@@ -338,10 +337,10 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
     /**
      * Called by the system when the device configuration changes while your activity is running.
      * First we call our super's implementation of `onConfigurationChanged`, then we call the
-     * `onConfigurationChanged` method of our field `ActionBarDrawerToggle mDrawerToggle`
-     * with our parameter `Configuration newConfig` to reload drawables that can change with
-     * configuration, and to Synchronize the state of the drawer indicator/affordance with the linked
-     * DrawerLayout.
+     * [ActionBarDrawerToggle.onConfigurationChanged] method of our [ActionBarDrawerToggle] field
+     * [mDrawerToggle] with our [Configuration] parameter [newConfig] to reload drawables that can
+     * change with configuration, and to Synchronize the state of the drawer indicator/affordance
+     * with the linked [DrawerLayout].
      *
      * @param newConfig The new device configuration.
      */
@@ -360,37 +359,46 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
      */
         : Fragment() {
         /**
-         * Called to have the fragment instantiate its user interface view. We initialize `View rootView`
-         * by using our parameter `inflater` to inflate our layout file R.layout.fragment_planet
-         * using our parameter `ViewGroup container` for the LayoutParams without attaching to it.
-         * We initialize `int i` by fetching the int stored under the key ARG_PLANET_NUMBER in our
-         * arguments bundle. We then initialize `String planet` to the string in position `i`
-         * of the string array with resource id R.array.planets_array. We initialize `int imageId`
-         * by using a Resources instance for the application's package to find a resource identifier
+         * Called to have the fragment instantiate its user interface view. We initialize [View]
+         * variable `val rootView` by using our [LayoutInflater] parameter [inflater] to inflate our
+         * layout file [R.layout.fragment_planet] using our [ViewGroup] parameter [container] for
+         * the LayoutParams without attaching to it. We initialize [Int] variable `val i` by fetching
+         * the int stored under the key [ARG_PLANET_NUMBER] in our arguments bundle. We then initialize
+         * [String] variable `val planet` to the [String] in position `i` of the string array with
+         * resource id [R.array.planets_array]. We initialize [Int] variable `val imageId` by using
+         * a [Resources] instance for the application's package to find a resource identifier
          * for the resource name formed from the lower-cased `planet` name and the type "drawable"
-         * for the package name of our activity. We initialize `ImageView iv` by finding the view
-         * inf `rootView` with id R.id.image, then set its image to the drawable with resource id
-         * `imageId`. Next we call the `setTitle` method of our activity to set the title
-         * of the action bar to `planet`. Finally we return `rootView` to the caller.
+         * for the package name of our activity. We initialize [ImageView] variable `val iv` by
+         * finding the view in `rootView` with id [R.id.image], then set its image to the drawable
+         * with resource id `imageId`. Next we call the [FragmentActivity.setTitle] method (kotlin
+         * `title` property) of our activity to set the title of the action bar to `planet`. Finally
+         * we return `rootView` to the caller.
          *
-         * @param inflater The LayoutInflater object that can be used to inflate
-         * any views in the fragment,
-         * @param container If non-null, this is the parent view that the fragment's
-         * UI should be attached to.  The fragment should not add the view itself,
-         * but this can be used to generate the LayoutParams of the view.
-         * @param savedInstanceState If non-null, this fragment is being re-constructed
-         * from a previous saved state as given here. We do not override `onSaveInstanceState`
+         * @param inflater The [LayoutInflater] object that can be used to inflate
+         * any views in the fragment.
+         * @param container If non-`null`, this is the parent view that the fragment's UI will be
+         * attached to. The fragment should not add the view itself, but this can be used to
+         * generate the LayoutParams of the view.
+         * @param savedInstanceState If non-`null`, this fragment is being re-constructed
+         * from a previous saved state as given here. We do not override [onSaveInstanceState]
          * so do not use.
          * @return Return the View for the fragment's UI.
          */
         @SuppressLint("DiscouragedApi")
         @Deprecated("Deprecated in Java")
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
             val rootView = inflater.inflate(R.layout.fragment_planet, container, false)
             val i = requireArguments().getInt(ARG_PLANET_NUMBER)
             val planet = resources.getStringArray(R.array.planets_array)[i]
-            val imageId = resources.getIdentifier(planet.lowercase(Locale.getDefault()),
-                "drawable", requireActivity().packageName)
+            val imageId: Int = resources.getIdentifier(
+                /* name = */ planet.lowercase(Locale.getDefault()),
+                /* defType = */ "drawable",
+                /* defPackage = */ requireActivity().packageName
+            )
             val iv = rootView.findViewById<ImageView>(R.id.image)
             iv.setImageResource(imageId)
             requireActivity().title = planet
