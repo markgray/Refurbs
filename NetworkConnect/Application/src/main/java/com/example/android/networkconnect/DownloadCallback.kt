@@ -18,6 +18,9 @@
 package com.example.android.networkconnect
 
 import android.net.NetworkInfo
+import java.io.InputStream
+import java.io.InputStreamReader
+import javax.net.ssl.HttpsURLConnection
 
 /**
  * Sample interface containing bare minimum methods needed for an asynchronous task
@@ -30,23 +33,26 @@ interface DownloadCallback {
     interface Progress {
         companion object {
             /**
-             * TODO: Add kdoc
+             * Progress code that could be used for reporting an IO error, but is not used.
              */
             const val ERROR: Int = -1
             /**
-             * TODO: Add kdoc
+             * This Progress code is "published" after [HttpsURLConnection.connect] returns without
+             * throwing an exception.
              */
             const val CONNECT_SUCCESS: Int = 0
             /**
-             * TODO: Add kdoc
+             * This Progress code is "published" after [HttpsURLConnection.getInputStream] returns
+             * an [InputStream] without throwing an exception.
              */
             const val GET_INPUT_STREAM_SUCCESS: Int = 1
             /**
-             * TODO: Add kdoc
+             * This Progress code is "published" while the [InputStreamReader] reading the
+             * [InputStream] is in progress, along with the percent of the file downloaded so far.
              */
             const val PROCESS_INPUT_STREAM_IN_PROGRESS: Int = 2
             /**
-             * TODO: Add kdoc
+             * This Progress code is "published" after the download completes successfully.
              */
             const val PROCESS_INPUT_STREAM_SUCCESS: Int = 3
         }
