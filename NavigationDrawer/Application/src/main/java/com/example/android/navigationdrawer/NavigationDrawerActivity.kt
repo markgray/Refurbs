@@ -412,15 +412,16 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
             const val ARG_PLANET_NUMBER: String = "planet_number"
 
             /**
-             * Factory method to construct an instance of `PlanetFragment` configured to display
-             * the planet in the planets array at position `position`. We initialize `Fragment fragment`
-             * with a new instance, and `Bundle args` with a new instance. We store our parameter
-             * `int position` under the key ARG_PLANET_NUMBER in `args` and set the argument
+             * Factory method to construct an instance of [PlanetFragment] configured to display
+             * the planet in the planets array whose index is our [Int] parameter [position]. We
+             * initialize [Fragment] variable `val fragment` with a new instance of [PlanetFragment],
+             * and [Bundle] variable `val args` with a new instance. We store our [Int] parameter
+             * `position` under the key [ARG_PLANET_NUMBER] in `args` and set the argument
              * bundle of `fragment` to `args`. Finally we return `fragment` to the caller.
              *
              * @param position position of the planet in the planets array that we are to display
-             * @return new instance of `PlanetFragment` configured to display the planet in the
-             * planets array at position `position`.
+             * @return new instance of [PlanetFragment] configured to display the planet in the
+             * planets array at position [position].
              */
             fun newInstance(position: Int): Fragment {
                 val fragment: Fragment = PlanetFragment()
