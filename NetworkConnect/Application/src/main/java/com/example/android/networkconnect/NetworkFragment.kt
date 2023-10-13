@@ -20,6 +20,7 @@ package com.example.android.networkconnect
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.AsyncTask
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -31,35 +32,35 @@ import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 /**
- * Implementation of headless Fragment that runs an AsyncTask to fetch data from the network.
+ * Implementation of headless [Fragment] that runs an [AsyncTask] to fetch data from the network.
  */
 class NetworkFragment : Fragment() {
     /**
-     * `DownloadCallback` we use to report progress and post results, set from the context
-     * passed to our `onAttach` override (`MainActivity` in our case).
+     * [DownloadCallback] we use to report progress and post results, set from the context passed to
+     * our [onAttach] override ([MainActivity] in our case).
      */
     private var mCallback: DownloadCallback? = null
 
     /**
-     * `DownloadTask` which is currently running, created and started in our `startDownload`
-     * method, canceled and set to null in our `cancelDownload` method.
+     * [DownloadTask] which is currently running, created and started in our [startDownload] method,
+     * canceled and set to `null` in our [cancelDownload] method.
      */
     private var mDownloadTask: DownloadTask? = null
 
     /**
-     * URL we are to download, set from our arguments bundle (key is URL_KEY) in our `onCreate`
+     * URL we are to download, set from our arguments bundle (key is [URL_KEY]) in our [onCreate]
      * method.
      */
     private var mUrlString: String? = null
 
     /**
      * Called to do initial creation of a fragment. First we call our super's implementation of
-     * `onCreate`. Then we call `setRetainInstance(true)` to retain this Fragment across
-     * configuration changes in the host Activity, and initialize our field `String mUrlString`
-     * by fetching the arguments supplied when the fragment was instantiated and retrieving the string
-     * stored under the key URL_KEY.
+     * `onCreate`. Then we call [setRetainInstance] with `true` to retain this [Fragment] across
+     * configuration changes in the host Activity, and initialize our [String] field [mUrlString]
+     * by fetching the arguments supplied when the fragment was instantiated and retrieving the
+     * [String] stored under the key [URL_KEY].
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,12 +70,12 @@ class NetworkFragment : Fragment() {
     }
 
     /**
-     * Called when a fragment is first attached to its context. First we call our super's implementation
-     * of `onAttach`, then we cast our parameter `Context context` to `DownloadCallback`
-     * in order to initialize our field `DownloadCallback mCallback`.
+     * Called when a fragment is first attached to its context. First we call our super's
+     * implementation of `onAttach`, then we cast our [Context] parameter [context] to a
+     * [DownloadCallback] in order to initialize our [DownloadCallback] field [mCallback].
      *
-     * @param context `Context` of the activity we are attached to (`MainActivity` in
-     * our case).
+     * @param context the [Context] of the activity we are attached to ([MainActivity]
+     * in our case).
      */
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -84,8 +85,8 @@ class NetworkFragment : Fragment() {
 
     /**
      * Called when the fragment is no longer attached to its activity.  This is called after
-     * [.onDestroy]. First we call our super's implementation of `onDetach`,
-     * then we set our field `DownloadCallback mCallback` to null.
+     * [onDestroy]. First we call our super's implementation of `onDetach`, then we set our
+     * [DownloadCallback] field [mCallback] to `null`.
      */
     override fun onDetach() {
         super.onDetach()
@@ -94,10 +95,9 @@ class NetworkFragment : Fragment() {
     }
 
     /**
-     * Called when the fragment is no longer in use.  This is called after [.onStop] and
-     * before [.onDetach]. We call our method `cancelDownload` to cancel our
-     * `DownloadTask` (if it is running) then call our super's implementation of
-     * `onDestroy`.
+     * Called when the fragment is no longer in use.  This is called after [onStop] and before
+     * [onDetach]. We call our method [cancelDownload] to cancel our [DownloadTask] (if it is
+     * running) then call our super's implementation of `onDestroy`.
      */
     override fun onDestroy() {
         // Cancel task when Fragment is destroyed.
@@ -106,10 +106,10 @@ class NetworkFragment : Fragment() {
     }
 
     /**
-     * Start non-blocking execution of DownloadTask. First we call our method `cancelDownload`
-     * to cancel any existing `DownloadTask` (if it is running), then we initialize our field
-     * `DownloadTask mDownloadTask` and start it running to download the http url contained in
-     * our field `String mUrlString`.
+     * Start non-blocking execution of [DownloadTask]. First we call our method [cancelDownload]
+     * to cancel any existing [DownloadTask] (if it is running), then we initialize our [DownloadTask]
+     * field  [mDownloadTask] with a new instance and start it running to download the http url
+     * contained in our [String] field [mUrlString].
      */
     fun startDownload() {
         cancelDownload()
@@ -118,10 +118,10 @@ class NetworkFragment : Fragment() {
     }
 
     /**
-     * Cancel (and interrupt if necessary) any ongoing DownloadTask execution. If our field
-     * `DownloadTask mDownloadTask` is not null we call its `cancel` method to
-     * attempt to cancel execution of the task passing true as the `mayInterruptIfRunning`
-     * flag so that it will be interrupted if need be. We then set `mDownloadTask` to null.
+     * Cancel (and interrupt if necessary) any ongoing [DownloadTask] execution. If our [DownloadTask]
+     * field [mDownloadTask] is not `null` we call its [DownloadTask.cancel] method to attempt to
+     * cancel execution of the task passing `true` as the `mayInterruptIfRunning` flag so that it
+     * will be interrupted if need be. We then set [mDownloadTask] to `null`.
      */
     fun cancelDownload() {
         if (mDownloadTask != null) {
@@ -137,9 +137,9 @@ class NetworkFragment : Fragment() {
     private inner class DownloadTask : AsyncTask<String, Int, DownloadTask.Result?>() {
         /**
          * Wrapper class that serves as a union of a result value and an exception. When the
-         * download task has completed, either the result value or exception can be a non-null
+         * download task has completed, either the result value or exception can be a non-`null`
          * value. This allows you to pass exceptions to the UI thread that were thrown during
-         * doInBackground().
+         * [doInBackground].
          */
         inner class Result {
             /**
@@ -155,7 +155,7 @@ class NetworkFragment : Fragment() {
             /**
              * Constructor used to return a string result.
              *
-             * @param resultValue string to return as a result in our field `String mResultValue`
+             * @param resultValue string to return as a result in our [String] field [mResultValue]
              */
             constructor(resultValue: String?) {
                 mResultValue = resultValue
@@ -164,7 +164,7 @@ class NetworkFragment : Fragment() {
             /**
              * Constructor used to return an exception.
              *
-             * @param exception exception to return as a result in our field `Exception mException`
+             * @param exception exception to return as a result in our [Exception] field [mException]
              */
             constructor(exception: Exception?) {
                 mException = exception
@@ -172,19 +172,21 @@ class NetworkFragment : Fragment() {
         }
 
         /**
-         * Cancel background network operation if we do not have network connectivity. If our field
-         * `DownloadCallback mCallback` is not null we call its `getActiveNetworkInfo`
-         * method to initialize `NetworkInfo networkInfo` with details about the currently
-         * active default data network. If `networkInfo` is null, or its `isConnected`
-         * method returns false, or its `getType` method does not return either TYPE_WIFI or
-         * TYPE_MOBILE we are not connected so we call the `updateFromDownload` method of
-         * `mCallback` to set its result to null, then call the `cancel` method to cancel
-         * this download, interrupting it if it is running.
+         * Cancel background network operation if we do not have network connectivity. If our
+         * [DownloadCallback] field [mCallback] is not `null` we call its
+         * [DownloadCallback.getActiveNetworkInfo] method to initialize [NetworkInfo] variable
+         * `val networkInfo` with details about the currently active default data network. If
+         * `networkInfo` is `null`, or its [NetworkInfo.isConnected] method returns `false`, or its
+         * [NetworkInfo.getType] method (kotlin `type` field) does not return either
+         * [ConnectivityManager.TYPE_WIFI] or [ConnectivityManager.TYPE_MOBILE] we are not connected
+         * so we call the [DownloadCallback.updateFromDownload] method of [mCallback] to set its
+         * result to `null`, then call our [cancel] method to cancel this download, interrupting it
+         * if it is running.
          */
         @Deprecated("Deprecated in Java")
         override fun onPreExecute() {
             if (mCallback != null) {
-                val networkInfo = mCallback!!.getActiveNetworkInfo()
+                val networkInfo: NetworkInfo = mCallback!!.getActiveNetworkInfo()
                 if (networkInfo == null || !networkInfo.isConnected ||
                     (networkInfo.type != ConnectivityManager.TYPE_WIFI
                         && networkInfo.type != ConnectivityManager.TYPE_MOBILE)) {
