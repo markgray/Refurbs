@@ -198,20 +198,20 @@ class NetworkFragment : Fragment() {
         }
 
         /**
-         * Defines work to perform on the background thread. We initialize `Result result` to
-         * null, then if we have not been cancelled and our parameter `urls` is not null and its
-         * length is greater than 0 we set `String urlString` to `urls[0]` and wrapped
-         * in a try block intended to catch any exception we initialize `URL url` with an instance
-         * constructed for the string representation in `urlString`. We then set the variable
-         * `String resultString` to the value returned by our method `downloadUrl` after
-         * downloading `URL url`. If `resultString` is not null we set `result` to
-         * an instance of `Result` constructed from `resultString`, and if it is null we
-         * throw IOException "No response received." If our catch block catches an exception we set
-         * `result` to an instance of `Result` constructed from that exception. Finally
-         * we return `result` to the caller.
+         * Defines work to perform on the background thread. We initialize [Result] variable
+         * `var result` to `null`, then if we have not been cancelled and our [Array] of [String]
+         * parameter [urls] is not `null` and its length is greater than 0 we set [String] variable
+         * `val urlString` to `urls[0]` and wrapped in a try block intended to catch any exception
+         * we initialize [URL] variable `val url` with an instance constructed for the string
+         * representation in `urlString`. We then set the [String] variable `val resultString` to
+         * the value returned by our method [downloadUrl] after downloading [URL] `url`. If
+         * `resultString` is not `null` we set `result` to an instance of [Result] constructed from
+         * `resultString`, and if it is `null` we throw [IOException] "No response received." If our
+         * catch block catches an exception we set `result` to an instance of `Result` constructed
+         * from that exception. Finally we return `result` to the caller.
          *
          * @param urls the http url we are to download in `urls[0]`
-         * @return an instance of `Result` constructed from the string that we downloaded from
+         * @return an instance of [Result] constructed from the string that we downloaded from
          * our url, or any exception that was thrown.
          */
         @Deprecated("Deprecated in Java")
@@ -221,7 +221,7 @@ class NetworkFragment : Fragment() {
                 val urlString = urls[0]
                 try {
                     val url = URL(urlString)
-                    val resultString = downloadUrl(url)
+                    val resultString: String? = downloadUrl(url)
                     if (resultString != null) {
                         result = Result(resultString)
                     } else {
@@ -236,15 +236,15 @@ class NetworkFragment : Fragment() {
 
 
         /**
-         * Send DownloadCallback a progress update. First we call our super's implementation of
-         * `onProgressUpdate`, then if the length of our parameter `values` is greater
-         * than or equal to 2 we call the `onProgressUpdate` method of `mCallback` to
-         * with the parameters `values[0]` and `values[1]` so it can update the UI with
-         * the current percentage of the download.
+         * Send [DownloadCallback] a progress update. First we call our super's implementation of
+         * `onProgressUpdate`, then if the length of our [Array] of [Int] parameter [values] is
+         * greater than or equal to 2 we call the [DownloadCallback.onProgressUpdate] method of
+         * [DownloadCallback] field [mCallback] with the parameters `values[0]` and `values[1]` so
+         * it can update the UI with the current percentage of the download.
          *
-         * @param values `values[0]` contains a `DownloadCallback.Progress` code, and
-         * `values[1]` contains a percentage downloaded value for the progress
-         * code PROCESS_INPUT_STREAM_IN_PROGRESS.
+         * @param values `values[0]` contains a [DownloadCallback.Progress] code, and
+         * `values[1]` contains a percentage downloaded value for the progress code
+         * [DownloadCallback.Progress.PROCESS_INPUT_STREAM_IN_PROGRESS].
          */
         @Deprecated("Deprecated in Java")
         override fun onProgressUpdate(vararg values: Int?) {
@@ -255,23 +255,20 @@ class NetworkFragment : Fragment() {
         }
 
         /**
-         * Updates the DownloadCallback with the result. If our parameter `result` is not null
-         * and our field `DownloadCallback mCallback` is not null, we branch on the value of
-         * the `mException` field of `result`:
+         * Updates the [DownloadCallback] with the result. If our [Result] parameter [result] is not
+         * `null` and our [DownloadCallback] field [mCallback] is not null, we branch on the value
+         * of the [Result.mException] field of [result]:
          *
-         *  *
-         * not null: (an exception was caught) We call the `updateFromDownload` method
-         * of `mCallback` with the detail message string from the `mException`
-         * field of `result`.
+         *  * not `null`: (an exception was caught) We call the [DownloadCallback.updateFromDownload]
+         *  method of [mCallback] with the detail message string from the [Result.mException] field
+         *  of `result`.
          *
-         *  *
-         * null: (no exception was caught) We call the `updateFromDownload` method of
-         * `mCallback` with the `mResultValue` field of `result`.
+         *  * `null`: (no exception was caught) We call the [DownloadCallback.updateFromDownload]
+         *  method of [mCallback] with the [Result.mResultValue] field of [result].
          *
+         * In either case we call the [DownloadCallback.finishDownloading] method of [mCallback]
          *
-         * In either case we call the `finishDownloading` method of `mCallback`
-         *
-         * @param result `Result` instance returned from the `doInBackground` method to
+         * @param result a [Result] instance returned from the [doInBackground] method to
          * report that the download operation has finished.
          */
         @Deprecated("Deprecated in Java")
@@ -297,30 +294,32 @@ class NetworkFragment : Fragment() {
         /**
          * Given a URL, sets up a connection and gets the HTTP response body from the server. If the
          * network request is successful, it returns the response body in String form. Otherwise, it
-         * will throw an IOException. We initialize our variables `InputStream stream`,
-         * `HttpsURLConnection connection` and `String result` to null. Then in a try
-         * block without a catch block (only a finally block to clean up) we set `connection`
-         * to the `HttpsURLConnection` connection returned by calling the `openConnection`
-         * method of `url`, set its read timeout to 3000ms, its connection timeout to 3000m
-         * its HTTP method to "GET", and set its `doInput` field to true (we intend to use the
-         * URL connection for input). We then call the `connect` method of `connection`
-         * to open a communications link to the resource referenced by this URL. We then call the
-         * `publishProgress` method to report the progress CONNECT_SUCCESS. We initialize
-         * our variable `int responseCode` with the status code from the HTTP response message
-         * of `connection` and if it is not HTTP_OK we throw an IOException with the message
+         * will throw an [IOException]. We initialize our [InputStream] variable `var stream`,
+         * [HttpsURLConnection] variable `var connection` and [String] variable `var result` to
+         * `null`. Then in a try block without a catch block (only a finally block to clean up) we
+         * set `connection` to the [HttpsURLConnection] connection returned by calling the
+         * [URL.openConnection] method of [url], set its read timeout to 3000ms, its connection
+         * timeout to 3000m its HTTP method to "GET", and set its [HttpsURLConnection.doInput]
+         * field to `true` (we intend to use the URL connection for input). We then call the
+         * [HttpsURLConnection.connect] method of `connection` to open a communications link to the
+         * resource referenced by this URL. We then call the [publishProgress] method to report the
+         * progress [DownloadCallback.Progress.CONNECT_SUCCESS]. We initialize our [Int] variable
+         * `val responseCode` with the status code from the HTTP response message of `connection`
+         * and if it is not [HttpsURLConnection.HTTP_OK] we throw an [IOException] with the message
          * "HTTP error code: " followed by the `responseCode`. We set `stream` to an input
          * stream that reads from `connection` then call the `publishProgress` method to
          * report the progress GET_INPUT_STREAM_SUCCESS. If `stream` is not null we set
          * `result` to the string returned by our method `readStream` when it reads up to
          * 500 bytes from `stream` then call the `publishProgress` method to report the
-         * progress PROCESS_INPUT_STREAM_SUCCESS. In the finally block if `stream` is not null
-         * we call its `close` method to close the input stream and release any system resources
-         * associated with it, and if `connection` is not null we call its `disconnect`
-         * method to indicate that other requests to the server are unlikely in the near future.
+         * progress [DownloadCallback.Progress.GET_INPUT_STREAM_SUCCESS]. In the finally block if
+         * `stream` is not `null` we call its [InputStream.close] method to close the input stream
+         * and release any system resources associated with it, and if `connection` is not `null`
+         * we call its [HttpsURLConnection.disconnect] method to indicate that other requests to the
+         * server are unlikely in the near future.
          *
          * @param url http URL we are to down load
-         * @return string read from the `InputStream` of the `HttpsURLConnection` we open
-         * to the server at our parameter `URL url`.
+         * @return string read from the [InputStream] of the [HttpsURLConnection] we open
+         * to the server at our [URL] parameter [url].
          * @throws IOException if an I/O exception occurs.
          */
         @Throws(IOException::class)
@@ -342,7 +341,7 @@ class NetworkFragment : Fragment() {
                 // Open communications link (network traffic occurs here).
                 connection.connect()
                 publishProgress(DownloadCallback.Progress.CONNECT_SUCCESS)
-                val responseCode = connection.responseCode
+                val responseCode: Int = connection.responseCode
                 if (responseCode != HttpsURLConnection.HTTP_OK) {
                     throw IOException("HTTP error code: $responseCode")
                 }
@@ -363,27 +362,26 @@ class NetworkFragment : Fragment() {
         }
 
         /**
-         * Converts the contents of an InputStream to a String. First we initialize `String result`
-         * to null. We initialize `InputStreamReader reader` with a new instance constructed to
-         * read from our parameter `InputStream stream` using the charset "UTF-8". We allocate
-         * `maxLength` chars for `char[] buffer`, initialize both `numChars` and
-         * `readSize` to 0. Then while `numChars` is less than `maxLength` and
-         * `readSize` is not equal to -1 we add `readSize` to `numChars` and set
-         * `int pct` to `100*numChars/maxLength` then call the `publishProgress`
-         * method to report the progress PROCESS_INPUT_STREAM_IN_PROGRESS and the value `pct`.
-         * Then we call the `read` method of `reader` to read into `buffer` at an
+         * Converts the contents of an [InputStream] to a [String]. First we initialize [String]
+         * variable `var result` to `null`. We initialize [InputStreamReader] variable `val reader`
+         * with a new instance constructed to read from our [InputStream] parameter [stream] using
+         * the charset "UTF-8". We allocate [Int] parameter [maxLength] chars for [CharArray]
+         * variable `val buffer`, initialize both [Int] variable `var numChars` and [Int] variable
+         * `var readSize` to 0. Then while `numChars` is less than [maxLength] and `readSize` is not
+         * equal to -1 we add `readSize` to `numChars` and set [Int] variable `val pct` to
+         * `100*numChars/maxLength` and call the [publishProgress] method to report the progress
+         * [DownloadCallback.Progress.PROCESS_INPUT_STREAM_IN_PROGRESS] and the value `pct`.
+         * Then we call the [InputStreamReader.read] method of `reader` to read into `buffer` at an
          * offset of `numChars` and a maximum of the length of `buffer` minus the value
          * `numChars`, saving the number of `char` read in `readSize`.
          *
-         *
          * When done with the while loop, if `numChars` is not equal to -1, we set it to the
-         * max of `numChars` and `maxLength`, then set `result` to an instance
-         * which is constructed of the first `numChars` entries in `buffer`. Finally we
-         * return `result` to the caller.
+         * max of `numChars` and `maxLength`, then set `result` to an instance which is constructed
+         * of the first `numChars` entries in `buffer`. Finally we return `result` to the caller.
          *
-         * @param stream `InputStream` to read from
+         * @param stream the [InputStream] to read from
          * @param maxLength Maximum number of bytes to read
-         * @return string read from our parameter `InputStream stream`
+         * @return [String] read from our [InputStream] parameter [stream]
          * @throws IOException if an I/O error occurs
          */
         @Throws(IOException::class)
@@ -421,27 +419,30 @@ class NetworkFragment : Fragment() {
         const val TAG: String = "NetworkFragment"
 
         /**
-         * Key in the arguments bundle for the `NetworkFragment` we create that contains the url
+         * Key in the arguments bundle for the [NetworkFragment] we create that contains the url
          * it is supposed to download.
          */
         private const val URL_KEY = "UrlKey"
 
         /**
-         * Static initializer for NetworkFragment that sets the URL of the host it will be downloading
-         * from. We first try to initialize `NetworkFragment networkFragment` by using our parameter
-         * `FragmentManager fragmentManager` to search for a fragment with the tag NetworkFragment.TAG
-         * and if the result is null we initialize it with a new instance, initialize `Bundle args`
-         * with a new instance in which we store our parameter `String url` under the key URL_KEY
-         * and set as the argument bundle for `networkFragment`. Then we use `fragmentManager`
-         * to begin a transaction which then adds `networkFragment` using TAG as the tag and then
-         * we commit the transaction. Finally we return `networkFragment` to the caller (whether we
-         * are reusing an existing one or the one we had to add).
+         * Static initializer for [NetworkFragment] that sets the URL of the host it will be downloading
+         * from. We first try to initialize [NetworkFragment] variable `var networkFragment` by using
+         * our [FragmentManager] parameter [fragmentManager] to search for a fragment with the tag
+         * [NetworkFragment.TAG] and if the result is `null` we initialize it with a new instance,
+         * initialize [Bundle] variable `val args` with a new instance in which we store our [String]
+         * parameter [url] under the key [URL_KEY] and set it as the argument bundle for
+         * `networkFragment`. Then we use [fragmentManager] to begin a transaction which then adds
+         * `networkFragment` using [TAG] as the tag and then we commit the transaction. Finally we
+         * return `networkFragment` to the caller (whether we are reusing an existing one or the one
+         * we had to add).
          *
-         * @param fragmentManager FragmentManager for interacting with fragments associated
+         * @param fragmentManager [FragmentManager] for interacting with fragments associated
          * with this activity
-         * @param url             http url to download
-         * @return a `NetworkFragment` instance, either an existing one if `findFragmentByTag`
-         * finds one or a new one created to download our parameter `String url`.
+         * @param url http url to download
+         * @return a [NetworkFragment] instance, either an existing one if the
+         * [FragmentManager.findFragmentByTag] method of [FragmentManager] parameter
+         * [fragmentManager] finds one or a new one created to download our parameter
+         * `String url`.
          */
         fun getInstance(fragmentManager: FragmentManager, url: String?): NetworkFragment {
             // Recover NetworkFragment in case we are re-creating the Activity due to a config change.
