@@ -18,9 +18,11 @@
 package com.example.android.notepad
 
 import android.app.Activity
+import android.app.LoaderManager
 import android.app.LoaderManager.LoaderCallbacks
 import android.content.ClipboardManager
 import android.content.ComponentName
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.CursorLoader
@@ -40,64 +42,60 @@ import android.view.MenuItem
 import android.widget.EditText
 
 /**
- * This Activity handles "editing" a note, where editing is responding to
- * [Intent.ACTION_VIEW] (request to view data), edit a note
- * [Intent.ACTION_EDIT], create a note [Intent.ACTION_INSERT], or
- * create a new note from the current contents of the clipboard [Intent.ACTION_PASTE].
+ * This Activity handles "editing" a note, where editing is responding to [Intent.ACTION_VIEW]
+ * (request to view data), edit a note [Intent.ACTION_EDIT], create a note [Intent.ACTION_INSERT],
+ * or create a new note from the current contents of the clipboard [Intent.ACTION_PASTE].
  */
 class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
+
     // Global mutable variables
     /**
-     * Current state of this `NoteEditor`, either STATE_EDIT, or STATE_INSERT
+     * Current state of this [NoteEditor], either [STATE_EDIT], or [STATE_INSERT]
      */
     private var mState = 0
 
     /**
-     * Data URI for the note we are working with, either the Data URI of the `Intent` that
-     * launched us, or the URI returned from the `insert` method of the `ContentResolver`
-     * when we insert an empty record in the provider.
+     * Data [Uri] for the note we are working with, either the Data [Uri] of the [Intent] that
+     * launched us, or the [Uri] returned from the [ContentResolver.insert] method of the
+     * [ContentResolver] when we insert an empty record in the provider.
      */
     private var mUri: Uri? = null
 
     /**
-     * `EditText` with id R.id.note in our layout file R.layout.note_editor used to enter note
+     * [EditText] with id [R.id.note] in our layout file [R.layout.note_editor] used to enter note
      */
     private var mText: EditText? = null
 
     /**
-     * The original content of the current note, either as restored in `onCreate` or set from
-     * the cursor returned by our provider for COLUMN_NAME_NOTE in our `onLoadFinished` override
+     * The original content of the current note, either as restored in [onCreate] or set from the
+     * [Cursor] returned by our provider for [NotePad.Notes.COLUMN_NAME_NOTE] in our [onLoadFinished]
+     * override.
      */
     private var mOriginalContent: String? = null
 
     /**
-     * Defines a custom EditText View that draws lines between each line of text that is displayed.
+     * Defines a custom [EditText] View that draws lines between each line of text that is displayed.
      */
     class LinedEditText(context: Context?, attrs: AttributeSet?) : EditText(context, attrs) {
         /**
-         * Uninitialized `Rect` constructed in our `onCreate` override so that our
-         * `onDraw` override does not need to allocate one.
+         * Uninitialized [Rect] constructed in our [onCreate] override so that our
+         * [onDraw] override does not need to allocate one.
          */
         private val mRect: Rect
 
         /**
-         * `Paint` constructed and initialized in our `onCreate` override so that our
-         * `onDraw` override does not need to allocate one.
+         * [Paint] constructed and initialized in our [onCreate] override so that our
+         * [onDraw] override does not need to allocate one.
          */
         private val mPaint: Paint
 
         /**
          * Perform inflation from XML, used by LayoutInflater. First we call our super's constructor,
-         * then we initialize our field `Rect mRect` with a new instance, and initialize our
-         * field `Paint mPaint` with a new instance, set its style to STROKE, and set its color
+         * then we initialize our `Rect` field `mRect` with a new instance, and initialize our
+         * `Paint` field `mPaint` with a new instance, set its style to STROKE, and set its color
          * to Blue with an alpha of 0x80.
-         *
-         * param context The Context the view is running in, through which it can
-         * access the current theme, resources, etc.
-         * param attrs   The attributes of the XML tag that is inflating the view.
          */
         init {
-
             // Creates a Rect and a Paint object, and sets the style and color of the Paint object.
             mRect = Rect()
             mPaint = Paint()
@@ -106,24 +104,20 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
         }
 
         /**
-         * This is called to draw the LinedEditText object. First we initialize `int count` with
-         * the number of lines of text in our `EditText`. We set `Rect r` to our field
-         * `mRect` and `Paint paint` to our field `mPaint`. Then we loop over
-         * `int i` for each of our `count` lines:
+         * This is called to draw the [LinedEditText] object. First we initialize [Int] variable
+         * `val count` with the number of lines of text in our [EditText]. We set [Rect] variable
+         * `val r` to our [Rect] field [mRect] and [Paint] variable `val paint` to our [Paint] field
+         * [mPaint]. Then we loop over [Int] variable `var i` for each of our `count` lines:
          *
-         *  *
-         * We initialize `int baseline` to the baseline for line `i` storing the
-         * extent of the line in `r`
+         *  * We initialize [Int] variable `val baseline` to the baseline for line `i` storing the
+         *  extent of the line in `r`
          *
-         *  *
-         * We have our parameter `Canvas canvas` a horizontal line from the `left`
-         * field of `r` one pixel below `baseline` to the `right` field of
-         * `r`
-         *
+         *  * We have our [Canvas] parameter [canvas] draw a horizontal line from the [Rect.left]
+         *  field of `r` one pixel below `baseline` to the [Rect.right] field of `r`
          *
          * Once we have finished drawing our lines we call our super's implementation of `onDraw`.
          *
-         * @param canvas The canvas on which the background is drawn.
+         * @param canvas The [Canvas] on which the background is drawn.
          */
         override fun onDraw(canvas: Canvas) {
 
@@ -145,7 +139,12 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
                  * Draws a line in the background from the left of the rectangle to the right,
                  * at a vertical position one dip below the baseline, using the "paint" object
                  * for details.
-                 */canvas.drawLine(r.left.toFloat(), (baseline + 1).toFloat(), r.right.toFloat(), (baseline + 1).toFloat(), paint)
+                 */
+                canvas.drawLine(
+                    r.left.toFloat(), (baseline + 1).toFloat(),
+                    r.right.toFloat(), (baseline + 1).toFloat(),
+                    paint
+                )
             }
 
             // Finishes up by calling the parent method
@@ -155,44 +154,39 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
 
     /**
      * This method is called by Android when the Activity is first started. From the incoming
-     * Intent, it determines what kind of editing is desired, and then does it. First we call our
-     * super's implementation of `onCreate`. If our parameter `Bundle savedInstanceState`
-     * is not null we set our field `String mOriginalContent` to the string stored under the
-     * key ORIGINAL_CONTENT ("origContent") in it. We initialize `Intent intent` with the
-     * `Intent` that launched this activity, and `String action` with the action of
-     * `intent`. We then branch on the value of `action`:
+     * [Intent], it determines what kind of editing is desired, and then does it. First we call our
+     * super's implementation of `onCreate`. If our [Bundle] parameter [savedInstanceState] is not
+     * `null` we set our [String] field [mOriginalContent] to the string stored under the key
+     * [ORIGINAL_CONTENT] ("origContent") in it. We initialize [Intent] variable `val intent` with
+     * the [Intent] that launched this activity, and [String] variable `val action` with the action
+     * of `intent`. We then branch on the value of `action`:
      *
-     *  *
-     * ACTION_EDIT: We set our state `mState` to STATE_EDIT and set `Uri mUri`
-     * to the data URI of the `Intent intent` that launched our activity.
+     *  * [Intent.ACTION_EDIT]: We set our [Int] state field [mState] to [STATE_EDIT] and set [Uri]
+     *  field [mUri] to the data URI of the [Intent] `intent` that launched our activity.
      *
-     *  *
-     * ACTION_INSERT or ACTION_PASTE: We set our state `mState` to STATE_INSERT, set
-     * our activities title to the string with resource id R.string.title_create ("New note"),
-     * and set `Uri mUri` to the URL returned when we have a `ContentResolver`
-     * instance for our application's package insert an entry into the table addressed by the
-     * data URI of the `Intent intent` that launched our activity. If `mUri` is
-     * null we log the error, finish the activity and return. Otherwise we call `setResult`
-     * with the result code RESULT_OK and an `Intent` instance whose action is the string
-     * value of `mUri`.
+     *  * [Intent.ACTION_INSERT] or [Intent.ACTION_PASTE]: We set our [Int] state field [mState] to
+     *  [STATE_INSERT], set our activities title to the string with resource id [R.string.title_create]
+     *  ("New note"), and set [Uri] field [mUri] to the URL returned when we have a [ContentResolver]
+     *  instance for our application's package insert an entry into the table addressed by the
+     *  data URI of the [Intent] `intent` that launched our activity. If [mUri] is `null` we log the
+     *  error, finish the activity and return. Otherwise we call [setResult] with the result code
+     *  [Activity.RESULT_OK] and an [Intent] instance whose action is the string value of [mUri].
      *
-     *  *
-     * action was other than EDIT or INSERT: we log the error, finish the activity and return.
+     *  * action was other than [Intent.ACTION_EDIT] or [Intent.ACTION_INSERT]: we log the error,
+     *  finish the activity and return.
      *
-     *
-     * We use the `LoaderManager` for this activity to ensure a loader is initialized and active
-     * for the loader id LOADER_ID, with null for the Optional arguments to supply to the loader at
+     * We use the [LoaderManager] for this activity to ensure a loader is initialized and active for
+     * the loader id [LOADER_ID], with `null` for the Optional arguments to supply to the loader at
      * construction, and 'this' as the Interface the LoaderManager will call to report about changes
-     * in the state of the loader (our `onCreateLoader`, `onLoadFinished`, and
-     * `onLoaderReset` overloads will be called). If `action` is ACTION_PASTE we call our
-     * `performPaste` method to replace the note's data with the contents of the clipboard, and
-     * set our state `mState` to STATE_EDIT. Finally we set our content view to our layout file
-     * R.layout.note_editor, and initialize our field `EditText mText` by finding the view in
-     * it with id R.id.note.
+     * in the state of the loader (our [onCreateLoader], [onLoadFinished], and [onLoaderReset]
+     * overloads will be called). If `action` is [Intent.ACTION_PASTE] we call our [performPaste]
+     * method to replace the note's data with the contents of the clipboard, and set our [Int] state
+     * field [mState] to [STATE_EDIT]. Finally we set our content view to our layout file
+     * [R.layout.note_editor], and initialize our [EditText] field [mText] by finding the view in
+     * it with id [R.id.note].
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
-     * down then this Bundle contains the data it most recently supplied
-     * in [.onSaveInstanceState].
+     * down then this Bundle contains the data it most recently supplied in [onSaveInstanceState].
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -235,7 +229,8 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
              * If the attempt to insert the new note fails, shuts down this Activity. The
              * originating Activity receives back RESULT_CANCELED if it requested a result.
              * Logs that the insert failed.
-             */if (mUri == null) {
+             */
+            if (mUri == null) {
 
                 // Writes the log identifier, a message, and the URI that failed.
                 Log.e(TAG, "Failed to insert new note into " + getIntent().data)
@@ -278,19 +273,16 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
     }
 
     /**
-     * This method is called when an Activity loses focus during its normal operation.
-     * The Activity has a chance to save its state so that the system can restore
-     * it.
-     *
+     * This method is called when an Activity loses focus during its normal operation. The Activity
+     * has a chance to save its state so that the system can restore it.
      *
      * Notice that this method isn't a normal part of the Activity lifecycle. It won't be called
      * if the user simply navigates away from the Activity.
      *
+     * We store our [String] field [mOriginalContent] under the key [ORIGINAL_CONTENT] in our
+     * [Bundle] parameter [outState], then call our super's implementation of `onSaveInstanceState`.
      *
-     * We store our field `String mOriginalContent` under the key ORIGINAL_CONTENT in our
-     * parameter `Bundle outState`, then call our super's implementation of `onSaveInstanceState`.
-     *
-     * @param outState Bundle in which to place our saved state.
+     * @param outState the [Bundle] in which to place our saved state.
      */
     override fun onSaveInstanceState(outState: Bundle) {
         // Save away the original text, so we still have it if the activity
@@ -303,29 +295,21 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
     /**
      * This method is called when the Activity loses focus.
      *
-     *
      * While there is no need to override this method in this app, it is shown here to highlight
-     * that we are not saving any state in onPause, but have moved app state saving to onStop
+     * that we are not saving any state in [onPause], but have moved app state saving to [onStop]
      * callback.
      *
-     *
-     * In earlier versions of this app and popular literature it had been shown that onPause is a good
-     * place to persist any unsaved work, however, this is not really a good practice because of how
-     * application and process lifecycle behave.
-     *
+     * In earlier versions of this app and popular literature it had been shown that onPause is a
+     * good place to persist any unsaved work, however, this is not really a good practice because
+     * of how application and process lifecycle behave.
      *
      * As a general guideline apps should have a way of saving their business logic that does not
-     * solely rely on Activity (or other component) lifecycle state transitions.
-     * As a backstop you should save any app state, not saved during lifetime of the Activity, in
-     * onStop().
-     *
+     * solely rely on Activity (or other component) lifecycle state transitions. As a backstop you
+     * should save any app state, not saved during lifetime of the Activity, in [onStop].
      *
      * For a more detailed explanation of this recommendation please read
-     * [
- * Processes and Application Life Cycle ](https://developer.android.com/guide/topics/processes/process-lifecycle.html).
-     * [
- * Pausing and Resuming an Activity ](https://developer.android.com/training/basics/activity-lifecycle/pausing.html).
-     *
+     * [Processes and Application Life Cycle ](https://developer.android.com/guide/topics/processes/process-lifecycle.html).
+     * [Pausing and Resuming an Activity ](https://developer.android.com/training/basics/activity-lifecycle/pausing.html).
      *
      * We just call our super's implementation of `onPause`
      */
@@ -335,20 +319,14 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
     }
 
     /**
-     * This method is called when the Activity becomes invisible.
-     *
-     *
-     * For Activity objects that edit information, onStop() may be the one place where changes maybe
-     * saved.
-     *
+     * This method is called when the Activity becomes invisible. For Activity objects that edit
+     * information, [onStop] may be the one place where changes may be saved.
      *
      * If the user hasn't done anything, then this deletes or clears out the note, otherwise it
-     * writes the user's work to the provider.
-     *
-     *
-     * First we call our super's implementation of `onStop`, then we initialize `String text`
-     * with the text in our field `EditText mText`, and `int length` with the length of
-     * `text`. If we now branch on a series of 'if' statements:
+     * writes the user's work to the provider. First we call our super's implementation of `onStop`,
+     * then we initialize [String] variable `val text` with the text in our [EditText] field [mText],
+     * and [Int] variable `val length` with the length of `text`. We now branch on a series of 'if'
+     * statements:
      *
      *  *
      * If this activity is in the process of finishing and `length` is equal to 0, we
@@ -384,12 +362,11 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
             setResult(RESULT_CANCELED)
             deleteNote()
 
-            /*
-                 * Writes the edits to the provider. The note has been edited if an existing note
-                 * was retrieved into the editor *or* if a new note was inserted.
-                 * In the latter case, onCreate() inserted a new empty note into the provider,
-                 * and it is this new note that is being edited.
-                 */
+            /* Writes the edits to the provider. The note has been edited if an existing note was
+             * retrieved into the editor *or* if a new note was inserted. In the latter case,
+             *  onCreate() inserted a new empty note into the provider,
+             *  and it is this new note that is being edited.
+             */
         } else if (mState == STATE_EDIT) {
             // Creates a map to contain the new values for the columns
             updateNote(text, null)
