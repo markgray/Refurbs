@@ -20,6 +20,7 @@ package com.example.android.notepad
 import android.app.Activity
 import android.app.LoaderManager
 import android.app.LoaderManager.LoaderCallbacks
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.ContentResolver
@@ -34,10 +35,12 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.content.pm.PackageManager
 import android.provider.BaseColumns
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.EditText
 
@@ -328,22 +331,17 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
      * and [Int] variable `val length` with the length of `text`. We now branch on a series of 'if'
      * statements:
      *
-     *  *
-     * If this activity is in the process of finishing and `length` is equal to 0, we
-     * set our result code to `RESULT_CANCELED` and call our `deleteNote` method
-     * to instruct our provider to delete the note that the user was working on.
+     *  * If this activity is in the process of finishing and `length` is equal to 0, we set our
+     *  result code to [Activity.RESULT_CANCELED] and call our [deleteNote] method to instruct our
+     *  provider to delete the note that the user was working on.
      *
-     *  *
-     * If our state `mState` is equal to STATE_EDIT we call our `updateNote` to
-     * have our provider save `text` as the note contents and null as the title of the
-     * note entry that was being edited.
+     *  * If our [Int] state field [mState] is equal to [STATE_EDIT] we call our [updateNote] method
+     *  to have our provider save `text` as the note contents and `null` as the title of the note
+     *  entry that was being edited.
      *
-     *  *
-     * If our state `mState` is equal to STATE_INSERT we call our `updateNote` to
-     * have our provider save `text` as both the note contents the title of the note
-     * entry that was being edited, then set our state `mState` to STATE_EDIT.
-     *
-     *
+     *  * If our [Int] state field [mState] is equal to [STATE_INSERT] we call our [updateNote]
+     *  method to have our provider save `text` as both the note contents and the title of the note
+     *  entry that was being edited, then set our [Int] state field [mState] to [STATE_EDIT].
      */
     override fun onStop() {
         super.onStop()
@@ -378,35 +376,32 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
 
     /**
      * This method is called when the user clicks the device's Menu button the first time for
-     * this Activity. Android passes in a Menu object that is populated with items.
+     * this Activity. Android passes in a Menu object that is populated with items. Builds the
+     * menus for editing and inserting, and adds in alternative actions that registered themselves
+     * to handle the MIME types for this application.
      *
+     * We initialize [MenuInflater] variable `val inflater` with an instance for this context, and
+     * then use it to inflate our menu layout file [R.menu.editor_options_menu] into our parameter
+     * [Menu] parameter [menu]. If our [Int] state field [mState] is equal to [STATE_EDIT] we
+     * initialize [Intent] variable `val intent` with a new instance with [Uri] field [mUri] as its
+     * data URI, add the category [Intent.CATEGORY_ALTERNATIVE] to it, then add to [menu] a group of
+     * menu items corresponding to actions that can be performed for the [Intent] `intent` using
+     * [Menu.CATEGORY_ALTERNATIVE] (Category code for the order integer for items/groups that are
+     * alternative actions) as the group identifier that the items should be part of, with 0 as the
+     * item id, 0 as the sort order, the [ComponentName] of 'this' [NoteEditor] class, `null` for
+     * the specific items to be placed first, [Intent] `intent` as the [Intent] describing the kinds
+     * of items to populate in the list as defined by the method [PackageManager.queryIntentActivityOptions]
+     * (which retrieves a set of activities that should be presented to the user as similar options),
+     * 0 for the flags of Additional options controlling how the items are added, and `null` for the
+     * optional array in which to place the menu items that were generated. In any case we return
+     * the value returned by our super's implementation of `onCreateOptionsMenu` to the caller.
      *
-     * Builds the menus for editing and inserting, and adds in alternative actions that
-     * registered themselves to handle the MIME types for this application.
-     *
-     *
-     * We initialize `MenuInflater inflater` with an instance for this context, and then use it
-     * to inflate our menu layout file R.menu.editor_options_menu into our parameter `Menu menu`.
-     * If our state `mState` is equal to STATE_EDIT we initialize `Intent intent` with a
-     * new instance with `mUri` as its data URI, add the category CATEGORY_ALTERNATIVE to it,
-     * then add to `menu` a group of menu items corresponding to actions that can be performed
-     * for the Intent `intent` using CATEGORY_ALTERNATIVE (Category code for the order integer
-     * for items/groups that are alternative actions) as the group identifier that the items should
-     * be part of, with 0 as the item id, 0 as the sort order, the `ComponentName` of 'this'
-     * `NoteEditor` class, null for the specific items to be placed first, `Intent intent`
-     * as the Intent describing the kinds of items to populate in the list as defined by the method
-     * `queryIntentActivityOptions` (which Retrieves a set of activities that should be
-     * presented to the user as similar options), 0 for the flags of Additional options controlling
-     * how the items are added, and null for the Optional array in which to place the menu items that
-     * were generated. In any case we return the value returned by our super's implementation of
-     * `onCreateOptionsMenu` to the caller.
-     *
-     * @param menu A Menu object to which items should be added.
-     * @return True to display the menu.
+     * @param menu A [Menu] object to which items should be added.
+     * @return `true` to display the menu.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate menu from XML resource
-        val inflater = menuInflater
+        val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.editor_options_menu, menu)
 
         // Only add extra menu items for a saved note
@@ -418,29 +413,38 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
             // for each one that is found.
             val intent = Intent(null, mUri)
             intent.addCategory(Intent.CATEGORY_ALTERNATIVE)
-            menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
-                ComponentName(this, NoteEditor::class.java), null, intent, 0, null)
+            menu.addIntentOptions(
+                /* groupId = */ Menu.CATEGORY_ALTERNATIVE,
+                /* itemId = */ 0,
+                /* order = */ 0,
+                /* caller = */ ComponentName(this, NoteEditor::class.java),
+                /* specifics = */ null,
+                /* intent = */ intent,
+                /* flags = */ 0,
+                /* outSpecificItems = */ null
+            )
         }
         return super.onCreateOptionsMenu(menu)
     }
 
     /**
-     * Prepare the Screen's standard options menu to be displayed. We initialize `Cursor cursor`
-     * by calling the `query` method of a `ContentResolver` instance for our application's
-     * package with `mUri` as the URI for the note that is to be retrieved, PROJECTION for the
-     * columns to retrieve, and null for the selection criteria, selection arguments, and sort order.
-     * We call the `moveToFirst` method of `cursor` to move it to the first row. We then
-     * initialize `int colNoteIndex` with the index in `cursor` that contains the column
-     * that contains the column named COLUMN_NAME_NOTE, initialize `String savedNote` with the
-     * column whose index is `colNoteIndex`, and initialize `String currentNote` with the
-     * text string contained in `EditText mText` (the version that the user has been editing).
-     * If `savedNote` is equal to `currentNote` we find the item in our parameter `Menu menu`
-     * with id R.id.menu_revert ("Revert changes") and set it to be invisible, and if they are not
-     * equal we set it to be visible. Then we close `cursor` and return the value returned by
-     * our super's implementation of `onPrepareOptionsMenu` to the caller.
+     * Prepare the Screen's standard options menu to be displayed. We initialize [Cursor] variable
+     * `val cursor` by calling the [ContentResolver.query] method of a [ContentResolver] instance
+     * for our application's package with [Uri] field [mUri] as the URI for the note that is to be
+     * retrieved, [PROJECTION] for the columns to retrieve, and `null` for the selection criteria,
+     * selection arguments, and sort order. We call the [Cursor.moveToFirst] method of `cursor` to
+     * move it to the first row. We then initialize [Int] variable `val colNoteIndex` with the index
+     * in `cursor` that contains the column that contains the column named `COLUMN_NAME_NOTE`,
+     * initialize [String] variable `val savedNote` with the column whose index is `colNoteIndex`,
+     * and initialize [String] varialbe `val currentNote` with the text string contained in [EditText]
+     * field [mText] (the version that the user has been editing). If `savedNote` is equal to
+     * `currentNote` we find the item in our [Menu] parameter [menu] with id [R.id.menu_revert]
+     * ("Revert changes") and set it to be invisible, and if they are not equal we set it to be
+     * visible. Then we close `cursor` and return the value returned by our super's implementation
+     * of `onPrepareOptionsMenu` to the caller.
      *
-     * @param menu The options menu as last shown or first initialized by onCreateOptionsMenu().
-     * @return You must return true for the menu to be displayed;
+     * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu].
+     * @return You must return `true` for the menu to be displayed;
      */
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         // Check if note has changed and enable/disable the revert option
@@ -452,9 +456,9 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
             null // No sort order is needed.
         )
         cursor!!.moveToFirst()
-        val colNoteIndex = cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE)
-        val savedNote = cursor.getString(colNoteIndex)
-        val currentNote = mText!!.text.toString()
+        val colNoteIndex: Int = cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE)
+        val savedNote: String = cursor.getString(colNoteIndex)
+        val currentNote: String = mText!!.text.toString()
         if (savedNote == currentNote) {
             menu.findItem(R.id.menu_revert).isVisible = false
         } else {
@@ -466,33 +470,28 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
 
     /**
      * This method is called when a menu item is selected. Android passes in the selected item.
-     * The switch statement in this method calls the appropriate method to perform the action the
-     * user chose. We switch on the value of the item id of our parameter `MenuItem item`:
+     * The when statement in this method calls the appropriate method to perform the action the
+     * user chose. We when switch on the value of the item id of our [MenuItem] parameter [item]:
      *
-     *  *
-     * R.id.menu_save: ("Save") We initialize `String text` with the text contained in
-     * our `EditText mText`, then call our `updateNote` method to store `text`
-     * in the COLUMN_NAME_NOTE column of the note with the URI `Uri mUri`, and passing
-     * null as the title so that the `updateNote` method will construct and store a new
-     * title derived from `text`. We then break.
+     *  * [R.id.menu_save]: ("Save") We initialize [String] variable `val text` with the text
+     *  contained in our [EditText] field [mText], then call our [updateNote] method to store `text`
+     *  in the `COLUMN_NAME_NOTE` column of the note whose URI is [Uri] field [mUri], and passing
+     *  `null` as the title so that the [updateNote] method will construct and store a new title
+     *  derived from `text`.
      *
-     *  *
-     * R.id.menu_delete: ("Delete") We call our method `deleteNote` to delete the note
-     * with the URI `Uri mUri` from our database, call `finish` to end this activity,
-     * and then break.
+     *  * [R.id.menu_delete]: ("Delete") We call our method [deleteNote] to delete the note whose
+     *  URI is our [Uri] field [mUri] from our database, and call [finish] to end this activity.
      *
-     *  *
-     * R.id.menu_revert: ("Revert changes") We call our method `cancelNote` to cancel
-     * the work done on a note (it deletes the note if it was newly created, or reverts to
-     * the original text of the note if it was being edited) and then break.
-     *
+     *  * [R.id.menu_revert]: ("Revert changes") We call our method [cancelNote] to cancel the work
+     *  done on a note (it deletes the note if it was newly created, or reverts to the original text
+     *  of the note if it was being edited).
      *
      * Finally we return the value returned by our super's implementation of `onOptionsItemSelected`
      * to the caller.
      *
-     * @param item The selected MenuItem
-     * @return True to indicate that the item was processed, and no further work is necessary. False
-     * to proceed to further processing as indicated in the MenuItem object.
+     * @param item The selected [MenuItem]
+     * @return `true` to indicate that the item was processed, and no further work is necessary.
+     * `false` to proceed to further processing as indicated in the [MenuItem] object.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle all of the possible menu actions.
@@ -515,25 +514,25 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
 
     /**
      * A helper method that replaces the note's data with the contents of the clipboard. First we
-     * initialize `ClipboardManager clipboard` with a handle to the system level service
-     * CLIPBOARD_SERVICE, initialize `ContentResolver cr` with a content resolver instance, and
-     * initialize `ClipData clip` with the current primary clip on the clipboard. If `clip`
-     * is null we do nothing more, but if it is not null we initialize `String text` and
-     * `String title` to null, initialize `ClipData.Item item` to the item at index 0 in
-     * `clip` and initialize `Uri uri` with the raw URI contained in `item`. If
-     * `uri` is not null, and the type of `uri` as determined by the `getType` method
-     * of `cr` is equal to NotePad.Notes.CONTENT_ITEM_TYPE (has the MIME type of our notes) we
-     * initialize `Cursor orig` by having `cr` query the content provider for `uri`,
-     * using PROJECTION for the columns to retrieve, and null for the selection, selection arguments,
-     * and sort order. If `orig` is not null we move it to the first row, initialize `int colNoteIndex`
-     * with the column index of the COLUMN_NAME_NOTE named column in `orig`, and  initialize
-     * `int colTitleIndex` with the column index of the COLUMN_NAME_TITLE named column in `orig`.
-     * We then set `text` to the string stored under index `colNoteIndex` in `orig`,
-     * and set `title` to the string stored under index `colTitleIndex` in `orig`.
-     * We then close `orig`. If `text` is still null we set it to the string created by
-     * coercing `item` to text. Finally we call our `updateNote` method to replace the
-     * current note contents stored in the address `Uri mUri` in our database with `text`
-     * and `title`.
+     * initialize [ClipboardManager] variable `val clipboard` with a handle to the system level
+     * service [Context.CLIPBOARD_SERVICE], initialize [ContentResolver] variable `val cr` with a
+     * content resolver instance for our application's package, and initialize [ClipData] variable
+     * `val clip` with the current primary clip on the clipboard. If `clip` is `null` we do nothing
+     * more, but if it is not `null` we initialize [String] variable `var text` and [String] variable
+     * `var title` to `null`, initialize [ClipData.Item] variable `val item` to the item at index 0
+     * in `clip` and initialize [Uri] variable `val uri` with the raw URI contained in `item`. If
+     * `uri` is not `null`, and the type of `uri` as determined by the [ContentResolver.getType]
+     * method of `cr` is equal to [NotePad.Notes.CONTENT_ITEM_TYPE] (has the MIME type of our notes)
+     * we initialize [Cursor] variable `val orig` by having `cr` query the content provider for `uri`,
+     * using [PROJECTION] for the columns to retrieve, and `null` for the selection, selection arguments,
+     * and sort order. If `orig` is not `null` we move it to the first row, initialize [Int] variable
+     * `val colNoteIndex` with the column index of the `COLUMN_NAME_NOTE` named column in `orig`, and
+     * initialize [Int] variable `val colTitleIndex` with the column index of the `COLUMN_NAME_TITLE`
+     * named column in `orig`. We then set `text` to the string stored under index `colNoteIndex` in
+     * `orig`, and set `title` to the string stored under index `colTitleIndex` in `orig`. We then
+     * close `orig`. If `text` is still `null` we set it to the string created by coercing `item` to
+     * text. Finally we call our [updateNote] method to replace the current note contents stored in
+     * the address of [Uri] field [mUri] in our database with `text` and `title`.
      */
     private fun performPaste() {
 
@@ -541,19 +540,19 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
         // Gets a content resolver instance
-        val cr = contentResolver
+        val cr: ContentResolver = contentResolver
 
         // Gets the clipboard data from the clipboard
-        val clip = clipboard.primaryClip
+        val clip: ClipData? = clipboard.primaryClip
         if (clip != null) {
             var text: String? = null
             var title: String? = null
 
             // Gets the first item from the clipboard data
-            val item = clip.getItemAt(0)
+            val item: ClipData.Item = clip.getItemAt(0)
 
             // Tries to get the item's contents as a URI pointing to a note
-            val uri = item.uri
+            val uri: Uri? = item.uri
 
             // Tests to see that the item actually is an URI, and that the URI
             // is a content URI pointing to a provider whose MIME type is the same
@@ -561,7 +560,7 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
             if (uri != null && NotePad.Notes.CONTENT_ITEM_TYPE == cr.getType(uri)) {
 
                 // The clipboard holds a reference to data with a note MIME type. This copies it.
-                val orig = cr.query(
+                val orig: Cursor? = cr.query(
                     uri,  // URI for the content provider
                     PROJECTION,  // Get the columns referred to in the projection
                     null,  // No selection variables
@@ -573,8 +572,8 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
                 // (moveToFirst() returns true), then this gets the note data from it.
                 if (orig != null) {
                     if (orig.moveToFirst()) {
-                        val colNoteIndex = orig.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE)
-                        val colTitleIndex = orig.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE)
+                        val colNoteIndex: Int = orig.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE)
+                        val colTitleIndex: Int = orig.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE)
                         text = orig.getString(colNoteIndex)
                         title = orig.getString(colTitleIndex)
                     }
