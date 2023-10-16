@@ -138,7 +138,7 @@ open class ActiveNotificationsFragment : Fragment() {
         // Create a PendingIntent to be fired upon deletion of a Notification.
         val deleteIntent = Intent(ActiveNotificationsActivity.ACTION_NOTIFICATION_DELETE)
         mDeletePendingIntent = PendingIntent.getBroadcast(activity,
-            REQUEST_CODE, deleteIntent, PendingIntent.FLAG_MUTABLE)
+            REQUEST_CODE, deleteIntent, PendingIntent.FLAG_IMMUTABLE)
     }
 
     private fun requestNotificationPermission() {
