@@ -78,6 +78,7 @@ class CommentEntity : Comment {
      *
      * @param id value to set our `id` field to
      */
+    @Suppress("unused")
     fun setId(id: Int) {
         this.id = id
     }
