@@ -36,6 +36,7 @@ import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.provider.BaseColumns
 import android.util.AttributeSet
 import android.util.Log
@@ -596,29 +597,26 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
 
     /**
      * Replaces the current note contents with the text and title provided as arguments. First we
-     * initialize `ContentValues values` with a new instance, and store the current system time
-     * in milliseconds under the key NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE ("modified") in it.
-     * We branch on whether our state `mState` is STATE_INSERT:
+     * initialize [String] variable `var titleVar` to our [String] parameter [title], initialize
+     * [ContentValues] variable `val values` with a new instance, and store the current system time
+     * in milliseconds under the key [NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE] ("modified") in
+     * it. We then branch on whether our [Int] state field [mState] is [STATE_INSERT]:
      *
-     *  *
-     * It is STATE_INSERT: If our parameter `String title` is null we initialize `int length`
-     * with the length of our parameter `String text` and set `title` to a substring
-     * of `text` that is is 31 characters long or the number of characters in the `text`
-     * plus one, whichever is smaller. Then if `length` is greater than 30 we initialize
-     * `int lastSpace` to the position of the last space character in title and if this
-     * is greater than 0 we set `title` to the substring between 0 and `lastSpace`.
-     * Then we store `title` in `values` under the key NotePad.Notes.COLUMN_NAME_TITLE
-     * ("title").
+     *  * It is STATE_INSERT: If our [String] variable `titleVar` is `null` we initialize [Int]
+     *  variable `val length` with the length of our [String] parameter [text] and set `titleVar`
+     *  to a substring of `text` that is is 31 characters long or the number of characters in `text`
+     *  plus one, whichever is smaller. Then if `length` is greater than 30 we initialize [Int]
+     *  variable `val lastSpace` to the position of the last space character in `titleVar` and if
+     *  this is greater than 0 we set `titleVar` to the substring between 0 and `lastSpace`. Then
+     *  we store `titleVar` in `values` under the key [NotePad.Notes.COLUMN_NAME_TITLE] ("title").
      *
-     *  *
-     * If it is not STATE_INSERT, but `title` is not null: We store `title` in
-     * `values` under the key NotePad.Notes.COLUMN_NAME_TITLE ("title").
+     *  * If it is not STATE_INSERT, but `titleVar` is not `null`: We store `titleVar` in `values`
+     *  under the key [NotePad.Notes.COLUMN_NAME_TITLE] ("title").
      *
-     *
-     * We then store `text` in `values` under the key NotePad.Notes.COLUMN_NAME_NOTE
-     * ("note"). We then request a `ContentResolver` instance for our application's package to
-     * update the record with the address `Uri mUri` in our database with the contents of
-     * `values` using null for both the selection and selection arguments.
+     * We then store [text] in `values` under the key [NotePad.Notes.COLUMN_NAME_NOTE] ("note"). We
+     * then request a [ContentResolver] instance for our application's package to update the record
+     * with the address in [Uri] field [mUri]] in our database with the contents of `values` using
+     * `null` for both the selection and selection arguments.
      *
      * @param text The new note contents to use.
      * @param title The new note title to use
@@ -626,7 +624,7 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
     private fun updateNote(text: String, title: String?) {
 
         // Sets up a map to contain values to be updated in the provider.
-        var titleLocal = title
+        var titleVar: String? = title
         val values = ContentValues()
         values.put(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE, System.currentTimeMillis())
 
@@ -634,29 +632,29 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
         if (mState == STATE_INSERT) {
 
             // If no title was provided as an argument, create one from the note text.
-            if (titleLocal == null) {
+            if (titleVar == null) {
 
                 // Get the note's length
-                val length = text.length
+                val length: Int = text.length
 
                 // Sets the title by getting a substring of the text that is 31 characters long
                 // or the number of characters in the note plus one, whichever is smaller.
-                titleLocal = text.substring(0, Math.min(30, length))
+                titleVar = text.substring(0, Math.min(30, length))
 
                 // If the resulting length is more than 30 characters, chops off any
                 // trailing spaces
                 if (length > 30) {
-                    val lastSpace = titleLocal.lastIndexOf(' ')
+                    val lastSpace = titleVar.lastIndexOf(' ')
                     if (lastSpace > 0) {
-                        titleLocal = titleLocal.substring(0, lastSpace)
+                        titleVar = titleVar.substring(0, lastSpace)
                     }
                 }
             }
             // In the values map, sets the value of the title
-            values.put(NotePad.Notes.COLUMN_NAME_TITLE, titleLocal)
-        } else if (titleLocal != null) {
+            values.put(NotePad.Notes.COLUMN_NAME_TITLE, titleVar)
+        } else if (titleVar != null) {
             // In the values map, sets the value of the title
-            values.put(NotePad.Notes.COLUMN_NAME_TITLE, titleLocal)
+            values.put(NotePad.Notes.COLUMN_NAME_TITLE, titleVar)
         }
 
         // This puts the desired notes text into the map.
@@ -682,23 +680,22 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
     }
 
     /**
-     * This helper method cancels the work done on a note.  It deletes the note if it was newly created,
-     * or reverts to the original text of the note if it was being edited. We branch on the value of
-     * our state `mState`:
+     * This helper method cancels the work done on a note.  It deletes the note if it was newly
+     * created, or reverts to the original text of the note if it was being edited. We branch on
+     * the value of our [Int] state field [mState]:
      *
-     *  *
-     * STATE_EDIT: (Put the original note text back into the database) We initialize `ContentValues values`
-     * with a new instance, and store `String mOriginalContent` in it under the key NotePad.Notes.COLUMN_NAME_NOTE
-     * ("note"). We then request a `ContentResolver` instance for our application's package to
-     * update the record in our database with the address `Uri mUri` with `values` using
-     * null for both the selection and selection arguments.
+     *  * [STATE_EDIT]: (Put the original note text back into the database) We initialize
+     *  [ContentValues] variable `val values` with a new instance, and store [String] field
+     *  [mOriginalContent] in it under the key [NotePad.Notes.COLUMN_NAME_NOTE] ("note"). We then
+     *  request a [ContentResolver] instance for our application's package to update the record in
+     *  our database with the address in [Uri] field [mUri] with `values` using `null` for both the
+     *  selection and selection arguments.
      *
-     *  *
-     * STATE_INSERT: (We inserted an empty note, make sure to delete it) we call our method
-     * `deleteNote` to delete the empty note from our data base.
+     *  * [STATE_INSERT]: (We inserted an empty note, make sure to delete it) we call our method
+     *  [deleteNote] to delete the empty note from our data base.
      *
-     *
-     * We then set our result code to RESULT_CANCELED, and call `finish` to finish this activity.
+     * We then set our result code to [Activity.RESULT_CANCELED], and call [finish] to finish this
+     * activity.
      */
     private fun cancelNote() {
         if (mState == STATE_EDIT) {
@@ -715,19 +712,22 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
     }
 
     /**
-     * Take care of deleting a note. Simply deletes the entry. We request a `ContentResolver`
+     * Take care of deleting a note. Simply deletes the entry. We request a [ContentResolver]
      * instance for our application's package to to delete from our database the record with the
-     * address `Uri mUri`, and set the text of `EditText mText` to the empty string.
+     * address in [Uri] field [mUri], and set the text of [EditText] field [mText] to the empty
+     * string.
      */
     private fun deleteNote() {
         contentResolver.delete(mUri!!, null, null)
         mText!!.setText("")
     }
+
     // LoaderManager callbacks
+
     /**
-     * Instantiate and return a new Loader for the given ID. We return a new instance of `CursorLoader`
-     * that uses `Uri mUri` as the URI for the note that is to be retrieved, PROJECTION as the
-     * columns to retrieve, and null for the selection, selection arguments and sort order.
+     * Instantiate and return a new Loader for the given ID. We return a new instance of [CursorLoader]
+     * that uses [Uri] field [mUri] as the URI for the note that is to be retrieved, [PROJECTION] as
+     * the columns to retrieve, and `null` for the selection, selection arguments and sort order.
      *
      * @param i      The ID whose loader is to be created.
      * @param bundle Any arguments supplied by the caller.
@@ -736,31 +736,33 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
     @Deprecated("Deprecated in Java")
     override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor?> {
         return CursorLoader(
-            this,
-            mUri,  // The URI for the note that is to be retrieved.
-            PROJECTION,  // The columns to retrieve
-            null,  // No selection criteria are used, so no where columns are needed.
-            null,  // No where columns are used, so no where values are needed.
-            null // No sort order is needed.
+            /* context = */ this,
+            /* uri = */ mUri,  // The URI for the note that is to be retrieved.
+            /* projection = */ PROJECTION,  // The columns to retrieve
+            /* selection = */ null,  // No selection criteria are used, so no where columns are needed.
+            /* selectionArgs = */ null,  // No where columns are used, so no where values are needed.
+            /* sortOrder = */ null // No sort order is needed.
         )
     }
 
     /**
-     * Called when a previously created loader has finished its load. If our parameter `Cursor cursor`
-     * is not null, and we are able to move it to the first row, and our state `mState` is equal
-     * to STATE_EDIT: We initialize `int colTitleIndex` to the column index for the column named
-     * COLUMN_NAME_TITLE ("title") in `cursor`, and `int colNoteIndex` to the column index
-     * for the column named COLUMN_NAME_NOTE ("note") in `cursor`. We then initialize `String title`
-     * with the string at index `colTitleIndex` in `cursor`, initialize `Resources res`
-     * to a `Resources` instance for our application's package and use it to format `String text`
-     * from `title` using the format with resource id R.string.title_edit ("Edit: %1$s"). We then
-     * set the title associated with this activity to `text`. We initialize `String note`
-     * with the string at index `colNoteIndex` in `cursor` and use it to set the text to
-     * be displayed in `EditText mText` while retaining the cursor position. Finally if
-     * `mOriginalContent` is null we set it to `note` (to allow the user to revert changes).
+     * Called when a previously created loader has finished its load. If our [Cursor] parameter
+     * [cursor] is not `null`, and we are able to move it to the first row, and our [Int] state
+     * field [mState] is equal to [STATE_EDIT]: We initialize [Int] variable `val colTitleIndex`
+     * to the column index for the column named [NotePad.Notes.COLUMN_NAME_TITLE] ("title") in
+     * [Cursor] parameter [cursor], and [Int] variable `val colNoteIndex` to the column index for
+     * the column named [NotePad.Notes.COLUMN_NAME_NOTE] ("note") in [cursor] We then initialize
+     * [String] variable `val title` with the string at index `colTitleIndex` in [cursor],
+     * initialize [Resources] variable `val res` to a [Resources] instance for our application's
+     * package and use it to format [String] variable `val text` from `title` using the format with
+     * resource id [R.string.title_edit] ("Edit: %1$s"). We then set the title associated with this
+     * activity to `text`. We initialize [String] variable `val note` with the string at index
+     * `colNoteIndex` in [cursor] and use it to set the text to be displayed in [EditText] field
+     * [mText] while retaining the cursor position. Finally if [mOriginalContent] is `null` we set
+     * it to `note` (to allow the user to revert changes).
      *
-     * @param cursorLoader The Loader that has finished.
-     * @param cursor       The data generated by the Loader.
+     * @param cursorLoader The [Loader] that has finished.
+     * @param cursor       The data generated by the [Loader].
      */
     @Deprecated("Deprecated in Java")
     override fun onLoadFinished(cursorLoader: Loader<Cursor?>, cursor: Cursor?) {
@@ -768,18 +770,18 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
         // Modifies the window title for the Activity according to the current Activity state.
         if (cursor != null && cursor.moveToFirst() && mState == STATE_EDIT) {
             // Set the title of the Activity to include the note title
-            val colTitleIndex = cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE)
-            val colNoteIndex = cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE)
+            val colTitleIndex: Int = cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE)
+            val colNoteIndex: Int = cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE)
 
             // Gets the title and sets it
-            val title = cursor.getString(colTitleIndex)
-            val res = resources
-            val text = String.format(res.getString(R.string.title_edit), title)
+            val title: String = cursor.getString(colTitleIndex)
+            val res: Resources = resources
+            val text: String = String.format(res.getString(R.string.title_edit), title)
             setTitle(text)
 
             // Gets the note text from the Cursor and puts it in the TextView, but doesn't change
             // the text cursor's position.
-            val note = cursor.getString(colNoteIndex)
+            val note: String = cursor.getString(colNoteIndex)
             mText!!.setTextKeepState(note)
             // Stores the original note text, to allow the user to revert changes.
             if (mOriginalContent == null) {
@@ -792,7 +794,7 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
      * Called when a previously created loader is being reset, and thus making its data unavailable.
      * We ignore.
      *
-     * @param cursorLoader The Loader that is being reset.
+     * @param cursorLoader The [Loader] that is being reset.
      */
     @Deprecated("Deprecated in Java")
     override fun onLoaderReset(cursorLoader: Loader<Cursor?>) {}
@@ -806,35 +808,39 @@ class NoteEditor : Activity(), LoaderCallbacks<Cursor?> {
         /**
          * Creates a projection that returns the note ID, note title, and the note contents.
          */
-        private val PROJECTION = arrayOf(
+        private val PROJECTION: Array<String> = arrayOf(
             BaseColumns._ID,
             NotePad.Notes.COLUMN_NAME_TITLE,
             NotePad.Notes.COLUMN_NAME_NOTE
         )
 
         /**
-         * Key used for the saved state of the activity in `onSaveInstanceState` (we save the string
-         * `String mOriginalContent` in the `Bundle` passed it and retrieve it in `onCreate`
+         * Key used for the saved state of the activity in [onSaveInstanceState] (we save [String]
+         * field [mOriginalContent] in the [Bundle] passed it and retrieve it in [onCreate]).
          */
         private const val ORIGINAL_CONTENT = "origContent"
+
         // This Activity can be started by more than one action. Each action is represented
         // as a "state" constant which is stored in our field mState
+
         /**
-         * Edit state stored in our field `int mState`, entered as the result of receiving an
-         * ACTION_EDIT, ACTION_INSERT, or ACTION_PASTE action in the `Intent` that launched us.
+         * Edit state stored in our [Int] field [mState], entered as the result of receiving an
+         * [Intent.ACTION_EDIT], [Intent.ACTION_INSERT], or [Intent.ACTION_PASTE] action in the
+         * [Intent] that launched us.
          */
         private const val STATE_EDIT = 0
 
         /**
-         * Insert state stored in our field `int mState`, entered as the result of receiving an
-         * ACTION_INSERT, or ACTION_PASTE action in the `Intent` that launched us.
+         * Insert state stored in our [Int] field [mState], entered as the result of receiving an
+         * [Intent.ACTION_EDIT], [Intent.ACTION_INSERT], or [Intent.ACTION_PASTE] action in the
+         * [Intent] that launched us.
          */
         private const val STATE_INSERT = 1
 
         /**
          * Unique identifier for the loader we start (or reuse if one is already running) in our
-         * `onCreate` override (our `LoaderManager` callbacks handle connecting to and
-         * querying our provider).
+         * [onCreate] override (our [LoaderManager] callbacks handle connecting to and querying
+         * our provider).
          */
         private const val LOADER_ID = 1
     }

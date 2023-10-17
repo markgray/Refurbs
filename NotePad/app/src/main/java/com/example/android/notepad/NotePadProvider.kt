@@ -20,6 +20,7 @@ package com.example.android.notepad
 import android.content.ClipDescription
 import android.content.ContentProvider
 import android.content.ContentProvider.PipeDataWriter
+import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
@@ -65,29 +66,27 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
 
     /**
      * This class helps open, create, and upgrade the database file. Set to package visibility
-     * for testing purposes.
-     */
-    class DatabaseHelper
-    /**
-     * We just call our super's 4 argument constructor, using DATABASE_NAME ("note_pad.db") as
-     * the database name, null to use the default cursor factory, and DATABASE_VERSION (2) as the
-     * version number of the database.
+     * for testing purposes. We just call our super's 4 argument constructor, using [DATABASE_NAME]
+     * ("note_pad.db") as the database name, `null` to use the default cursor factory, and
+     * [DATABASE_VERSION] (2) as the version number of the database.
      *
-     * @param context to use for locating paths to the the database
+     * @param context the [Context] to use for locating paths to the the database
      */
-    (context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    class DatabaseHelper(
+        context: Context?
+    ) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
         /**
          * Called when the database is created for the first time. Creates the underlying database
-         * with table name and column names taken from the NotePad class. We call the `execSQL`
-         * method of our parameter `SQLiteDatabase db` to have it execute the SQL statement:
+         * with table name and column names taken from the [NotePad] class. We call the
+         * [SQLiteDatabase.execSQL] method of our [SQLiteDatabase] parameter [db] to have it
+         * execute the SQL statement:
          * CREATE TABLE notes (_id INTEGER PRIMARY KEY,title TEXT,note TEXT,created INTEGER,modified INTEGER);
          *
-         *
-         * This creates a table with the name NotePad.Notes.TABLE_NAME ("notes"), with BaseColumns._ID
-         * ("_id") as an INTEGER column to be used as the "PRIMARY KEY", NotePad.Notes.COLUMN_NAME_TITLE
-         * ("title") as a TEXT column, NotePad.Notes.COLUMN_NAME_NOTE ("note") as a TEXT column,
-         * NotePad.Notes.COLUMN_NAME_CREATE_DATE ("created") as an INTEGER column, and
-         * NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE ("modified") as an INTEGER column.
+         * This creates a table with the name [NotePad.Notes.TABLE_NAME] ("notes"), with [BaseColumns._ID]
+         * ("_id") as an INTEGER column to be used as the "PRIMARY KEY", [NotePad.Notes.COLUMN_NAME_TITLE]
+         * ("title") as a TEXT column, [NotePad.Notes.COLUMN_NAME_NOTE] ("note") as a TEXT column,
+         * [NotePad.Notes.COLUMN_NAME_CREATE_DATE] ("created") as an INTEGER column, and
+         * [NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE] ("modified") as an INTEGER column.
          *
          * @param db The database.
          */
@@ -105,10 +104,10 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
          * Called when the database needs to be upgraded. Demonstrates that the provider must consider
          * what happens when the underlying data store is changed. In this sample, the database is
          * upgraded by destroying the existing data. A real application should upgrade the database
-         * in place. We log what we are doing, then call the `execSQL` of our parameter
-         * `SQLiteDatabase db` to have it execute the command "DROP TABLE IF EXISTS notes" which
-         * removes the table "notes" from the database schema if it exists there. Then we call our
-         * `onCreate` method to create the table used by the new version.
+         * in place. We log what we are doing, then call the [SQLiteDatabase.execSQL] of our
+         * [SQLiteDatabase] parameter [db] to have it execute the command "DROP TABLE IF EXISTS notes"
+         * which removes the table "notes" from the database schema if it exists there. Then we call our
+         * [onCreate] method to create the table used by the new version.
          *
          * @param db         The database.
          * @param oldVersion The old database version.
@@ -130,20 +129,16 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
 
     /**
      * We implement this to initialize our content provider on startup. Initializes the provider by
-     * creating a new `DatabaseHelper`. `onCreate()` is called automatically when Android
-     * creates the provider in response to a resolver request from a client.
+     * creating a new [DatabaseHelper]. [onCreate] is called automatically when Android creates the
+     * provider in response to a resolver request from a client. This method is called for all
+     * registered content providers on the  application main thread at application launch time.
+     * It must not perform lengthy operations, or application startup will be delayed.
      *
+     * We initialize our [DatabaseHelper] field [openHelperForTest] with a new instance and return
+     * `true` to the caller to indicate that the provider was successfully loaded (any failures will
+     * be reported by a thrown exception in the framework).
      *
-     * This method is called for all registered content providers on the
-     * application main thread at application launch time.  It must not perform
-     * lengthy operations, or application startup will be delayed.
-     *
-     *
-     * We initialize our field `DatabaseHelper mOpenHelper` with a new instance and return true
-     * to the caller to indicate that the provider was successfully loaded (any failures will be
-     * reported by a thrown exception in the framework).
-     *
-     * @return true if the provider was successfully loaded, false otherwise
+     * @return `true` if the provider was successfully loaded, `false` otherwise
      */
     override fun onCreate(): Boolean {
 
@@ -157,35 +152,31 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
 
     /**
      * We implement this to handle query requests from clients that they issue by calling the
-     * `query` method of `ContentResolver` with a URI that we are responsible for.
-     * Queries the database and returns a cursor containing the results.
+     * [ContentResolver.query] method of [ContentResolver] with a URI that we are responsible for.
+     * Queries the database and returns a [Cursor] containing the results.
      *
+     * First we initialize [SQLiteQueryBuilder] variable `val qb` with a new instance, and set the
+     * list of tables for it to query to [NotePad.Notes.TABLE_NAME] ("notes"). Then we switch on
+     * the value returned by the [UriMatcher.match] method of [UriMatcher] field [sUriMatcher] when
+     * matching its patterns against our [Uri] parameter [uri]:
      *
-     * First we initialize `SQLiteQueryBuilder qb` with a new instance, and set the list of
-     * tables for it to query to NotePad.Notes.TABLE_NAME ("notes"). Then we switch on the value
-     * returned by the `match` method of `UriMatcher sUriMatcher` when matching its
-     * patterns against our parameter `Uri uri`:
+     *  * NOTES: (URIs terminated with "notes") We call the [SQLiteQueryBuilder.setProjectionMap]
+     *  method of `qb` to set the projection map for the query to [HashMap] of [String] to [String]
+     *  field [sNotesProjectionMap] (Which just maps all the column name strings to themselves).
      *
-     *  *
-     * NOTES: (URIs terminated with "notes") We call the `setProjectionMap` method of
-     * `qb` to set the projection map for the query to `sNotesProjectionMap`
-     * (Which just maps all the column name strings to themselves) we then break.
+     *  * [NOTE_ID]: (URIs terminated with "notes" plus a wild card integer) We call the
+     *  [SQLiteQueryBuilder.setProjectionMap] method of `qb` to set the projection map for the query
+     *  to [HashMap] of [String] to [String] field [sNotesProjectionMap] (Which just maps all the
+     *  column name strings to themselves), then we call the [SQLiteQueryBuilder.appendWhere] method
+     *  of `qb` to append a WHERE clause to the query consisting of the string formed by concatenating
+     *  the name of the ID column [BaseColumns._ID] ("_id") to the string "=" followed by the note
+     *  ID parsed from our [Uri] parameter [uri] by the method [Uri.getPathSegments] (it returns a
+     *  list of path segments minus any "/" and the one we want is in position
+     *  [NotePad.Notes.NOTE_ID_PATH_POSITION] (1).
      *
-     *  *
-     * NOTE_ID: (URIs terminated with "notes" plus a wild card integer) We call the
-     * `setProjectionMap` method of `qb` to set the projection map for the query
-     * to `sNotesProjectionMap` (Which just maps all the column name strings to themselves),
-     * then we call the `appendWhere` to the WHERE clause of the query the string
-     * formed by concatenating the name of the ID column BaseColumns._ID ("_id") to the string
-     * "=" followed by the note ID parsed from our parameter `Uri uri` by the method
-     * `getPathSegments` (it returns a list of path segments minus any "/" and the one
-     * we want is in position NotePad.Notes.NOTE_ID_PATH_POSITION (1). We then break.
+     *  * default: If the URI doesn't match any of the known patterns, throw an [IllegalArgumentException].
      *
-     *  *
-     * default: If the URI doesn't match any of the known patterns, throw an IllegalArgumentException.
-     *
-     *
-     * We declare `String orderBy` and if our parameter `sortOrder` is empty (or null) we
+     * We declare [String] variable `val orderBy` and if our parameter `sortOrder` is empty (or null) we
      * set `orderBy` to NotePad.Notes.DEFAULT_SORT_ORDER ("modified DESC", descending on the
      * "modified" column) otherwise we set `orderBy` to `sortOrder`. We then initialize
      * `SQLiteDatabase db` to the readable `SQLiteDatabase` returned by the `getReadableDatabase`
@@ -215,8 +206,13 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
      * query returns no results or an exception occurs.
      * @throws IllegalArgumentException if the incoming URI pattern is invalid.
      */
-    override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?,
-                       sortOrder: String?): Cursor? {
+    override fun query(
+        uri: Uri,
+        projection: Array<String>?,
+        selection: String?,
+        selectionArgs: Array<String>?,
+        sortOrder: String?
+    ): Cursor? {
 
         // Constructs a new query builder and sets its table name
         val qb = SQLiteQueryBuilder()

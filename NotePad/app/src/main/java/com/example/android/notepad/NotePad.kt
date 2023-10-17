@@ -99,12 +99,12 @@ object NotePad {
          * MIME type definitions
          */
         /**
-         * The MIME type of [.CONTENT_URI] providing a directory of notes.
+         * The MIME type of [CONTENT_URI] providing a directory of notes.
          */
         const val CONTENT_TYPE: String = "vnd.android.cursor.dir/vnd.google.note"
 
         /**
-         * The MIME type of a [.CONTENT_URI] sub-directory of a single
+         * The MIME type of a [CONTENT_URI] sub-directory of a single
          * note.
          */
         const val CONTENT_ITEM_TYPE: String = "vnd.android.cursor.item/vnd.google.note"
