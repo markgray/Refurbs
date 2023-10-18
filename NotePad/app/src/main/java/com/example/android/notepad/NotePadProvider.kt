@@ -38,6 +38,7 @@ import android.os.ParcelFileDescriptor
 import android.provider.BaseColumns
 import android.text.TextUtils
 import android.util.Log
+import java.io.FileDescriptor
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
@@ -176,34 +177,35 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
      *
      *  * default: If the URI doesn't match any of the known patterns, throw an [IllegalArgumentException].
      *
-     * We declare [String] variable `val orderBy` and if our parameter `sortOrder` is empty (or null) we
-     * set `orderBy` to NotePad.Notes.DEFAULT_SORT_ORDER ("modified DESC", descending on the
-     * "modified" column) otherwise we set `orderBy` to `sortOrder`. We then initialize
-     * `SQLiteDatabase db` to the readable `SQLiteDatabase` returned by the `getReadableDatabase`
-     * method of `DatabaseHelper mOpenHelper`, and initialize `Cursor c` to the value returned
-     * by the `query` method of `SQLiteQueryBuilder qb` querying `db` for the columns
-     * in our parameter `projection`, the row selection specified by our parameter `selection`,
-     * the selection arguments for any "?" in `selection` specified by our parameter `selectionArgs`,
-     * null for row grouping (no grouping of rows), with null for the "having" filter so that the row groups
-     * are not filtered, and `orderBy` for the sort order. Then we call the `setNotificationUri`
-     * method of `Cursor c` to have it watch the URI `Uri uri` in case the source data changes.
+     * We declare [String] variable `val orderBy` and if our [String] parameter [sortOrder] is empty
+     * (or `null`) we set `orderBy` to [NotePad.Notes.DEFAULT_SORT_ORDER] ("modified DESC", descending
+     * on the "modified" column) otherwise we set `orderBy` to [sortOrder]. We then initialize
+     * [SQLiteDatabase] variable `val db` to the readable [SQLiteDatabase] returned by the
+     * [DatabaseHelper.getReadableDatabase] method of [DatabaseHelper] field [openHelperForTest],
+     * and initialize [Cursor] variable `val c` to the value returned by the [SQLiteQueryBuilder.query]
+     * method of [SQLiteQueryBuilder] `qb` querying [SQLiteDatabase] `db` for the columns
+     * in our [Array] of [String] parameter [projection], the row selection specified by our [String]
+     * parameter [selection], the selection arguments for any "?" characters in [selection] specified
+     * by our [Array] of [String] parameter [selectionArgs], `null` for row grouping (no grouping of
+     * rows), with `null` for the "having" filter so that the row groups are not filtered, and
+     * [String] `orderBy` for the sort order. Then we call the [Cursor.setNotificationUri] method of
+     * [Cursor] `c` to have it watch the URI in [Uri] parameter [uri] in case the source data changes.
      * Finally we return `c` to the caller.
      *
-     * @param uri           The URI to query. This will be the full URI sent by the client; if the
-     * client is requesting a specific record, the URI will end in a record number
-     * that the implementation should parse and add to a WHERE or HAVING clause,
-     * specifying that _id value.
-     * @param projection    The list of columns to put into the cursor. If `null` all columns
+     * @param uri The URI to query. This will be the full URI sent by the client; if the client is
+     * requesting a specific record, the URI will end in a record number that the implementation
+     * should parse and add to a WHERE or HAVING clause, specifying that _id value.
+     * @param projection The list of columns to put into the cursor. If `null` all columns
      * are included.
-     * @param selection     A selection criteria to apply when filtering rows. If `null` then
-     * all rows are included.
-     * @param selectionArgs You may include ?s in selection, which will be replaced by the values from
-     * selectionArgs, in order that they appear in the selection.
-     * The values will be bound as Strings.
-     * @param sortOrder     How the rows in the cursor should be sorted. If `null` then the
-     * provider is free to define the sort order.
-     * @return A cursor containing the results of the query. The cursor exists but is empty if the
-     * query returns no results or an exception occurs.
+     * @param selection A selection criteria to apply when filtering rows. If `null` then all rows
+     * are included.
+     * @param selectionArgs You may include "?" characters in [selection], which will be replaced by
+     * the values from [selectionArgs], in the order that they appear in the selection. The values
+     * will be bound as Strings.
+     * @param sortOrder How the rows in the cursor should be sorted. If `null` then the provider is
+     * free to define the sort order.
+     * @return A [Cursor] containing the results of the query. The [Cursor] exists but is empty if
+     * the query returns no results or an exception occurs.
      * @throws IllegalArgumentException if the incoming URI pattern is invalid.
      */
     override fun query(
@@ -239,7 +241,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
         }
 
         // Opens the database object in "read" mode, since no writes need to be done.
-        val db = openHelperForTest!!.readableDatabase
+        val db: SQLiteDatabase = openHelperForTest!!.readableDatabase
 
         /*
          * Performs the query. If no problems occur trying to read the database, then a Cursor
@@ -262,31 +264,25 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
     }
 
     /**
-     * This is called when a client calls [android.content.ContentResolver.getType].
-     * Returns the MIME data type of the URI given as a parameter. Then we switch on the value returned
-     * by the `match` method of `UriMatcher sUriMatcher` when matching its patterns against
-     * our parameter `Uri uri`:
+     * This is called when a client calls [android.content.ContentResolver.getType]. Returns the
+     * MIME data type of the URI given in [Uri] parameter [uri]. We `when` switch on the value
+     * returned by the [UriMatcher.match] method of [UriMatcher] field [sUriMatcher] when matching
+     * its patterns against our [Uri] parameter [uri]:
      *
-     *  *
-     * NOTES: (URIs terminated with "notes") we return NotePad.Notes.CONTENT_TYPE
+     *  * [NOTES]: (URIs terminated with "notes") we return [NotePad.Notes.CONTENT_TYPE]
      * ("vnd.android.cursor.dir/vnd.google.note") to the caller.
      *
-     *  *
-     * NOTE_ID: (URIs terminated with "notes" plus a wild card integer) we return
-     * NotePad.Notes.CONTENT_ITEM_TYPE ("vnd.android.cursor.item/vnd.google.note") to
-     * the caller.
+     *  * [NOTE_ID]: (URIs terminated with "notes" plus a wild card integer) we return
+     *  [NotePad.Notes.CONTENT_ITEM_TYPE] ("vnd.android.cursor.item/vnd.google.note") to
+     *  the caller.
      *
-     *  *
-     * default: If the URI doesn't match any of the known patterns, throw an IllegalArgumentException.
-     *
-     *
+     *  * else: If the URI doesn't match any of the known patterns, throw an [IllegalArgumentException].
      *
      * @param uri The URI whose MIME type is desired.
      * @return The MIME type of the URI.
      * @throws IllegalArgumentException if the incoming URI pattern is invalid.
      */
     override fun getType(uri: Uri): String? {
-
         /*
          * Chooses the MIME type based on the incoming URI pattern
          */
@@ -299,27 +295,22 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
 
     /**
      * Returns the types of available data streams. URIs to specific notes are supported. The
-     * application can convert such a note to a plain text stream. We switch on the value returned by
-     * the `match` method of `UriMatcher sUriMatcher` when matching its patterns against
-     * our parameter `Uri uri`:
+     * application can convert such a note to a plain text stream. We when switch on the value
+     * returned by the [UriMatcher.match] method of [UriMatcher] field [sUriMatcher] when matching
+     * its patterns against our [Uri] parameter [uri]:
      *
-     *  *
-     * NOTES: If the pattern is for notes or live folders, return null. Data streams are not
-     * supported for this type of URI.
+     *  * [NOTES]: If the pattern is for notes or live folders, return `null`. Data streams are not
+     *  supported for this type of URI.
      *
-     *  *
-     * NOTE_ID: If the pattern is for note IDs and the MIME filter is text/plain, then return
-     * text/plain, which we do by returning the values returned by the `filterMimeTypes`
-     * method of NOTE_STREAM_TYPES for the filter `mimeTypeFilter` (since NOTE_STREAM_TYPES
-     * contains only MIMETYPE_TEXT_PLAIN ("text/plain") it will return that or null if the filter
-     * does not match it).
+     *  * [NOTE_ID]: If the pattern is for note IDs and the MIME filter is text/plain, then return
+     *  text/plain, which we do by returning the values returned by the [ClipDescription.filterMimeTypes]
+     *  method of [ClipDescription] field [NOTE_STREAM_TYPES] for the filter in [String] parameter
+     *  [mimeTypeFilter] (since [NOTE_STREAM_TYPES] contains only MIMETYPE_TEXT_PLAIN ("text/plain")
+     *  it will return that or `null` if the filter does not match it).
      *
-     *  *
-     * default: We throw IllegalArgumentException
+     *  * `else`: We throw [IllegalArgumentException]
      *
-     *
-     *
-     * @param uri            the URI to analyze
+     * @param uri the URI to analyze
      * @param mimeTypeFilter The MIME type to check for. This method only returns a data stream
      * type for MIME types that match the filter. Currently, only text/plain MIME types match.
      * @return a data stream MIME type. Currently, only text/plan is returned.
@@ -338,33 +329,37 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
 
     /**
      * Returns a stream of data for each supported stream type. This method does a query on the
-     * incoming URI, then uses `openPipeHelper` to start another thread in which to convert
-     * the data into a stream. First we initialize `String[] mimeTypes` with the array of
-     * supported mime types that our `getStreamTypes` method returns that match our parameters
-     * `Uri uri` and `String mimeTypeFilter`. If this is null then we return the read only
-     * handle to the file that is returned by our super's implementation of `openTypedAssetFile`.
-     * If it is not null we initialize `Cursor c` to the value returned by the `query`
-     * method when reading the note pointed to by our parameter `Uri uri` for the columns given
-     * in READ_NOTE_PROJECTION (ID, title, and contents), with null for selection (all records), null
-     * for selection arguments (no need since no selection), and null for the sort order (use the default
-     * sort order: modification date, descending). If `c` is null (the query fails) or its
-     * `moveToFirst` returns false (the cursor is empty) we close the cursor if it is not null,
-     * and throw FileNotFoundException. If everything has worked we initialize `ParcelFileDescriptor fd`
-     * with the instance returned by the `openPipeHelper` method when it creates a data pipe and
-     * background thread that will allow the read end of the pipe (`fd`) to be used to stream
-     * data back to the caller. Finally we return an `AssetFileDescriptor` constructed from
-     * `fd` to our caller.
+     * incoming URI, then uses [openPipeHelper] to start another thread in which to convert
+     * the data into a stream. First we initialize [Array] of [String] variable `val mimeTypes`
+     * with the array of supported mime types that our [getStreamTypes] method returns that match
+     * our [Uri] parameter [uri] and [String] parameter [mimeTypeFilter]. If this is `null` then
+     * we return the read only handle to the file that is returned by our super's implementation
+     * of `openTypedAssetFile`. If it is not `null` we initialize [Cursor] variable `val c` to the
+     * value returned by the [query] method when reading the note pointed to by our [Uri] parameter
+     * [uri] for the columns given in [READ_NOTE_PROJECTION] (ID, title, and contents), with `null`
+     * for selection (all records), `null` for selection arguments (no need since no selection), and
+     * `null` for the sort order (use the default sort order: modification date, descending). If `c`
+     * is `null` (the query fails) or its [Cursor.moveToFirst] method returns false (the cursor is
+     * empty) we close the cursor if it is not `null`, and throw [FileNotFoundException]. If
+     * everything has worked we initialize [ParcelFileDescriptor] variable `val fd` with the
+     * instance returned by the [openPipeHelper] method when it creates a data pipe and background
+     * thread that will allow the read end of the pipe (`fd`) to be used to stream data back to the
+     * caller. Finally we return an [AssetFileDescriptor] constructed from `fd` to our caller.
      *
-     * @param uri            The URI pattern that points to the data stream
+     * @param uri The URI pattern that points to the data stream
      * @param mimeTypeFilter A String containing a MIME type. This method tries to get a stream of
      * data with this MIME type.
-     * @param opts           Additional options supplied by the caller. Can be interpreted as
-     * desired by the content provider.
+     * @param opts Additional options supplied by the caller. Can be interpreted as desired by the
+     * content provider.
      * @return AssetFileDescriptor A handle to the file.
      * @throws FileNotFoundException if there is no file associated with the incoming URI.
      */
     @Throws(FileNotFoundException::class)
-    override fun openTypedAssetFile(uri: Uri, mimeTypeFilter: String, opts: Bundle?): AssetFileDescriptor? {
+    override fun openTypedAssetFile(
+        uri: Uri,
+        mimeTypeFilter: String,
+        opts: Bundle?
+    ): AssetFileDescriptor? {
 
         // Checks to see if the MIME type filter matches a supported MIME type.
         val mimeTypes = getStreamTypes(uri, mimeTypeFilter)
@@ -392,7 +387,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
             }
 
             // Start a new thread that pipes the stream data back to the caller.
-            val fd = openPipeHelper(
+            val fd: ParcelFileDescriptor = openPipeHelper(
                 uri,  // The URI whose data is to be written.
                 mimeTypes[0],  // The desired type of data to be written.
                 opts,  // Options supplied by caller.
@@ -416,26 +411,32 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
      * reading. Performs the actual work of converting the data in the cursor passed it to a stream
      * of data for the client to read.
      *
+     * We initialize [FileOutputStream] variable `val fout` with an instance constructed from the
+     * [FileDescriptor] associated with our [ParcelFileDescriptor] parameter [output]. We initialize
+     * [PrintWriter] variable `var pw` to `null`. Then wrapped in a try block intended to catch and
+     * log [UnsupportedEncodingException] we set `pw` to an instance constructed from an
+     * [OutputStreamWriter] that is constructed to write to `fout` using the character set "UTF-8".
+     * We then write a line to `pw` that contains the string in [Cursor] parameter [c] at column
+     * index [READ_NOTE_TITLE_INDEX] (2, the notes title), then print a line containing only the
+     * empty string followed by a line that contains the string in [c] at column index
+     * [READ_NOTE_NOTE_INDEX] (1, the note's content column). In the finally block for the try we
+     * close [c], and if `pw` is not `null` we flush it before wrapped in a try block intended to
+     * catch and log [IOException] we close `fout`.
      *
-     * We initialize `FileOutputStream fout` with an instance constructed from the `FileDescriptor`
-     * associated with our parameter `ParcelFileDescriptor output`. We initialize `PrintWriter pw`
-     * to null. Then wrapped in a try block intended to catch and log UnsupportedEncodingException we
-     * set `pw` to an instance constructed from an `OutputStreamWriter` that is constructed
-     * to write to `fout` using the character set "UTF-8". We then write a line to `pw`
-     * that contains the string in `c` at column index READ_NOTE_TITLE_INDEX (2, the notes title),
-     * then print a line containing only the empty string followed by a line that contains the string
-     * in `c` at column index READ_NOTE_NOTE_INDEX (1, the note's content column). In the finally
-     * block for the try we close `c`, and if `pw` is not null we flush it before wrapped
-     * in a try block intended to catch and log IOException we close `fout`.
-     *
-     * @param output   The pipe where data should be written. This will be
-     * closed for you upon returning from this function.
-     * @param uri      The URI whose data is to be written.
+     * @param output The pipe where data should be written. This will be closed for you upon
+     * returning from this function.
+     * @param uri The URI whose data is to be written.
      * @param mimeType The desired type of data to be written.
-     * @param opts     Options supplied by caller.
-     * @param c        Your own custom arguments.
+     * @param opts Options supplied by caller.
+     * @param c Your own custom arguments, in our case a [Cursor].
      */
-    override fun writeDataToPipe(output: ParcelFileDescriptor, uri: Uri, mimeType: String, opts: Bundle?, c: Cursor?) {
+    override fun writeDataToPipe(
+        output: ParcelFileDescriptor,
+        uri: Uri,
+        mimeType: String,
+        opts: Bundle?,
+        c: Cursor?
+    ) {
         // We currently only support conversion-to-text from a single note entry,
         // so no need for cursor data type checking here.
         val fout = FileOutputStream(output.fileDescriptor)
@@ -459,34 +460,28 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
     }
 
     /**
-     * This is called when a client calls `ContentResolver.insert(Uri, ContentValues)`. Inserts
-     * a new row into the database. This method sets up default values for any columns that are not
-     * included in the incoming map. If rows were inserted, then listeners are notified of the change.
+     * This is called when a client calls [ContentResolver.insert] with a [Uri] pointing to where
+     * its [ContentValues] should be inserted. Inserts a new row into the database. This method sets
+     * up default values for any columns that are not included in the incoming map. If rows were
+     * inserted, then listeners are notified of the change.
      *
+     * If [UriMatcher] field [sUriMatcher] does not match our [Uri] parameter [uri] to be a [NOTES]
+     * URI we throw IllegalArgumentException. If it does match we declare [ContentValues] variable
+     * `val values` and if our [ContentValues] parameter is not `null` we set `values` to an
+     * instance whose values are copied from [initialValues], if it is `null` we set `values` to a
+     * new instance.
      *
-     * If `UriMatcher sUriMatcher` does not match our parameter `Uri uri` to be a NOTES
-     * URI we throw IllegalArgumentException. If it does match we declare `ContentValues values`
-     * and branch on whether our parameter `ContentValues initialValues` is null:
-     *
-     *  *
-     * Not null, we set `values` to an instance whose values are copied from
-     * `initialValues`.
-     *
-     *  *
-     * Null, we set `values` to a new instance.
-     *
-     *
-     * We initialize `Long now` to the current system time in milliseconds. If the `values`
-     * map does not already contain the creation date (under the key COLUMN_NAME_CREATE_DATE) we add
-     * `now` to `values` under the key COLUMN_NAME_CREATE_DATE. If the `values` map
-     * does not already contain the modification date (under the key COLUMN_NAME_MODIFICATION_DATE)
-     * we add `now` to `values` under the key COLUMN_NAME_MODIFICATION_DATE. If the
-     * `values` map does not already contain the note title (under the key COLUMN_NAME_TITLE)
-     * we add the string with the resource id android.R.string.untitled (&lt;Untitled&gt;) to
-     * `values` under the key COLUMN_NAME_TITLE. If the `values` map does not already
-     * contain the note text (under the key COLUMN_NAME_NOTE) we add the empty string ("") to
-     * `values` under the key COLUMN_NAME_NOTE.
-     *
+     * We initialize [Long] variable `val now` to the current system time in milliseconds. If the
+     * `values` map does not already contain the creation date (under the key
+     * [NotePad.Notes.COLUMN_NAME_CREATE_DATE]) we add `now` to `values` under the key
+     * [NotePad.Notes.COLUMN_NAME_CREATE_DATE]. If the `values` map does not already contain the
+     * modification date (under the key [NotePad.Notes.COLUMN_NAME_CREATE_DATE]) we add `now` to
+     * `values` under the key [NotePad.Notes.COLUMN_NAME_CREATE_DATE]. If the `values` map does not
+     * already contain the note title (under the key [NotePad.Notes.COLUMN_NAME_TITLE]) we add the
+     * string with the resource id [android.R.string.untitled] (&lt;Untitled&gt;) to `values` under
+     * the key [NotePad.Notes.COLUMN_NAME_TITLE]. If the `values` map does not already contain the
+     * note text (under the key [NotePad.Notes.COLUMN_NAME_NOTE]) we add the empty string ("") to
+     * `values` under the key [NotePad.Notes.COLUMN_NAME_NOTE].
      *
      * We initialize `SQLiteDatabase db` by opening `DatabaseHelper mOpenHelper` in write
      * mode. We then set `long rowId` to the row id returned by the `insert` method of
