@@ -23,6 +23,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
@@ -177,10 +178,21 @@ class MessagingService : Service() {
     private fun sendNotificationForConversation(conversation: Conversation) {
         // A pending Intent for reads
         val readPendingIntent: PendingIntent
-        readPendingIntent = PendingIntent.getBroadcast(applicationContext,
-            conversation.conversationId,
-            getMessageReadIntent(conversation.conversationId),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+        readPendingIntent = if (Build.VERSION.SDK_INT >= 34) {
+            PendingIntent.getBroadcast(applicationContext,
+                conversation.conversationId,
+                getMessageReadIntent(conversation.conversationId),
+                PendingIntent.FLAG_UPDATE_CURRENT
+                    or PendingIntent.FLAG_MUTABLE
+                    or PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT
+            )
+        } else {
+            PendingIntent.getBroadcast(applicationContext,
+                conversation.conversationId,
+                getMessageReadIntent(conversation.conversationId),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+        }
 
         // Build a RemoteInput for receiving voice input in a Car Notification or text input on
         // devices that support text input (like devices on Android N and above).
@@ -189,10 +201,21 @@ class MessagingService : Service() {
             .build()
 
         // Building a Pending Intent for the reply action to trigger
-        val replyIntent = PendingIntent.getBroadcast(applicationContext,
-            conversation.conversationId,
-            getMessageReplyIntent(conversation.conversationId),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+        val replyIntent = if (Build.VERSION.SDK_INT >= 34) {
+            PendingIntent.getBroadcast(applicationContext,
+                conversation.conversationId,
+                getMessageReplyIntent(conversation.conversationId),
+                PendingIntent.FLAG_UPDATE_CURRENT
+                    or PendingIntent.FLAG_MUTABLE
+                    or PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT
+            )
+        } else {
+            PendingIntent.getBroadcast(applicationContext,
+                conversation.conversationId,
+                getMessageReplyIntent(conversation.conversationId),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+        }
 
         // Build an Android N compatible Remote Input enabled action.
         val actionReplyByRemoteInput = NotificationCompat.Action.Builder(
