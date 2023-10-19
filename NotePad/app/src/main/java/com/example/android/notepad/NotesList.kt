@@ -43,9 +43,8 @@ import android.widget.ListView
 import android.widget.SimpleCursorAdapter
 
 /**
- * Displays a list of notes. Will display notes from the [Uri]
- * provided in the incoming Intent if there is one, otherwise it defaults to displaying the
- * contents of the [NotePadProvider].
+ * Displays a list of notes. Will display notes from the [Uri] provided in the incoming Intent if
+ * there is one, otherwise it defaults to displaying the contents of the [NotePadProvider].
  */
 class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
     /**

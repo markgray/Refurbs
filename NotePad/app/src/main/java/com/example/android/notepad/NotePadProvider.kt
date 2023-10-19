@@ -483,22 +483,24 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
      * note text (under the key [NotePad.Notes.COLUMN_NAME_NOTE]) we add the empty string ("") to
      * `values` under the key [NotePad.Notes.COLUMN_NAME_NOTE].
      *
-     * We initialize `SQLiteDatabase db` by opening `DatabaseHelper mOpenHelper` in write
-     * mode. We then set `long rowId` to the row id returned by the `insert` method of
-     * `db` when inserting `values` into its table TABLE_NAME ("notes"). The nullable column
-     * name COLUMN_NAME_NOTE ("note") is included to get around the fact that SQLite won't insert the
-     * row if no columns are contained in `values` (a hack). If `rowId` is greater than 0
-     * we initialize `Uri noteUri` to the `Uri` produced by appending the id `rowId`
-     * to CONTENT_ID_URI_BASE ("content://com.google.provider.NotePad/notes/"). We then retrieve the
-     * context this provider is running in, fetch from it a `ContentResolver` instance for our
-     * application's package and call its `notifyChange` method to notify registered observers
-     * that the row with URI `noteUri` has been updated. Finally we return `noteUri` to
-     * the caller. If on the other hand `rowId` is not greater than 0 we throw SQLException.
+     * We initialize [SQLiteDatabase] variable `val db` by opening [DatabaseHelper] field
+     * [openHelperForTest] in write mode. We then set [Long] variable `val rowId` to the row id
+     * returned by the [SQLiteDatabase.insert] method of `db` when inserting `values` into its table
+     * [NotePad.Notes.TABLE_NAME] ("notes"). The nullable column name [NotePad.Notes.COLUMN_NAME_NOTE]
+     * ("note") is included to get around the fact that SQLite won't insert the row if no columns are
+     * contained in `values` (a hack). If `rowId` is greater than 0 we initialize [Uri] variable
+     * `val noteUri` to the [Uri] produced by appending the id `rowId` to
+     * [NotePad.Notes.CONTENT_ID_URI_BASE] ("content://com.google.provider.NotePad/notes/"). We then
+     * retrieve the [Context] this provider is running in, fetch from it a [ContentResolver] instance
+     * for our application's package and call its [ContentResolver.notifyChange] method to notify
+     * registered observers that the row with URI `noteUri` has been updated. Finally we return
+     * `noteUri` to the caller. If on the other hand `rowId` is not greater than 0 we throw
+     * [SQLException].
      *
-     * @param uri           The content:// URI of the insertion request. This must not be `null`.
+     * @param uri The content:// URI of the insertion request. This must not be `null`.
      * @param initialValues A set of column_name/value pairs to add to the database.
      * This must not be `null`.
-     * @return The URI for the newly inserted row.
+     * @return The [Uri] for the newly inserted row.
      * @throws SQLException if the insertion fails.
      */
     override fun insert(uri: Uri, initialValues: ContentValues?): Uri? {
@@ -539,7 +541,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
         }
 
         // Opens the database object in "write" mode.
-        val db = openHelperForTest!!.writableDatabase
+        val db: SQLiteDatabase = openHelperForTest!!.writableDatabase
 
         // Performs the insert and returns the ID of the new note.
         val rowId = db.insert(
@@ -561,46 +563,42 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
     }
 
     /**
-     * This is called when a client calls `ContentResolver.delete(Uri, String, String[])` to
-     * delete records from the database. If the incoming URI matches the note ID URI pattern,
-     * this method deletes the one record specified by the ID in the URI. Otherwise, it deletes a
-     * a set of records. The record or records must also match the input selection criteria specified
-     * by where and whereArgs. If rows were deleted, then listeners are notified of the change.
+     * This is called when a client calls [ContentResolver.delete] to delete records from the
+     * database. If the incoming URI matches the note ID URI pattern, this method deletes the one
+     * record specified by the ID in the URI. Otherwise, it deletes a set of records. The record or
+     * records must also match the input selection criteria specified by [String] parameter [where]
+     * and [Array] of [String] parameter [whereArgs]. If rows were deleted, then listeners are
+     * notified of the change.
      *
+     * First we initialize [SQLiteDatabase] variable `val db` to the writeable database returned by
+     * the [DatabaseHelper.getWritableDatabase] method of [openHelperForTest]. We declare [String]
+     * variable `var finalWhere`, and [Int] variable `val count`. Then we `when` switch on the value
+     * returned by the [UriMatcher.match] method of [UriMatcher] field [sUriMatcher] when matching
+     * its patterns against our [Uri] parameter [uri]:
      *
-     * First we initialize `SQLiteDatabase db` to the writeable database returned by the
-     * `getWritableDatabase` method of `mOpenHelper`. We declare `String finalWhere`,
-     * and `int count`. Then we switch on the value returned by the `match` method of
-     * `UriMatcher sUriMatcher` when matching its patterns against our parameter `Uri uri`:
+     *  * [NOTES]: (the incoming pattern matches the general pattern for notes, so we do a delete
+     *  based on the incoming [where] columns and [whereArgs] arguments) We save the number of rows
+     *  affected in `count` from a call to the [SQLiteDatabase.delete] method of `db` when passed
+     *  the table name [NotePad.Notes.TABLE_NAME] ("notes"), our [String] parameter [where] as the
+     *  `WHERE` clause, and our [Array] of [String] parameter [whereArgs] as the where arguments.
      *
-     *  *
-     * NOTES: (the incoming pattern matches the general pattern for notes, so we doe a delete
-     * based on the incoming "where" columns and arguments) We save the number of rows affected
-     * in `count` from a call to the `delete` method of `db` when passed the
-     * table name NotePad.Notes.TABLE_NAME ("notes"), our parameter `String where` as the
-     * WHERE clause, and our parameter `String[] whereArgs` as the where arguments. Then
-     * we break.
+     *  * [NOTE_ID]: (the incoming URI matches a single note ID, do the delete based on the incoming
+     *  data, but modify the where clause to restrict it to the particular note ID) We set
+     *  `finalWhere` to the string formed by concatenating the ID column name [BaseColumns._ID]
+     *  ("_id") followed by the string " = " (test for equality) followed by the note id number
+     *  extracted from our [Uri] parameter [uri] from the [NotePad.Notes.NOTE_ID_PATH_POSITION]
+     *  position in the path segments that its [Uri.getPathSegments] method (kotlin `pathSegments`
+     *  property) parses from it. If our [String] parameter [where] is not `null` we append the
+     *  string " AND " followed by [where] to `finalWhere`. Now we save the number of rows affected
+     *  in `count` from a call to the [SQLiteDatabase.delete] method of `db` when passed the table
+     *  name [NotePad.Notes.TABLE_NAME] ("notes"), [String] variable `finalWhere` as the WHERE
+     *  clause, and our [Array] of [String] parameter [whereArgs] as the where arguments.
      *
-     *  *
-     * NOTE_ID: (the incoming URI matches a single note ID, do the delete based on the incoming
-     * data, but modify the where clause to restrict it to the particular note ID) We set
-     * `finalWhere` to the string formed by concatenating the ID column name BaseColumns._ID
-     * ("_id") followed by the string " = " (test for equality) followed by the note id number
-     * extracted from our parameter `Uri uri` from the NotePad.Notes.NOTE_ID_PATH_POSITION
-     * position in the path segments that its `getPathSegments` method parses from it.
-     * If our parameter `where` is not null we append the string " AND " followed by
-     * `where` to `finalWhere`. Now we save the number of rows affected in `count`
-     * from a call to the `delete` method of `db` when passed the table name
-     * NotePad.Notes.TABLE_NAME ("notes"),  `String finalWhere` as the WHERE clause,
-     * and our parameter `String[] whereArgs` as the where arguments. Then we break.
+     *  * `else`: (the incoming pattern is invalid) We throw [IllegalArgumentException]
      *
-     *  *
-     * default: (the incoming pattern is invalid) We throw IllegalArgumentException
-     *
-     *
-     * We retrieve the `Context` this provider is running in and use it to fetch a ContentResolver
-     * instance for our application's package whose `notifyChange` method we then call to
-     * notify registered observers that a row was updated in `uri`. Finally we return `count`
+     * We retrieve the [Context] this provider is running in and use it to fetch a [ContentResolver]
+     * instance for our application's package whose [ContentResolver.notifyChange] method we then
+     * call to notify registered observers that a row was updated in [uri]. Finally we return `count`
      * (the number of rows deleted) to the caller.
      *
      * @param uri The full URI to query, including a row ID (if a specific record is requested).
@@ -611,7 +609,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
     override fun delete(uri: Uri, where: String?, whereArgs: Array<String>?): Int {
 
         // Opens the database object in "write" mode.
-        val db = openHelperForTest!!.writableDatabase
+        val db: SQLiteDatabase = openHelperForTest!!.writableDatabase
         var finalWhere: String
         val count: Int
         when (sUriMatcher!!.match(uri)) {
@@ -656,66 +654,70 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
     }
 
     /**
-     * This is called when a client calls `ContentResolver.update(Uri, ContentValues, String, String[])`,
-     * it updates records in the database. The column names specified by the keys in the values map
-     * are updated with new data specified by the values in the map. If the incoming URI matches the
-     * note ID URI pattern, then the method updates the one record specified by the ID in the URI;
-     * otherwise, it updates a set of records. The record or records must match the input selection
-     * criteria specified by where and whereArgs. If rows were updated, then listeners are notified
-     * of the change.
+     * This is called when a client calls [ContentResolver.update], it updates records in the
+     * database. The column names specified by the keys in the [ContentValues] parmaeter [values]
+     * map are updated with new data specified by the values in the map. If the incoming [Uri]
+     * parameter [uri] matches the note ID URI pattern, then the method updates the one record
+     * specified by the ID in the URI; otherwise, it updates a set of records. The record or records
+     * must match the input selection criteria specified by [String] parameter [where] and [Array]
+     * of [String] parameter [whereArgs]. If rows were updated, then listeners are notified of the
+     * change.
      *
+     * First we initialize [SQLiteDatabase] variable `val db` to the writeable database returned by
+     * the [DatabaseHelper.getWritableDatabase] method (kotlin `writableDatabase` property) of
+     * [DatabaseHelper] field [openHelperForTest]. We declare [Int] variable `val count` and
+     * [String] variable `var finalWhere`. Then we `when` switch on the value returned by the
+     * [UriMatcher.match] method of [UriMatcher] field [sUriMatcher] when matching its patterns
+     * against our [Uri] parameter [uri]:
      *
-     * First we initialize `SQLiteDatabase db` to the writeable database returned by the
-     * `getWritableDatabase` method of `mOpenHelper`. We declare `String finalWhere`,
-     * and `int count`. Then we switch on the value returned by the `match` method of
-     * `UriMatcher sUriMatcher` when matching its patterns against our parameter `Uri uri`:
+     *  * [NOTES]: (the incoming URI matches the general notes pattern) We set `count` to the number
+     *  of rows in `db` that are updated when we call its [SQLiteDatabase.update] method to update
+     *  the database table named [NotePad.Notes.TABLE_NAME] ("notes") with the map of column names
+     *  and new values contained in our [ContentValues] parameter [values] using our [String]
+     *  parameter [where]  for the where clause column names, and [Array] of [String] parameter
+     *  [whereArgs] for the where clause column values to select on.
      *
-     *  *
-     * NOTES: (the incoming URI matches the general notes pattern) We set `count` to the
-     * number of rows in `db` that are updated when we call its `update` method to
-     * update the database table named NotePad.Notes.TABLE_NAME ("notes") with the map of column
-     * names and new values contained in our parameter `ContentValues values` using our
-     * `where` parameter for the where clause column names, and `whereArgs` for the
-     * where clause column values to select on. We then break.
+     *  * [NOTE_ID]: (the incoming URI matches a single note ID) we initialize [String] variable
+     *  `val noteId` with the note number parsed from our [Uri] parameter [uri] using its
+     *  [Uri.getPathSegments] method (kotlin `pathSegments` property): the note number id is in the
+     *  [NotePad.Notes.NOTE_ID_PATH_POSITION] position of the list of strings returned. Then we set
+     *  `finalWhere` to the string formed by concatenating the ID column name [BaseColumns._ID]
+     *  ("_id") followed by the test for equality (" = "), followed by the incoming note ID in
+     *  `noteId`. If our [String] parameter [where] is not `null` (there were additional selection
+     *  criteria) we set `finalWhere` to the string formed by concatenating `finalWhere` followed
+     *  by the string " AND ", followed by `where`. We set `count` to the number of rows in `db`
+     *  that are updated when we call its [SQLiteDatabase.update] method to update the database
+     *  table named [NotePad.Notes.TABLE_NAME] ("notes") with the map of column names and new values
+     *  contained in our [ContentValues] parameter [values] using `finalWhere` for the where clause
+     *  column names, and [Array] of [String] parameter [whereArgs] for the where clause column
+     *  values to select on.
      *
-     *  *
-     * NOTE_ID: (the incoming URI matches a single note ID) we initialize `String noteId`
-     * with the note number parsed from our parameter `Uri uri` using its method
-     * `getPathSegments` (the note number id is in the NotePad.Notes.NOTE_ID_PATH_POSITION
-     * position of the list of strings return by `getPathSegments`). Then we set `finalWhere`
-     * to the string formed by concatenating the ID column name BaseColumns._ID ("_id") followed
-     * by the test for equality (" = "), followed by the incoming note ID in `noteId`.
-     * If our `where` parameter is not null (there were additional selection criteria)
-     * we set `finalWhere` to the string formed by concatenating `finalWhere` followed
-     * by the string " AND ", followed by `where`. We set `count` to the number of
-     * rows in `db` that are updated when we call its `update` method to update the
-     * database table named NotePad.Notes.TABLE_NAME ("notes") with the map of column names and
-     * new values contained in our parameter `ContentValues values` using `finalWhere`
-     * for the where clause column names, and `whereArgs` for the where clause column values
-     * to select on. We then break.
+     *  * `else`: (the incoming pattern is invalid) We throw [IllegalArgumentException].
      *
-     *  *
-     * default: (the incoming pattern is invalid) We throw IllegalArgumentException.
+     * We retrieve the [Context] this provider is running in and use it to fetch a [ContentResolver]
+     * instance for our application's package whose [ContentResolver.notifyChange] method we then
+     * call to notify registered observers that a row was updated in [uri]. Finally we return
+     * `count` (the number of rows updated) to the caller.
      *
-     *
-     * We retrieve the `Context` this provider is running in and use it to fetch a ContentResolver
-     * instance for our application's package whose `notifyChange` method we then call to notify
-     * registered observers that a row was updated in `uri`. Finally we return `count`
-     * (the number of rows updated) to the caller.
-     *
-     * @param uri       The URI pattern to match and update.
-     * @param values    A map of column names (keys) and new values (values).
-     * @param where     An SQL "WHERE" clause that selects records based on their column values. If this
-     * is null, then all records that match the URI pattern are selected.
-     * @param whereArgs An array of selection criteria. If the "where" param contains value placeholders
-     * ("?"), then each placeholder is replaced by the corresponding element in the array.
+     * @param uri The URI pattern to match and update.
+     * @param values A map of column names (keys) and new values (values).
+     * @param where An SQL "WHERE" clause that selects records based on their column values. If this
+     * is `null`, then all records that match the URI pattern are selected.
+     * @param whereArgs An array of selection criteria. If the [where] param contains value
+     * placeholders ("?" characters), then each placeholder is replaced by the corresponding
+     * element in the array.
      * @return The number of rows updated.
      * @throws IllegalArgumentException if the incoming URI pattern is invalid.
      */
-    override fun update(uri: Uri, values: ContentValues?, where: String?, whereArgs: Array<String>?): Int {
+    override fun update(
+        uri: Uri,
+        values: ContentValues?,
+        where: String?,
+        whereArgs: Array<String>?
+    ): Int {
 
         // Opens the database object in "write" mode.
-        val db = openHelperForTest!!.writableDatabase
+        val db: SQLiteDatabase = openHelperForTest!!.writableDatabase
         val count: Int
         var finalWhere: String
         when (sUriMatcher!!.match(uri)) {
@@ -730,7 +732,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
 
             NOTE_ID -> {
                 // From the incoming URI, get the note ID
-                val noteId = uri.pathSegments[NotePad.Notes.NOTE_ID_PATH_POSITION]
+                val noteId: String = uri.pathSegments[NotePad.Notes.NOTE_ID_PATH_POSITION]
 
                 /*
                  * Starts creating the final WHERE clause by restricting it to the incoming
@@ -763,7 +765,8 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
         /* Gets a handle to the content resolver object for the current context, and notifies it
          * that the incoming URI changed. The object passes this along to the resolver framework,
          * and observers that have registered themselves for the provider are notified.
-         */context!!.contentResolver.notifyChange(uri, null)
+         */
+        context!!.contentResolver.notifyChange(uri, null)
 
         // Returns the number of rows updated.
         return count
@@ -796,7 +799,8 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
         private val READ_NOTE_PROJECTION = arrayOf(
             BaseColumns._ID,  // Projection position 0, the note's id
             NotePad.Notes.COLUMN_NAME_NOTE,  // Projection position 1, the note's content
-            NotePad.Notes.COLUMN_NAME_TITLE)
+            NotePad.Notes.COLUMN_NAME_TITLE
+        )
 
         /**
          * Index of the note's content column COLUMN_NAME_NOTE
@@ -807,10 +811,10 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
          * Index of the note's title column COLUMN_NAME_TITLE
          */
         private const val READ_NOTE_TITLE_INDEX = 2
-        /*
-     * Constants used by the Uri matcher to choose an action based on the pattern
-     * of the incoming URI
-     */
+
+        // Constants used by the Uri matcher to choose an action
+        // based on the pattern of the incoming URI
+
         /**
          * The incoming URI matches the Notes URI pattern
          */
@@ -826,14 +830,8 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
          */
         private var sUriMatcher: UriMatcher? = null
 
-        /*
-     * A block that instantiates and sets static objects
-     */
         init {
-
-            /*
-         * Creates and initializes the URI matcher
-         */
+            //Creates and initializes the URI matcher
             // Create a new instance
             sUriMatcher = UriMatcher(UriMatcher.NO_MATCH)
 
@@ -844,10 +842,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
             // for an integer) to a note ID operation
             sUriMatcher!!.addURI(NotePad.AUTHORITY, "notes/#", NOTE_ID)
 
-            /**
-             * Creates and initializes a projection map that returns all columns
-             */
-
+            // Creates and initializes a projection map that returns all columns
             // Creates a new projection map instance. The map returns a column name
             // given a string. The two are usually equal.
             sNotesProjectionMap = HashMap()
@@ -872,6 +867,9 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
          * This describes the MIME types that are supported for opening a note
          * URI as a stream.
          */
-        var NOTE_STREAM_TYPES: ClipDescription = ClipDescription(null, arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN))
+        var NOTE_STREAM_TYPES: ClipDescription = ClipDescription(
+            /* label = */ null,
+            /* mimeTypes = */ arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
+        )
     }
 }
