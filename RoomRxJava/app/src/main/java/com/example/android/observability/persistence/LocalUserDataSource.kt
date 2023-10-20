@@ -51,7 +51,7 @@ class LocalUserDataSource
      *
      * @param user the user to be inserted or updated.
      */
-    override fun insertOrUpdateUser(user: User?) {
+    override fun insertOrUpdateUser(user: User) {
         mUserDao.insertUser(user)
     }
 

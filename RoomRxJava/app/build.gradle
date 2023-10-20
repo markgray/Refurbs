@@ -37,16 +37,16 @@ dependencies {
     // Support libraries
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
 
     // Architecture components
     implementation 'androidx.lifecycle:lifecycle-runtime:2.6.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     annotationProcessor 'androidx.lifecycle:lifecycle-common:2.6.2'
-    implementation 'androidx.room:room-runtime:2.5.2'
-    annotationProcessor 'androidx.room:room-compiler:2.5.2'
-    ksp "androidx.room:room-compiler:2.5.2"
-    implementation 'androidx.room:room-rxjava2:2.5.2'
+    implementation 'androidx.room:room-runtime:2.6.0'
+    annotationProcessor 'androidx.room:room-compiler:2.6.0'
+    ksp "androidx.room:room-compiler:2.6.0"
+    implementation 'androidx.room:room-rxjava2:2.6.0'
     implementation "androidx.annotation:annotation:1.7.0"
 
     // RxJava

@@ -85,7 +85,7 @@ class UserViewModel
             // if we already have a user, then, since the user object is immutable,
             // create a new user, with the id of the previous user and the updated user name.
             mUser = if (mUser == null) User(userName) else User(mUser!!.id, userName)
-            mDataSource.insertOrUpdateUser(mUser)
+            mDataSource.insertOrUpdateUser(mUser!!)
         }
     }
 }

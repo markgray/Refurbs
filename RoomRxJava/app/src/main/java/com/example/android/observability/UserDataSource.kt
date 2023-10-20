@@ -34,7 +34,7 @@ interface UserDataSource {
      *
      * @param user the user to be inserted or updated.
      */
-    fun insertOrUpdateUser(user: User?)
+    fun insertOrUpdateUser(user: User)
 
     /**
      * Deletes all users from the data source.

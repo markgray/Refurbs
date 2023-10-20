@@ -41,7 +41,7 @@ interface UserDao {
      * @param user the user to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUser(user: User?)
+    fun insertUser(user: User)
 
     /**
      * Delete all users.
