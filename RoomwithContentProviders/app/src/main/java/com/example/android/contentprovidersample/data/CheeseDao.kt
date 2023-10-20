@@ -41,7 +41,7 @@ interface CheeseDao {
      * @return The row ID of the newly inserted cheese.
      */
     @Insert
-    fun insert(cheese: Cheese?): Long
+    fun insert(cheese: Cheese): Long
 
     /**
      * Inserts multiple cheeses into the database
@@ -50,7 +50,7 @@ interface CheeseDao {
      * @return The row IDs of the newly inserted cheeses.
      */
     @Insert
-    fun insertAll(cheeses: Array<Cheese?>?): LongArray
+    fun insertAll(cheeses: Array<Cheese>): LongArray
 
     /**
      * Select all cheeses.
@@ -58,7 +58,7 @@ interface CheeseDao {
      * @return A [Cursor] of all the cheeses in the table.
      */
     @Query("SELECT * FROM " + Cheese.TABLE_NAME)
-    fun selectAll(): Cursor?
+    fun selectAll(): Cursor
 
     /**
      * Select a cheese by the ID.
@@ -67,7 +67,7 @@ interface CheeseDao {
      * @return A [Cursor] of the selected cheese.
      */
     @Query("SELECT * FROM " + Cheese.TABLE_NAME + " WHERE " + Cheese.COLUMN_ID + " = :id")
-    fun selectById(id: Long): Cursor?
+    fun selectById(id: Long): Cursor
 
     /**
      * Delete a cheese by the ID.
@@ -85,5 +85,5 @@ interface CheeseDao {
      * @return A number of cheeses updated. This should always be `1`.
      */
     @Update
-    fun update(cheese: Cheese?): Int
+    fun update(cheese: Cheese): Int
 }

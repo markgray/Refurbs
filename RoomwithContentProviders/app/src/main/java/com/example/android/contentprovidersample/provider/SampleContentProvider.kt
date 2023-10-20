@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn")
 
 package com.example.android.contentprovidersample.provider
 
@@ -93,12 +92,12 @@ class SampleContentProvider : ContentProvider() {
         return if (code == CODE_CHEESE_DIR || code == CODE_CHEESE_ITEM) {
             val context = context ?: return null
             val cheese: CheeseDao = SampleDatabase.getInstance(context).cheese()
-            val cursor: Cursor? = if (code == CODE_CHEESE_DIR) {
+            val cursor: Cursor = if (code == CODE_CHEESE_DIR) {
                 cheese.selectAll()
             } else {
                 cheese.selectById(ContentUris.parseId(uri))
             }
-            cursor!!.setNotificationUri(context.contentResolver, uri)
+            cursor.setNotificationUri(context.contentResolver, uri)
             cursor
         } else {
             throw IllegalArgumentException("Unknown URI: $uri")
@@ -338,11 +337,11 @@ class SampleContentProvider : ContentProvider() {
             CODE_CHEESE_DIR -> {
                 val context = context ?: return 0
                 val database: SampleDatabase = SampleDatabase.getInstance(context)
-                val cheeses = arrayOfNulls<Cheese>(valuesArray.size)
+                val cheeseList: MutableList<Cheese> = ArrayList()
                 for (i in valuesArray.indices) {
-                    cheeses[i] = Cheese.fromContentValues(valuesArray[i])
+                    cheeseList.add(Cheese.fromContentValues(valuesArray[i]))
                 }
-                database.cheese().insertAll(cheeses).size
+                database.cheese().insertAll(cheeseList.toTypedArray()).size
             }
 
             CODE_CHEESE_ITEM -> throw IllegalArgumentException("Invalid URI, cannot insert with ID: $uri")
