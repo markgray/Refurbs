@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "ReplaceJavaStaticMethodWithKotlinAnalog", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn", "RedundantIf")
+@file:Suppress("DEPRECATION", "ReplaceJavaStaticMethodWithKotlinAnalog", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn", "RedundantIf", "UnusedImport")
 
 package com.example.android.notepad
 
 import android.app.ListActivity
+import android.app.Activity.DEFAULT_KEYS_SHORTCUT
+import android.app.LoaderManager
 import android.app.LoaderManager.LoaderCallbacks
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -37,10 +39,12 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.View.OnCreateContextMenuListener
 import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.CursorAdapter
 import android.widget.ListView
 import android.widget.SimpleCursorAdapter
+import android.widget.TextView
 
 /**
  * Displays a list of notes. Will display notes from the [Uri] provided in the incoming Intent if
@@ -48,36 +52,38 @@ import android.widget.SimpleCursorAdapter
  */
 class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
     /**
-     * The adapter we use for our `ListView`, displays the data COLUMN_NAME_TITLE from our
-     * `Cursor` in the `TextView` with id android.R.id.text1 of our item layout file
-     * R.layout.notes_list_item
+     * The adapter we use for our [ListView], displays the column [NotePad.Notes.COLUMN_NAME_TITLE]
+     * from our [Cursor] in the [TextView] with id [android.R.id.text1] of our item layout file
+     * [R.layout.notes_list_item]
      */
     private var mAdapter: SimpleCursorAdapter? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`.
-     * We call the `setDefaultKeyMode` method to select the default key handling for this activity
-     * to be DEFAULT_KEYS_SHORTCUT (so that the user does not need to hold down the menu key to execute
-     * menu shortcuts). We initialize `Intent intent` with the intent that started this Activity,
-     * and if there is no data that this intent is targeting we set the data this intent is operating on
-     * to our default NotePad.Notes.CONTENT_URI ("content://com.google.provider.NotePad/notes"). We
-     * retrieve our `ListView` widget and set its `OnCreateContextMenuListener` to this
-     * (this causes our `onCreateContextMenu` override to be called when a note in our `ListView`
-     * is long-clicked). We initialize `String[] dataColumns` to the name of the cursor columns
-     * to display in the item views (the title column NotePad.Notes.COLUMN_NAME_TITLE "title") and
-     * `int[] viewIDs` to the view id that will display the cursor column (android.R.id.text1
-     * "text1"). Then we initialize our field `SimpleCursorAdapter mAdapter` with an instance
-     * which will use the layout file R.layout.notes_list_item, a null cursor (the cursor will be set
-     * by `CursorLoader` when loaded), `dataColumns` for the list of column names to use,
-     * `viewIDs` for the list of view id's to display each column in, and the flag FLAG_REGISTER_CONTENT_OBSERVER
-     * to have the adapter register a content observer on the cursor and call [.onContentChanged] when
-     * a notification comes in. We then set the adapter of our `ListView` to `mAdapter`,
-     * and fetch the `LoaderManager` for this activity (creating it if needed) and call its
-     * `initLoader` method to initialize it for loader id LOADER_ID (0) specifying 'this' as the
-     * `LoaderCallbacks` (our `onCreateLoader`, `onLoadFinished`, and `onLoaderReset`
+     * We call the [setDefaultKeyMode] method to select the default key handling for this activity
+     * to be [DEFAULT_KEYS_SHORTCUT] (so that the user does not need to hold down the menu key to
+     * execute menu shortcuts). We initialize [Intent] variable `val intent` with the intent that
+     * started this Activity, and if there is no data that this intent is targeting we set the data
+     * this intent is operating on to our default [NotePad.Notes.CONTENT_URI]
+     * ("content://com.google.provider.NotePad/notes"). We retrieve our [ListView] widget and set
+     * its [View.OnCreateContextMenuListener] to `this`
+     * (this causes our [onCreateContextMenu] override to be called when a note in our [ListView]
+     * is long-clicked). We initialize [Array] of [String] variable `val dataColumns` to the names
+     * of the cursor columns to display in the item views (in our case just the title column
+     * [NotePad.Notes.COLUMN_NAME_TITLE] "title") and [IntArray] variable `val viewIDs` to the view
+     * id that will display the cursor column ([android.R.id.text1] "text1"). Then we initialize our
+     * [SimpleCursorAdapter] field [mAdapter] with an instance which will use the layout file
+     * [R.layout.notes_list_item], a `null` cursor (the cursor will be set by [CursorLoader] when
+     * loaded), `dataColumns` for the list of column names to use, `viewIDs` for the list of view
+     * id's to display each column in, and the flag [CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER]
+     * to have the adapter register a content observer on the cursor and call [onContentChanged]
+     * when a notification comes in. We then set the adapter of our [ListView] to [mAdapter],
+     * and fetch the [LoaderManager] for this activity (creating it if needed) and call its
+     * [LoaderManager.initLoader] method to initialize it for loader id [LOADER_ID] (0) specifying
+     * 'this' as the [LoaderCallbacks] (our [onCreateLoader], [onLoadFinished], and [onLoaderReset]
      * overrides will be called).
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +111,6 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
          */
         listView.setOnCreateContextMenuListener(this)
 
-
         /*
          * The following two arrays create a "map" between columns in the cursor and view IDs
          * for items in the ListView. Each element in the dataColumns array represents
@@ -115,11 +120,11 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
          */
 
         // The names of the cursor columns to display in the view, initialized to the title column
-        val dataColumns = arrayOf(NotePad.Notes.COLUMN_NAME_TITLE)
+        val dataColumns: Array<String> = arrayOf(NotePad.Notes.COLUMN_NAME_TITLE)
 
         // The view IDs that will display the cursor columns, initialized to the TextView in
         // notes_list_item.xml
-        val viewIDs = intArrayOf(android.R.id.text1)
+        val viewIDs: IntArray = intArrayOf(android.R.id.text1)
 
         // Creates the backing adapter for the ListView.
         mAdapter = SimpleCursorAdapter(
@@ -138,54 +143,54 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
     }
 
     /**
-     * Called when the user clicks the device's Menu button the first time for
-     * this Activity. Android passes in a Menu object that is populated with items.
+     * Called when the user clicks the device's Menu button the first time for this Activity.
+     * Android passes in a [Menu] object that is populated with items. We set up a menu that
+     * provides the `Insert` option plus a list of alternative actions for this Activity. Other
+     * applications that want to handle notes can "register" themselves in Android by providing an
+     * intent filter that includes the category ALTERNATIVE and the mimeTYpe
+     * [NotePad.Notes.CONTENT_TYPE]. If they do this, the code in [onCreateOptionsMenu] will add the
+     * Activity that contains the intent filter to its list of options. In effect, the menu will
+     * offer the user other applications that can handle notes.
      *
+     * We initialize [MenuInflater] variable `val inflater` with a [MenuInflater] for this context
+     * and use it to inflate our menu layout file [R.menu.list_options_menu] into our [Menu]
+     * parameter []. We initialize [Intent] variable `val intent` with a new instance with a `null`
+     * action and a data uri consisting of the data contained in the [Intent.getData] (kotlin `data`
+     * property) data uri of the intent that started this activity. We then add the category
+     * [Intent.CATEGORY_ALTERNATIVE] to `intent` (the activity should be considered as an alternative
+     * action to the data the user is currently viewing). Then we add to [Menu] parameter [menu] a
+     * group of menu items corresponding to actions that can be performed with a group identifier of
+     * [Intent.CATEGORY_ALTERNATIVE], an unique item ID of 0, with NONE for the order of the items,
+     * using the component name for the class [NotesList], with `null` for the specific items to
+     * place first, with [Intent] variable `intent` as the [Intent] describing the kinds of items
+     * to populate in the list, 0 for the additional options, and `null` for the optional array in
+     * which to place the menu items. Finally we return the value returned by our super's
+     * implementation of `onCreateOptionsMenu` to the caller.
      *
-     * Sets up a menu that provides the Insert option plus a list of alternative actions for
-     * this Activity. Other applications that want to handle notes can "register" themselves in
-     * Android by providing an intent filter that includes the category ALTERNATIVE and the
-     * mimeTYpe NotePad.Notes.CONTENT_TYPE. If they do this, the code in onCreateOptionsMenu()
-     * will add the Activity that contains the intent filter to its list of options. In effect,
-     * the menu will offer the user other applications that can handle notes.
-     *
-     *
-     * We initialize `MenuInflater inflater` with a [MenuInflater] for this context and
-     * use it to inflate our menu layout file R.menu.list_options_menu into our parameter `Menu menu`.
-     * We initialize `Intent intent` with a new instance with a null action and a data uri
-     * consisting of the data contained in the data uri of the intent that started this activity. We
-     * then add the category Intent.CATEGORY_ALTERNATIVE to `intent` (the activity should be
-     * considered as an alternative action to the data the user is currently viewing). Then we add to
-     * `menu` a group of menu items corresponding to actions that can be performed with a group
-     * identifier of CATEGORY_ALTERNATIVE, an unique item ID of 0, with NONE for the order of the items,
-     * using the component name for the class `NotesList`, with null for the specific items to
-     * place first, with `Intent intent` as the `Intent` describing the kinds of items to
-     * populate in the list, 0 for the additional options, and null for the optional array in which
-     * to place the menu items. Finally we return the value returned by our super's implementation of
-     * `onCreateOptionsMenu` to the caller.
-     *
-     * @param menu A Menu object, to which menu items should be added.
-     * @return True, always. The menu should be displayed.
+     * @param menu A [Menu] object, to which menu items should be added.
+     * @return `true` always. The menu should be displayed.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate menu from XML resource
-        val inflater = menuInflater
+        val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.list_options_menu, menu)
 
         // Generate any additional actions that can be performed on the
         // overall list.  In a normal install, there are no additional
         // actions found here, but this allows other applications to extend
         // our menu with their own actions.
-        val intent = Intent(null, intent.data)
+        val intent = Intent(/* action = */ null, /* uri = */ intent.data)
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE)
-        menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE,  // group identifier
-            0,  // Unique item ID
-            0,  // order for the items NONE
-            ComponentName(this, NotesList::class.java),  // current activity component name
-            null,  // Specific items to place first
-            intent,  // Intent describing the kinds of items to populate in the list
-            0,  // Additional options
-            null) // Optional array in which to place the menu items
+        menu.addIntentOptions(
+            /* groupId = */ Menu.CATEGORY_ALTERNATIVE,  // group identifier
+            /* itemId = */ 0,  // Unique item ID
+            /* order = */ 0,  // order for the items NONE
+            /* caller = */ ComponentName(this, NotesList::class.java),  // current activity component name
+            /* specifics = */ null,  // Specific items to place first
+            /* intent = */ intent,  // Intent describing the kinds of items to populate in the list
+            /* flags = */ 0,  // Additional options
+            /* outSpecificItems = */ null // Optional array in which to place the menu items
+        )
         return super.onCreateOptionsMenu(menu)
     }
 
