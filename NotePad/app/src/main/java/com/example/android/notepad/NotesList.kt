@@ -25,6 +25,8 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.ContentUris
+import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.CursorLoader
 import android.content.Intent
 import android.content.Loader
@@ -42,6 +44,7 @@ import android.view.View
 import android.view.View.OnCreateContextMenuListener
 import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.CursorAdapter
+import android.widget.ListAdapter
 import android.widget.ListView
 import android.widget.SimpleCursorAdapter
 import android.widget.TextView
@@ -195,41 +198,41 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
     }
 
     /**
-     * Prepare the Screen's standard options menu to be displayed. First we call our super's implementation
-     * of `onPrepareOptionsMenu`. We initialize `ClipboardManager clipboard` with the system
-     * level service CLIPBOARD_SERVICE, and initialize `MenuItem mPasteItem` by finding the item
-     * in our parameter `Menu menu` with the id R.id.menu_paste ("Paste"). If `clipboard`
-     * currently contains an item in its primary clip we enable `mPasteItem`, if not then we disable
-     * it instead. We initialize `boolean haveItems` to true if our `ListAdapter` has more
-     * than 0 items in its data set, then branch on the value of `haveItems`:
+     * Prepare the Screen's standard options menu to be displayed. First we call our super's
+     * implementation of `onPrepareOptionsMenu`. We initialize [ClipboardManager] variable
+     * `val clipboard` with the system level service [CLIPBOARD_SERVICE], and initialize [MenuItem]
+     * variable `val mPasteItem` by finding the item in our [Menu] parameter [menu] with the id
+     * [R.id.menu_paste] ("Paste"). If `clipboard` currently contains an item in its primary clip
+     * we enable `mPasteItem`, if not then we disable it instead. We initialize [Boolean] variable
+     * `val haveItems` to `true` if our [ListAdapter] has more than 0 items in its data set, then
+     * branch on the value of `haveItems`:
      *
-     *  *
-     * true: (there are items in the list, which implies that one of them is selected so we
+     *  * `true`: (there are items in the list, which implies that one of them is selected so we
      * need to generate the actions that can be performed on the current selection) We initialize
-     * `Uri uri` by appending the cursor row ID of the currently selected list item to
-     * the data Uri of the `Intent` that launched us. We allocate one entry to initialize
-     * `Intent[] specifics` (this will be used to send an `Intent` based on the
-     * selected menu item). We then initialize `specifics[0]` with an `Intent` whose
-     * action is ACTION_EDIT, and whose data URI is `uri` (the selected note). We allocate
-     * one entry to initialize `MenuItem[] items`, and initialize `Intent intent` with
-     * an `Intent` with no specific action (null), using the URI of the selected note
-     * (`uri`) as the data URI. We add the category CATEGORY_ALTERNATIVE to `intent`
-     * (prepares the Intent as a place to group alternative options in the menu). We then add
-     * the alternatives to the menu using the `addIntentOptions` method with CATEGORY_ALTERNATIVE
-     * as the alternatives group, NONE as the unique item ID, NONE as the ordering, null for the
-     * caller `ComponentName`, `specifics` to place that option first, `intent`
-     * to describe the kinds of items to populate in the `specifics` options, NONE for the
-     * flags, and `items` as the array to place the menu items generated from the specifics
-     * to `Intent intent` mappings. If `items[0]` is not null after this we set its
-     * item shortcut to "1" for a numeric keyboard, or "e" for a keyboard with alphabetic keys.
+     * [Uri] variable `val uri` by appending the cursor row ID of the currently selected list item
+     * to the data [Uri] of the [Intent] that launched us. We allocate one entry to initialize
+     * [Array] of [Intent] `val specifics` (this will be used to send an [Intent] based on the
+     * selected menu item). We then initialize `specifics[0]` with an [Intent] whose action is
+     * [Intent.ACTION_EDIT], and whose data URI is `uri` (the selected note). We allocate one entry
+     * to initialize [Array] of [MenuItem] variable `val items`, and initialize [Intent] variable
+     * `val intent` with an [Intent] with no specific action (`null`), using the [Uri] of the
+     * selected note (`uri`) as the data URI. We add the category [Intent.CATEGORY_ALTERNATIVE] to
+     * `intent` (prepares the Intent as a place to group alternative options in the menu). We then
+     * add the alternatives to the menu using the [Menu.addIntentOptions] method of [Menu] parameter
+     * [menu] with [Menu.CATEGORY_ALTERNATIVE] as the alternatives group, [Menu.NONE] as the unique
+     * item ID, [Menu.NONE] as the ordering, `null` for the caller [ComponentName], `specifics` to
+     * place that option first, `intent` to describe the kinds of items to populate in the `specifics`
+     * options, [Menu.NONE] for the flags, and `items` as the array to place the menu items generated
+     * from the specifics to [Intent] variable `intent` mappings. If `items[0]` is not `null` after
+     * this we set its item shortcut to "1" for a numeric keyboard, or "e" for a keyboard with
+     * alphabetic keys.
      *
-     *  *
-     * false: (list is empty) We remove all items in the `menu` in the group CATEGORY_ALTERNATIVE.
+     *  * `false`: (list is empty) We remove all items in the `menu` in the group
+     *  [Menu.CATEGORY_ALTERNATIVE].
      *
+     * Finally we return `true` to display the menu.
      *
-     * Finally we return true to display the menu.
-     *
-     * @param menu The options menu as last shown or first initialized by onCreateOptionsMenu().
+     * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu].
      * @return You must return true for the menu to be displayed
      */
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
@@ -237,7 +240,7 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
 
         // The paste menu item is enabled if there is data on the clipboard.
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        val mPasteItem = menu.findItem(R.id.menu_paste)
+        val mPasteItem: MenuItem = menu.findItem(R.id.menu_paste)
 
         // If the clipboard contains an item, enables the Paste option on the menu.
         if (clipboard.hasPrimaryClip()) {
@@ -258,38 +261,40 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
         if (haveItems) {
 
             // This is the selected item.
-            val uri = ContentUris.withAppendedId(intent.data!!, selectedItemId)
+            val uri: Uri = ContentUris.withAppendedId(intent.data!!, selectedItemId)
 
             // Creates an array of Intents with one element. This will be used to send an Intent
             // based on the selected menu item.
-            val specifics = arrayOfNulls<Intent>(1)
+            val specifics: Array<Intent?> = arrayOfNulls(1)
 
             // Sets the Intent in the array to be an EDIT action on the URI of the selected note.
             specifics[0] = Intent(Intent.ACTION_EDIT, uri)
 
             // Creates an array of menu items with one element. This will contain the EDIT option.
-            val items = arrayOfNulls<MenuItem>(1)
+            val items: Array<MenuItem?> = arrayOfNulls(1)
 
             // Creates an Intent with no specific action, using the URI of the selected note.
             val intent = Intent(null, uri)
 
-            /* Adds the category ALTERNATIVE to the Intent, with the note ID URI as its
+            /*
+             * Adds the category ALTERNATIVE to the Intent, with the note ID URI as its
              * data. This prepares the Intent as a place to group alternative options in the
              * menu.
-             */intent.addCategory(Intent.CATEGORY_ALTERNATIVE)
+             */
+            intent.addCategory(Intent.CATEGORY_ALTERNATIVE)
 
             /*
              * Add alternatives to the menu
-             */menu.addIntentOptions(
-                Menu.CATEGORY_ALTERNATIVE,  // Add the Intents as options in the alternatives group.
-                Menu.NONE,  // A unique item ID is not required.
-                Menu.NONE,  // The alternatives don't need to be in order.
-                null,  // The caller's name is not excluded from the group.
-                specifics,  // These specific options must appear first.
-                intent,  // These Intent objects map to the options in specifics.
-                Menu.NONE,  // No flags are required.
-                items // The menu items generated from the specifics-to-
-                // Intents mapping
+             */
+            menu.addIntentOptions(
+                /* groupId = */ Menu.CATEGORY_ALTERNATIVE,  // Add the Intents as options in the alternatives group.
+                /* itemId = */ Menu.NONE,  // A unique item ID is not required.
+                /* order = */ Menu.NONE,  // The alternatives don't need to be in order.
+                /* caller = */ null,  // The caller's name is not excluded from the group.
+                /* specifics = */ specifics,  // These specific options must appear first.
+                /* intent = */ intent,  // These Intent objects map to the options in specifics.
+                /* flags = */ Menu.NONE,  // No flags are required.
+                /* outSpecificItems = */ items // The menu items generated from the specifics-to-Intents mapping
             )
             // If the Edit menu item exists, adds shortcuts for it.
             if (items[0] != null) {
@@ -307,55 +312,44 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
     }
 
     /**
-     * This method is called when the user selects an option from the menu, but no item
-     * in the list is selected. If the option was INSERT, then a new Intent is sent out with action
-     * ACTION_INSERT. The data from the incoming Intent is put into the new Intent. In effect,
-     * this triggers the NoteEditor activity in the NotePad application.
+     * This hook is called whenever an item in your options menu is selected. We branch on the
+     * value returned by the [MenuItem.getItemId] method of our [MenuItem] parameter [item]
+     * (kotlin `itemId` property), its item Id:
      *
+     *  * [R.id.menu_add] "New note": We launch an [Intent] that has an action of [Intent.ACTION_INSERT],
+     *  and whose data URI is the data URI of the [Intent] that launched us, and return `true` to consume
+     *  the event here (this starts the [NoteEditor] Activity in [NotePad]).
      *
-     * If the item was not INSERT, then most likely it was an alternative option from another
-     * application. The parent method is called to process the item.
+     *  * [R.id.menu_paste] "Paste": We launch an [Intent] that has an action of [Intent.ACTION_PASTE],
+     *  and whose data URI is the data URI of the [Intent] that launched us, and return `true` to consume
+     *  the event here (this starts the [NoteEditor] Activity in [NotePad]).
      *
-     *
-     * We branch on the item id of our parameter `MenuItem item`:
-     *
-     *  *
-     * R.id.menu_add: We start the activity whose `Intent` has an action of ACTION_INSERT,
-     * and whose data URI is the data URI of the `Intent` that launched us, and return
-     * true to consume the event here (this starts the NoteEditor Activity in NotePad).
-     *
-     *  *
-     * R.id.menu_paste: We start the activity whose `Intent` has an action of ACTION_PASTE,
-     * and whose data URI is the data URI of the `Intent` that launched us, and return
-     * true to consume the event here (this starts the NoteEditor Activity in NotePad).
-     *
-     *  *
-     * default: we return the value returned by our super's implementation of `onOptionsItemSelected`
-     * to the caller.
-     *
-     *
+     *  * `else`: we return the value returned by our super's implementation of `onOptionsItemSelected`
+     *  to the caller.
      *
      * @param item The menu item that was selected by the user
-     * @return True, if the INSERT menu item was selected; otherwise, the result of calling
-     * the parent method.
+     * @return `true` if the "New note" or "Paste" menu items were selected; otherwise, the result
+     * of calling the parent method.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_add -> {
-                /*
-           * Launches a new Activity using an Intent. The intent filter for the Activity
-           * has to have action ACTION_INSERT. No category is set, so DEFAULT is assumed.
-           * In effect, this starts the NoteEditor Activity in NotePad.
-           */startActivity(Intent(Intent.ACTION_INSERT, intent.data))
+                /**
+                 * Launches a new Activity using an Intent. The intent filter for the Activity
+                 * has to have action ACTION_INSERT. No category is set, so DEFAULT is assumed.
+                 * In effect, this starts the NoteEditor Activity in NotePad.
+                 */
+                startActivity(Intent(Intent.ACTION_INSERT, intent.data))
                 true
             }
 
             R.id.menu_paste -> {
-                /*
-           * Launches a new Activity using an Intent. The intent filter for the Activity
-           * has to have action ACTION_PASTE. No category is set, so DEFAULT is assumed.
-           * In effect, this starts the NoteEditor Activity in NotePad.
-           */startActivity(Intent(Intent.ACTION_PASTE, intent.data))
+                /**
+                 * Launches a new Activity using an Intent. The intent filter for the Activity
+                 * has to have action ACTION_PASTE. No category is set, so DEFAULT is assumed.
+                 * In effect, this starts the NoteEditor Activity in NotePad.
+                 */
+                startActivity(Intent(Intent.ACTION_PASTE, intent.data))
                 true
             }
 
@@ -364,38 +358,34 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
     }
 
     /**
-     * This method is called when the user context-clicks a note in the list. NotesList registers
-     * itself as the handler for context menus in its ListView (this is done in onCreate()).
+     * This method is called when the user context-clicks a note in the list. [NotesList] registers
+     * itself as the handler for context menus in its [ListView] (this is done in [onCreate]).
+     * The only available options are COPY and DELETE. Context-click is equivalent to long-press.
      *
-     *
-     * The only available options are COPY and DELETE.
-     *
-     *
-     * Context-click is equivalent to long-press.
-     *
-     *
-     * First we declare `AdapterView.AdapterContextMenuInfo info`, then wrapped in try block intended
-     * to catch and log ClassCastException we cast our parameter `ContextMenuInfo menuInfo` to set
-     * `info`. We then initialize `Cursor cursor` with the item in our list adapter whose
-     * position is given by the `position` field of `info` (this is the position in the
-     * adapter for which the context menu is being). If `cursor` is null we return (for some
-     * reason the requested item isn't available, so we do nothing). We initialize `MenuInflater inflater`
-     * with a [MenuInflater] for this context and use it to inflate our context menu layout file
-     * R.menu.list_context_menu into `menu`. We set the context menu `menu` header's title
-     * to the string stored in the COLUMN_INDEX_TITLE column of `cursor` (title of the selected note).
-     * We initialize `Intent intent` with an instance whose action is null, and whose data URI is
-     * constructed by appending the string value of the `id` field of `info` (row id of the
-     * item for which the context menu is being displayed) to the data URI of the `Intent` that
-     * launched this activity. We then add the category CATEGORY_ALTERNATIVE to `intent`. Finally
-     * we add to `menu` a group of menu items with the group identifier CATEGORY_ALTERNATIVE,
-     * 0 (NONE) for the Unique item ID, 0 for the order for the items (NONE), the component name created
-     * from the class of `NotesList` as the current activity component name, null for the specific
+     * First we declare [AdapterContextMenuInfo] variable `val info`, then wrapped in try block
+     * intended to catch and log [ClassCastException] we cast our [ContextMenuInfo] parameter
+     * [menuInfo] to set `info`. We then initialize [Cursor] variable `val cursor` with the item
+     * in our list adapter whose position is given by the [AdapterContextMenuInfo.position] field
+     * of `info` (this is the position in the adapter for which the context menu is being displayed).
+     * If `cursor` is `null` we return (for some reason the requested item isn't available, so we do
+     * nothing). We initialize [MenuInflater] variable `val inflater` with a [MenuInflater] for this
+     * [Context] and use it to inflate our context menu layout file [R.menu.list_context_menu] into
+     * our [ContextMenu] parameter [menu]. We set the context menu header's title to the string
+     * stored in the [COLUMN_INDEX_TITLE] column of `cursor` (title of the selected note). We
+     * initialize [Intent] variable `val intent` with an instance whose action is `null`, and whose
+     * data URI is constructed by appending the string value of the [AdapterContextMenuInfo.id]
+     * field of `info` (row id of the item for which the context menu is being displayed) to the
+     * data URI of the [Intent] that launched this activity. We then add the category
+     * [Intent.CATEGORY_ALTERNATIVE] to `intent`. Finally we add to [ContextMenu] parameter [menu]
+     * a group of menu items with the group identifier [Menu.CATEGORY_ALTERNATIVE], 0 (NONE) for the
+     * Unique item ID, 0 (NONE) for the order for the items, the component name created from the
+     * class of [NotesList] as the current activity component name, `null` for the specific
      * items to place first, `intent` as the `Intent` describing the kinds of items to populate
-     * in the list, 0 for the flags, and null for the optional array in which to place the menu items
-     * generated.
+     * in the list, 0 for the flags, and `null` for the optional array in which to place the menu
+     * items generated.
      *
-     * @param menu A ContextMenu object to which items should be added.
-     * @param view The View for which the context menu is being constructed.
+     * @param menu A [ContextMenu] object to which items should be added.
+     * @param view The [View] for which the context menu is being constructed.
      * @param menuInfo Data associated with view.
      */
     override fun onCreateContextMenu(menu: ContextMenu, view: View, menuInfo: ContextMenuInfo) {
@@ -419,13 +409,13 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
          * the adapter associated all of the data for a note with its list item. As a result,
          * getItem() returns that data as a Cursor.
          */
-        val cursor = (listAdapter.getItem(info.position) as Cursor?) ?:  return
+        val cursor = (listAdapter.getItem(info.position) as Cursor?) ?: return
 
         // If the cursor is empty, then for some reason the adapter can't get the data from the
         // provider, so returns null to the caller.
 
         // Inflate menu from XML resource
-        val inflater = menuInflater
+        val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.list_context_menu, menu)
 
         // Sets the menu header to be the c.
@@ -436,17 +426,21 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
         // as well.  This does a query on the system for any activities that
         // implement the ALTERNATIVE_ACTION for our data, adding a menu item
         // for each one that is found.
-        val intent = Intent(null, Uri.withAppendedPath(intent.data,
-            Integer.toString(info.id.toInt())))
+        val intent = Intent(
+            /* action = */ null,
+            /* uri = */ Uri.withAppendedPath(intent.data, Integer.toString(info.id.toInt()))
+        )
         intent.addCategory(Intent.CATEGORY_ALTERNATIVE)
-        menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE,  // group identifier
-            0,  // Unique item ID NONE
-            0,  // order for the items NONE
-            ComponentName(this, NotesList::class.java),  // current activity component name
-            null,  // specific items to place first
-            intent,  // Intent describing the kinds of items to populate in the list
-            0,  // Additional options controlling how the items are added
-            null) // Optional array in which to place the menu items generated
+        menu.addIntentOptions(
+            /* groupId = */ Menu.CATEGORY_ALTERNATIVE,  // group identifier
+            /* itemId = */ 0,  // Unique item ID NONE
+            /* order = */ 0,  // order for the items NONE
+            /* caller = */ ComponentName(this, NotesList::class.java),  // current activity component name
+            /* specifics = */ null,  // specific items to place first
+            /* intent = */ intent,  // Intent describing the kinds of items to populate in the list
+            /* flags = */ 0,  // Additional options controlling how the items are added
+            /* outSpecificItems = */ null  // Optional array in which to place the menu items generated
+        )
     }
 
     /**
