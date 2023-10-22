@@ -19,6 +19,7 @@ package com.example.android.notepad
 
 import android.app.Activity
 import android.content.ContentValues
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.BaseColumns
@@ -31,7 +32,6 @@ import android.widget.Toast
  * This Activity allows the user to edit a note's title. It displays a floating window
  * containing an EditText.
  *
- *
  * NOTE: Notice that the provider operations in this Activity are taking place on the UI thread.
  * This is not a good practice. It is only done here to make the code more readable. A real
  * application should use the [android.content.AsyncQueryHandler]
@@ -39,17 +39,17 @@ import android.widget.Toast
  */
 class TitleEditor : Activity() {
     /**
-     * An EditText object for preserving the edited title.
+     * An [EditText] object for preserving the edited title.
      */
     private var mText: EditText? = null
 
     /**
-     * A URI object for the note whose title is being edited.
+     * A [Uri] object for the note whose title is being edited.
      */
     private var mUri: Uri? = null
 
     /**
-     * TODO: Add kdoc
+     * The title that has been saved to the database (see [saveTitle]).
      */
     private var mSavedTitle: String? = null
 
@@ -90,12 +90,12 @@ class TitleEditor : Activity() {
          * the block will be momentary, but in a real app you should use
          * android.content.AsyncQueryHandler or android.os.AsyncTask.
          */
-        val cursor = contentResolver.query(
-            mUri!!,  // The URI for the note that is to be retrieved.
-            PROJECTION,  // The columns to retrieve
-            null,  // No selection criteria are used, so no where columns are needed.
-            null,  // No where columns are used, so no where values are needed.
-            null // No sort order is needed.
+        val cursor: Cursor? = contentResolver.query(
+            /* uri = */ mUri!!,  // The URI for the note that is to be retrieved.
+            /* projection = */ PROJECTION,  // The columns to retrieve
+            /* selection = */ null,  // No selection criteria are used, so no where columns are needed.
+            /* selectionArgs = */ null,  // No where columns are used, so no where values are needed.
+            /* sortOrder = */ null // No sort order is needed.
         )
         if (cursor != null) {
 
@@ -215,11 +215,12 @@ class TitleEditor : Activity() {
                  * update completes. In a sample app, going against a simple provider based on a
                  * local database, the block will be momentary, but in a real app you should use
                  * android.content.AsyncQueryHandler or android.os.AsyncTask.
-                 */contentResolver.update(
-                    mUri!!,  // The URI for the note to update.
-                    values,  // The values map containing the columns to update and the values to use.
-                    null,  // No selection criteria is used, so no "where" columns are needed.
-                    null // No "where" columns are used, so no "where" values are needed.
+                 */
+                contentResolver.update(
+                    /* uri = */ mUri!!,  // The URI for the note to update.
+                    /* values = */ values,  // The values map containing the columns to update and the values to use.
+                    /* where = */ null,  // No selection criteria is used, so no "where" columns are needed.
+                    /* selectionArgs = */ null // No "where" columns are used, so no "where" values are needed.
                 )
                 mSavedTitle = newTitle
             }
@@ -233,19 +234,18 @@ class TitleEditor : Activity() {
          * This is a special intent action that means "edit the title of a note".
          * it is used in AndroidManifest for an action name of our intent-filter
          */
-        @Suppress("PublicApiImplicitType")
-        const val EDIT_TITLE_ACTION = "com.android.notepad.action.EDIT_TITLE"
+        const val EDIT_TITLE_ACTION: String = "com.android.notepad.action.EDIT_TITLE"
 
         /**
          * Creates a projection that returns the note ID and the note contents.
          */
-        private val PROJECTION = arrayOf(
+        private val PROJECTION: Array<String> = arrayOf(
             BaseColumns._ID,  // 0
             NotePad.Notes.COLUMN_NAME_TITLE)
 
         /**
          * The position of the title column in a Cursor returned by the provider.
          */
-        private const val COLUMN_INDEX_TITLE = 1
+        private const val COLUMN_INDEX_TITLE: Int = 1
     }
 }

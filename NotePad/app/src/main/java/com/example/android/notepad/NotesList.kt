@@ -19,11 +19,13 @@ package com.example.android.notepad
 
 import android.app.ListActivity
 import android.app.Activity.DEFAULT_KEYS_SHORTCUT
+import android.app.Activity.RESULT_OK
 import android.app.LoaderManager
 import android.app.LoaderManager.LoaderCallbacks
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ComponentName
+import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
@@ -445,41 +447,37 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
 
     /**
      * This method is called when the user selects an item from the context menu
-     * (see onCreateContextMenu()). The only menu items that are actually handled are DELETE and
-     * COPY. Anything else is an alternative option, for which default handling should be done.
+     * (see [onCreateContextMenu]). The only menu items that are actually handled are "DELETE" and
+     * "COPY". Anything else is an alternative option, for which default handling should be done.
      *
+     * First we declare [AdapterContextMenuInfo] variable `val info`, then wrapped in try block
+     * intended to catch and log [ClassCastException] we cast our [ContextMenuInfo] parameter the
+     * value returned by the [MenuItem.getMenuInfo] method (kotlin `menuInfo` property) of our
+     * [MenuItem] parameter [item] to set `info`. We initialize [Uri] variable `val noteUri` by
+     * appending the [AdapterContextMenuInfo.id] field of `info` (row id of the item for which the
+     * context menu is being displayed) to the data URI that launched this activity. We then when
+     * switch on the item id of our [MenuItem] parameter [item]:
      *
-     * First we declare `AdapterView.AdapterContextMenuInfo info`, then wrapped in try block intended
-     * to catch and log ClassCastException we cast our parameter `ContextMenuInfo menuInfo` to set
-     * `info`. We initialize `Uri noteUri` by appending the `id` field of `info`
-     * (row id of the item for which the context menu is being displayed) to the data URI than launched
-     * this activity. We then switch on the item id of our parameter `MenuItem item`:
+     *  * [R.id.context_open] "Open": We start an activity with an [Intent] that has the action
+     *  [Intent.ACTION_EDIT] and whose data URI is `noteUri` (launches an activity to view/edit the
+     *  currently selected item), then return `true` to consume the event here.
      *
-     *  *
-     * R.id.context_open: We start an activity whose `Intent` has the action ACTION_EDIT
-     * and whose data URI is `noteUri` (launches an activity to view/edit the currently
-     * selected item), then return true to consume the event here.
+     *  * [R.id.context_copy] "Copy": We initialize [ClipboardManager] variable `val clipboard` with
+     *  a handle to the system level service [CLIPBOARD_SERVICE], and set the current primary clip
+     *  on the clipboard to a [ClipData] created by having a [ContentResolver] instance for our
+     *  application's package copy the note addressed by `noteUri` to the clip board using the
+     *  User-visible label "Note" for the clip data, then return `true` to consume the event here.
      *
-     *  *
-     * R.id.context_copy: We initialize `ClipboardManager clipboard` with a handle to the
-     * system level service CLIPBOARD_SERVICE, and set the current primary clip on the clipboard
-     * to a `ClipData` created by having a `ContentResolver` instance for our
-     * application's package copy the note addressed by `noteUri` to the clip board using
-     * the User-visible label "Note" for the clip data, then return true to consume the event here.
+     *  * [R.id.context_delete] "Delete": We use a [ContentResolver] instance for our application's
+     *  package to delete the note with the URI `noteUri`, then return `true` to consume the event
+     *  here.
      *
-     *  *
-     * R.id.context_delete: We use a `ContentResolver` instance for our application's package
-     * to delete the note with the URI `noteUri`, then return true to consume the event here.
-     *
-     *  *
-     * default: we return the value returned by our super's implementation of `onContextItemSelected`
-     * to the caller.
-     *
-     *
+     *  * `else`: we return the value returned by our super's implementation of `onContextItemSelected`
+     *  to the caller.
      *
      * @param item The selected menu item
-     * @return True if the menu item was DELETE, and no default processing is need, otherwise false,
-     * which triggers the default handling of the item.
+     * @return `true` if the menu item was DELETE, and no default processing is need, otherwise
+     * `false`, which triggers the default handling of the item.
      */
     override fun onContextItemSelected(item: MenuItem): Boolean {
         // The data from the menu item.
@@ -522,10 +520,12 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
                 val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
                 // Copies the notes URI to the clipboard. In effect, this copies the note itself
-                clipboard.setPrimaryClip(ClipData.newUri( // new clipboard item holding a URI
-                    contentResolver,  // resolver to retrieve URI info
-                    "Note",  // label for the clip
-                    noteUri) // the URI
+                clipboard.setPrimaryClip(
+                    ClipData.newUri(
+                        /* resolver = */ contentResolver,  // resolver to retrieve URI info
+                        /* label = */ "Note",  // label for the clip
+                        /* uri = */ noteUri // the URI
+                    )  // new clipboard item holding a URI
                 )
 
                 // Returns to the caller and skips further processing.
@@ -552,23 +552,20 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
     }
 
     /**
-     * This method is called when the user clicks a note in the displayed list.
+     * This method is called when the user clicks a note in the displayed list. This method handles
+     * incoming actions of either PICK (get data from the provider) or GET_CONTENT (get or create
+     * data). If the incoming action is EDIT, this method sends a new Intent to start NoteEditor.
      *
+     * First we initialize [Uri] variable `val uri` by appending the row id of the clicked item,
+     * our [Long] parameter [id], to the data URI of the [Intent] that launched us, and initialize
+     * [String] variable `val action` with the action of that [Intent]. If `action` is equal to
+     * [Intent.ACTION_PICK] or to [Intent.ACTION_PICK] we set the result that our activity will
+     * return to its caller to a new instance of [Intent] with the data URI of `uri` and result
+     * code [RESULT_OK]. Otherwise we launch an [Intent] with the action code [Intent.ACTION_EDIT]
+     * and the data URI `uri`.
      *
-     * This method handles incoming actions of either PICK (get data from the provider) or
-     * GET_CONTENT (get or create data). If the incoming action is EDIT, this method sends a
-     * new Intent to start NoteEditor.
-     *
-     *
-     * First we initialize `Uri uri` by appending the row id `long id` to the data URI of
-     * the `Intent` that launched us, and initialize `String action` with the action of
-     * that `Intent`. If `action` is equal to ACTION_PICK or to ACTION_GET_CONTENT we set
-     * the result that our activity will return to its caller to a new instance of `Intent` with
-     * the data URI of `uri` and result code RESULT_OK. Otherwise we launch an `Intent`
-     * with the action code ACTION_EDIT and the data URI `uri`.
-     *
-     * @param l The ListView that contains the clicked item
-     * @param v The View of the individual item
+     * @param l The [ListView] that contains the clicked item
+     * @param v The [View] of the individual item
      * @param position The position of v in the displayed list
      * @param id The row ID of the clicked item
      */
@@ -576,10 +573,10 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
     override fun onListItemClick(l: ListView, v: View, position: Int, id: Long) {
 
         // Constructs a new URI from the incoming URI and the row ID
-        val uri = ContentUris.withAppendedId(intent.data!!, id)
+        val uri: Uri = ContentUris.withAppendedId(intent.data!!, id)
 
         // Gets the action from the incoming Intent
-        val action = intent.action
+        val action: String? = intent.action
 
         // Handles requests for note data
         if (Intent.ACTION_PICK == action || Intent.ACTION_GET_CONTENT == action) {
@@ -594,35 +591,38 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
             startActivity(Intent(Intent.ACTION_EDIT, uri))
         }
     }
+
     // LoaderManager callbacks
+
     /**
-     * Instantiate and return a new Loader for the given ID. We return a new instance of `CursorLoader`
-     * using the data URI of the `Intent` that launched us as the URI for the content to retrieve,
-     * PROJECTION for the list of which columns to return, null for the SQL WHERE clause selection, null
-     * for the selection arguments, and DEFAULT_SORT_ORDER for the sort order.
+     * Instantiate and return a new [Loader] for the given ID. We return a new instance of
+     * [CursorLoader] using the data URI of the [Intent] that launched us as the URI for the
+     * content to retrieve, [PROJECTION] for the list of which columns to return, `null` for
+     * the SQL WHERE clause selection, `null` for the selection arguments, and
+     * [NotePad.Notes.DEFAULT_SORT_ORDER] for the sort order.
      *
-     * @param i      The ID whose loader is to be created.
+     * @param i The ID whose loader is to be created.
      * @param bundle Any arguments supplied by the caller.
      * @return Return a new Loader instance that is ready to start loading.
      */
     @Deprecated("Deprecated in Java")
     override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor> {
         return CursorLoader(
-            this,
-            intent.data,  // Use the default content URI for the provider.
-            PROJECTION,  // Return the note ID and title for each note.
-            null,  // No where clause, return all records.
-            null,  // No where clause, therefore no where column values.
-            NotePad.Notes.DEFAULT_SORT_ORDER // Use the default sort order.
+            /* context = */ this,
+            /* uri = */ intent.data,  // Use the default content URI for the provider.
+            /* projection = */ PROJECTION,  // Return the note ID and title for each note.
+            /* selection = */ null,  // No where clause, return all records.
+            /* selectionArgs = */ null,  // No where clause, therefore no where column values.
+            /* sortOrder = */ NotePad.Notes.DEFAULT_SORT_ORDER // Use the default sort order.
         )
     }
 
     /**
-     * Called when a previously created loader has finished its load. We call the `changeCursor`
-     * method of our field `SimpleCursorAdapter mAdapter` to change its underlying cursor to our
-     * parameter `Cursor cursor`.
+     * Called when a previously created loader has finished its load. We call the
+     * [SimpleCursorAdapter.changeCursor] method of our [SimpleCursorAdapter] field
+     * [mAdapter] to change its underlying cursor to our [Cursor] parameter [cursor].
      *
-     * @param cursorLoader The Loader that has finished.
+     * @param cursorLoader The [Loader] that has finished.
      * @param cursor       The data generated by the Loader.
      */
     @Deprecated("Deprecated in Java")
@@ -631,9 +631,10 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
     }
 
     /**
-     * Called when a previously created loader is being reset, and thus making its data unavailable.
-     * We call the `changeCursor` method of our field `SimpleCursorAdapter mAdapter` to
-     * change its cursor to null (this removes the cursor reference from the adapter).
+     * Called when a previously created loader is being reset, thus making its data unavailable.
+     * We call the [SimpleCursorAdapter.changeCursor] method of our [SimpleCursorAdapter] field
+     * [mAdapter] to change its cursor to `null` (this removes the cursor reference from the
+     * adapter).
      *
      * @param cursorLoader The Loader that is being reset.
      */
@@ -658,9 +659,10 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
         /**
          * The columns needed by the cursor adapter
          */
-        private val PROJECTION = arrayOf(
+        private val PROJECTION: Array<String> = arrayOf(
             BaseColumns._ID,  // 0
-            NotePad.Notes.COLUMN_NAME_TITLE)
+            NotePad.Notes.COLUMN_NAME_TITLE
+        )
 
         /**
          * The index of the title column, needs to match the location in PROJECTION
