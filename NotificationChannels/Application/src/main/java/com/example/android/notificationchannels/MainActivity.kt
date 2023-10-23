@@ -20,12 +20,14 @@ package com.example.android.notificationchannels
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
+import android.app.Notification
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -37,26 +39,26 @@ import androidx.annotation.RequiresApi
 @RequiresApi(api = Build.VERSION_CODES.O)
 class MainActivity : Activity() {
     /**
-     * A view model for interacting with the UI elements. Its constructor sets the `OnClickListener`
+     * A view model for interacting with the UI elements. Its constructor sets the [OnClickListener]
      * of the buttons in our layout to "this", so it is actually used in spite of the lint warning.
      */
     private var ui: MainUi? = null
 
     /**
-     * Our instance of `NotificationHelper`, we use it to call its `getNotification1`,
-     * `getNotification2` and `notify` methods
+     * Our instance of [NotificationHelper], we use it to call its [NotificationHelper.getNotification1],
+     * [NotificationHelper.getNotification2] and [NotificationHelper.notify] methods.
      */
     private var noti: NotificationHelper? = null
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_main. We
-     * initialize our field `NotificationHelper noti` with a new instance, and initialize our
-     * field `MainUi ui` by finding the view with id R.id.activity_main and passing it to the
-     * `MainUi` constructor (the constructor finds the buttons in this view group and sets their
-     * `OnClickListener` to the `MainUi` instance being constructed).
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. We
+     * initialize our [NotificationHelper] field [noti] with a new instance, and initialize our
+     * [MainUi] field [ui] by finding the view with id [R.id.activity_main] and passing it to the
+     * [MainUi] constructor (the constructor finds the buttons in this view group and sets their
+     * [OnClickListener] to the [MainUi] instance being constructed).
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,46 +68,43 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Send activity notifications. This is used by our `onClick` override to create and post
-     * the notification requested when the user clicks one of the four "Send" buttons in our UI.
-     * First we initialize `Notification.Builder nb` to null, then we switch on our parameter
-     * `int id`:
+     * Send activity notifications. This is used by our [OnClickListener.onClick] override to create
+     * and post the notification requested when the user clicks one of the four "Send" buttons in
+     * our UI. We initialize [Notification.Builder] variable `val nb` to the value of a `when`
+     * expression that switches on the value of our [Int] parameter [id]:
      *
-     *  *
-     * NOTI_PRIMARY1 - we set `nb` to the `Notification.Builder` returned by the
-     * `getNotification1` method of our field `NotificationHelper noti` using
-     * our parameter `title` as the title of the notification, and the string with
-     * resource id R.string.primary1_body ("The content") as the text body.
+     *  * [NOTI_PRIMARY1] - we set `nb` to the [Notification.Builder] returned by the
+     *  [NotificationHelper.getNotification1] method of our [NotificationHelper] field [noti] using
+     *  our [String] parameter [title] as the title of the notification, and the string with
+     *  resource id [R.string.primary1_body] ("The content") as the text body.
      *
-     *  *
-     * NOTI_PRIMARY2 - we set `nb` to the `Notification.Builder` returned by the
-     * `getNotification1` method of our field `NotificationHelper noti` using
-     * our parameter `title` as the title of the notification, and the string with
-     * resource id R.string.primary2_body ("Second Notification for Primary Channel") as the
-     * text body.
+     *  * [NOTI_PRIMARY2] - we set `nb` to the [Notification.Builder] returned by the
+     *  [NotificationHelper.getNotification1] method of our [NotificationHelper] field [noti] using
+     *  our [String] parameter [title] as the title of the notification, and the string with
+     *  resource id [R.string.primary2_body] ("Second Notification for Primary Channel") as the text
+     *  body.
      *
-     *  *
-     * NOTI_SECONDARY1 - we set `nb` to the `Notification.Builder` returned by the
-     * `getNotification2` method of our field `NotificationHelper noti` using
-     * our parameter `title` as the title of the notification, and the string with
-     * resource id R.string.secondary1_body ("Notification body text.") as the text body.
+     *  * [NOTI_SECONDARY1] - we set `nb` to the [Notification.Builder] returned by the
+     *  [NotificationHelper.getNotification2] method of our [NotificationHelper] field [noti] using
+     *  our [String] parameter [title] as the title of the notification, and the string with
+     *  resource id [R.string.secondary1_body] ("Notification body text.") as the text body.
      *
-     *  *
-     * NOTI_SECONDARY2 - we set `nb` to the `Notification.Builder` returned by the
-     * `getNotification2` method of our field `NotificationHelper noti` using
-     * our parameter `title` as the title of the notification, and the string with
-     * resource id R.string.secondary2_body ("Second Notification for Secondary Channel")
-     * as the text body.
+     *  * [NOTI_SECONDARY2] - we set `nb` to the [Notification.Builder] returned by the
+     *  [NotificationHelper.getNotification2] method of our [NotificationHelper] field [noti] using
+     *  our [String] parameter [title] as the title of the notification, and the string with
+     *  resource id [R.string.secondary2_body] ("Second Notification for Secondary Channel") as the
+     *  text body.
      *
+     *  * `else` - we set `nb` to `null`.
      *
-     * If `nb` is not now null, we call the `notify` method of `noti` with the
+     * If `nb` is not `null`, we call the [NotificationHelper.notify] method of [noti] with the
      * notification id `id`, and the notification builder `nb`.
      *
      * @param id    The ID of the notification to create
      * @param title The title of the notification
      */
     fun sendNotification(id: Int, title: String?) {
-        val nb = when (id) {
+        val nb: Notification.Builder? = when (id) {
             NOTI_PRIMARY1 -> noti!!.getNotification1(title, getString(R.string.primary1_body))
             NOTI_PRIMARY2 -> noti!!.getNotification1(title, getString(R.string.primary2_body))
             NOTI_SECONDARY1 -> noti!!.getNotification2(title, getString(R.string.secondary1_body))
@@ -113,7 +112,7 @@ class MainActivity : Activity() {
             else -> null
         }
         if (nb != null) {
-            noti!!.notify(id, nb)
+            noti!!.notify(id = id, notification = nb)
         }
     }
 
@@ -148,7 +147,7 @@ class MainActivity : Activity() {
     /**
      * View model for interacting with Activity UI elements. (Keeps core logic for sample separate.)
      */
-    internal inner class MainUi constructor(root: View) : View.OnClickListener {
+    internal inner class MainUi constructor(root: View) : OnClickListener {
         /**
          * `EditText` with id R.id.main_primary_title, displays the text "Primary Channel" to
          * start with, we use its text as the title for the primary channel notifications sent.
