@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.Notification
+import android.app.NotificationChannel
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -29,6 +30,7 @@ import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.RequiresApi
@@ -117,7 +119,12 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Send Intent to load system Notification Settings for this app.
+     * Send an Intent to load system Notification Settings for this app. We initialize our [Intent]
+     * variable `val i` with an [Intent] whose action is [Settings.ACTION_APP_NOTIFICATION_SETTINGS]
+     * ("android.settings.APP_NOTIFICATION_SETTINGS") which will show notification settings for a
+     * single app. We add a [Settings.EXTRA_APP_PACKAGE] extra ("android.provider.extra.APP_PACKAGE")
+     * with this application's package as its value. Then we call [startActivity] to launch the
+     * [Intent] `i`.
      */
     @TargetApi(Build.VERSION_CODES.O)
     fun goToNotificationSettings() {
@@ -127,13 +134,14 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Send intent to load system Notification Settings UI for a particular channel. We initialize
-     * `Intent i` with an intent containing the action ACTION_CHANNEL_NOTIFICATION_SETTINGS
-     * (Show notification settings for a single `NotificationChannel`). We add an extra to
-     * `i` with our package name stored under the key EXTRA_APP_PACKAGE (package owner of the
-     * notification channel settings to display), and an extra containing our parameter `channel`
-     * stored under the key EXTRA_CHANNEL_ID (the `getId` of the notification channel settings
-     * to display). Finally we use `i` to start the settings activity.
+     * Send an [Intent] to load system Notification Settings UI for a particular channel. We
+     * initialize [Intent] variable `val i` with an [Intent] whose action is
+     * [Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS] (Show notification settings for a single
+     * [NotificationChannel]). We add an extra to `i` with our package name stored under the key
+     * [Settings.EXTRA_APP_PACKAGE] (package owner of the notification channel settings to display),
+     * and an extra containing our [String] parameter [channel] stored under the key
+     * [Settings.EXTRA_CHANNEL_ID] (the `getId` of the notification channel settings to display).
+     * Finally we use `i` to start the settings activity.
      *
      * @param channel Name of channel to configure
      */
@@ -149,33 +157,32 @@ class MainActivity : Activity() {
      */
     internal inner class MainUi constructor(root: View) : OnClickListener {
         /**
-         * `EditText` with id R.id.main_primary_title, displays the text "Primary Channel" to
+         * [EditText] with id [R.id.main_primary_title], displays the text "Primary Channel" to
          * start with, we use its text as the title for the primary channel notifications sent.
          */
         val titlePrimary: TextView?
 
         /**
-         * `EditText` with id R.id.main_secondary_title, displays the text "Secondary Channel"
+         * [EditText] with id [R.id.main_secondary_title], displays the text "Secondary Channel"
          * to start with, we use its text as the title for the secondary channel notifications sent.
          */
         val titleSecondary: TextView
 
         /**
-         * Our constructor. We initialize our field `TextView titlePrimary` by finding the view
-         * in `root` with the id R.id.main_primary_title. We find the buttons with the ids
-         * R.id.main_primary_send1 ("Send 1" in the primary channel section), R.id.main_primary_send2
-         * ("Send 2" in the primary channel section), and R.id.main_primary_config (contains the system
-         * settings icon) and set their `OnClickListener` to "this".
+         * Our constructor. We initialize our `TextView` field `titlePrimary` by finding the view
+         * in `root` with the id `R.id.main_primary_title`. We find the buttons with the ids
+         * `R.id.main_primary_send1` ("Send 1" in the primary channel section), `R.id.main_primary_send2`
+         * ("Send 2" in the primary channel section), and `R.id.main_primary_config` (contains the
+         * system settings icon) and set their `OnClickListener` to "this".
          *
+         * We initialize our `TextView` field `titleSecondary` by finding the view in `root`
+         * with the id `R.id.main_secondary_title`. We find the buttons with the ids
+         * `R.id.main_secondary_send1` ("Send 1" in the secondary channel section),
+         * `R.id.main_secondary_send2` ("Send 2" in the secondary channel section), and
+         * `R.id.main_secondary_config` (contains the system settings icon) and set their
+         * `OnClickListener` to "this".
          *
-         * We initialize our field `TextView titleSecondary` by finding the view in `root`
-         * with the id R.id.main_secondary_title. We find the buttons with the ids R.id.main_secondary_send1
-         * ("Send 1" in the secondary channel section), R.id.main_secondary_send2 ("Send 2" in the
-         * secondary channel section), and R.id.main_secondary_config (contains the system settings
-         * icon) and set their `OnClickListener` to "this".
-         *
-         *
-         * Finally we find the view in `root` with the id R.id.btnA ("Go to Settings") and set
+         * Finally we find the view in `root` with the id `R.id.btnA` ("Go to Settings") and set
          * its `OnClickListener` to this.
          *
          * param root View group holding our UI.
@@ -193,19 +200,19 @@ class MainActivity : Activity() {
         }
 
         /**
-         * If our field `TextView titlePrimary` is not null we return the string value of the
+         * If our [TextView] field [titlePrimary] is not `null` we return the string value of the
          * text it contains to the caller, otherwise we return the empty string "".
          *
-         * @return the current text contents of our field `TextView titlePrimary`
+         * @return the current text contents of our [TextView] field [titlePrimary]
          */
         private val titlePrimaryText: String
             get() = titlePrimary?.text?.toString() ?: ""
 
         /**
-         * If our field `TextView titleSecondary` is not null we return the string value of the
+         * If our [TextView] field [titleSecondary] is not `null` we return the string value of the
          * text it contains to the caller, otherwise we return the empty string "".
          *
-         * @return the current text contents of our field `TextView titleSecondary`
+         * @return the current text contents of our [TextView] field [titleSecondary]
          */
         private val titleSecondaryText: String
             get() = if (titlePrimary != null) {
@@ -213,49 +220,39 @@ class MainActivity : Activity() {
             } else ""
 
         /**
-         * Called when a view whose `OnClickListener` we are has been clicked. We switch on the
-         * id of the parameter `View view`:
+         * Called when a view whose [OnClickListener] we are has been clicked. We `when` switch on
+         * the `id` of the [View] parameter [view]:
          *
-         *  *
-         * R.id.main_primary_send1 ("Send 1" in primary channel section) - we call our method
-         * `sendNotification` with the notification id NOTI_PRIMARY1, and the title
-         * returned by our method `getTitlePrimaryText` and break.
+         *  * [R.id.main_primary_send1] ("Send 1" in primary channel section) - we call our method
+         *  [sendNotification] with the notification id [NOTI_PRIMARY1], and the title returned by
+         *  our property [titlePrimaryText].
          *
-         *  *
-         * R.id.main_primary_send2 ("Send 1" in primary channel section) - we call our method
-         * `sendNotification` with the notification id NOTI_PRIMARY2, and the title
-         * returned by our method `getTitlePrimaryText` and break.
+         *  * [R.id.main_primary_send2] ("Send 1" in primary channel section) - we call our method
+         *  [sendNotification] with the notification id [NOTI_PRIMARY2], and the title returned by
+         *  our property [titlePrimaryText].
          *
-         *  *
-         * R.id.main_primary_config (the setting wrench icon) - we call our method
-         * `goToNotificationSettings` with the notification channel PRIMARY_CHANNEL
-         * ("default") and break.
+         *  * [R.id.main_primary_config] (the setting wrench icon) - we call our method
+         *  [goToNotificationSettings] with the notification channel
+         *  [NotificationHelper.PRIMARY_CHANNEL] ("default").
          *
-         *  *
-         * R.id.main_secondary_send1 ("Send 1" in secondary channel section) - we call our
-         * method `sendNotification` with the notification id NOTI_SECONDARY1, and the
-         * title returned by our method `getTitleSecondaryText` and break.
+         *  * [R.id.main_secondary_send1] ("Send 1" in secondary channel section) - we call our
+         *  method [sendNotification] with the notification id [NOTI_SECONDARY1], and the title
+         *  returned by our property [titleSecondaryText].
          *
-         *  *
-         * R.id.main_secondary_send2 ("Send 2" in secondary channel section) - we call our
-         * method `sendNotification` with the notification id NOTI_SECONDARY2, and the
-         * title returned by our method `getTitleSecondaryText` and break.
+         *  * [R.id.main_secondary_send2] ("Send 2" in secondary channel section) - we call our
+         *  method [sendNotification] with the notification id [NOTI_SECONDARY2], and the title
+         *  returned by our property [titleSecondaryText].
          *
-         *  *
-         * R.id.main_secondary_config (the setting wrench icon) - we call our method
-         * `goToNotificationSettings` with the notification channel SECONDARY_CHANNEL
-         * ("second") and break.
+         *  * [R.id.main_secondary_config] (the setting wrench icon) - we call our method
+         *  [goToNotificationSettings] with the notification channel
+         *  [NotificationHelper.SECONDARY_CHANNEL] ("second").
          *
-         *  *
-         * R.id.btnA ("Go to Settings") - we call the no parameter version of our method
-         * `goToNotificationSettings` and break.
+         *  * [R.id.btnA] ("Go to Settings") - we call the no parameter version of our method
+         *  [goToNotificationSettings].
          *
-         *  *
-         * default - we log the message "Unknown click event." and break.
+         *  * `else` - we log the message "Unknown click event."
          *
-         *
-         *
-         * @param view The view that was clicked.
+         * @param view The [View] that was clicked.
          */
         @SuppressLint("NonConstantResourceId")
         override fun onClick(view: View) {

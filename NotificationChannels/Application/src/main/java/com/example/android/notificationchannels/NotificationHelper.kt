@@ -20,6 +20,7 @@ package com.example.android.notificationchannels
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Color
@@ -28,21 +29,22 @@ import androidx.annotation.RequiresApi
 
 /**
  * Helper class to manage notification channels, and create notifications.
+ *
+ * @param ctx the application [Context].
  */
 @RequiresApi(api = Build.VERSION_CODES.O)
 internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
     /**
-     * Get the notification manager. Utility method as this helper works with it a lot. If our field
-     * `NotificationManager manager` is null we initialize it with an instance of the system
-     * level service NOTIFICATION_SERVICE. In either case we return `manager` to the caller.
-     *
-     * @return The system service NotificationManager
-     */
-    /**
-     * Instance of `NotificationManager` we retrieve to access the system level service
-     * NOTIFICATION_SERVICE, accessed only by calling our method `getManager`.
+     * Instance of [NotificationManager] we retrieve to access the system level service
+     * [Context.NOTIFICATION_SERVICE].
      */
     private var manager: NotificationManager? = null
+        /**
+         * Get the notification manager. Utility method as this helper works with it a lot. If the
+         * backing `field` of our [NotificationManager] field [manager] is `null` we initialize its
+         * backing `field` with an instance of the system level service [Context.NOTIFICATION_SERVICE].
+         * In either case we return the backing `field` of [manager] to the caller.
+         */
         get() {
             if (field == null) {
                 field = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -51,27 +53,24 @@ internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
         }
 
     /**
-     * Our constructor. First we call our super's constructor, then we register two notification
-     * channels, which can be used later by individual notifications. To do this we first create
-     * `NotificationChannel chan1` with the id PRIMARY_CHANNEL ("default"), the user visible
-     * name given by R.string.noti_channel_default ("Primary Channel") and importance of the channel
-     * set to IMPORTANCE_DEFAULT (shows everywhere, allowed to make noise, but does not visually
-     * intrude). We set the notification light color for notifications posted to this channel to
-     * GREEN, and set its lock screen visibility to VISIBILITY_PRIVATE (Show this notification on all
-     * lock-screens, but conceal sensitive or private information on secure lock-screens). Then we
-     * instruct the `NotificationManager` returned by our method `getManager` to create
-     * notification channel `chan1`.
+     * The `init` block for our constructor. First we call our super's constructor, then we register
+     * two notification channels, which can be used later by individual notifications. To do this we
+     * first create `NotificationChannel` variable `val chan1` with the id `PRIMARY_CHANNEL`
+     * ("default"), the user visible name given by `R.string.noti_channel_default` ("Primary Channel")
+     * and importance of the channel set to `IMPORTANCE_DEFAULT` (shows everywhere, allowed to make
+     * noise, but does not visually intrude). We set the notification light color for notifications
+     * posted to this channel to GREEN, and set its lock screen visibility to VISIBILITY_PRIVATE
+     * (Show this notification on all lock-screens, but conceal sensitive or private information on
+     * secure lock-screens). Then we instruct the `NotificationManager` returned by our property
+     * `manager` to create notification channel `chan1`.
      *
-     *
-     * Next we create `NotificationChannel chan2` with the id SECONDARY_CHANNEL ("second"), the
-     * user visible name given by R.string.noti_channel_second ("Secondary Channel") and importance
-     * of the channel set to IMPORTANCE_HIGH (shows everywhere, allowed to makes noise and peek).
-     * We set the notification light color for notifications posted to this channel to BLUE, and set
-     * its lock screen visibility to VISIBILITY_PUBLIC (Show this notification in its entirety on all
-     * lock-screens). Finally we instruct the `NotificationManager` returned by our method
-     * `getManager` to create notification channel `chan2`.
-     *
-     * param ctx The application context
+     * Next we create `NotificationChannel` variable `val chan2` with the id `SECONDARY_CHANNEL`
+     * ("second"), the user visible name given by `R.string.noti_channel_second` ("Secondary Channel")
+     * and importance of the channel set to `IMPORTANCE_HIGH` (shows everywhere, allowed to make
+     * noise and peek). We set the notification light color for notifications posted to this channel
+     * to BLUE, and set its lock screen visibility to VISIBILITY_PUBLIC (Show this notification in
+     * its entirety on all lock-screens). Finally we instruct the `NotificationManager` returned by
+     * our property `manager` to create notification channel `chan2`.
      */
     init {
         val chan1 = NotificationChannel(PRIMARY_CHANNEL,
@@ -87,14 +86,14 @@ internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
     }
 
     /**
-     * Get a notification builder for type 1 notification. Provides a builder rather than the
+     * Get a [Notification.Builder] for type 1 notification. Provides a builder rather than the
      * notification itself so as to allow easier notification changes. First we create a
-     * `Notification.Builder` to notification channel PRIMARY_CHANNEL ("default"), set its
-     * title to our parameter `String title`, its second line of text to our parameter
-     * `String body`, its small icon to the small icon for our app as returned by our method
-     * `getSmallIcon`, and make the notification be automatically dismissed when the user
-     * touches it (the PendingIntent set with setDeleteIntent(PendingIntent) will be sent when this
-     * happens). Finally we return this `Notification.Builder` to the caller.
+     * [Notification.Builder] for notification channel [PRIMARY_CHANNEL] ("default"), set its
+     * title to our [String] parameter [title], its second line of text to our [String] parameter
+     * [body], its small icon to the small icon for our app as returned by our property [smallIcon],
+     * and make the notification be automatically dismissed when the user touches it (the
+     * [PendingIntent] set with [Notification.Builder.setDeleteIntent] will be sent when this
+     * happens). Finally we return this [Notification.Builder] to the caller.
      *
      * @param title the title of the notification
      * @param body the body text for the notification
