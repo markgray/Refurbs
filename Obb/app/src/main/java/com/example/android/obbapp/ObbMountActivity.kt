@@ -18,60 +18,63 @@
 package com.example.android.obbapp
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.os.Environment
 import android.os.storage.OnObbStateChangeListener
 import android.os.storage.StorageManager
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import java.io.File
 
 /**
  * This class provides a basic demonstration of how to manage an OBB (Opaque Binary Blob) file.
  * It provides two buttons: one to mount an OBB and another to unmount an OBB. The main feature
- * is that it implements an OnObbStateChangeListener which updates some text fields with relevant
+ * is that it implements an [OnObbStateChangeListener] which updates some text fields with relevant
  * information.
  */
 class ObbMountActivity : Activity() {
     /**
-     * `TextView` we use to display the current status of our use of the Obb file
+     * [TextView] we use to display the current status of our use of the Obb file
      */
     private var mStatus: TextView? = null
 
     /**
-     * `TextView` we use to display the absolute path to the mounted OBB image data
+     * [TextView] we use to display the absolute path to the mounted OBB image data
      */
     private var mPath: TextView? = null
 
     /**
-     * Our handle to the STORAGE_SERVICE system level service.
+     * Our handle to the [Context.STORAGE_SERVICE] system level service.
      */
     private var mSM: StorageManager? = null
 
     /**
      * Called with the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.obb_mount_activity. Then we set the
-     * `OnClickListener` of the view with id R.id.mount ("Mount" `Button`) to our field
-     * `mMountListener` and the `OnClickListener` of the view with id R.id.unmount
-     * ("Unmount" `Button`) to our field `mUnmountListener`. We initialize our field
-     * `TextView mStatus` by finding the view with id R.id.status and our field `TextView mPath`
-     * by finding the view with id R.id.path. We then initialize our variable `ObbState state`
-     * by calling the `getLastNonConfigurationInstance` to retrieve the `ObbState` object
-     * that our `onRetainNonConfigurationInstance` override may have saved if we are being restarted
-     * after a configuration change. If `state` is not null (we are being restarted) we set our
-     * field `StorageManager mSM` to the value stored in the `storageManager` field of
-     * `state`, set the text of `mStatus` to the value stored in the `status` field,
-     * and set the text of `mPath` to the value stored in the `path` field of `state`.
-     * If `state` is null on the other hand (we are just being started from scratch) we initialize
-     * our field `StorageManager mSM` with a handle to the STORAGE_SERVICE system level service.
-     * Finally we initialize our field `String mObbPath` to the pathname string of the `File`
-     * "test1.obb" in the primary shared/external storage directory.
+     * then we set our content view to our layout file [R.layout.obb_mount_activity]. Next we set
+     * the [View.OnClickListener] of the [View] with id [R.id.mount] ("Mount" [Button]) to our field
+     * [mMountListener] and the [View.OnClickListener] of the view with id [R.id.unmount] ("Unmount"
+     * [Button]) to our field [mUnmountListener]. We initialize our [TextView] field [mStatus] by
+     * finding the view with id [R.id.status] and our [TextView] field [mPath] by finding the view
+     * with id [R.id.path]. We then initialize our [ObbState] variable `val state` by using the
+     * [getLastNonConfigurationInstance] method (kotlin `lastNonConfigurationInstance` property) to
+     * retrieve the [ObbState] object that our [onRetainNonConfigurationInstance] override may have
+     * saved if we are being restarted after a configuration change. If `state` is not `null` (we
+     * are being restarted) we set our [StorageManager] field [mSM] to the value stored in the
+     * [ObbState.storageManager] field of `state`, set the text of [mStatus] to the value stored in
+     * the [ObbState.status] field, and set the text of [mPath] to the value stored in the
+     * [ObbState.path] field of `state`. If `state` is null on the other hand (we are just being
+     * started from scratch) we initialize our [StorageManager] field [mSM] with a handle to the
+     * [Context.STORAGE_SERVICE] system level service. Finally we initialize our [String] field
+     * [mObbPath] to the pathname string of the [File] "test1.obb" in the primary shared/external
+     * storage directory.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
-     * (we use the `getLastNonConfigurationInstance` method instead
-     * which returns the `ObbState` that our `onRetainNonConfigurationInstance`
-     * override stores in the `ObbState` that it returns).
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     * (we use the [getLastNonConfigurationInstance] method instead which returns the
+     * [ObbState] that our [onRetainNonConfigurationInstance] override stores in the
+     * [ObbState] that it returns).
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,11 +108,11 @@ class ObbMountActivity : Activity() {
     var mEventListener: OnObbStateChangeListener = object : OnObbStateChangeListener() {
         /**
          * Called when an OBB has changed states. First we log the new state, then we set the text
-         * of the field `TextView mStatus` to the string value of our parameter `int state`.
-         * If `state` is equal to MOUNTED (The OBB container is now mounted and ready for use)
-         * we set the text of the field `TextView mPath` to the absolute path to the mounted
-         * OBB image data of the OBB whose pathname string is given by the field `mObbPath`,
-         * otherwise we set the text to the empty string "".
+         * of the [TextView] field [mStatus] to the string value of our [Int] parameter [state].
+         * If [state] is equal to [OnObbStateChangeListener.MOUNTED] (The OBB container is now
+         * mounted and ready for use) we set the text of the [TextView] field [mPath] to the absolute
+         * path to the mounted OBB image data of the OBB whose pathname string is given by the
+         * [String] field [mObbPath], otherwise we set the text to the empty string "".
          *
          * @param path  path to the OBB file the state change has happened on
          * @param state the current state of the OBB
@@ -127,14 +130,14 @@ class ObbMountActivity : Activity() {
 
     /**
      * A call-back for when the user presses the "Mount" button. Wrapped in a try block intended to
-     * catch and log IllegalArgumentException we call the {@code mountObb} method of our field
-     * {@code StorageManager mSM} to try to mount the OBB whose filed system path is given by our
-     * field {@code String mObbPath} and whose {@code OnObbStateChangeListener} is the field
-     * {@code OnObbStateChangeListener mEventListener}. If the method returns true (the mount
-     * call was successfully queued) we set the text of {@code mStatus} to the string with resource
-     * id R.string.attempting_mount ("Attempting to mount..."), if it returns false (the mount call
-     * was not queued) we set the text of {@code mStatus} to the string with resource id
-     * R.string.failed_to_start_mount ("Failed to start mount process...").
+     * catch and log IllegalArgumentException we call the [StorageManager.mountObb] method of our
+     * [StorageManager] field [mSM] to try to mount the OBB whose file system path is given by our
+     * [String] field [mObbPath] and whose [OnObbStateChangeListener] is the [OnObbStateChangeListener]
+     * field [mEventListener]. If the method returns `true` (the mount call was successfully queued)
+     * we set the text of [mStatus] to the string with resource id [R.string.attempting_mount]
+     * ("Attempting to mount..."), if it returns `false` (the mount call was not queued) we set the
+     * text of [mStatus] to the string with resource id [R.string.failed_to_start_mount] ("Failed
+     * to start mount process...").
      */
     var mMountListener: View.OnClickListener = View.OnClickListener {
         try {
