@@ -24,15 +24,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Color
-import android.os.Build
-import androidx.annotation.RequiresApi
 
 /**
  * Helper class to manage notification channels, and create notifications.
  *
  * @param ctx the application [Context].
  */
-@RequiresApi(api = Build.VERSION_CODES.O)
 internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
     /**
      * Instance of [NotificationManager] we retrieve to access the system level service
@@ -110,16 +107,16 @@ internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
     /**
      * Get a notification builder for secondary notification channel. Provides a builder rather than
      * the notification itself so as to allow easier notification changes. First we create a
-     * `Notification.Builder` to notification channel SECONDARY_CHANNEL ("second"), set its
-     * title to our parameter `String title`, its second line of text to our parameter
-     * `String body`, its small icon to the small icon for our app as returned by our method
-     * `getSmallIcon`, and make the notification be automatically dismissed when the user
-     * touches it (the PendingIntent set with setDeleteIntent(PendingIntent) will be sent when this
-     * happens). Finally we return this `Notification.Builder` to the caller.
+     * [Notification.Builder] for notification channel [SECONDARY_CHANNEL] ("second"), set its
+     * title to our [String] parameter [title], its second line of text to our [String] parameter
+     * [body], its small icon to the small icon for our app as returned by our property [smallIcon],
+     * and make the notification be automatically dismissed when the user touches it (the
+     * [PendingIntent] set with [Notification.Builder.setDeleteIntent] will be sent when this
+     * happens). Finally we return this [Notification.Builder] to the caller.
      *
      * @param title Title for notification.
      * @param body Message for notification.
-     * @return A Notification.Builder configured with the selected channel and details
+     * @return A [Notification.Builder] configured with the selected channel and details
      */
     fun getNotification2(title: String?, body: String?): Notification.Builder {
         return Notification.Builder(applicationContext, SECONDARY_CHANNEL)
@@ -130,11 +127,12 @@ internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
     }
 
     /**
-     * Send a notification. We use our method `getManager` to get our `NotificationManager`
-     * and call its `notify` method to post a notification built from our parameter
-     * `Notification.Builder notification` and using our parameter id as the identifier.
+     * Send a notification. We use our property [manager] to get our [NotificationManager]
+     * and call its [NotificationManager.notify] method to post a notification built from our
+     * [Notification.Builder] parameter [notification] and using our [Int] parameter [id] as
+     * the identifier.
      *
-     * @param id The ID of the notification
+     * @param id The identifier of the notification
      * @param notification The notification builder object
      */
     fun notify(id: Int, notification: Notification.Builder) {
@@ -143,7 +141,7 @@ internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
 
     /**
      * Get the small icon for this app. We just return the system resource id
-     * android.R.drawable.stat_notify_chat to the caller.
+     * [android.R.drawable.stat_notify_chat] to the caller.
      *
      * @return The small icon resource id
      */
