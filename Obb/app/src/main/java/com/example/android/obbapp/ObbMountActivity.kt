@@ -156,15 +156,15 @@ class ObbMountActivity : Activity() {
     }
 
     /**
-     * A call-back for when the user presses the "Unmount" button. Wrapped in a try block intended to
-     * catch and log IllegalArgumentException we call the {@code unmountObb} method of our field
-     * {@code StorageManager mSM} to try to unmount the OBB whose filed system path is given by our
-     * field {@code String mObbPath} and whose {@code OnObbStateChangeListener} is the field
-     * {@code OnObbStateChangeListener mEventListener}. If the method returns true (the unmount
-     * call was successfully queued) we set the text of {@code mStatus} to the string with resource
-     * id R.string.attempting_unmount ("Attempting to unmount..."), if it returns false (the unmount call
-     * was not queued) we set the text of {@code mStatus} to the string with resource id
-     * R.string.failed_to_start_unmount ("Failed to start unmount process...").
+     * A call-back for when the user presses the "Unmount" button. Wrapped in a try block intended
+     * to catch and log [IllegalArgumentException] we call the [StorageManager.unmountObb] method of
+     * our [StorageManager] field [mSM] to try to unmount the OBB whose filed system path is given
+     * by our [String] field [mObbPath] and whose [OnObbStateChangeListener] is the
+     * [OnObbStateChangeListener] field [mEventListener]. If the method returns `true` (the unmount
+     * call was successfully queued) we set the text of [TextView] field [mStatus] to the string
+     * with resource id [R.string.attempting_unmount] ("Attempting to unmount..."), if it returns
+     * `false` (the unmount call was not queued) we set the text of [mStatus] to the string with
+     * resource id [R.string.failed_to_start_unmount] ("Failed to start unmount process...").
      */
     var mUnmountListener: View.OnClickListener = View.OnClickListener {
         try {
@@ -183,14 +183,15 @@ class ObbMountActivity : Activity() {
      * Called by the system, as part of destroying an activity due to a configuration change, when
      * it is known that a new instance will immediately be created for the new configuration. You
      * can return any object you like here, including the activity instance itself, which can later
-     * be retrieved by calling [.getLastNonConfigurationInstance] in the new activity instance.
-     * We return a new instance of `ObbState` constructed to save the field `StorageManager mSM`,
-     * the text displayed in `TextView mStatus`, and the text displayed in `TextView mPath`.
+     * be retrieved by calling [getLastNonConfigurationInstance] in the new activity instance.
+     * We return a new instance of [ObbState] constructed to save the [StorageManager] field [mSM],
+     * the text displayed in [TextView] field [mStatus], and the text displayed in [TextView] field
+     * [mPath].
      *
-     * @return an `ObbState` holding the value of the field `StorageManager mSM`, the text
-     * displayed in `TextView mStatus`, and the text displayed in `TextView mPath` (these
-     * will then be restored in the `onCreate` override from the `Object` returned by the
-     * `getLastNonConfigurationInstance` method).
+     * @return an [ObbState] holding the value of the [StorageManager] field [mSM], the text
+     * displayed in [TextView] field [mStatus], and the text displayed in [TextView] field [mPath]
+     * (these will then be restored in the [onCreate] override from the [Object] returned by the
+     * [getLastNonConfigurationInstance] method).
      */
     override fun onRetainNonConfigurationInstance(): Any {
         // Since our OBB mount is tied to the StorageManager, retain it
@@ -198,17 +199,17 @@ class ObbMountActivity : Activity() {
     }
 
     /**
-     * Class used to save our state in our `onRetainNonConfigurationInstance` override and
-     * restore it after a configuration change by calling the `getLastNonConfigurationInstance`
+     * Class used to save our state in our [onRetainNonConfigurationInstance] override and
+     * restore it after a configuration change by calling the [getLastNonConfigurationInstance]
      * method in our `onCreate` override.
      */
     private class ObbState
     /**
      * Our constructor, it just saves its parameters in the fields intended for them.
      *
-     * @param storageManager `StorageManager` to save in our `StorageManager storageManager` field
-     * @param status `CharSequence` to save in our `CharSequence status` field
-     * @param path `CharSequence` to save in our `CharSequence path` field
+     * @param storageManager [StorageManager] to save in our [storageManager] field.
+     * @param status [CharSequence] to save in our [status] field
+     * @param path [CharSequence] to save in our [path] field
      */(
         /**
          * Place to store the `StorageManager storageManager` passed to our constructor.
