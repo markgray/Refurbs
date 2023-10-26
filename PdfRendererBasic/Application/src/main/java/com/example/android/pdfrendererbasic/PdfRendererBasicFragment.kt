@@ -34,10 +34,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 /**
- * This fragment has a big `ImageView` that shows PDF pages, and 2
- * [android.widget.Button]s to move between pages. We use a
- * [android.graphics.pdf.PdfRenderer] to render PDF pages as
- * [android.graphics.Bitmap]s.
+ * This fragment has a big [ImageView] that shows PDF pages, and 2 [Button]s to move between pages.
+ * We use a [PdfRenderer] to render PDF pages as [Bitmap]s.
  */
 class PdfRendererBasicFragment
 /**
@@ -50,28 +48,28 @@ class PdfRendererBasicFragment
     private var mFileDescriptor: ParcelFileDescriptor? = null
 
     /**
-     * [android.graphics.pdf.PdfRenderer] used to render the PDF.
+     * [PdfRenderer] used to render the PDF.
      */
     private var mPdfRenderer: PdfRenderer? = null
 
     /**
-     * `Page` that is currently shown on the screen.
+     * [PdfRenderer.Page] that is currently shown on the screen.
      */
     private var mCurrentPage: PdfRenderer.Page? = null
 
     /**
-     * [android.widget.ImageView] that shows a PDF page as a [android.graphics.Bitmap],
-     * its resource id in our layout file is R.id.image
+     * [ImageView] that shows a PDF page as a [Bitmap], its resource id in our layout file is
+     * [R.id.image]
      */
     private var mImageView: ImageView? = null
 
     /**
-     * [android.widget.Button] to move to the previous page, resource id R.id.previous
+     * [Button] to move to the previous page, resource id [R.id.previous]
      */
     private var mButtonPrevious: Button? = null
 
     /**
-     * [android.widget.Button] to move to the next page, resource id R.id.next
+     * [Button] to move to the next page, resource id [R.id.next]
      */
     private var mButtonNext: Button? = null
 
