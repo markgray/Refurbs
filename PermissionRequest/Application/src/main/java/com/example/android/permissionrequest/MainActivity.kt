@@ -31,12 +31,9 @@ import com.example.android.common.logger.MessageOnlyLogFilter
 
 /**
  * A simple launcher activity containing a summary sample description, sample log and a custom
- * [Fragment] which can display a view.
- *
- *
- * For devices with displays with a width of 720dp or greater, the sample log is always visible,
- * on other devices it's visibility is controlled by an item on the Action Bar.
- *
+ * [Fragment] which can display a view. For devices with displays with a width of 720dp or greater,
+ * the sample log is always visible, on other devices it's visibility is controlled by an item on
+ * the Action Bar.
  *
  * NOTE: see AndroidManifest.xml for the android:networkSecurityConfig="@xml/network_security_config"
  * attribute as well as the file xml/network_security_config.xml, which are required to allow our

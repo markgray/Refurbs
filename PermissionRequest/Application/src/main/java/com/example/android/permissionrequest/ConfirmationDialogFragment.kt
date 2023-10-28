@@ -29,24 +29,25 @@ import androidx.fragment.app.DialogFragment
  */
 class ConfirmationDialogFragment : DialogFragment() {
     /**
-     * Override to build your own custom Dialog container. We initialize `String[] resources`
-     * by fetching from our arguments the string array stored under key ARG_RESOURCES ("resources")
-     * then we return a new instance of `AlertDialog` we build by setting its message to the
-     * formatted string of each `resources` entry joined together with a newline delimiter
-     * using format R.string.confirmation ("This web page wants to use following resources:\n\n%s"),
-     * whose negative button displays the text with id R.string.deny ("Deny") and whose `OnClickListener`
-     * is an anonymous class which calls the `onConfirmation` method of our parent fragment with false
-     * as the allowed flag, and whose positive button displays the text with id R.string.allow ("Allow")
-     * and whose `OnClickListener` is an anonymous class which calls the `onConfirmation`
-     * method of our parent fragment with true as the allowed flag (the last method in the chain to
-     * the `AlertDialog.Builder` is `create` of course).
+     * Override to build your own custom Dialog container. We initialize [Array] of [String] variable
+     * `val resources` by fetching from our arguments the string array stored under key [ARG_RESOURCES]
+     * ("resources") then we return a new instance of [AlertDialog] we build by setting its message
+     * to the formatted string of each `resources` entry joined together with a newline delimiter
+     * using format [R.string.confirmation] ("This web page wants to use following resources:\n\n%s"),
+     * whose negative button displays the text with id [R.string.deny] ("Deny") and whose
+     * [DialogInterface.OnClickListener] is an anonymous class which calls the [Listener.onConfirmation]
+     * method of our parent fragment with `false` as the allowed flag, and whose positive button
+     * displays the text with id [R.string.allow] ("Allow") and whose [DialogInterface.OnClickListener]
+     * is an anonymous class which calls the [Listener.onConfirmation] method of our parent fragment
+     * with `true` as the allowed flag (the last method in the chain to the [AlertDialog.Builder] is
+     * [AlertDialog.Builder.create] of course).
      *
-     * @param savedInstanceState The last saved instance state of the Fragment,
-     * or null if this is a freshly created Fragment.
-     * @return Return a new Dialog instance to be displayed by the Fragment.
+     * @param savedInstanceState The last saved instance state of the [DialogFragment], or `null`
+     * if this is a freshly created Fragment.
+     * @return Return a new [Dialog] instance to be displayed by the Fragment.
      */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val resources = requireArguments().getStringArray(ARG_RESOURCES)
+        val resources: Array<String?>? = requireArguments().getStringArray(ARG_RESOURCES)
         return AlertDialog.Builder(activity)
             .setMessage(getString(R.string.confirmation, TextUtils.join("\n", resources!!)))
             .setNegativeButton(R.string.deny) { dialog: DialogInterface?, which: Int ->
@@ -73,16 +74,17 @@ class ConfirmationDialogFragment : DialogFragment() {
 
     companion object {
         /**
-         * Key in the arguments bundle for the `ConfirmationDialogFragment` in which we store the
+         * Key in the arguments bundle for the [ConfirmationDialogFragment] in which we store the
          * array of permissions that we are requesting.
          */
         private const val ARG_RESOURCES = "resources"
 
         /**
-         * Creates a new instance of ConfirmationDialogFragment. We create a new instance to initialize
-         * `ConfirmationDialogFragment fragment`, and a new instance for `Bundle args`. We
-         * add our parameter `String[] resources` as a string array to `args` and set the
-         * arguments of `fragment` to it. Finally we return `fragment` to the caller.
+         * Creates a new instance of [ConfirmationDialogFragment]. We create a new instance to
+         * initialize our [ConfirmationDialogFragment] variable `val fragment`, and a new instance
+         * for [Bundle] variable `val args`. We add our [Array] of [String] parameter [resources] as
+         * a string array to `args` and set the arguments of `fragment` to it. Finally we return
+         * `fragment` to the caller.
          *
          * @param resources The list of resources requested by PermissionRequest.
          * @return A new instance.
