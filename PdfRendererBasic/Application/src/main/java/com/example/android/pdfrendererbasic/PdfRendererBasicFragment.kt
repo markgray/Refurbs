@@ -302,18 +302,19 @@ class PdfRendererBasicFragment
 
     /**
      * Updates the state of 2 control buttons in response to the current page index, and sets the
-     * activity's title to reflect the page number. First we initialize `int index` with the
-     * page index of our field `Page mCurrentPage`, and initialize `int pageCount` with
-     * the number of pages in the document of `PdfRenderer mPdfRenderer`. We enable the button
-     * `mButtonPrevious` if `index` is not 0 and disable it if it is. We enable the button
-     * `mButtonNext` if `index+1` is less than `pageCount` and disable it if it is
-     * greater than or equal to `pageCount`. We then set the title associated with this activity
-     * to the string formatted using the format string with resource id R.string.app_name_with_index
-     * to display the value `index+1` (page number) and `pageCount`.
+     * activity's title to reflect the page number. First we initialize [Int] variable `val index`
+     * with the page index of our [PdfRenderer.Page] field [mCurrentPage], and initialize [Int]
+     * vqriable `val pageCount` with the number of pages in the document of [PdfRenderer] field
+     * [mPdfRenderer]. We enable the [Button] field [mButtonPrevious] if `index` is not 0 and
+     * disable it if it is. We enable the [Button] field [mButtonNext] if `index+1` is less than
+     * `pageCount` and disable it if it is greater than or equal to `pageCount`. We then set the
+     * title associated with this activity to the string formatted using the format string with
+     * resource id [R.string.app_name_with_index] to display the value `index+1` (page number) and
+     * `pageCount`.
      */
     private fun updateUi() {
-        val index = mCurrentPage!!.index
-        val pageCount = mPdfRenderer!!.pageCount
+        val index: Int = mCurrentPage!!.index
+        val pageCount: Int = mPdfRenderer!!.pageCount
         mButtonPrevious!!.isEnabled = 0 != index
         mButtonNext!!.isEnabled = index + 1 < pageCount
         requireActivity().title = getString(
@@ -331,19 +332,16 @@ class PdfRendererBasicFragment
         get() = mPdfRenderer!!.pageCount
 
     /**
-     * Called when a view has been clicked. We switch on the id of our parameter `View view`:
+     * Called when a [View] has been clicked. We `when` switch on the id of our [View] parameter
+     * [view]:
      *
-     *  *
-     * R.id.previous: we call our `showPage` method to display the page that is 1 page
-     * before the current page index of our field `Page mCurrentPage` then break.
+     *  * [R.id.previous] "Previous": we call our [showPage] method to display the page that is 1
+     *  page before the current page index of our [PdfRenderer.Page] field [mCurrentPage].
      *
-     *  *
-     * R.id.next: we call our `showPage` method to display the page that is 1 page
-     * after the current page index of our field `Page mCurrentPage` then break.
+     *  * [R.id.next] "Next": we call our [showPage] method to display the page that is 1 page after
+     *  the current page index of our [PdfRenderer.Page] field [mCurrentPage]
      *
-     *
-     *
-     * @param view The view that was clicked.
+     * @param view The [View] that was clicked.
      */
     override fun onClick(view: View) {
         when (view.id) {
@@ -362,7 +360,7 @@ class PdfRendererBasicFragment
     companion object {
         /**
          * Key string for saving the state of current page index in the bundle passed to our
-         * `onSaveInstanceState` override and restored in our `onViewCreated` override.
+         * [onSaveInstanceState] override and restored in our [onViewCreated] override.
          */
         private const val STATE_CURRENT_PAGE_INDEX = "current_page_index"
 
