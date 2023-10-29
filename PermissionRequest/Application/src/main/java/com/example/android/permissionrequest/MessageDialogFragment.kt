@@ -29,16 +29,17 @@ import androidx.fragment.app.DialogFragment
  */
 class MessageDialogFragment : DialogFragment() {
     /**
-     * Override to build your own custom Dialog container. We use a new `AlertDialog.Builder`
-     * to build and create the `Dialog` we return, setting its message set to the string with
-     * the resource id which is stored in our arguments under the key ARG_MESSAGE_RES_ID ("message_res_id"),
-     * setting it to not be cancelable, and setting its positive button to display the string with
-     * resource id android.R.string.ok ("OK") and using an anonymous class as its `OnClickListener`
-     * which calls its parent fragments `onOkClicked` method when clicked.
+     * Override to build your own custom [Dialog] container. We use a new [AlertDialog.Builder]
+     * to build and create the [Dialog] we return, setting its message set to the string with
+     * the resource id which is stored in our arguments under the key [ARG_MESSAGE_RES_ID]
+     * ("message_res_id"), setting it to not be cancelable, and setting its positive button to
+     * display the string with resource id [android.R.string.ok] ("OK") and using an anonymous
+     * class as its [DialogInterface.OnClickListener] which calls its parent fragment's
+     * [Listener.onOkClicked] override when clicked.
      *
      * @param savedInstanceState The last saved instance state of the Fragment,
-     * or null if this is a freshly created Fragment.
-     * @return Return a new Dialog instance to be displayed by the Fragment.
+     * or `null` if this is a freshly created Fragment.
+     * @return Return a new [Dialog] instance to be displayed by the Fragment.
      */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(context)
@@ -51,7 +52,7 @@ class MessageDialogFragment : DialogFragment() {
     }
 
     /**
-     * Implement this to respond when your `MessageDialogFragment` has its positive button clicked.
+     * Implement this to respond when your [MessageDialogFragment] has its positive button clicked.
      */
     internal interface Listener {
         /**
@@ -67,14 +68,14 @@ class MessageDialogFragment : DialogFragment() {
         private const val ARG_MESSAGE_RES_ID = "message_res_id"
 
         /**
-         * Factory method that creates and configures a new instance. First we initialize our variables
-         * `MessageDialogFragment fragment`, and `Bundle args` with new instances. Then we
-         * add our parameter `message` to `args` under the key `ARG_MESSAGE_RES_ID`
-         * ("message_res_id") and set the arguments of `fragment` to `args`. Finally we
-         * return `fragment` to the caller.
+         * Factory method that creates and configures a new instance. First we initialize our
+         * [MessageDialogFragment] variable `val fragment`, and [Bundle] variable `val args` with
+         * new instances. Then we add our parameter `message` to `args` under the key
+         * [ARG_MESSAGE_RES_ID] ("message_res_id") and set the arguments of `fragment` to `args`.
+         * Finally we return `fragment` to the caller.
          *
          * @param message resource id of string we are to show.
-         * @return new instance of `MessageDialogFragment` whose argument is set to our parameter.
+         * @return new instance of [MessageDialogFragment] whose argument is set to our parameter.
          */
         @JvmStatic
         fun newInstance(@StringRes message: Int): MessageDialogFragment {
