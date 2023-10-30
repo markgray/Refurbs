@@ -47,28 +47,24 @@ class SimpleWebServer
      */
     val port: Int,
     /**
-     * [android.content.res.AssetManager] for loading files to serve.
+     * [AssetManager] for loading files to serve.
      */
     private val mAssets: AssetManager) : Runnable {
-    /**
-     * Getter for the `mPort` field, returns the port number we listen to.
-     *
-     * @return port number we listen to
-     */
 
     /**
-     * True if the server is running.
+     * `true` if the server is running.
      */
     private var mIsRunning = false
 
     /**
-     * The [java.net.ServerSocket] that we listen to.
+     * The [ServerSocket] that we listen to.
      */
     private var mServerSocket: ServerSocket? = null
 
     /**
-     * This method starts the web server listening to the specified port. We set our flag `mIsRunning`
-     * to true, then create a new thread for us to run in and start that thread running.
+     * This method starts the web server listening to the specified port. We set our [Boolean] flag
+     * field [mIsRunning] to `true`, then create a new thread for us to run in and start that thread
+     * running.
      */
     fun start() {
         mIsRunning = true
