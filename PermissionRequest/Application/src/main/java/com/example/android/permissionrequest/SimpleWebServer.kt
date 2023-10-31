@@ -72,9 +72,10 @@ class SimpleWebServer
     }
 
     /**
-     * This method stops the web server. Wrapped in a try block intended to catch and log IOException
-     * we set our flag `mIsRunning` to false, and if `mServerSocket` is not null we call
-     * its `close` method to close the socket and set `mServerSocket` to null.
+     * This method stops the web server. Wrapped in a try block intended to catch and log
+     * [IOException] we set our [Boolean] flag field [mIsRunning] to `false`, and if [ServerSocket]
+     * field [mServerSocket] is not `null` we call its [ServerSocket.close] method to close the
+     * socket and set [mServerSocket] to `null`.
      */
     fun stop() {
         try {
@@ -90,19 +91,20 @@ class SimpleWebServer
 
     /**
      * Method called when our thread's `start` method is called. Wrapped in a try block which
-     * catches and ignores SocketException, and logs IOException we initialize our field
-     * `ServerSocket mServerSocket` with a server socket, bound to the port `mPort`.
-     * Then looping while our flag `mIsRunning` is true we initialize `Socket socket`
-     * by listening for a connection to be made to the socket `mServerSocket` and accepting
-     * it. We then call our method `handle` to respond to the request made by `socket`,
-     * closing the socket when `handle` returns.
+     * catches and ignores [SocketException], but catches and logs [IOException] we initialize our
+     * [ServerSocket] field [mServerSocket] with a server socket, bound to the [Int] port [port].
+     * Then looping while our [Boolean] flag field [mIsRunning] is `true` we initialize [Socket]
+     * variable `val socket` by using the [ServerSocket.accept] method of [ServerSocket] field
+     * [mServerSocket] to listen for a connection to be made to the [ServerSocket] and accepting
+     * it. We then call our method [handle] to respond to the request made by `socket`, closing
+     * the socket when [handle] returns.
      */
     override fun run() {
         try {
             mServerSocket = ServerSocket(port)
             while (mIsRunning) {
                 val socket = mServerSocket!!.accept()
-                handle(socket)
+                handle(socket = socket)
                 socket.close()
             }
         } catch (e: SocketException) {
@@ -113,36 +115,35 @@ class SimpleWebServer
     }
 
     /**
-     * Respond to a request from a client. We initialize our variables `BufferedReader reader`
-     * and `PrintStream output` to null. Then wrapped in a try block whose finally block closes
-     * these two if they are not null, we initialize `String route` to null, then create a
-     * new `BufferedReader` for `reader` to read from an `InputStreamReader` created
-     * from the input stream for reading bytes from the socket `socket`. We declare `String line`
-     * and loop while setting `line` to the next line of text read from `reader` is not
-     * an empty string. If `line` starts with the string "GET /" we set `start` to 1 past
-     * the '/', and `end` to the next ' ' after start and set `route` to the characters
-     * between `start` and `end` then break out of the loop.
+     * Respond to a request from a client. We initialize our [BufferedReader] variable `var reader`
+     * and [PrintStream] variable `var output` to `null`. Then wrapped in a try block whose finally
+     * block closes these two if they are not `null`, we initialize [String] variable `var route`
+     * to `null`, then create a new [BufferedReader] for `reader` to read from an [InputStreamReader]
+     * created from the input stream for reading bytes from [Socket] paramete [socket]. We declare
+     * [String] variable `var line` and loop while setting `line` to the next line of text read from
+     * `reader` if it is not an empty string. If `line` starts with the string "GET /" we set [Int]
+     * variable `val start` to 1 past the location of the '/' character, and [Int] variable `val end`
+     * to the next space character after start then set `route` to the characters between `start`
+     * and `end` and break out of the loop.
      *
-     *
-     * We set `output` to a new `PrintStream` from an output stream of `socket`.
-     * If `route` is null we call our method `writeServerError` to write the error message
-     * "HTTP/1.0 500 Internal Server Error" to `output` and return. Otherwise we initialize
-     * `byte[] bytes` with the data that our method `loadContent` reads from the asset
-     * file with the name `route`. If this is null we call our method `writeServerError`
-     * to write the error message "HTTP/1.0 500 Internal Server Error" to `output` and return.
-     *
+     * We set `output` to a new [PrintStream] from an output stream of `socket`. If `route` is `null`
+     * we call our method [writeServerError] to write the error message "HTTP/1.0 500 Internal Server
+     * Error" to `output` and return. Otherwise we initialize [ByteArray] `val bytes` with the data
+     * that our method [loadContent] reads from the asset file with the name `route`. If this is
+     * `null` we call our method [writeServerError] to write the error message "HTTP/1.0 500 Internal
+     * Server Error" to `output` and return.
      *
      * Having gotten this far without error we send our content to `output` line by line:
      *
      *  * "HTTP/1.0 200 OK"
-     *  * "Content-Type: " with the mime type determined by our method `detectMimeType` for `route`
+     *  * "Content-Type: " with the mime type determined by our method [detectMimeType] for `route`
      *  * "Content-Length: " followed by the string value of the length of `bytes`
      *  * a blank line
      *  * The contents of the array `bytes`
      *
      * Finally we flush `output`.
      *
-     * @param socket The client socket.
+     * @param socket The client [Socket].
      * @throws IOException if an IO error occurs.
      */
     @Throws(IOException::class)
@@ -157,8 +158,8 @@ class SimpleWebServer
             var line: String
             while (!TextUtils.isEmpty(reader.readLine().also { line = it })) {
                 if (line.startsWith("GET /")) {
-                    val start = line.indexOf('/') + 1
-                    val end = line.indexOf(' ', start)
+                    val start: Int = line.indexOf('/') + 1
+                    val end: Int = line.indexOf(' ', start)
                     route = line.substring(start, end)
                     break
                 }
@@ -169,18 +170,18 @@ class SimpleWebServer
 
             // Prepare the content to send.
             if (null == route) {
-                writeServerError(output)
+                writeServerError(output = output)
                 return
             }
-            val bytes = loadContent(route)
+            val bytes: ByteArray? = loadContent(fileName = route)
             if (null == bytes) {
-                writeServerError(output)
+                writeServerError(output = output)
                 return
             }
 
             // Send out the content.
             output.println("HTTP/1.0 200 OK")
-            output.println("Content-Type: " + detectMimeType(route))
+            output.println("Content-Type: " + detectMimeType(fileName = route))
             output.println("Content-Length: " + bytes.size)
             output.println()
             output.write(bytes)
@@ -202,20 +203,21 @@ class SimpleWebServer
     }
 
     /**
-     * Loads all the content of `fileName`. We initialize `InputStream input` to null.
-     * Then wrapped in a try block intended to catch FileNotFoundException and return null and whose
-     * finally block closes `input` if it is not null we:
+     * Loads all the content of the assets file whose name is [String] parameter [fileName] and
+     * returns it in a [ByteArray]. We initialize [InputStream] variable `var input` to `null`.
+     * Then wrapped in a try block intended to catch [FileNotFoundException] and return `null`
+     * and whose finally block closes `input` if it is not `null` we:
      *
-     *  * We initialize `ByteArrayOutputStream output` with a new instance
-     *  * We use our field `AssetManager mAssets` to open the asset file `fileName` for `input`
-     *  * We allocate 1024 bytes for `byte[] buffer`
-     *  * We declare `int size`
+     *  * initialize [ByteArrayOutputStream] variable `val output` with a new instance
+     *  * We use our [AssetManager] field [mAssets] to open the asset file [fileName] for `input`
+     *  * We allocate 1024 bytes for [ByteArray] variable `val buffer`
+     *  * We declare [Int] variable `var size`
      *
-     * Then we loop reading from `input` into `buffer` saving the number of bytes read in
-     * `size` so long as this is not -1 (end of file) and write `size` bytes from `buffer`
-     * to `output` (with 0 as the offset). When done looping we flush `output` and return
-     * a newly allocated byte array whose size is the current size of the output stream `output`
-     * and whose contents is all the data in `output`
+     * Then we loop reading from `input` into `buffer` saving the number of bytes read in `size` so
+     * long as this is not -1 (end of file) and write `size` bytes from `buffer` to `output` (with 0
+     * as the offset). When done looping we flush `output`, use its [ByteArrayOutputStream.toByteArray]
+     * method to create a newly allocated byte array whose size is the current size of the output
+     * stream `output` and whose contents is all the data in `output` which we return to our caller.
      *
      * @param fileName The name of the file.
      * @return The content of the file.
@@ -242,14 +244,13 @@ class SimpleWebServer
     }
 
     /**
-     * Detects the MIME type from the `fileName`. If our parameter `fileName` is the
-     * empty string we return null, otherwise we branch on the ending of the file name:
+     * Detects the MIME type from its [String] parameter [fileName]. If our parameter [fileName] is
+     * the empty string we return `null`, otherwise we branch on the ending of the file name:
      *
      *  * ".html" we return the string "text/html"
      *  * ".js" we return the string "application/javascript"
      *  * ".css" we return the string "text/css"
      *  * any other ending we return the string "application/octet-stream"
-     *
      *
      * @param fileName The name of the file.
      * @return A MIME type.
