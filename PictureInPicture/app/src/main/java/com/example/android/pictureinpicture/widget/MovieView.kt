@@ -18,6 +18,7 @@
 package com.example.android.pictureinpicture.widget
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Handler
@@ -40,12 +41,20 @@ import java.lang.ref.WeakReference
 
 /**
  * Provides video playback. There is nothing directly related to Picture-in-Picture here.
- *
- *
  * This is similar to `android.widget.VideoView`, but it comes with a custom control
  * (play/pause, fast forward, and fast rewind).
+ *
+ * @param context The Context the view is running in, through which it can access the current theme,
+ * resources, etc.
+ * @param attrs The attributes of the XML tag that is inflating the view.
+ * @param defStyleAttr An attribute in the current theme that contains a reference to a style
+ * resource that supplies default values for the view. Can be 0 to not look for defaults.
  */
-class MovieView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : RelativeLayout(context, attrs, defStyleAttr) {
+class MovieView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : RelativeLayout(context, attrs, defStyleAttr) {
     /**
      * Monitors all events related to [MovieView].
      */
@@ -67,40 +76,42 @@ class MovieView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     /**
-     * Shows the video playback. Its id is R.id.surface in layout R.layout.view_movie.
+     * Shows the video playback. Its id is [R.id.surface] in layout [R.layout.view_movie].
      */
     val mSurfaceView: SurfaceView
+
     // Controls
+
     /**
-     * Play/Pause button with id R.id.toggle, its image is toggled in the `adjustToggleState`
-     * method between R.drawable.ic_pause_64dp, and R.drawable.ic_play_arrow_64dp depending on whether
-     * the movie is paused or playing.
+     * Play/Pause button with id [R.id.toggle], its image is toggled in the [adjustToggleState]
+     * method between [R.drawable.ic_pause_64dp], and [R.drawable.ic_play_arrow_64dp] depending on
+     * whether the movie is paused or playing.
      */
     val mToggle: ImageButton
 
     /**
-     * `View` with id R.id.shade, it is a translucent GRAY shade which is used to partially
+     * [View] with id [R.id.shade], it is a translucent GRAY shade which is used to partially
      * obscure the movie when the controls are visible on top of it.
      */
     val mShade: View
 
     /**
-     * `ImageButton` with id R.id.fast_forward, it is the fast forward button.
+     * [ImageButton] with id [R.id.fast_forward], it is the fast forward button.
      */
     val mFastForward: ImageButton
 
     /**
-     * `ImageButton` with id R.id.fast_rewind, it is the fast rewind button.
+     * [ImageButton] with id [R.id.fast_rewind], it is the fast rewind button.
      */
     val mFastRewind: ImageButton
 
     /**
-     * `ImageButton` with id R.id.minimize, it is the minimize (enter PiP button).
+     * [ImageButton] with id [R.id.minimize], it is the minimize (enter PiP button).
      */
     val mMinimize: ImageButton
 
     /**
-     * This plays the video. This will be null when no video is set.
+     * This plays the video. This will be `null` when no video is set.
      */
     var mMediaPlayer: MediaPlayer? = null
 
@@ -121,81 +132,24 @@ class MovieView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     var mAdjustViewBounds: Boolean = false
 
     /**
-     * Handles timeout for media controls, calls our `hideControls` method after TIMEOUT_CONTROLS
+     * Handles timeout for media controls, calls our [hideControls] method after [TIMEOUT_CONTROLS]
      * (3000ms) occurs.
      */
     var mTimeoutHandler: TimeoutHandler? = null
 
     /**
-     * The listener for all the events we publish, set by our `setMovieListener` method.
+     * The listener for all the events we publish, set by our [setMovieListener] method.
      */
     var mMovieListener: MovieListener? = null
 
     /**
-     * Position of the movie that we save in the `surfaceDestroyed` callback of the
-     * [SurfaceHolder.Callback] interface, then restore in the `onPrepared` callback
-     * of the [MediaPlayer.OnPreparedListener] interface.
+     * Position of the movie that we save in the [SurfaceHolder.Callback.surfaceDestroyed] callback
+     * of the [SurfaceHolder.Callback] interface, then restored in the
+     * [MediaPlayer.OnPreparedListener.onPrepared] callback of the [MediaPlayer.OnPreparedListener]
+     * interface.
      */
     var mSavedCurrentPosition: Int = 0
-    /**
-     * Constructor called from XML. Perform inflation from XML and apply a class-specific base style
-     * from a theme attribute. This constructor of View allows subclasses to use their own base style
-     * when they are inflating. First we call our super's constructor, then we set our background
-     * color to BLACK. Then we inflate our layout file R.layout.view_movie, attaching the result to
-     * to "this" `MovieView extends RelativeLayout` instance.
-     *
-     *
-     * We initialize our fields `SurfaceView mSurfaceView` by finding the view with id R.id.surface,
-     * `View mShade` by finding the view with id R.id.shade, `ImageButton mToggle` by finding
-     * the view with id R.id.toggle, `ImageButton mFastForward` by finding the view with id
-     * R.id.fast_forward, `ImageButton mFastRewind` by finding the view with id R.id.fast_rewind,
-     * and `ImageButton mMinimize` by finding the view with id R.id.minimize.
-     *
-     *
-     * We initialize `TypedArray attributes` by retrieving styled attribute information in this
-     * Context's theme from the `AttributeSet attrs`, for the attributes in R.styleable.MovieView
-     * (Attributes that can be used with a MovieView: android:src, android:title, and android:adjustViewBounds),
-     * using `defStyleAttr` as the default values, and R.style.Widget_PictureInPicture_MovieView
-     * as the default style (android:src is null, android:adjustViewBounds is false).
-     *
-     *
-     * We then call our method `setVideoResourceId` to set the video resource id that we will play
-     * to the resource id in `attributes` stored under the key R.styleable.MovieView_android_src
-     * (set to @raw/vid_bigbuckbunny (raw/vid_bigbuckbunny.mp4) by an android:src="@raw/vid_bigbuckbunny"
-     * attribute in our layout file layout/activity_main.xml).
-     *
-     *
-     * We call our method `setAdjustViewBounds` to set the background in accordance with the
-     * boolean stored under the key R.styleable.MovieView_android_adjustViewBounds in `attributes`
-     * (set to true by an android:adjustViewBounds="true" attribute in our layout file layout/activity_main.xml).
-     *
-     *
-     * We call our method `setTitle` to set the title of our movie to the string store stored under
-     * the key R.styleable.MovieView_android_title in `attributes` (set to "Big Buck Bunny" by an
-     * android:title="@string/title_bigbuckbunny" attribute in our layout file layout/activity_main.xml).
-     * We then recycle `attributes`.
-     *
-     *
-     * We initialize `OnClickListener listener` with an anonymous class whose `onClick`
-     * switches on the id of the view that was clicked to handle each of the buttons whose
-     * `OnClickListener` it is, then it starts or resets the timeout to hide controls. We use
-     * `listener` as the `OnClickListener` for the views `mSurfaceView`, `mToggle`,
-     * `mFastForward`, `mFastRewind`, and `mMinimize` so we call the method
-     * `setOnClickListener(listener)` for each of these views.
-     *
-     *
-     * Finally we fetch the holder of `mSurfaceView` and set its `SurfaceHolder.Callback`
-     * to an anonymous class which calls our method `openVideo` when the `surfaceCreated`
-     * callback is called, and calls our method `closeVideo` when the `surfaceDestroyed`
-     * method is called.
-     *
-     * @param context      The Context the view is running in, through which it can
-     * access the current theme, resources, etc.
-     * @param attrs        The attributes of the XML tag that is inflating the view.
-     * @param defStyleAttr An attribute in the current theme that contains a
-     * reference to a style resource that supplies default values for
-     * the view. Can be 0 to not look for defaults.
-     */
+
     /**
      * Constructor called from XML. We just all our 3 argument constructor using 0 as the
      * `defStyleAttr` argument.
@@ -205,12 +159,53 @@ class MovieView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
      * @param attrs   The attributes of the XML tag that is inflating the view.
      */
     /**
-     * Our one argument constructor, we just call our 2 argument constructor with null as the
-     * `attrs` argument.
+     * Our `init` block. First we set our background color to BLACK. Then we inflate our layout file
+     * [R.layout.view_movie], attaching the result to to "this" [MovieView] extends [RelativeLayout]
+     * instance.  We initialize our [SurfaceView] field [mSurfaceView] by finding the view with id
+     * [R.id.surface], [View] field [mShade] by finding the view with id [R.id.shade], [ImageButton]
+     * field [mToggle] by finding the view with id [R.id.toggle], [ImageButton] field [mFastForward]
+     * by finding the view with id [R.id.fast_forward], [ImageButton] field [mFastRewind] by finding
+     * the view with id [R.id.fast_rewind], and [ImageButton] field [mMinimize] by finding the view
+     * with id [R.id.minimize].
      *
-     * param context The Context the view is running in, through which it can
-     * access the current theme, resources, etc.
+     * We initialize [TypedArray] variable `val attributes` by retrieving styled attribute information
+     * in this Context's theme from the [AttributeSet] parameter `attrs` of the constructor for the
+     * attributes in [R.styleable.MovieView] (Attributes that can be used with a [MovieView]:
+     * android:src, android:title, and android:adjustViewBounds), using `defStyleAttr` the resource
+     * ID of a possible style file constaining default values if not 0, and
+     * [R.style.Widget_PictureInPicture_MovieView] as the default style (android:src is null,
+     * android:adjustViewBounds is false).
+     *
+     * We then set our [Int] field [mVideoResourceId] (the video resource id that we will play)
+     * to the resource id in `attributes` stored under the key [R.styleable.MovieView_android_src]
+     * (set to @raw/vid_bigbuckbunny (raw/vid_bigbuckbunny.mp4) by an android:src="@raw/vid_bigbuckbunny"
+     * attribute in our layout file layout/activity_main.xml).
+     *
+     * We call our method [setAdjustViewBounds] to set the background in accordance with the [Boolean]
+     * stored under the key [R.styleable.MovieView_android_adjustViewBounds] in `attributes`
+     * (set to `true` by an android:adjustViewBounds="true" attribute in our layout file
+     * layout/activity_main.xml).
+     *
+     * We set our [String] field [title] to the title of our movie stored under the key
+     * [R.styleable.MovieView_android_title] in `attributes` (set to "Big Buck Bunny" by an
+     * android:title="@string/title_bigbuckbunny" attribute in our layout file
+     * layout/activity_main.xml). We then recycle `attributes`.
+     *
+     * We initialize [OnClickListener] variable `val listener` with an anonymous class whose
+     * [OnClickListener.onClick] override `when` switches on the id of the view that was clicked
+     * to handle each of the buttons whose [OnClickListener] it is, then it starts or resets the
+     * timeout to hide controls. We use `listener` as the [OnClickListener] for the views
+     * [mSurfaceView], [mToggle], [mFastForward], [mFastRewind], and [mMinimize] so we use the
+     * [View.setOnClickListener] method of each of these views to set their [OnClickListener]
+     * to `listener`.
+     *
+     * Finally we fetch the [SurfaceHolder] of [mSurfaceView] and set its [SurfaceHolder.Callback]
+     * to an anonymous class which calls our method [openVideo] when the
+     * [SurfaceHolder.Callback.surfaceCreated] callback is called, and calls our method [closeVideo]
+     * when the [SurfaceHolder.Callback.surfaceDestroyed] callback is called.
      */
+    @Suppress("unused") // Exists so that KDOC links work
+    private fun dummyInit() {}
     init {
         setBackgroundColor(Color.BLACK)
 
@@ -222,14 +217,15 @@ class MovieView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         mFastForward = findViewById(R.id.fast_forward)
         mFastRewind = findViewById(R.id.fast_rewind)
         mMinimize = findViewById(R.id.minimize)
-        val attributes = context.obtainStyledAttributes(
+        val attributes: TypedArray = context.obtainStyledAttributes(
             attrs,
             R.styleable.MovieView,
             defStyleAttr,
             R.style.Widget_PictureInPicture_MovieView)
         mVideoResourceId = attributes.getResourceId(R.styleable.MovieView_android_src, 0)
         setAdjustViewBounds(
-            attributes.getBoolean(R.styleable.MovieView_android_adjustViewBounds, false))
+            attributes.getBoolean(R.styleable.MovieView_android_adjustViewBounds, false)
+        )
         title = attributes.getString(R.styleable.MovieView_android_title)
         attributes.recycle()
 
