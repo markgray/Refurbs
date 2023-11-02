@@ -57,12 +57,12 @@ class CommentEntity : Comment {
     /**
      * Text of the comment that we contain
      */
-    private var text: String? = null
+    private var text: String = ""
 
     /**
      * [Date] the comment was posted.
      */
-    private var postedAt: Date? = null
+    private var postedAt: Date = Date()
 
     /**
      * Getter for the value in our [id] field.
@@ -107,7 +107,7 @@ class CommentEntity : Comment {
      * @return the value in our `text` field.
      */
     override fun getText(): String {
-        return text!!
+        return text
     }
 
     /**
@@ -115,7 +115,7 @@ class CommentEntity : Comment {
      *
      * @param text value to set our `text` field to
      */
-    fun setText(text: String?) {
+    fun setText(text: String) {
         this.text = text
     }
 
@@ -125,7 +125,7 @@ class CommentEntity : Comment {
      * @return the value in our `postedAt` field.
      */
     override fun getPostedAt(): Date {
-        return postedAt!!
+        return postedAt
     }
 
     /**
@@ -133,7 +133,7 @@ class CommentEntity : Comment {
      *
      * @param postedAt value to set our `postedAt` field to
      */
-    fun setPostedAt(postedAt: Date?) {
+    fun setPostedAt(postedAt: Date) {
         this.postedAt = postedAt
     }
 
@@ -151,7 +151,7 @@ class CommentEntity : Comment {
      * @param text      value to set our `text` field to
      * @param postedAt  value to set our `postedAt` field to
      */
-    constructor(id: Int, productId: Int, text: String?, postedAt: Date?) {
+    constructor(id: Int, productId: Int, text: String, postedAt: Date) {
         this.id = id
         this.productId = productId
         this.text = text

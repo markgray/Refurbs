@@ -40,13 +40,13 @@ class ProductEntity : Product {
      * Name of our product, generated in the class [DataGenerator] by the method
      * [DataGenerator.generateProducts].
      */
-    private var name: String? = null
+    private var name: String = ""
 
     /**
      * Description of our product, generated in the class [DataGenerator] by the method
      * [DataGenerator.generateProducts].
      */
-    private var description: String? = null
+    private var description: String = ""
 
     /**
      * Price of our product, generated in the class [DataGenerator] by the method
@@ -78,7 +78,7 @@ class ProductEntity : Product {
      * @return the value in our field `String name`
      */
     override fun getName(): String {
-        return this.name!!
+        return this.name
     }
 
     /**
@@ -86,7 +86,7 @@ class ProductEntity : Product {
      *
      * @param name value to set our [String] field [name] to
      */
-    fun setName(name: String?) {
+    fun setName(name: String) {
         this.name = name
     }
 
@@ -96,7 +96,7 @@ class ProductEntity : Product {
      * @return the value in our [String] field [description].
      */
     override fun getDescription(): String {
-        return this.description!!
+        return this.description
     }
 
     /**
@@ -104,7 +104,7 @@ class ProductEntity : Product {
      *
      * @param description value to set our [String] field [description] to.
      */
-    fun setDescription(description: String?) {
+    fun setDescription(description: String) {
         this.description = description
     }
 
