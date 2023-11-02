@@ -204,7 +204,7 @@ class MovieView @JvmOverloads constructor(
      * [SurfaceHolder.Callback.surfaceCreated] callback is called, and calls our method [closeVideo]
      * when the [SurfaceHolder.Callback.surfaceDestroyed] callback is called.
      */
-    @Suppress("unused") // Exists so that KDOC links work
+    @Suppress("unused", "EmptyMethod") // Exists so that KDOC links work
     private fun dummyInit() {}
     init {
         setBackgroundColor(Color.BLACK)
@@ -230,75 +230,32 @@ class MovieView @JvmOverloads constructor(
         attributes.recycle()
 
         // Bind view events
-        val listener = OnClickListener { view ->
-
+        val listener = OnClickListener { view: View ->
             /**
-             * Called when one of the views we have been registered as an `OnClickListener`
-             * is clicked. First we switch on the id of the view that was clicked:
+             * Called when one of the views we have been registered as an [OnClickListener]
+             * is clicked. First we `when` switch on the id of the view that was clicked:
              *
-             *  *
-             * R.id.surface (our `SurfaceView` in layout/view_movie.xml) we call
-             * our method `toggleControls` to toggle the visibility of our control
-             * buttons, and break.
+             *  * [R.id.surface] (our [SurfaceView] in layout/view_movie.xml) we call our method
+             *  [toggleControls] to toggle the visibility of our control  buttons.
              *
-             *  *
-             * R.id.toggle (the play/pause button in layout/view_movie.xml) we call our
-             * method `toggle` to toggle between playing and paused states, and break.
+             *  * [R.id.toggle] (the play/pause button in layout/view_movie.xml) we call our method
+             *  [toggle] to toggle between playing and paused states.
              *
-             *  *
-             * R.id.fast_forward (the fast forward button in layout/view_movie.xml) we
-             * call our method `fastForward` to fast forward 5000ms, and break.
+             *  * [R.id.fast_forward] (the fast forward button in layout/view_movie.xml) we call our
+             *  method [fastForward] to fast forward 5000ms.
              *
-             *  *
-             * R.id.fast_rewind (the fast rewind button in layout/view_movie.xml) we
-             * call our method `fastRewind` to fast forward 5000ms, and break.
+             *  * [R.id.fast_rewind] (the fast rewind button in layout/view_movie.xml) we call our
+             *  method [fastRewind] to fast rewind 5000ms.
              *
-             *  *
-             * R.id.minimize (the minimise button (down carrot) in layout/view_movie.xml)
-             * if our field `MovieListener mMovieListener` is not null we call its
-             * method `onMovieMinimized` then we break.
+             *  * [R.id.minimize] (the minimise button (down carrot) in layout/view_movie.xml) if
+             *  our [MovieListener] field [mMovieListener] is not `null` we call its method
+             *  [MovieListener.onMovieMinimized].
              *
-             *
-             * Finally if `MediaPlayer mMediaPlayer` is not null, we first initialize
-             * `TimeoutHandler mTimeoutHandler` with a new instance if it is null, then
-             * we remove all MESSAGE_HIDE_CONTROLS from it. If `mMediaPlayer` is playing
-             * we send a delayed empty message to `mTimeoutHandler` with MESSAGE_HIDE_CONTROLS
-             * as the `what`, and TIMEOUT_CONTROLS (3000ms) as the delay to use.
-             *
-             * @param view view that was clicked.
-             */
-            /**
-             * Called when one of the views we have been registered as an `OnClickListener`
-             * is clicked. First we switch on the id of the view that was clicked:
-             *
-             *  *
-             * R.id.surface (our `SurfaceView` in layout/view_movie.xml) we call
-             * our method `toggleControls` to toggle the visibility of our control
-             * buttons, and break.
-             *
-             *  *
-             * R.id.toggle (the play/pause button in layout/view_movie.xml) we call our
-             * method `toggle` to toggle between playing and paused states, and break.
-             *
-             *  *
-             * R.id.fast_forward (the fast forward button in layout/view_movie.xml) we
-             * call our method `fastForward` to fast forward 5000ms, and break.
-             *
-             *  *
-             * R.id.fast_rewind (the fast rewind button in layout/view_movie.xml) we
-             * call our method `fastRewind` to fast forward 5000ms, and break.
-             *
-             *  *
-             * R.id.minimize (the minimise button (down carrot) in layout/view_movie.xml)
-             * if our field `MovieListener mMovieListener` is not null we call its
-             * method `onMovieMinimized` then we break.
-             *
-             *
-             * Finally if `MediaPlayer mMediaPlayer` is not null, we first initialize
-             * `TimeoutHandler mTimeoutHandler` with a new instance if it is null, then
-             * we remove all MESSAGE_HIDE_CONTROLS from it. If `mMediaPlayer` is playing
-             * we send a delayed empty message to `mTimeoutHandler` with MESSAGE_HIDE_CONTROLS
-             * as the `what`, and TIMEOUT_CONTROLS (3000ms) as the delay to use.
+             * Finally if [MediaPlayer] field [mMediaPlayer] is not `null`, we first initialize
+             * [TimeoutHandler] field [mTimeoutHandler] with a new instance if it is `null`, then
+             * we remove all MESSAGE_HIDE_CONTROLS from it. If [mMediaPlayer] is playing we send
+             * a delayed empty message to [mTimeoutHandler] with MESSAGE_HIDE_CONTROLS as the
+             * `what`, and TIMEOUT_CONTROLS (3000ms) as the delay to use.
              *
              * @param view view that was clicked.
              */
@@ -336,11 +293,11 @@ class MovieView @JvmOverloads constructor(
                 object : SurfaceHolder.Callback {
                     /**
                      * This is called immediately after the surface is first created. We call
-                     * our method `openVideo` to initialize `MediaPlayer mMediaPlayer`,
-                     * set its surface to the surface of `SurfaceHolder holder` and start
-                     * playing the video.
+                     * our method [openVideo] to initialize [MediaPlayer] field [mMediaPlayer],
+                     * set its surface to the surface of [SurfaceHolder] parameter [holder] and
+                     * start playing the video.
                      *
-                     * @param holder The SurfaceHolder whose surface is being created.
+                     * @param holder The [SurfaceHolder] whose surface is being created.
                      */
                     override fun surfaceCreated(holder: SurfaceHolder) {
                         openVideo(holder.surface)
@@ -350,23 +307,28 @@ class MovieView @JvmOverloads constructor(
                      * This is called immediately after any structural changes (format or
                      * size) have been made to the surface. We ignore it.
                      *
-                     * @param holder The SurfaceHolder whose surface has changed.
+                     * @param holder The [SurfaceHolder] whose surface has changed.
                      * @param format The new PixelFormat of the surface.
                      * @param width The new width of the surface.
                      * @param height The new height of the surface.
                      */
-                    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+                    override fun surfaceChanged(
+                        holder: SurfaceHolder,
+                        format: Int,
+                        width: Int,
+                        height: Int
+                    ) {
                         // Do nothing
                     }
 
                     /**
-                     * This is called immediately before a surface is destroyed. If our field
-                     * `MediaPlayer mMediaPlayer` is not null we set our field
-                     * `int mSavedCurrentPosition` to the current position of the video
-                     * being played by `mMediaPlayer`, then we call our method `closeVideo`
-                     * to release `mMediaPlayer` and set it to null.
+                     * This is called immediately before a surface is destroyed. If our
+                     * [MediaPlayer] field [mMediaPlayer] is not `null` we set our [Int]
+                     * field [mSavedCurrentPosition] to the current position of the video
+                     * being played by [mMediaPlayer], then we call our method [closeVideo]
+                     * to release [mMediaPlayer] and set it to null.
                      *
-                     * @param holder The SurfaceHolder whose surface is being destroyed.
+                     * @param holder The [SurfaceHolder] whose surface is being destroyed.
                      */
                     override fun surfaceDestroyed(holder: SurfaceHolder) {
                         if (mMediaPlayer != null) {
@@ -379,17 +341,17 @@ class MovieView @JvmOverloads constructor(
 
     /**
      * Measure the view and its content to determine the measured width and the measured height. If
-     * our field `MediaPlayer mMediaPlayer` is not null we have some work to do. We initialize
-     * `int videoWidth` with the width of `mMediaPlayer` and `int videoHeight` with
-     * its height. If either `videoWidth` or `videoHeight` is 0 we do not have any work
-     * to do after all, otherwise we initialize `float aspectRatio` with the ratio of
-     * `videoHeight` over `videoWidth`. We initialize `int width` with the width
-     * in pixels specified in `widthMeasureSpec`, and `int widthMode` with the mode,
-     * initialize `int height` with the height specified in `heightMeasureSpec`, and
-     * `int widthMode` with the mode. Then if our field `mAdjustViewBounds` is:
+     * our [MediaPlayer] field [mMediaPlayer] is not `null` we have some work to do. We initialize
+     * [Int] variable `val videoWidth` with the width of [mMediaPlayer] and [Int] variable
+     * `val videoHeight` with its height. If either `videoWidth` or `videoHeight` is 0 we do not
+     * have any work to do after all, otherwise we initialize [Float] variable `val aspectRatio`
+     * with the ratio of `videoHeight` over `videoWidth`. We initialize [Int] variable `val width`
+     * with the width in pixels specified in [Int] parameter [widthMeasureSpec], and [Int] variable
+     * `val widthMode` with the mode, initialize [Int] variable `val height` with the height
+     * specified in [Int] parameter [heightMeasureSpec], and `int widthMode` with the mode.
+     * Then if our [Boolean] field [mAdjustViewBounds] is:
      *
-     *  *
-     * true:
+     *  * `true`:
      *
      *  *
      * if `widthMode` is EXACTLY, and `heightMode` is NOT EXACTLY:
@@ -438,36 +400,48 @@ class MovieView @JvmOverloads constructor(
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         if (mMediaPlayer != null) {
-            val videoWidth = mMediaPlayer!!.videoWidth
-            val videoHeight = mMediaPlayer!!.videoHeight
+            val videoWidth: Int = mMediaPlayer!!.videoWidth
+            val videoHeight: Int = mMediaPlayer!!.videoHeight
             if (videoWidth != 0 && videoHeight != 0) {
-                val aspectRatio = videoHeight.toFloat() / videoWidth
-                val width = MeasureSpec.getSize(widthMeasureSpec)
-                val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-                val height = MeasureSpec.getSize(heightMeasureSpec)
-                val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+                val aspectRatio: Float = videoHeight.toFloat() / videoWidth
+                val width: Int = MeasureSpec.getSize(widthMeasureSpec)
+                val widthMode: Int = MeasureSpec.getMode(widthMeasureSpec)
+                val height: Int = MeasureSpec.getSize(heightMeasureSpec)
+                val heightMode: Int = MeasureSpec.getMode(heightMeasureSpec)
                 if (mAdjustViewBounds) {
                     if (widthMode == MeasureSpec.EXACTLY && heightMode != MeasureSpec.EXACTLY) {
                         super.onMeasure(
                             widthMeasureSpec,
-                            MeasureSpec.makeMeasureSpec((width * aspectRatio).toInt(), MeasureSpec.EXACTLY))
+                            MeasureSpec.makeMeasureSpec(
+                                (width * aspectRatio).toInt(),
+                                MeasureSpec.EXACTLY
+                            )
+                        )
                     } else if (widthMode != MeasureSpec.EXACTLY
                         && heightMode == MeasureSpec.EXACTLY) {
                         super.onMeasure(
-                            MeasureSpec.makeMeasureSpec((height / aspectRatio).toInt(), MeasureSpec.EXACTLY),
-                            heightMeasureSpec)
+                            MeasureSpec.makeMeasureSpec(
+                                (height / aspectRatio).toInt(),
+                                MeasureSpec.EXACTLY
+                            ),
+                            heightMeasureSpec
+                        )
                     } else {
                         super.onMeasure(
                             widthMeasureSpec,
-                            MeasureSpec.makeMeasureSpec((width * aspectRatio).toInt(), MeasureSpec.EXACTLY))
+                            MeasureSpec.makeMeasureSpec(
+                                (width * aspectRatio).toInt(),
+                                MeasureSpec.EXACTLY
+                            )
+                        )
                     }
                 } else {
-                    val viewRatio = height.toFloat() / width
+                    val viewRatio: Float = height.toFloat() / width
                     if (aspectRatio > viewRatio) {
-                        val padding = ((width - height / aspectRatio) / 2).toInt()
+                        val padding: Int = ((width - height / aspectRatio) / 2).toInt()
                         setPadding(padding, 0, padding, 0)
                     } else {
-                        val padding = ((height - width * aspectRatio) / 2).toInt()
+                        val padding: Int = ((height - width * aspectRatio) / 2).toInt()
                         setPadding(0, padding, 0, padding)
                     }
                     super.onMeasure(widthMeasureSpec, heightMeasureSpec)
