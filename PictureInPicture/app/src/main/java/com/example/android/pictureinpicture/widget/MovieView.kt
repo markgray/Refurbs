@@ -351,49 +351,29 @@ class MovieView @JvmOverloads constructor(
      * specified in [Int] parameter [heightMeasureSpec], and `int widthMode` with the mode.
      * Then if our [Boolean] field [mAdjustViewBounds] is:
      *
-     *  * `true`:
+     *  * `true`: if `widthMode` is EXACTLY, and `heightMode` is *not* EXACTLY: we call our super's
+     *  implementation of `onMeasure` with [widthMeasureSpec] as the width, and a `MeasureSpec`
+     *  specifying a height of `width*aspectRatio` and mode of EXACTLY. If `widthMode` is *not*
+     *  EXACTLY, and `heightMode` is EXACTLY: we call our super's implementation of `onMeasure` with
+     *  a `MeasureSpec` specifying a width of `height/aspectRatio`, and mode of EXACTLY, and a
+     *  height of `heightMeasureSpec`. Otherwise we call our super's implementation of `onMeasure`
+     *  with [widthMeasureSpec] as the width, and a `MeasureSpec` specifying a height of
+     *  `width*aspectRatio` and mode of EXACTLY.
      *
-     *  *
-     * if `widthMode` is EXACTLY, and `heightMode` is NOT EXACTLY:
-     * we call our super's implementation of `onMeasure` with `widthMeasureSpec`
-     * as the width, and a `MeasureSpec` specifying a height of `width*aspectRatio`
-     * and mode of EXACTLY.
+     *  * false: we initialize [Float] variable `val viewRatio` to be the ratio `height / width`,
+     *  and if `aspectRatio` is greater than `viewRatio`: we initialize [Int] variable `val padding`
+     *  to the amount of padding needed to add to the left and right of our view to center it, then
+     *  call the [setPadding] method to set our padding to it. If `aspectRatio` is less than or equal
+     *  to `viewRatio`: we initialize [Int] variable `val padding` to the amount of padding needed
+     *  to add to the top and bottom of our view to center it, then call the [setPadding] method to
+     *  set our padding to it.
      *
-     *  *
-     * if `widthMode` is NOT EXACTLY, and `heightMode` is EXACTLY:
-     * we call our super's implementation of `onMeasure` with a `MeasureSpec`
-     * specifying a width of `height/aspectRatio`, and mode of EXACTLY, and
-     * a height of `heightMeasureSpec`.
+     * After setting the padding we call our super's implementation of `onMeasure` with our parameters
+     * [widthMeasureSpec] and [heightMeasureSpec]. Having called our super's implementation in all
+     * cases we return.
      *
-     *  *
-     * otherwise we call our super's implementation of `onMeasure` with `widthMeasureSpec`
-     * as the width, and a `MeasureSpec` specifying a height of `width*aspectRatio`
-     * and mode of EXACTLY.
-     *
-     *
-     *
-     *  *
-     * false: we initialize `float viewRatio` to be the ratio `height / width`,
-     * and if `aspectRatio` is:
-     *
-     *  *
-     * greater than `viewRatio`: we initialize `int padding` to the amount
-     * of padding needed to add to the left and right of our view to center it, then
-     * call the `setPadding` method to set our padding to it.
-     *
-     *  *
-     * less than or equal to `viewRatio`: we initialize `int padding` to
-     * the amount of padding needed to add to the top and bottom of our view to center
-     * it, then call the `setPadding` method to set our padding to it.
-     *
-     * After setting the padding we call our super's implementation of `onMeasure`
-     * with our parameters `widthMeasureSpec` and `heightMeasureSpec`.
-     *
-     * Having called our super's implementation in all cases we return.
-     *
-     *
-     * If `mMediaPlayer` is null we just call our super's implementation of
-     * `onMeasure` with our parameters `widthMeasureSpec` and `heightMeasureSpec`.
+     * If [mMediaPlayer] is `null` we just call our super's implementation of
+     * `onMeasure` with our parameters [widthMeasureSpec] and [heightMeasureSpec].
      *
      * @param widthMeasureSpec  horizontal space requirements as imposed by the parent.
      * @param heightMeasureSpec vertical space requirements as imposed by the parent.
@@ -453,9 +433,9 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * This is called when the view is detached from a window. If our field `TimeoutHandler mTimeoutHandler`
-     * is not null we remove all MESSAGE_HIDE_CONTROLS from its queue and set it to null. In any case we
-     * then call our super's implementation of `onDetachedFromWindow`.
+     * This is called when the view is detached from a window. If our [TimeoutHandler] field
+     * [mTimeoutHandler] is not `null` we remove all MESSAGE_HIDE_CONTROLS from its queue and set it
+     * to `null`. In any case we then call our super's implementation of `onDetachedFromWindow`.
      */
     override fun onDetachedFromWindow() {
         if (mTimeoutHandler != null) {
@@ -474,31 +454,31 @@ class MovieView @JvmOverloads constructor(
     fun setMovieListener(movieListener: MovieListener?) {
         mMovieListener = movieListener
     }
+
     /**
-     * The raw resource id of the video to play. We just return our field `mVideoResourceId`
+     * The raw resource id of the video to play.  We just return our [Int] field [mVideoResourceId]
      * to the caller.
-     *
-     * @return ID of the video resource.
-     */
-    /**
-     * Sets the raw resource ID of video to play. If our parameter `int id` is equal to our
-     * field `int mVideoResourceId` we return having done nothing. Otherwise we store `id`
-     * in `mVideoResourceId`, then initialize `Surface surface` by fetching the `SurfaceHolder`
-     * of `SurfaceView mSurfaceView` and fetching the `Surface` from it. If `surface`
-     * is not null and it is a valid `Surface` we call our method `closeVideo` to release
-     * `MediaPlayer mMediaPlayer` if it is not null, and then call `openVideo(surface)`
-     * to create a new `mMediaPlayer` and start the mp4 with resource ID `id` playing.
-     *
-     * param id The raw resource ID.
      */
     var videoResourceId: Int
         get() = mVideoResourceId
+        /**
+         * Sets the raw resource ID of video to play. If our [Int] parameter [id] is equal to our
+         * [Int] field [mVideoResourceId] we return having done nothing. Otherwise we store [id]
+         * in [mVideoResourceId], then initialize [Surface] variable `val surface` by fetching the
+         * [SurfaceHolder] of [SurfaceView] field [mSurfaceView] and fetching the [Surface] from it.
+         * If `surface` is *not* `null` and it is a valid [Surface] we call our method [closeVideo]
+         * to release [MediaPlayer] field [mMediaPlayer] if *it* is not `null`, and then call
+         * [openVideo] with `surface` to create a new [mMediaPlayer] and start the mp4 with resource
+         * ID [id] playing.
+         *
+         * @param id The raw resource ID.
+         */
         set(id) {
             if (id == mVideoResourceId) {
                 return
             }
             mVideoResourceId = id
-            val surface = mSurfaceView.holder.surface
+            val surface: Surface? = mSurfaceView.holder.surface
             if (surface != null && surface.isValid) {
                 closeVideo()
                 openVideo(surface)
@@ -506,13 +486,13 @@ class MovieView @JvmOverloads constructor(
         }
 
     /**
-     * Setter for our field `mAdjustViewBounds`. If `mAdjustViewBounds` is already equal
-     * to our parameter `adjustViewBounds` we return having done nothing. Otherwise we save
-     * `adjustViewBounds` in `mAdjustViewBounds`. If `mAdjustViewBounds` is now
-     * true we set the background to null, if false we set it to BLACK. Finally we call the method
-     * `requestLayout` to schedule a layout pass of our view tree.
+     * Setter for our [Boolean] field [mAdjustViewBounds]. If [mAdjustViewBounds] is already equal
+     * to our [Boolean] parameter [adjustViewBounds] we return having done nothing. Otherwise we save
+     * [adjustViewBounds] in [mAdjustViewBounds]. If [mAdjustViewBounds] is now `true` we set the
+     * background to `null`, if `false` we set it to BLACK. Finally we call the method [requestLayout]
+     * to schedule a layout pass of our view tree.
      *
-     * @param adjustViewBounds value to set our field `mAdjustViewBounds` to.
+     * @param adjustViewBounds value to set our field [mAdjustViewBounds] to.
      */
     fun setAdjustViewBounds(adjustViewBounds: Boolean) {
         if (mAdjustViewBounds == adjustViewBounds) {
@@ -530,7 +510,7 @@ class MovieView @JvmOverloads constructor(
     /**
      * Shows all the controls. First we start a delayed transition to the view that will exist when
      * the controls are visible. Then we set the visibility of the following views to VISIBLE:
-     * `mShade`, `mToggle`, `mFastForward`, `mFastRewind`, and `mMinimize`
+     * [mShade], [mToggle], [mFastForward], [mFastRewind], and [mMinimize].
      */
     fun showControls() {
         TransitionManager.beginDelayedTransition(this)
@@ -544,7 +524,7 @@ class MovieView @JvmOverloads constructor(
     /**
      * Hides all the controls. First we start a delayed transition to the view that will exist when
      * the controls are invisible. Then we set the visibility of the following views to INVISIBLE:
-     * `mShade`, `mToggle`, `mFastForward`, `mFastRewind`, and `mMinimize`
+     * [mShade], [mToggle], [mFastForward], [mFastRewind], and [mMinimize].
      */
     fun hideControls() {
         TransitionManager.beginDelayedTransition(this)
@@ -556,9 +536,9 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Fast-forward the video. If our field `mMediaPlayer` is null, we return having done nothing.
-     * Otherwise we call the `seekTo` method of `mMediaPlayer` to seek to a position that
-     * is FAST_FORWARD_REWIND_INTERVAL (5000ms) forward from the current position.
+     * Fast-forward the video. If our [MediaPlayer] field [mMediaPlayer] is `null`, we return having
+     * done nothing. Otherwise we call the [MediaPlayer.seekTo] method of [mMediaPlayer] to seek to
+     * a position that is [FAST_FORWARD_REWIND_INTERVAL] (5000ms) forward from the current position.
      */
     fun fastForward() {
         if (mMediaPlayer == null) {
@@ -568,9 +548,9 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Fast-rewind the video. If our field `mMediaPlayer` is null, we return having done nothing.
-     * Otherwise we call the `seekTo` method of `mMediaPlayer` to seek to a position that
-     * is FAST_FORWARD_REWIND_INTERVAL (5000ms) behind the current position.
+     * Fast-rewind the video. If our [MediaPlayer] field [mMediaPlayer] is `null`, we return having
+     * done nothing. Otherwise we call the [MediaPlayer.seekTo] method of [mMediaPlayer] to seek to
+     * a position that is [FAST_FORWARD_REWIND_INTERVAL] (5000ms) behind the current position.
      */
     fun fastRewind() {
         if (mMediaPlayer == null) {
@@ -580,14 +560,18 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Returns the current position of the video. If the the player has not been created, then
-     * assumes the beginning of the video. If `MediaPlayer mMediaPlayer` is null we just return
-     * 0 to the caller, otherwise we return the value returned by the `getCurrentPosition` method
-     * of `mMediaPlayer`
-     *
-     * @return The current position of the video.
+     * The current position of the video.
      */
     val currentPosition: Int
+        /**
+         * Returns the current position of the video. If the the player has not been created, then
+         * assumes the beginning of the video. If [MediaPlayer] field [mMediaPlayer] is `null` we
+         * just return 0 to the caller, otherwise we return the value returned by the
+         * [MediaPlayer.getCurrentPosition] method of [mMediaPlayer] (kotlin `currentPosition`
+         * property).
+         *
+         * @return The current position of the video.
+         */
         get() = if (mMediaPlayer == null) {
             0
         } else mMediaPlayer!!.currentPosition
