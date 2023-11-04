@@ -18,9 +18,13 @@
 package com.example.android.pictureinpicture.widget
 
 import android.content.Context
+import android.content.res.AssetFileDescriptor
+import android.content.res.Resources
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.media.MediaPlayer
+import android.media.MediaPlayer.OnPreparedListener
+import android.media.MediaPlayer.OnCompletionListener
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
@@ -577,21 +581,21 @@ class MovieView @JvmOverloads constructor(
         } else mMediaPlayer!!.currentPosition
 
     /**
-     * Determines whether the movie is playing or not. If `MediaPlayer mMediaPlayer` is not
-     * null we return the value returned by its `isPlaying` method, otherwise we return false.
-     *
-     * @return true if the movie is playing, false if it is not.
+     * Determines whether the movie is playing or not. If [MediaPlayer] field [mMediaPlayer] is not
+     * `null` our getter returns the value returned by its [MediaPlayer.isPlaying] method, otherwise
+     * we return `false`.
      */
     val isPlaying: Boolean
         get() = mMediaPlayer != null && mMediaPlayer!!.isPlaying
 
     /**
-     * Starts the movie playing. If our field `MediaPlayer mMediaPlayer` is null we return having
-     * done nothing. Otherwise we call its `start` method to start the movie, and call our method
-     * `adjustToggleState` to set the image and content description of `ImageButton mToggle`
-     * play/pause button depending on whether the movie is playing or paused. We then call the method
-     * `setKeepScreenOn(true)` to keep the screen from turning off. Finally if our field
-     * `MovieListener mMovieListener` is not null we call its `onMovieStarted` override.
+     * Starts the movie playing. If our [MediaPlayer] field [mMediaPlayer] is `null` we return
+     * having done nothing. Otherwise we call its [MediaPlayer.start] method to start the movie,
+     * and call our method [adjustToggleState] to set the image and content description of
+     * [ImageButton] field [mToggle] play/pause button depending on whether the movie is playing
+     * or paused. We then call the method [setKeepScreenOn] (kotlin `keepScreenOn` property) with
+     * `true` to keep the screen from turning off. Finally if our [MovieListener] field
+     * [mMovieListener] is not `null` we call its [MovieListener.onMovieStarted] override.
      */
     fun play() {
         if (mMediaPlayer == null) {
@@ -606,14 +610,15 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Pauses the movie. If our field `MediaPlayer mMediaPlayer` is null call our method
-     * `adjustToggleState` to set the image and content description of `ImageButton mToggle`
-     * play/pause button depending on whether the movie is playing or paused, then return. Otherwise we
-     * call the `start` method of `mMediaPlayer` to start the movie, and call our method
-     * `adjustToggleState` to set the image and content description of `ImageButton mToggle`
-     * play/pause button depending on whether the movie is playing or paused. We then call the method
-     * `setKeepScreenOn(false)` to allow the screen to turn off. Finally if our field
-     * `MovieListener mMovieListener` is not null we call its `onMovieStopped` override.
+     * Pauses the movie. If our [MediaPlayer] field [mMediaPlayer] is `null` we call our method
+     * [adjustToggleState] to set the image and content description of [ImageButton] field [mToggle]
+     * play/pause button depending on whether the movie is playing or paused, then return. Otherwise
+     * we call the [MediaPlayer.pause] method of [mMediaPlayer] to pause the movie, and call our
+     * method [adjustToggleState] to set the image and content description of [ImageButton] field
+     * [mToggle] play/pause button depending on whether the movie is playing or paused. We then call
+     * the method [setKeepScreenOn] (kotlin `keepScreenOn` property) with`false` to allow the screen
+     * to turn off. Finally if our [MovieListener] field [mMovieListener] is not `null` we call its
+     * [MovieListener.onMovieStopped] override.
      */
     fun pause() {
         if (mMediaPlayer == null) {
@@ -629,12 +634,13 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Creates a new `MediaPlayer mMediaPlayer`, sets its surface and starts the movie playing.
-     * If our field `int mVideoResourceId` is zero we return having done nothing. Otherwise we
-     * initialize `MediaPlayer mMediaPlayer` with a new instance, set its surface to our parameter
-     * `Surface surface` and call our method `startVideo` to start the movie playing.
+     * Creates a new [MediaPlayer] for our [mMediaPlayer] field, sets its surface and starts the
+     * movie playing. If our [Int] field [mVideoResourceId] is zero we return having done nothing.
+     * Otherwise we initialize [MediaPlayer] field [mMediaPlayer] with a new instance, set its
+     * surface to our [Surface] parameter [surface] and call our method [startVideo] to start the
+     * movie playing.
      *
-     * @param surface `Surface` of our `SurfaceView mSurfaceView`
+     * @param surface the [Surface] of our [SurfaceView] field [mSurfaceView]
      */
     fun openVideo(surface: Surface?) {
         if (mVideoResourceId == 0) {
@@ -646,30 +652,34 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Restarts playback of the video. First we call the `reset` method of our field
-     * `MediaPlayer mMediaPlayer` (Resets the MediaPlayer to its uninitialized state. After
-     * calling this method, you will have to initialize it again by setting the data source and
-     * calling prepare().)
+     * Restarts playback of the video. First we call the [MediaPlayer.reset] `reset` method of our
+     * [MediaPlayer] field [mMediaPlayer] (Resets the [MediaPlayer] to its uninitialized state.
+     * After calling this method, you will have to initialize it again by setting the data source
+     * and calling [MediaPlayer.prepare]).
      *
+     * Then wrapped in a try intended to catch and log [IOException] we use the [use] extension on
+     * the [AssetFileDescriptor] returned by the [Resources.openRawResourceFd] method to read the
+     * raw resource with id in [Int] field [mVideoResourceId]. In the lambda `block` of the [use]
+     * we call the [MediaPlayer.setDataSource] method of [mMediaPlayer] to set the data source of
+     * [mMediaPlayer] to the [AssetFileDescriptor] passed to the lambda as its `fd` parameter, set
+     * the [OnPreparedListener] of [mMediaPlayer] to an anonymous class whose
+     * [OnPreparedListener.onPrepared] override adjusts the aspect ratio of our view, seeks to [Int]
+     * field [mSavedCurrentPosition] if it is not zero (setting it then to zero). It it was zero it
+     * calls our [play] method to play the video (no need to seek). We then set the
+     * [OnCompletionListener] of [mMediaPlayer] to an anonymous class whose
+     * [OnCompletionListener.onCompletion] override calls our [adjustToggleState] method to change
+     * our play/pause control appropriately, calls the method [setKeepScreenOn] (kotlin
+     * `keepScreenOn` property) with `false` to allow the screen to turn off, and if our
+     * [MovieListener] field [mMovieListener] is not `null` calls its [MovieListener.onMovieStopped]
+     * override.
      *
-     * Then wrapped in a try with the resource `AssetFileDescriptor fd` opened to read the raw
-     * resource with id `mVideoResourceId`, we set the data source of `mMediaPlayer` to
-     * `fd`, set its `OnPreparedListener` to an anonymous class whose `onPrepared`
-     * override adjusts the aspect ratio of our view, seeks to `mSavedCurrentPosition` if it
-     * is not zero (setting it then to zero), and plays the video whether the seek was necessary or
-     * not. We then set the `OnCompletionListener` of `mMediaPlayer` to an anonymous class
-     * whose `onCompletion` override which changes our play/pause control appropriately, allows
-     * our display to turn off, and if our field `MovieListener mMovieListener` is not null
-     * calls its `onMovieStopped` override.
-     *
-     *
-     * Finally we call the `prepare` method of `MediaPlayer mMediaPlayer`, with our catch
-     * clause logging "Failed to open video" if it catches an IOException.
+     * Finally we call the [MediaPlayer.prepare] method of [MediaPlayer] field [mMediaPlayer], with
+     * our catch clause logging "Failed to open video" if it catches an [IOException].
      */
     fun startVideo() {
         mMediaPlayer!!.reset()
         try {
-            resources.openRawResourceFd(mVideoResourceId).use { fd ->
+            resources.openRawResourceFd(mVideoResourceId).use { fd: AssetFileDescriptor ->
                 mMediaPlayer!!.setDataSource(fd)
                 mMediaPlayer!!.setOnPreparedListener { mediaPlayer: MediaPlayer ->
                     // Adjust the aspect ratio of this view
@@ -697,8 +707,8 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Releases our field `MediaPlayer mMediaPlayer` and sets it to null if it is not already
-     * null.
+     * Releases our [MediaPlayer] field [mMediaPlayer] by calling its [MediaPlayer.release] method
+     * and sets it to `null` if it is not already `null`.
      */
     fun closeVideo() {
         if (mMediaPlayer != null) {
@@ -708,9 +718,9 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Toggles between play and pause. If our field `MediaPlayer mMediaPlayer` is null we return
-     * having done nothing. If `mMediaPlayer` is playing we call its `pause` method if it
-     * is not playing we call its `play` method.
+     * Toggles between play and pause. If our [MediaPlayer] field [mMediaPlayer] is `null` we return
+     * having done nothing. If [mMediaPlayer] is playing we call our [pause] method, if it is not
+     * playing we call our [play] method.
      */
     fun toggle() {
         if (mMediaPlayer == null) {
