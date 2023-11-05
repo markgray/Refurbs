@@ -26,11 +26,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Bundle
 import android.util.Rational
 import android.view.View
+import android.view.Window
 import android.widget.Button
 import android.widget.ScrollView
 import androidx.annotation.DrawableRes
@@ -58,27 +60,27 @@ class MainActivity : AppCompatActivity() {
     private var mScrollView: ScrollView? = null
 
     /**
-     * A `BroadcastReceiver` to receive action item events from Picture-in-Picture mode.
+     * A [BroadcastReceiver] to receive action item events from Picture-in-Picture mode.
      */
     private var mReceiver: BroadcastReceiver? = null
 
     /**
-     * The string with resource id R.string.play ("Play") that we use for the title of the "play"
+     * The string with resource id [R.string.play] ("Play") that we use for the title of the "play"
      * action item.
      */
     private var mPlay: String? = null
 
     /**
-     * The string with resource id R.string.pause ("Pause") that we use for the title of the "pause"
-     * action item.
+     * The string with resource id [R.string.pause] ("Pause") that we use for the title of the
+     * "pause" action item.
      */
     private var mPause: String? = null
 
     /**
-     * `OnClickListener` for the button with id R.id.pip ("Enter Picture-in-Picture mode").
-     * When this button is clicked we call our method `minimize` (Enters Picture-in-Picture mode).
+     * [View.OnClickListener] for the button with id [R.id.pip] ("Enter Picture-in-Picture mode").
+     * When this button is clicked we call our method [minimize] (Enters Picture-in-Picture mode).
      */
-    private val mOnClickListener = View.OnClickListener { view ->
+    private val mOnClickListener = View.OnClickListener { view: View ->
 
         /**
          * Called when the button with id R.id.pip ("Enter Picture-in-Picture mode") is
@@ -99,9 +101,9 @@ class MainActivity : AppCompatActivity() {
     private val mMovieListener: MovieListener = object : MovieListener() {
         /**
          * Called when the video is started or resumed. Since we are now playing the video
-         * we call our method `updatePictureInPictureActions` to change the action
-         * item to pause the video, using R.drawable.ic_pause_24dp as the icon, `mPause`
-         * ("Pause") as the title, CONTROL_TYPE_PAUSE as the type of action, and REQUEST_PAUSE
+         * we call our method [updatePictureInPictureActions] to change the action
+         * item to pause the video, using [R.drawable.ic_pause_24dp] as the icon, [mPause]
+         * ("Pause") as the title, [CONTROL_TYPE_PAUSE] as the type of action, and [REQUEST_PAUSE]
          * as the request code for the pending intent.
          */
         override fun onMovieStarted() {
@@ -112,11 +114,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         /**
-         * Called when the video is paused or finished. Since the video has stopped playing
-         * we call our method `updatePictureInPictureActions` to change the action
-         * item to play the video, using R.drawable.ic_play_arrow_24dp as the icon, `mPlay`
-         * ("Play") as the title, CONTROL_TYPE_PLAY as the type of action, and REQUEST_PLAY
-         * as the request code for the pending intent.
+         * Called when the video is paused or finished. Since the video has stopped playing we call
+         * our method [updatePictureInPictureActions] to change the action item to play the video,
+         * using [R.drawable.ic_play_arrow_24dp] as the icon, [mPlay] ("Play") as the title,
+         * [CONTROL_TYPE_PLAY] as the type of action, and [REQUEST_PLAY] as the request code for
+         * the pending intent.
          */
         override fun onMovieStopped() {
             // The video stopped or reached its end. In PiP mode, we want to show an action
@@ -126,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         /**
-         * Called when this view should be minimized. We just call our method `minimize`
+         * Called when this view should be minimized. We just call our method [minimize]
          * to enter Picture-in-Picture mode.
          */
         override fun onMovieMinimized() {
@@ -137,28 +139,29 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Update the state of pause/resume action item in Picture-in-Picture mode. First we allocate an
-     * `ArrayList` for the variable `ArrayList<RemoteAction> actions`. We create
-     * the broadcast intent `PendingIntent intent` using our parameter `int requestCode`
-     * as the request code, with the intent to be broadcast having the action ACTION_MEDIA_CONTROL
-     * ("media_control" - Intent action for media controls from Picture-in-Picture mode), and 0 for
-     * the flags. We create `Icon icon` from the drawable resource with the id given by our
-     * parameter `int iconId`. We add a new `RemoteAction` to our list of remote actions
-     * in `actions` created using `icon` as the icon, our parameter `title` as the
-     * title and the content description, and `intent` as the pending intent that will be used
-     * when the action item is clicked. Next we add a fixed `RemoteAction` to `actions`
-     * that is constructed the drawable R.drawable.ic_info_24dp as the icon, the string with the id
-     * R.string.info ("Info") as the title, the string with the id R.string.info_description
-     * ("Information about this video") as the content description, and a pending intent constructed
-     * with the request code REQUEST_INFO, an intent with the action ACTION_VIEW, and a Intent data
-     * URI parsed from the string with id R.string.info_uri ("[...](https://peach.blender.org/)"). We then
-     * set the actions of our field `PictureInPictureParams.Builder mPictureInPictureParamsBuilder`
-     * to `actions`. We then build `mPictureInPictureParamsBuilder` to supply the argument
-     * to the method `setPictureInPictureParams` which updates the properties of the picture in
-     * picture activity, or sets it to be used later when `enterPictureInPictureMode` is called.
+     * [ArrayList] for the [ArrayList] of [RemoteAction] variable `val actions`. We create a
+     * broadcast intent to initialize [PendingIntent] variable `val intent` using our [Int] parameter
+     * [requestCode] as the request code, with the intent to be broadcast having the action
+     * [ACTION_MEDIA_CONTROL] ("media_control" - Intent action for media controls from
+     * Picture-in-Picture mode), and [PendingIntent.FLAG_IMMUTABLE] for the flags. We create [Icon]
+     * variable `val icon` from the drawable resource with the id given by our [Int] parameter
+     * [iconId]. We add a new [RemoteAction] to our list of remote actions in `actions` created
+     * using `icon` as the icon, our [String] parameter [title] as the title and the content
+     * description, and `intent` as the pending intent that will be used when the action item is
+     * clicked. Next we add a fixed [RemoteAction] to `actions` that is constructed the drawable
+     * [R.drawable.ic_info_24dp] as the icon, the string with the id [R.string.info] ("Info") as the
+     * title, the string with the id [R.string.info_description] ("Information about this video") as
+     * the content description, and a pending intent constructed with the request code [REQUEST_INFO],
+     * an intent with the action [Intent.ACTION_VIEW], and a Intent data  URI parsed from the string
+     * with id [R.string.info_uri] ("[...](https://peach.blender.org/)"). We then set the actions of
+     * our [PictureInPictureParams.Builder] field [mPictureInPictureParamsBuilder] to `actions`. We
+     * then build [mPictureInPictureParamsBuilder] to supply the argument to the method
+     * [setPictureInPictureParams] which updates the properties of the picture in picture activity,
+     * or sets it to be used later when [enterPictureInPictureMode] is called.
      *
      * @param iconId      The icon to be used.
      * @param title       The title text.
-     * @param controlType The type of the action. either [.CONTROL_TYPE_PLAY] or [                    ][.CONTROL_TYPE_PAUSE].
+     * @param controlType The type of the action. either [CONTROL_TYPE_PLAY] or [CONTROL_TYPE_PAUSE].
      * @param requestCode The request code for the [PendingIntent].
      */
     fun updatePictureInPictureActions(
@@ -199,21 +202,21 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_main. We
-     * then initialize our field `String mPlay` by fetching the string with id R.string.play
-     * ("Play"), and `String mPause` by fetching the string with id R.string.pause ("Pause").
-     * We initialize our field `MovieView mMovieView` by finding the view with id R.id.movie,
-     * and `ScrollView mScrollView` by finding the view with id R.id.scroll.
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. We
+     * then initialize our [String] field [mPlay] by fetching the string with id [R.string.play]
+     * ("Play"), and [String] field [mPause] by fetching the string with id [R.string.pause]
+     * ("Pause"). We initialize our [MovieView] field [mMovieView] by finding the view with id
+     * [R.id.movie], and [ScrollView] field [mScrollView] by finding the view with id [R.id.scroll].
      *
+     * We initialize [Button] variable `val switchExampleButton` by finding the view with id
+     * [R.id.switch_example], set its text to the string with id [R.string.switch_media_session]
+     * ("Switch to using MediaSession"), and set its [View.OnClickListener] to [mOnClickListener].
+     * We call the [MovieView.setMovieListener]  method of [MovieView] field [mMovieView] to set its
+     * [MovieView.MovieListener] to our [MovieView.MovieListener] field [mMovieListener]. Finally
+     * we find the view with id [R.id.pip] ("Enter Picture-in-Picture mode") and set its
+     * [View.OnClickListener] to our field [mOnClickListener].
      *
-     * We initialize `Button switchExampleButton` by finding the view with id R.id.switch_example,
-     * set its text to the string with id R.string.switch_media_session ("Switch to using MediaSession"),
-     * and set its `OnClickListener` to `mOnClickListener`. We call the `setMovieListener`
-     * method of `MovieView mMovieView` to set its `MovieView.MovieListener` to our field
-     * `MovieView.MovieListener mMovieListener`. Finally we find the view with id R.id.pip ("Enter
-     * Picture-in-Picture mode") and set its `OnClickListener` to our field `mOnClickListener`.
-     *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -237,8 +240,9 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Called when you are no longer visible to the user (called when entering PIP mode when using
-     * Media Session example but not in Custom Actions example). We call the `pause` method of
-     * our field `MovieView mMovieView`, then call our super's implementation of `onStop`.
+     * Media Session example but not in Custom Actions example). We call the [MovieView.pause]
+     * method of our [MovieView] field [mMovieView], then call our super's implementation of
+     * `onStop`.
      */
     override fun onStop() {
         // On entering Picture-in-Picture mode, onPause is called, but not onStop.
@@ -248,12 +252,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Called after [.onStop] when the current activity is being re-displayed to the user
-     * (the user has navigated back to it). It will be followed by [.onStart] and then
-     * [.onResume]. First we call through to our super's implementation of `onRestart`,
-     * then if we are not in Picture in Picture mode we call the `showControls` method of our
-     * field `MovieView mMovieView` to show the video controls so the video can be easily
-     * resumed.
+     * Called after [onStop] when the current activity is being re-displayed to the user (the user
+     * has navigated back to it). It will be followed by [onStart] and then [onResume]. First we
+     * call through to our super's implementation of `onRestart`, then if we are not in Picture in
+     * Picture mode we call the [MovieView.showControls] method of our [MovieView] field [mMovieView]
+     * to show the video controls so the video can be easily resumed.
      */
     override fun onRestart() {
         super.onRestart()
@@ -266,59 +269,50 @@ class MainActivity : AppCompatActivity() {
     /**
      * Called by the system when the device configuration changes while your activity is running.
      * Note that this will only be called if you have selected configurations you would like to
-     * handle with the [android.R.attr.configChanges] attribute in your manifest. (Our
-     * manifest uses:
-     *
+     * handle with the [android.R.attr.configChanges] attribute in your manifest. (Our manifest
+     * uses:
      *
      * android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
      *
-     *  *
-     * screenSize - The current available screen size has changed. If applications don't
-     * target at least HONEYCOMB_MR2 then the activity will always handle this itself
-     * (the change will not result in a restart). This represents a change in the currently
-     * available size, so will change when the user switches between landscape and portrait.
+     *  * `screenSize` - The current available screen size has changed. If applications don't target
+     *  at least HONEYCOMB_MR2 then the activity will always handle this itself (the change will not
+     *  result in a restart). This represents a change in the currently available size, so will
+     *  change when the user switches between landscape and portrait.
      *
-     *  *
-     * smallestScreenSize - The physical screen size has changed. If applications don't target
-     * at least HONEYCOMB_MR2 then the activity will always handle this itself (the change
-     * will not result in a restart). This represents a change in size regardless of orientation,
-     * so will only change when the actual physical screen size has changed such as switching
-     * to an external display.
+     *  * `smallestScreenSize` - The physical screen size has changed. If applications don't target
+     *  at least HONEYCOMB_MR2 then the activity will always handle this itself (the change will not
+     *  result in a restart). This represents a change in size regardless of orientation, so will
+     *  only change when the actual physical screen size has changed such as switching to an
+     *  external display.
      *
-     *  *
-     * screenLayout - The screen layout has changed. This might be caused by a different
-     * display being activated.
+     *  * `screenLayout` - The screen layout has changed. This might be caused by a different
+     *  display being activated.
      *
-     *  *
-     * orientation - The screen orientation has changed, that is the user has rotated the device.
-     *
+     *  * `orientation` - The screen orientation has changed, that is the user has rotated the device.
      *
      * If any configuration change occurs that is not selected to be reported by that attribute,
      * then instead of reporting it the system will stop and restart the activity (to have it
-     * launched with the new configuration).
-     *
-     *
-     * At the time that this function has been called, your Resources object will have been updated
-     * to return resource values matching the new configuration.
-     *
+     * launched with the new configuration). At the time that this function has been called, your
+     * Resources object will have been updated to return resource values matching the new
+     * configuration.
      *
      * First we call our super's implementation of `onConfigurationChanged`, then we call our
-     * method `adjustFullScreen` to adjust immersive full-screen flags depending on the new
+     * method [adjustFullScreen] to adjust immersive full-screen flags depending on the new
      * screen orientation.
      *
      * @param newConfig The new device configuration.
      */
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        adjustFullScreen(newConfig)
+        adjustFullScreen(config = newConfig)
     }
 
     /**
-     * Called when the current `Window` of the activity gains or loses focus. This is the best
-     * indicator of whether this activity is visible to the user. First we call through to our super's
-     * implementation of `onWindowFocusChanged`, then if we now have focus we call our method
-     * `adjustFullScreen` with the current configuration of our package resources to adjust
-     * immersive full-screen flags depending on the new screen orientation.
+     * Called when the current [Window] of the activity gains or loses focus. This is the best
+     * indicator of whether this activity is visible to the user. First we call through to our
+     * super's implementation of `onWindowFocusChanged`, then if we now have focus we call our
+     * method [adjustFullScreen] with the current configuration of our package [Resources] to
+     * adjust immersive full-screen flags depending on the new screen orientation.
      *
      * @param hasFocus Whether the window of this activity has focus.
      */
@@ -332,29 +326,28 @@ class MainActivity : AppCompatActivity() {
     /**
      * Called by the system when the activity changes to and from picture-in-picture mode. First we
      * call through to our super's implementation of `onPictureInPictureModeChanged`. Then if
-     * our parameter `isInPictureInPictureMode` is:
+     * our [Boolean] parameter [isInPictureInPictureMode] is:
      *
-     *  *
-     * true - we set our field `BroadcastReceiver mReceiver` to a new instance whose override
-     * of `onReceive` starts or pauses `MovieView mMovieView` iff the action of the
-     * intent received is ACTION_MEDIA_CONTROL, and the extra stored under the key EXTRA_CONTROL_TYPE
-     * is CONTROL_TYPE_PLAY or CONTROL_TYPE_PAUSE respectively. Finally we call `registerReceiver`
-     * to register `mReceiver` as a broadcast receiver for the action ACTION_MEDIA_CONTROL.
+     *  * `true` - we set our [BroadcastReceiver] field [mReceiver] to a new instance whose override
+     * of [BroadcastReceiver.onReceive] starts or pauses [MovieView] field [mMovieView] iff the
+     * action of the intent received is [ACTION_MEDIA_CONTROL], and the extra stored under the key
+     * [EXTRA_CONTROL_TYPE] is [CONTROL_TYPE_PLAY] or [CONTROL_TYPE_PAUSE] respectively. Finally we
+     * call [registerReceiver] to register [mReceiver] as a broadcast receiver for the action
+     * [ACTION_MEDIA_CONTROL].
      *
-     *  *
-     * false - we unregister `mReceiver` as a broadcast receiver and set it to null. If
-     * our field `MovieView mMovieView` is not null, and its `isPlaying` method
-     * returns false, we call its `showControls` method.
+     *  * `false` - we unregister [BroadcastReceiver] field [mReceiver] as a broadcast receiver
+     *  and set it to `null`. If our [MovieView] field [mMovieView] is not `null`, and its
+     *  [MovieView.isPlaying] method returns `false`, we call its [MovieView.showControls] method.
      *
-     *
-     *
-     * @param isInPictureInPictureMode True if the activity is in picture-in-picture mode.
+     * @param isInPictureInPictureMode `true` if the activity is in picture-in-picture mode.
      * @param configuration            The new configuration of the activity with the state
      * `isInPictureInPictureMode`.
      */
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onPictureInPictureModeChanged(
-        isInPictureInPictureMode: Boolean, configuration: Configuration) {
+        isInPictureInPictureMode: Boolean,
+        configuration: Configuration
+    ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, configuration)
         if (isInPictureInPictureMode) {
             // Starts receiving events from action items in PiP mode.

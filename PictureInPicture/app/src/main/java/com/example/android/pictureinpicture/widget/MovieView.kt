@@ -734,9 +734,9 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Toggles the controls between visible and invisible. If our field `View mShade` is currently
-     * visible, we call our method `hideControls`, if it is not visible we call our method
-     * `showControls`.
+     * Toggles the controls between visible and invisible. If our [View] field [mShade] is currently
+     * visible, we call our method [hideControls], if it is not visible we call our method
+     * [showControls].
      */
     fun toggleControls() {
         if (mShade.visibility == VISIBLE) {
@@ -747,14 +747,14 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Sets the content description and image of `ImageButton mToggle` depending on whether
-     * the movie is playing or not. If `MediaPlayer mMediaPlayer` is not null, and its
-     * `isPlaying` method indicates that the movie is currently playing by returning true we
-     * set the content description of `mToggle` to the string with id R.string.pause ("Pause"),
-     * and set its image to the drawable with resource id R.drawable.ic_pause_64dp (the double bar
-     * pause icon), otherwise we set the content description of `mToggle` to the string with
-     * id R.string.play ("Play"), and set its image to the drawable with resource id
-     * R.drawable.ic_play_arrow_64dp (the right pointing triangle play icon).
+     * Sets the content description and image of [ImageButton] field [mToggle] depending on whether
+     * the movie is playing or not. If [MediaPlayer] field [mMediaPlayer] is not `null`, and its
+     * [MediaPlayer.isPlaying] method indicates that the movie is currently playing by returning
+     * `true` we set the content description of [mToggle] to the string with id [R.string.pause]
+     * ("Pause"), and set its image to the drawable with resource id [R.drawable.ic_pause_64dp]
+     * (the double bar pause icon), otherwise we set the content description of [mToggle] to the
+     * string with id [R.string.play] ("Play"), and set its image to the drawable with resource id
+     * [R.drawable.ic_play_arrow_64dp] (the right pointing triangle play icon).
      */
     fun adjustToggleState() {
         if (mMediaPlayer != null && mMediaPlayer!!.isPlaying) {
@@ -767,39 +767,33 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * `Handler` we use to hide the controls after a timeout of 3000ms
+     * [Handler] we use to hide the controls after a timeout of 3000ms
      */
     class TimeoutHandler internal constructor(view: MovieView) : Handler(Looper.myLooper()!!) {
         /**
-         * Weak reference to the `MovieView` whose controls we are supposed to hide.
+         * Weak reference to the [MovieView] whose controls we are supposed to hide.
          */
         val mMovieViewRef: WeakReference<MovieView>
 
         /**
-         * Our constructor. We simply save a weak reference to our parameter `MovieView view`
-         * in our field `WeakReference<MovieView> mMovieViewRef`.
-         *
-         * param view `MovieView` whose controls we are supposed to hide.
+         * Our `init` block. We simply save a weak reference to our `MovieView` parameter `view`
+         * in our `WeakReference` to a `MovieView` field `mMovieViewRef`.
          */
         init {
             mMovieViewRef = WeakReference(view)
         }
 
         /**
-         * We implement this to receive messages. We switch on the `what` field of our parameter
-         * `Message msg`:
+         * We implement this to receive messages. We switch on the [Message.what] field of our
+         * [Message] parameter [msg]:
          *
-         *  *
-         * MESSAGE_HIDE_CONTROLS - we retrieve `MovieView movieView` from our field
-         * `WeakReference<MovieView> mMovieViewRef`, and if it is not null we call its
-         * `hideControls` method to hide the controls, then break.
+         *  * [MESSAGE_HIDE_CONTROLS] - we retrieve [MovieView] variable `val movieView` from our
+         *  [WeakReference] to a [MovieView] field [mMovieViewRef], and if it is not `null` we call
+         *  its [MovieView.hideControls] method to hide the controls.
          *
-         *  *
-         * default - we call our super's implementation of `handleMessage(msg)`.
+         *  * `else` - we call our super's implementation of `handleMessage(msg)`.
          *
-         *
-         *
-         * @param msg `Message` we are supposed to handle.
+         * @param msg the [Message] we are supposed to handle.
          */
         override fun handleMessage(msg: Message) {
             if (msg.what == MESSAGE_HIDE_CONTROLS) {
