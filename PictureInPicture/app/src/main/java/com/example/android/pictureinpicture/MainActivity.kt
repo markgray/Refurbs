@@ -381,14 +381,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Enters Picture-in-Picture mode. If our field `MovieView mMovieView` is null we return
-     * having done nothing. Otherwise we call its `hideControls` method to hide the controls
-     * before entering picture-in-picture mode. Then we initialize `Rational aspectRatio` with
-     * the width over height of `mMovieView` and use it to set the aspect ratio of our field
-     * `PictureInPictureParams.Builder mPictureInPictureParamsBuilder` (which we build for no
-     * apparent reason and throw away the results). Finally we call the method `enterPictureInPictureMode`
-     * with the `PictureInPictureParams` that result from once again building our field
-     * `mPictureInPictureParamsBuilder`.
+     * Enters Picture-in-Picture mode. If our [MovieView] field [mMovieView] is `null` we return
+     * having done nothing. Otherwise we call its [MovieView.hideControls] method to hide the
+     * controls before entering picture-in-picture mode. Then we initialize [Rational] variable
+     * `val aspectRatio` with the width over height of [mMovieView] and use it to set the aspect
+     * ratio of our [PictureInPictureParams.Builder] field [mPictureInPictureParamsBuilder] (which
+     * we build for no apparent reason and throw away the results). Finally we call the method
+     * [enterPictureInPictureMode] with the [PictureInPictureParams] that result from once again
+     * building our [PictureInPictureParams.Builder] field [mPictureInPictureParamsBuilder].
      */
     fun minimize() {
         if (mMovieView == null) {
@@ -404,34 +404,30 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Adjusts immersive full-screen flags depending on the screen orientation. First we initialize
-     * `View decorView` by retrieving the top-level window decor view (containing the standard
-     * window frame/decorations and the client's content inside of that) of the current window of
-     * our activity. Then if:
+     * [View] variable `val decorView` by retrieving the top-level window decor view (containing the
+     * standard window frame/decorations and the client's content inside of that) of the current
+     * window of our activity. Then if:
      *
-     *  *
-     * The `orientation` field of `config` is ORIENTATION_LANDSCAPE - we set the
-     * system UI visibility of `View decorView` to the inclusive or of the flags that
-     * are necessary to totally minimise the system UI (our movie will occupy the entire
-     * screen). Then we set the visibility of our field `ScrollView mScrollView` to
-     * GONE, and call the `setAdjustViewBounds` method of `MovieView mMovieView`
-     * with the argument false in order to set its background to BLACK and schedule a layout
-     * pass of the view tree.
+     *  * The [Configuration.orientation] field of [Configuration] parameter [config] is
+     *  [Configuration.ORIENTATION_LANDSCAPE] - we set the system UI visibility of [View] variable
+     *  `decorView` to the inclusive or of the flags that are necessary to totally minimise the
+     *  system UI (our movie will occupy the entire screen). Then we set the visibility of our
+     *  [ScrollView] field [mScrollView] to [View.GONE], and call the [MovieView.setAdjustViewBounds]
+     *  method of [MovieView] field [mMovieView] with the argument `false` in order to set its
+     *  background to BLACK and schedule a layout pass of the view tree.
      *
-     *  *
-     * If the orientation is NOT ORIENTATION_LANDSCAPE - we set the system UI visibility flags
-     * to SYSTEM_UI_FLAG_LAYOUT_STABLE, set the visibility of our field `ScrollView mScrollView`
-     * to VISIBLE, and call the `setAdjustViewBounds` method of `MovieView mMovieView`
-     * with the argument true in order to set its background to null and schedule a layout
-     * pass of the view tree.
-     *
-     *
+     *  * If the orientation is *not* [Configuration.ORIENTATION_LANDSCAPE] - we set the system UI
+     *  visibility flags to [View.SYSTEM_UI_FLAG_LAYOUT_STABLE], set the visibility of our [ScrollView]
+     *  field [mScrollView] to [View.VISIBLE], and call the [MovieView.setAdjustViewBounds] method
+     *  of [MovieView] field [mMovieView] with the argument `true` in order to set its background to
+     *  `null` and schedule a layout pass of the view tree.
      *
      * @param config The current [Configuration].
      */
     private fun adjustFullScreen(config: Configuration) {
-        val decorView = window.decorView
+        val decorView: View = window.decorView
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            @Suppress("DEPRECATION")
+            @Suppress("DEPRECATION") // TODO: replace with WindowInsetsController
             decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -441,7 +437,7 @@ class MainActivity : AppCompatActivity() {
             mScrollView!!.visibility = View.GONE
             mMovieView!!.setAdjustViewBounds(false)
         } else {
-            @Suppress("DEPRECATION")
+            @Suppress("DEPRECATION") // TODO: replace with WindowInsetsController
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             mScrollView!!.visibility = View.VISIBLE
             mMovieView!!.setAdjustViewBounds(true)
@@ -450,8 +446,8 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Launches [MediaSessionPlaybackActivity] and closes this activity. This is the
-     * `OnClickListener` for the button with id R.id.switch_example ("Switch to using
-     * MediaSession").
+     * [View.OnClickListener] for the button with id [R.id.switch_example] ("Switch to
+     * using MediaSession").
      */
     private inner class SwitchActivityOnClick : View.OnClickListener {
         override fun onClick(view: View) {
@@ -472,17 +468,17 @@ class MainActivity : AppCompatActivity() {
         private const val EXTRA_CONTROL_TYPE = "control_type"
 
         /**
-         * The request code for play action PendingIntent.
+         * The request code for play action [PendingIntent].
          */
         private const val REQUEST_PLAY = 1
 
         /**
-         * The request code for pause action PendingIntent.
+         * The request code for pause action [PendingIntent].
          */
         private const val REQUEST_PAUSE = 2
 
         /**
-         * The request code for info action PendingIntent.
+         * The request code for info action [PendingIntent].
          */
         private const val REQUEST_INFO = 3
 

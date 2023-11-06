@@ -34,11 +34,11 @@ import com.example.android.pictureinpicture.widget.MovieView
 import com.example.android.pictureinpicture.widget.MovieView.MovieListener
 
 /**
- * Demonstrates usage of Picture-in-Picture when using [ ].
+ * Demonstrates usage of Picture-in-Picture when using [MediaSessionCompat].
  */
 class MediaSessionPlaybackActivity : AppCompatActivity() {
     /**
-     * The `MediaSessionCompat` instance we use for interaction with media controllers, volume
+     * The [MediaSessionCompat] instance we use for interaction with media controllers, volume
      * keys, media buttons, and transport controls.
      */
     private var mSession: MediaSessionCompat? = null
@@ -59,12 +59,11 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     private var mScrollView: ScrollView? = null
 
     /**
-     * `OnClickListener` for the button with id R.id.pip ("Enter Picture-in-Picture mode"), it
-     * consists of an anonymous class whose `onClick` override calls our method `minimize`
-     * if the view that was clicked had the id R.id.pip.
+     * [View.OnClickListener] for the button with id [R.id.pip] ("Enter Picture-in-Picture mode"),
+     * it consists of an anonymous class whose `onClick` override calls our method [minimize]
+     * if the view that was clicked had the id [R.id.pip].
      */
-    private val mOnClickListener = View.OnClickListener { view ->
-
+    private val mOnClickListener = View.OnClickListener { view: View ->
         /**
          * Called when the button with id R.id.pip ("Enter Picture-in-Picture mode") is
          * clicked. We switch on the id of the view, and if it is R.id.pip we call our method
@@ -82,37 +81,43 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
      */
     private val mMovieListener: MovieListener = object : MovieListener() {
         /**
-         * Called when the video is started or resumed. We call our method `updatePlaybackState`
-         * to update the media session state to STATE_PLAYING, the current position of the movie,
-         * and the raw resource id of the video that is playing.
+         * Called when the video is started or resumed. We call our method [updatePlaybackState]
+         * to update the media session `state` to [PlaybackStateCompat.STATE_PLAYING], the current
+         * `position` of the movie to the [MovieView.currentPosition] field of [MovieView] field
+         * [mMovieView], and `mediaId` the raw resource id of the video that is playing to the
+         * [MovieView.videoResourceId] field of [MovieView] field [mMovieView].
          */
         override fun onMovieStarted() {
             // We are playing the video now. Update the media session state and the PiP
             // window will
             // update the actions.
             updatePlaybackState(
-                PlaybackStateCompat.STATE_PLAYING,
-                mMovieView!!.currentPosition,
-                mMovieView!!.videoResourceId)
+                state = PlaybackStateCompat.STATE_PLAYING,
+                position = mMovieView!!.currentPosition,
+                mediaId = mMovieView!!.videoResourceId
+            )
         }
 
         /**
-         * Called when the video is paused or finished. We call our method `updatePlaybackState`
-         * to update the media session state to STATE_PAUSED, the current position of the movie,
-         * and the raw resource id of the video that is playing.
+         * Called when the video is paused or finished. We call our method [updatePlaybackState]
+         * to update the media session state to [PlaybackStateCompat.STATE_PAUSED], the current
+         * `position` of the movie to the [MovieView.currentPosition] field of [MovieView] field
+         * [mMovieView], and `mediaId` the raw resource id of the video that is playing to the
+         * [MovieView.videoResourceId] field of [MovieView] field [mMovieView].
          */
         override fun onMovieStopped() {
             // The video stopped or reached its end. Update the media session state and the
             // PiP window will
             // update the actions.
             updatePlaybackState(
-                PlaybackStateCompat.STATE_PAUSED,
-                mMovieView!!.currentPosition,
-                mMovieView!!.videoResourceId)
+                state = PlaybackStateCompat.STATE_PAUSED,
+                position = mMovieView!!.currentPosition,
+                mediaId = mMovieView!!.videoResourceId
+            )
         }
 
         /**
-         * Called when this view should be minimized. We just call our method `minimize`
+         * Called when this view should be minimized. We just call our method [minimize]
          * to enter Picture-in-Picture mode.
          */
         override fun onMovieMinimized() {
@@ -123,18 +128,18 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_main. We
-     * initialize our field `MovieView mMovieView` by finding the view with id R.id.movie, and
-     * `ScrollView mScrollView` by finding the view with id R.id.scroll. We initialize our
-     * variable `Button switchExampleButton` by finding the view with id R.id.switch_example,
-     * set its text to the string with id R.string.switch_custom ("Switch to custom actions example"),
-     * and set its `OnClickListener` to a new instance of `SwitchActivityOnClick` (Starts
-     * the activity `MainActivity` running instead of us). We set the `MovieView.MovieListener`
-     * of `MovieView mMovieView` to `mMovieListener`, then find the button with the id
-     * R.id.pip ("Enter Picture-in-Picture mode") and set its `OnClickListener` to our field
-     * `OnClickListener mOnClickListener`.
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. We
+     * initialize our [MovieView] field [mMovieView] by finding the view with id [R.id.movie], and
+     * [ScrollView] field [mScrollView] by finding the view with id [R.id.scroll]. We initialize our
+     * [Button] variable `val switchExampleButton` by finding the view with id [R.id.switch_example],
+     * set its text to the string with id [R.string.switch_custom] ("Switch to custom actions
+     * example"), and set its [View.OnClickListener] to a new instance of [SwitchActivityOnClick]
+     * (Starts the activity [MainActivity] running instead of us). We set the [MovieListener] of
+     * [MovieView] field [mMovieView] to [MovieListener] field [mMovieListener], then find the
+     * button with the id [R.id.pip] ("Enter Picture-in-Picture mode") and set its
+     * [View.OnClickListener] to our [View.OnClickListener] field [mOnClickListener].
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -153,10 +158,10 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     }
 
     /**
-     * Called after [.onCreate]  or after [.onRestart] when the activity had been
-     * stopped, but is now again being displayed to the user. We call our super's implementation of
-     * `onStart`, then call our method `initializeMediaSession` to create and configure
-     * our field `MediaSessionCompat mSession`.
+     * Called after [.onCreate]  or after [onRestart] when the activity had been stopped, but is now
+     * again being displayed to the user. We call our super's implementation of `onStart`, then call
+     * our method [initializeMediaSession] to create and configure our [MediaSessionCompat] field
+     * [mSession].
      */
     override fun onStart() {
         super.onStart()
@@ -164,58 +169,64 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     }
 
     /**
-     * Called from our `onStart` override to create and configure our field
-     * `MediaSessionCompat mSession`. First we initialize our field `mSession` with a
-     * new instance, then we set its flags FLAG_HANDLES_MEDIA_BUTTONS (indicates that it can handle
-     * media button events), and FLAG_HANDLES_TRANSPORT_CONTROLS (indicates that it handles transport
-     * control commands through its [MediaSessionCompat.Callback]). Then we set it to be in the
-     * active state. Then we set the media controller for our activity to a controller instance of
-     * `mSession`.
+     * Called from our [onStart] override to create and configure our [MediaSessionCompat] field
+     * [mSession]. First we initialize our field [mSession] with a new instance, then we set its
+     * flags [MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS] (indicates that it can handle media
+     * button events), and [MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS] (indicates that it
+     * handles transport control commands through its [MediaSessionCompat.Callback]). Then we set
+     * it to be in the active state. Then we set the media controller for our activity to a
+     * controller instance of [mSession].
      *
+     * We initialize [MediaMetadataCompat] variable `val metadata` by constructing a
+     * [MediaMetadataCompat.Builder], put the [String] title of the movie being played
+     * in the metadata under the key [MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE], and
+     * then building that builder. We then set the meta data of [mSession] to `metadata`.
      *
-     * We initialize `MediaMetadataCompat metadata` by creating a `Builder`, put the
-     * title of the movie being played under the key METADATA_KEY_DISPLAY_TITLE, and building that
-     * builder. We then set the meta data of `mSession` to `metadata`.
+     * We initialize [MediaSessionCallback] variable `val mMediaSessionCallback` with an instance
+     * using our [MovieView] field [mMovieView] as its [MovieView], and set the callback of
+     * [mSession] to it.
      *
+     * If [MovieView] field [mMovieView] is currently playing we initialize [Int] variable
+     * `val state` to [PlaybackStateCompat.STATE_PLAYING], otherwise we initialize it to
+     * [PlaybackStateCompat.STATE_PAUSED].
      *
-     * We initialize `MediaSessionCallback mMediaSessionCallback` with an instance using our
-     * field `mMovieView` as its `MovieView`, and set the callback of `mSession`
-     * to it.
-     *
-     *
-     * If `mMovieView` is currently playing we initialize `int state` to STATE_PLAYING,
-     * otherwise we initialize it to STATE_PAUSED.
-     *
-     *
-     * Finally we call our method `updatePlaybackState` to update the playback state of
-     * `mSession` to `state`, with the controls MEDIA_ACTIONS_ALL, the current position
-     * of `mMovieView`, and the video resource ID of `mMovieView`.
+     * Finally we call our method [updatePlaybackState] to update the playback `state` of
+     * [MediaSessionCompat] field [mSession] to `state`, with the `playbackActions`
+     * [MEDIA_ACTIONS_ALL], the current `position` of [mMovieView], and as the `mediaId`
+     * the video resource ID of [mMovieView].
      */
     private fun initializeMediaSession() {
         mSession = MediaSessionCompat(this, TAG)
         @Suppress("DEPRECATION")
-        mSession!!.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-            or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+        mSession!!.setFlags(
+            MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
+            or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+        )
         mSession!!.isActive = true
         MediaControllerCompat.setMediaController(this, mSession!!.controller)
-        val metadata = MediaMetadataCompat.Builder()
+        val metadata: MediaMetadataCompat = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, mMovieView!!.title)
             .build()
         mSession!!.setMetadata(metadata)
-        val mMediaSessionCallback = MediaSessionCallback(mMovieView)
+        val mMediaSessionCallback = MediaSessionCallback(movieView = mMovieView)
         mSession!!.setCallback(mMediaSessionCallback)
-        val state = if (mMovieView!!.isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+        val state = if (mMovieView!!.isPlaying) {
+            PlaybackStateCompat.STATE_PLAYING
+        } else {
+            PlaybackStateCompat.STATE_PAUSED
+        }
         updatePlaybackState(
-            state,
-            MEDIA_ACTIONS_ALL,
-            mMovieView!!.currentPosition,
-            mMovieView!!.videoResourceId)
+            state = state,
+            playbackActions = MEDIA_ACTIONS_ALL,
+            position = mMovieView!!.currentPosition,
+            mediaId = mMovieView!!.videoResourceId
+        )
     }
 
     /**
      * Called when you are no longer visible to the user. First we call our super's implementation
-     * of `onStop`, then we call the `pause` method of `mMovieView`, release our
-     * `MediaSessionCompat mSession`, and set it to null.
+     * of `onStop`, then we call the [MovieView.pause] method of [MovieView] field [mMovieView],
+     * release our [MediaSessionCompat] fiedl [mSession], and set it to `null`.
      */
     override fun onStop() {
         super.onStop()
