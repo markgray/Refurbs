@@ -20,6 +20,7 @@ package com.example.android.pictureinpicture
 import android.app.PictureInPictureParams
 import android.content.Intent
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
@@ -27,6 +28,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Rational
 import android.view.View
+import android.view.Window
 import android.widget.Button
 import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
@@ -238,11 +240,11 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     }
 
     /**
-     * Called after [.onStop] when the current activity is being re-displayed to the user (the
-     * user has navigated back to it). It will be followed by [.onStart] and then [.onResume].
-     * First we call our super's implementation of `onRestart`, then if we are not in picture
-     * in picture mode we call the `showControls` method of `mMovieView` to show the video
-     * controls so the video can be easily resumed.
+     * Called after [onStop] when the current activity is being re-displayed to the user (the user
+     * has navigated back to it). It will be followed by [onStart] and then [onResume]. First we
+     * call our super's implementation of `onRestart`, then if we are not in picture in picture mode
+     * we call the [MovieView.showControls] method of [MovieView] field [mMovieView] to show the
+     * video controls so the video can be easily resumed.
      */
     override fun onRestart() {
         super.onRestart()
@@ -253,13 +255,13 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     }
 
     /**
-     * Called by the system when the device configuration changes while your activity is running. This
-     * is called because our activity has as an attribute in the manifest file:
-     * android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation", and we will be
-     * called whenever one of these configuration changes occurs. First we call our super's
-     * implementation of `onConfigurationChanged`, then we call our method `adjustFullScreen`
-     * with our argument `newConfig` to adjust the immersive full-screen flags depending on the
-     * screen orientation.
+     * Called by the system when the device configuration changes while your activity is running.
+     * This is called because our activity has as an attribute in the manifest file:
+     * android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation", and we will
+     * be called whenever one of these configuration changes occurs. First we call our super's
+     * implementation of `onConfigurationChanged`, then we call our method [adjustFullScreen]
+     * with our [Configuration] parameter [newConfig] to adjust the immersive full-screen flags
+     * depending on the screen orientation.
      *
      * @param newConfig The new device configuration.
      */
@@ -269,10 +271,10 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     }
 
     /**
-     * Called when the current `Window` of the activity gains or loses focus. First we call our
+     * Called when the current [Window] of the activity gains or loses focus. First we call our
      * super's implementation of `onWindowFocusChanged`, then if we now have focus we use an
-     * `Resources` instance for our application's package to retrieve the current configuration
-     * that is in effect and pass that to our method `adjustFullScreen` to adjust the immersive
+     * [Resources] instance for our application's package to retrieve the current [Configuration]
+     * that is in effect and pass that to our method [adjustFullScreen] to adjust the immersive
      * full-screen flags depending on the screen orientation.
      *
      * @param hasFocus Whether the window of this activity has focus.
@@ -286,16 +288,18 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
 
     /**
      * Called by the system when the activity changes to and from picture-in-picture mode. First we
-     * call our super's implementation of `onPictureInPictureModeChanged`, then if we are not
-     * in picture-in-picture mode AND `mMovieView` is not null, AND it is playing we call the
-     * `showControls` method of `mMovieView` to show the video controls.
+     * call our super's implementation of `onPictureInPictureModeChanged`, then if we are not in
+     * picture-in-picture mode AND [MovieView] field [mMovieView] is not `null`, AND it is playing
+     * we call the [MovieView.showControls] method of [mMovieView] to show the video controls.
      *
-     * @param isInPictureInPictureMode True if the activity is in picture-in-picture mode.
-     * @param configuration            The new configuration of the activity with the state
-     * `isInPictureInPictureMode`.
+     * @param isInPictureInPictureMode `true` if the activity is in picture-in-picture mode.
+     * @param configuration            The new [Configuration] of the activity with the state
+     * [isInPictureInPictureMode].
      */
     override fun onPictureInPictureModeChanged(
-        isInPictureInPictureMode: Boolean, configuration: Configuration) {
+        isInPictureInPictureMode: Boolean,
+        configuration: Configuration
+    ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, configuration)
         if (!isInPictureInPictureMode) {
             // Show the video controls if the video is not playing
@@ -306,13 +310,13 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     }
 
     /**
-     * Enters Picture-in-Picture mode. If our field `MovieView mMovieView` is null we return
-     * having done nothing. Otherwise we call the `hideControls` method of `mMovieView`
-     * to hide the controls of the movie. We initialize `Rational aspectRatio` with the
-     * width and height of `mMovieView`, set the aspect ratio of our field
-     * `PictureInPictureParams.Builder mPictureInPictureParamsBuilder` to `aspectRatio`,
-     * (build it and throw away the result), and finally call the `enterPictureInPictureMode`
-     * with the rebuilt `mPictureInPictureParamsBuilder` to put our activity into picture in
+     * Enters Picture-in-Picture mode. If our [MovieView] field [mMovieView] is `null` we return
+     * having done nothing. Otherwise we call the [MovieView.hideControls] method of [mMovieView]
+     * to hide the controls of the movie. We initialize [Rational] variable `val aspectRatio` with
+     * the width and height of [mMovieView], set the aspect ratio of our
+     * [PictureInPictureParams.Builder] field [mPictureInPictureParamsBuilder] to `aspectRatio`,
+     * (then build it and throw away the result), and finally call the [enterPictureInPictureMode]
+     * with the rebuilt [mPictureInPictureParamsBuilder] to put our activity into picture in
      * picture mode.
      */
     fun minimize() {
@@ -327,37 +331,35 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
         enterPictureInPictureMode(mPictureInPictureParamsBuilder.build())
     }
 
-    /**
-     * Adjusts immersive full-screen flags depending on the screen orientation. First we initialize
-     * `View decorView` with the top-level window decor view of the current window of the
-     * activity. If the `orientation` field of our parameter `Configuration config` is:
-     *
-     *  *
-     * ORIENTATION_LANDSCAPE - we set the system UI visibility to the inclusive or of the
-     * bitmaps: SYSTEM_UI_FLAG_LAYOUT_STABLE (we would like a stable view of the content
-     * insets), SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION (we would like the window to be laid
-     * out as if it has requested SYSTEM_UI_FLAG_HIDE_NAVIGATION, even if it currently hasn't),
-     * SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN (we would like the window to be laid out as if it has
-     * requested SYSTEM_UI_FLAG_FULLSCREEN, even if it currently hasn't), SYSTEM_UI_FLAG_HIDE_NAVIGATION
-     * (request that the system navigation be temporarily hidden), SYSTEM_UI_FLAG_FULLSCREEN
-     * (go into the normal fullscreen mode so that our content can take over the screen while
-     * still allowing the user to interact with the application), and SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-     * (we would like to remain interactive when hiding the status bar). We then set the visibility
-     * of `ScrollView mScrollView` to GONE, and call the `setAdjustViewBounds` with
-     * false as the argument to set the background to BLACK.
-     *
-     *  *
-     * all other orientations - we set the system UI visibility to SYSTEM_UI_FLAG_LAYOUT_STABLE
-     * (we would like a stable view of the content insets), set the visibility of
-     * `ScrollView mScrollView` to visible, and call the `setAdjustViewBounds` with
-     * true as the argument to set the background to null.
-     *
-     *
-     *
-     * @param config The current [Configuration].
-     */
     private fun adjustFullScreen(config: Configuration) {
-        val decorView = window.decorView
+        val decorView: View = window.decorView
+        /**
+         * Adjusts immersive full-screen flags depending on the screen orientation. First we initialize
+         * [View] variable `val decorView` with the top-level window decor view of the current [Window]
+         * of the activity. If the [Configuration.orientation] field of our [Configuration] parameter
+         * [config] is:
+         *
+         *  * [Configuration.ORIENTATION_LANDSCAPE] - we set the system UI visibility to the inclusive
+         *  or of the bitmaps: [View.SYSTEM_UI_FLAG_LAYOUT_STABLE] (we would like a stable view of the
+         *  content insets), [View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION] (we would like the window to
+         *  be laid out as if it has requested [View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION], even if it
+         *  currently hasn't), [View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN] (we would like the window to be
+         *  laid out as if it has requested [View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN], even if it currently
+         *  hasn't), [View.SYSTEM_UI_FLAG_HIDE_NAVIGATION] (request that the system navigation be
+         *  temporarily hidden), [View.SYSTEM_UI_FLAG_FULLSCREEN] (go into the normal fullscreen mode so
+         *  that our content can take over the screen while still allowing the user to interact with the
+         *  application), and [View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY] (we would like to remain interactive
+         *  when hiding the status bar). We then set the visibility of [ScrollView] field [mScrollView]
+         *  to [View.GONE], and call the [MovieView.setAdjustViewBounds] method of [mMovieView] with
+         *  `false` as the argument to set the background to BLACK.
+         *
+         *  * all other orientations - we set the system UI visibility to [View.SYSTEM_UI_FLAG_LAYOUT_STABLE]
+         *  (we would like a stable view of the content insets), set the visibility of [ScrollView] field
+         *  [mScrollView] to [View.VISIBLE], and call the [MovieView.setAdjustViewBounds] method of
+         *  [mMovieView] with `true` as the argument to set the background to `null`.
+         *
+         * @param config The current [Configuration].
+         */
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             @Suppress("DEPRECATION")
             decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -378,8 +380,8 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
 
     /**
      * Overloaded method that persists previously set media actions. We retrieve the current actions
-     * from the controller of `MediaSessionCompat mSession` to `long actions` then call
-     * the 4 argument version of this method using `actions` as the `playbackActions`
+     * from the controller of [MediaSessionCompat] field [mSession] to [Long] variable `val actions`
+     * then call the 4 argument version of this method using `actions` as the `playbackActions`
      * argument and the arguments passed us as the other three arguments.
      *
      * @param state    The state of the video, e.g. playing, paused, etc.
@@ -387,18 +389,22 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
      * @param mediaId  The media id related to the video in the media session.
      */
     private fun updatePlaybackState(
-        @PlaybackStateCompat.State state: Int, position: Int, mediaId: Int) {
-        val actions = mSession!!.controller.playbackState.actions
+        @PlaybackStateCompat.State state: Int,
+        position: Int,
+        mediaId: Int
+    ) {
+        val actions: Long = mSession!!.controller.playbackState.actions
         updatePlaybackState(state, actions, position, mediaId)
     }
 
     /**
-     * Updates the playback state of `MediaSessionCompat mSession`. We initialize our variable
-     * `PlaybackStateCompat.Builder builder` with a new instance, set its actions to our argument
-     * `playbackActions`, its active item to `mediaId`, and its current state to the
-     * argument `state` for its state, `position` for its position, and 1.0 as the playback
-     * speed. We then build `builder` and use the `setPlaybackState` method of our field
-     * `mSession` to set its playback state to the result of the build.
+     * Updates the playback state of [MediaSessionCompat] field [mSession]. We initialize our
+     * [PlaybackStateCompat.Builder] variable `val builder` with a new instance, set its actions to
+     * our [Long] parameter [playbackActions], its active item to our [Int] parameter [mediaId], and
+     * its current state to the [Int] parameter [state] for its state, [Int] parameter [position]
+     * for its position, and 1.0 as the playback speed. We then build `builder` and use the
+     * [MediaSessionCompat.setPlaybackState] method of our [MediaSessionCompat] field [mSession] to
+     * set its playback state to the result of the build.
      *
      * @param state           The state of the video, e.g. playing, paused, etc.
      * @param playbackActions capabilities present for this session
@@ -406,7 +412,11 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
      * @param mediaId         The media id related to the video in the media session.
      */
     private fun updatePlaybackState(
-        @PlaybackStateCompat.State state: Int, playbackActions: Long, position: Int, mediaId: Int) {
+        @PlaybackStateCompat.State state: Int,
+        playbackActions: Long,
+        position: Int,
+        mediaId: Int
+    ) {
         val builder = PlaybackStateCompat.Builder()
             .setActions(playbackActions)
             .setActiveQueueItemId(mediaId.toLong())
@@ -415,21 +425,16 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     }
 
     /**
-     * Updates the [MovieView] based on the callback actions. <br></br>
-     * Simulates a playlist that will disable actions when you cannot skip through the playlist in a
-     * certain direction.
-     */
-    private inner class MediaSessionCallback
-    /**
-     * Our constructor. We save our argument `MovieView movieView` in our field
-     * `MovieView movieView`, and set our field `indexInPlaylist` to 1.
+     * Updates the [MovieView] based on the callback actions. Simulates a playlist that will disable
+     * actions when you cannot skip through the playlist in a certain direction. Our constructor
+     * just saves its [MovieView] parameter as its field [movieView] and sets our [Int] field
+     * [indexInPlaylist] to 1.
      *
-     * @param movieView `MovieView` instance that is playing our video
-     */(
-        /**
-         * The `MovieView` instance that is playing our video, set by our constructor.
-         */
-        private val movieView: MovieView?) : MediaSessionCompat.Callback() {
+     * @param movieView the [MovieView] instance that is playing our video
+     */
+    private inner class MediaSessionCallback(
+        private val movieView: MovieView?
+    ) : MediaSessionCompat.Callback() {
         /**
          * Which video in our simulated playlist is currently playing (should always be 1?)
          */
