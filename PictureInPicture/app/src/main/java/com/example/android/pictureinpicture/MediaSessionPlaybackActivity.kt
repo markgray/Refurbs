@@ -202,7 +202,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
         @Suppress("DEPRECATION")
         mSession!!.setFlags(
             MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-            or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+                or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
         )
         mSession!!.isActive = true
         MediaControllerCompat.setMediaController(this, mSession!!.controller)
@@ -442,7 +442,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
 
         /**
          * Override to handle requests to begin playback. First we call our super's implementation
-         * of `onPlay`, then we call the `play` method of `MovieView movieView` to
+         * of `onPlay`, then we call the [MovieView.play] method of [MovieView] field [movieView] to
          * start the video playing.
          */
         override fun onPlay() {
@@ -452,7 +452,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
 
         /**
          * Override to handle requests to pause playback. First we call our super's implementation
-         * of `onPause`, then we call the `pause` method of `MovieView movieView`
+         * of `onPause`, then we call the [MovieView.pause] method of [MovieView] field [movieView]
          * to pause the video currently playing.
          */
         override fun onPause() {
@@ -462,25 +462,22 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
 
         /**
          * Override to handle requests to skip to the next media item. First we call our super's
-         * implementation of `onSkipToNext`, then we call the `startVideo` method of
-         * `MovieView movieView` to load and start the video playing. If our field
-         * `indexInPlaylist` is NOT less than PLAYLIST_SIZE we are done. Otherwise we increment
-         * `indexInPlaylist` and if:
+         * implementation of `onSkipToNext`, then we call the [MovieView.startVideo] method of
+         * [MovieView] field [movieView] to load and start the video playing. If our [Int] field
+         * [indexInPlaylist] is NOT less than [PLAYLIST_SIZE] we are done. Otherwise we increment
+         * [indexInPlaylist] and if:
          *
-         *  *
-         * `indexInPlaylist >= PLAYLIST_SIZE` - we call our method `updatePlaybackState`
-         * to set the state to STATE_PLAYING, the playback actions to the or of MEDIA_ACTIONS_PLAY_PAUSE
-         * and ACTION_SKIP_TO_PREVIOUS, the current position to that of `MovieView movieView`, and
-         * the current resource ID of the video being played (we can now skip to the previous video
-         * but not to a nonexistent next video).
+         *  * [indexInPlaylist] >= [PLAYLIST_SIZE] - we call our method [updatePlaybackState] to set
+         *  the `state` to [PlaybackStateCompat.STATE_PLAYING], the `playbackActions` to the or of
+         *  [MEDIA_ACTIONS_PLAY_PAUSE] and [PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS], the current
+         *  `position` to that of [MovieView] field [movieView], and as the `mediaId` the current
+         *  resource ID of the video being played (we can now skip to the previous video but not to
+         *  a nonexistent next video).
          *
-         *  *
-         * `indexInPlaylist < PLAYLIST_SIZE` - we call our method `updatePlaybackState`
-         * to set the state to STATE_PLAYING, the playback actions to MEDIA_ACTIONS_ALL, the current
-         * position to that of `MovieView movieView`, and the current resource ID of the video
-         * being played (we can now use all controls).
-         *
-         *
+         *  * [indexInPlaylist] < [PLAYLIST_SIZE] - we call our method [updatePlaybackState] to set
+         *  the `state` to STATE_PLAYING, the `playbackActions` to MEDIA_ACTIONS_ALL, the current
+         *  `position` to that of [MovieView] [movieView], and as the `mediaId` the current resource
+         *  ID of the video being played (we can now use all controls).
          */
         override fun onSkipToNext() {
             super.onSkipToNext()
@@ -489,41 +486,39 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
                 indexInPlaylist++
                 if (indexInPlaylist >= Companion.PLAYLIST_SIZE) {
                     updatePlaybackState(
-                        PlaybackStateCompat.STATE_PLAYING,
-                        MEDIA_ACTIONS_PLAY_PAUSE or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS,
-                        movieView.currentPosition,
-                        movieView.videoResourceId)
+                        state = PlaybackStateCompat.STATE_PLAYING,
+                        playbackActions = MEDIA_ACTIONS_PLAY_PAUSE
+                            or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS,
+                        position = movieView.currentPosition,
+                        mediaId = movieView.videoResourceId)
                 } else {
                     updatePlaybackState(
-                        PlaybackStateCompat.STATE_PLAYING,
-                        MEDIA_ACTIONS_ALL,
-                        movieView.currentPosition,
-                        movieView.videoResourceId)
+                        state = PlaybackStateCompat.STATE_PLAYING,
+                        playbackActions = MEDIA_ACTIONS_ALL,
+                        position = movieView.currentPosition,
+                        mediaId = movieView.videoResourceId)
                 }
             }
         }
 
         /**
          * Override to handle requests to skip to the previous media item. First we call our super's
-         * implementation of `onSkipToPrevious`, then we call the `startVideo` method of
-         * `MovieView movieView` to load and start the video playing. If our field
-         * `indexInPlaylist` is NOT greater than 0 we are done. Otherwise we decrement
-         * `indexInPlaylist` and if:
+         * implementation of `onSkipToPrevious`, then we call the [MovieView.startVideo] method of
+         * [MovieView] field [movieView] to load and start the video playing. If our [Int] field
+         * [indexInPlaylist] is *not* greater than 0 we are done. Otherwise we decrement
+         * [indexInPlaylist] and if:
          *
-         *  *
-         * `indexInPlaylist <= 0` - we call our method `updatePlaybackState`
-         * to set the state to STATE_PLAYING, the playback actions to the or of MEDIA_ACTIONS_PLAY_PAUSE
-         * and ACTION_SKIP_TO_NEXT, the current position to that of `MovieView movieView`, and
-         * the current resource ID of the video being played (we can now skip to the next video
-         * but not to a nonexistent previous video).
+         *  * [indexInPlaylist] <= 0 - we call our method [updatePlaybackState] to set the `state`
+         *  to [PlaybackStateCompat.STATE_PLAYING], the `playbackActions` to the or of
+         *  [MEDIA_ACTIONS_PLAY_PAUSE] and [PlaybackStateCompat.ACTION_SKIP_TO_NEXT], the current
+         *  `position` to that of [MovieView] field [movieView], and as the `mediaId` the current
+         *  resource ID of the video being played (we can now skip to the next video but not to a
+         *  nonexistent previous video).
          *
-         *  *
-         * `indexInPlaylist > 0` - we call our method `updatePlaybackState`
-         * to set the state to STATE_PLAYING, the playback actions to MEDIA_ACTIONS_ALL, the current
-         * position to that of `MovieView movieView`, and the current resource ID of the video
-         * being played (we can now use all controls).
-         *
-         *
+         *  * [indexInPlaylist] > 0 - we call our method [updatePlaybackState] to set the `state` to
+         *  [PlaybackStateCompat.STATE_PLAYING], the `playbackActions` to [MEDIA_ACTIONS_ALL], the
+         *  current `position` to that of [MovieView] field [movieView], and as the `mediaId` the
+         *  current resource ID of the video being played (we can now use all controls).
          */
         override fun onSkipToPrevious() {
             super.onSkipToPrevious()
@@ -532,16 +527,17 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
                 indexInPlaylist--
                 if (indexInPlaylist <= 0) {
                     updatePlaybackState(
-                        PlaybackStateCompat.STATE_PLAYING,
-                        MEDIA_ACTIONS_PLAY_PAUSE or PlaybackStateCompat.ACTION_SKIP_TO_NEXT,
-                        movieView.currentPosition,
-                        movieView.videoResourceId)
+                        state = PlaybackStateCompat.STATE_PLAYING,
+                        playbackActions = MEDIA_ACTIONS_PLAY_PAUSE
+                            or PlaybackStateCompat.ACTION_SKIP_TO_NEXT,
+                        position = movieView.currentPosition,
+                        mediaId = movieView.videoResourceId)
                 } else {
                     updatePlaybackState(
-                        PlaybackStateCompat.STATE_PLAYING,
-                        MEDIA_ACTIONS_ALL,
-                        movieView.currentPosition,
-                        movieView.videoResourceId)
+                        state = PlaybackStateCompat.STATE_PLAYING,
+                        playbackActions = MEDIA_ACTIONS_ALL,
+                        position = movieView.currentPosition,
+                        mediaId = movieView.videoResourceId)
                 }
             }
         }
@@ -549,10 +545,10 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     }
 
     /**
-     * Switches to the activity `MainActivity`, it is the `OnClickListener` for the button
-     * with the id R.id.switch_example (its text is set to "Switch to custom actions example" in the
-     * `onCreate` method of `MediaSessionPlaybackActivity`). First we start the activity
-     * `MainActivity`, then we call `finish` to close this activity.
+     * Switches to the activity [MainActivity], it is the [View.OnClickListener] for the button
+     * with the id [R.id.switch_example] (its text is set to "Switch to custom actions example" in
+     * the [onCreate] override of [MediaSessionPlaybackActivity]). First we start the activity
+     * [MainActivity], then we call [finish] to close this activity.
      */
     private inner class SwitchActivityOnClick : View.OnClickListener {
         override fun onClick(view: View) {
@@ -568,41 +564,37 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
         const val PLAYLIST_SIZE: Int = 2
 
         /**
-         * TAG used for logging by our `MediaSessionCompat` instance.
+         * TAG used for logging by our [MediaSessionCompat] instance.
          */
         const val TAG: String = "MediaSessionPlaybackActivity"
 
         /**
-         * Used in call to `PlaybackStateCompat.Builder setActions` in our `onSkipToNext` and
-         * `onSkipToPrevious` callbacks, it is a bitmask of these available capabilities:
+         * Used in call to [PlaybackStateCompat.Builder.setActions] in our override of the
+         * [MediaSessionCallback.onSkipToNext] and [MediaSessionCallback.onSkipToPrevious]
+         * callbacks, it is a bitmask of these available capabilities:
          *
-         *  *
-         * ACTION_PLAY - Indicates this session supports the play command.
+         *  * [PlaybackStateCompat.ACTION_PLAY] - Indicates this session supports the play command.
          *
-         *  *
-         * ACTION_PAUSE - Indicates this session supports the pause command.
+         *  * [PlaybackStateCompat.ACTION_PAUSE] - Indicates this session supports the pause command.
          *
-         *  *
-         * ACTION_PLAY_PAUSE - Indicates this session supports the play/pause toggle command.
-         *
-         *
+         *  * [PlaybackStateCompat.ACTION_PLAY_PAUSE] - Indicates this session supports the
+         *  play/pause toggle command.
          */
         const val MEDIA_ACTIONS_PLAY_PAUSE: Long = (PlaybackStateCompat.ACTION_PLAY
             or PlaybackStateCompat.ACTION_PAUSE
             or PlaybackStateCompat.ACTION_PLAY_PAUSE)
 
         /**
-         * Used in call to `updatePlaybackState` from our methods `initializeMediaSession`,
-         * `onSkipToPrevious` and `onSkipToNext`, it adds to MEDIA_ACTIONS_PLAY_PAUSE the
-         * two bitmasks:
+         * Used in call to [updatePlaybackState] from our method [initializeMediaSession], and in
+         * our override of the [MediaSessionCallback.onSkipToNext] and
+         * [MediaSessionCallback.onSkipToPrevious] callbacks, it adds to [MEDIA_ACTIONS_PLAY_PAUSE]
+         * the two bitmasks:
          *
-         *  *
-         * ACTION_SKIP_TO_NEXT - Indicates this session supports the next command.
+         *  * [PlaybackStateCompat.ACTION_SKIP_TO_NEXT] - Indicates this session supports the next
+         *  command.
          *
-         *  *
-         * ACTION_SKIP_TO_PREVIOUS - Indicates this session supports the previous command.
-         *
-         *
+         *  * [PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS] - Indicates this session supports the
+         *  previous command.
          */
         const val MEDIA_ACTIONS_ALL: Long = (MEDIA_ACTIONS_PLAY_PAUSE
             or PlaybackStateCompat.ACTION_SKIP_TO_NEXT
