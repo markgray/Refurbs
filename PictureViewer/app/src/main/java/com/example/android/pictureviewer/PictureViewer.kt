@@ -18,59 +18,63 @@
 package com.example.android.pictureviewer
 
 import android.app.Activity
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewPropertyAnimator
+import android.widget.FrameLayout
 import android.widget.ImageView
 
 /**
- * This example shows how to use ViewPropertyAnimator to get a cross-fade effect as new
+ * This example shows how to use [ViewPropertyAnimator] to get a cross-fade effect as new
  * bitmaps get installed in an ImageView.
- *
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [...](https://www.youtube.com/watch?v=9XbKMUtVnJA).
  */
 class PictureViewer : Activity() {
     /**
-     * Index into the `int drawableIDs[]` array of resource ids for drawables, it is incremented
-     * round robin every time the `ImageView` is clicked and points to the resource id of the
-     * jpg that is currently being displayed in that `ImageView`
+     * Index into the [IntArray] field [drawableIDs] array of resource ids for drawables, it is
+     * incremented round robin every time the [ImageView] is clicked and points to the resource id
+     * of the jpg that is currently being displayed in that [ImageView]
      */
     var mCurrentDrawable: Int = 0
 
     /**
-     * Array of resource ids for the jpg images that are displayed in our `ImageView`
+     * Array of resource ids for the jpg images that are displayed in our [ImageView]
      */
     var drawableIDs: IntArray = intArrayOf(
         R.drawable.p1,
         R.drawable.p2,
         R.drawable.p3,
-        R.drawable.p4)
+        R.drawable.p4
+    )
 
     /**
-     * Call when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_picture_viewer (this is a
-     * `FrameLayout` containing two `ImageView` widgets occupying the same space). We initialize
-     * `ImageView prevImageView` by finding the view with id R.id.prevImageView, and `ImageView nextImageView`
-     * by finding the view with id R.id.nextImageView, and set the background color of both to TRANSPARENT.
-     * We also set the duration of both view's `ViewPropertyAnimator` to 1000ms. We initialize the
-     * `BitmapDrawable drawables[]` array with an instance which will hold as many `BitmapDrawable`
-     * objects as there are entries in our field `int drawableIDs[]`. We then loop over `int i`
-     * for these entries creating `Bitmap bitmap` by decoding the jpg whose resource id is at index
-     * `i` in `drawableIDs`
-     * and setting contents of the `i`th entry in `drawables` to the `BitmapDrawable` created from `bitmap`. When
-     * done loading up `drawables` we set the content of `prevImageView` to `drawables` at index 0
-     * and the content of `nextImageView` to `drawables` at index 1. Finally we set the `OnClickListener`
-     * of `prevImageView` to an anonymous instance whose `onClick` override animates the alpha
-     * of `prevImageView` to 0 and the alpha of `nextImageView` to 1 with an end action consisting
-     * of an anonymous `Runnable` whose `run` override sets the content of `prevImageView`
-     * and `nextImageView` to the next round robin `BitmapDrawable` they should display, and
-     * sets the alpha of `nextImageView` to 0 and the alpha of `prevImageView` to 1.
+     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
+     * then we set our content view to our layout file [R.layout.activity_picture_viewer] (this is a
+     * [FrameLayout] containing two [ImageView] widgets occupying the same space). We initialize
+     * [ImageView] variable `val prevImageView` by finding the view with id [R.id.prevImageView],
+     * and [ImageView] variable `val nextImageView` by finding the view with id [R.id.nextImageView],
+     * and set the background color of both to [Color.TRANSPARENT]. We also set the duration of both
+     * view's [ViewPropertyAnimator] to 1000ms. We initialize the [BitmapDrawable] variable
+     * `val drawables` array with an instance which will hold as many [BitmapDrawable] objects as
+     * there are entries in our [IntArray] field [drawableIDs]. We then loop over [Int] variable
+     * `var i` for these entries creating [Bitmap] variable `val bitmap` by decoding the jpg whose
+     * resource id is at index `i` in [drawableIDs] and setting the contents of the `i`th entry in
+     * `drawables` to the [BitmapDrawable] created from `bitmap`. When done loading up `drawables`
+     * we set the content of `prevImageView` to `drawables` at index 0 and the content of
+     * `nextImageView` to `drawables` at index 1. Finally we set the [View.OnClickListener]
+     * of `prevImageView` to an anonymous instance whose [View.OnClickListener.onClick] override
+     * animates the alpha of `prevImageView` to 0 and the alpha of `nextImageView` to 1 with an end
+     * action consisting of an anonymous [Runnable] whose [Runnable.run] override sets the content
+     * of `prevImageView` and `nextImageView` to the next round robin [BitmapDrawable] they should
+     * display, and sets the alpha of `nextImageView` to 0 and the alpha of `prevImageView` to 1.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +94,7 @@ class PictureViewer : Activity() {
         // bitmaps at onCreate() time.
         val drawables = arrayOfNulls<BitmapDrawable>(drawableIDs.size)
         for (i in drawableIDs.indices) {
-            val bitmap = BitmapFactory.decodeResource(resources, drawableIDs[i])
+            val bitmap: Bitmap = BitmapFactory.decodeResource(resources, drawableIDs[i])
             drawables[i] = BitmapDrawable(resources, bitmap)
         }
         prevImageView.setImageDrawable(drawables[0])
