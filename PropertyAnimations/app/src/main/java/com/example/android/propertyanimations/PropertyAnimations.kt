@@ -30,72 +30,75 @@ import android.widget.Button
 import android.widget.CheckBox
 
 /**
- * This example shows how to use property animations, specifically ObjectAnimator, to perform
+ * This example shows how to use property animations, specifically [ObjectAnimator], to perform
  * various view animations. Compare this approach to that of the ViewAnimations demo, which
  * shows how to achieve similar effects using the pre-3.0 animation APIs.
- *
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [...](https://www.youtube.com/watch?v=3UbJhmkeSig)
  */
 class PropertyAnimations : Activity() {
     /**
-     * `CheckBox` in our layout with id R.id.checkbox ("Use Animation Resources") selects the
+     * [CheckBox] in our layout with id [R.id.checkbox] ("Use Animation Resources") selects the
      * use of objectAnimator xml resource files instead of the java constructed animations
      */
     var mCheckBox: CheckBox? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_property_animations. We initialize
-     * our field `CheckBox mCheckBox` by finding the view with id R.id.checkbox ("Use Animation
-     * Resources"), then initialize `Button alphaButton` by finding the view with id R.id.alphaButton
-     * ("Alpha"), `Button translateButton` by finding the view with id R.id.translateButton ("Translate"),
-     * `Button rotateButton` by finding the view with id R.id.rotateButton ("Rotate"), `Button scaleButton`
-     * by finding the view with id R.id.scaleButton ("Scale"), and `Button setButton` by finding the view
-     * with id R.id.setButton ("Set"). We initialize `ObjectAnimator alphaAnimation` with an instance
-     * which will animate the ALPHA property of `alphaButton` to 0, set its repeat count to 1, and set
-     * its repeat mode to REVERSE. We initialize `ObjectAnimator translateAnimation` with an instance
-     * which will animate the TRANSLATION_X property of `translateButton` to 800, set its repeat count
-     * to 1, and set its repeat mode to REVERSE. We initialize `ObjectAnimator rotateAnimation` with an
-     * instance which will animate the ROTATION property of `rotateButton` to 360, set its repeat count
-     * to 1, and set its repeat mode to REVERSE. We initialize `PropertyValuesHolder pvhX` with an instance
-     * which will animate the SCALE_X property to 2, initialize `PropertyValuesHolder pvhY` with an instance
-     * which will animate the SCALE_Y property to 2, then initialize `ObjectAnimator scaleAnimation` with
-     * an instance which will apply the animations `pvhX` and `pvhY` to `scaleButton`, set
-     * its repeat count to 1, and set its repeat mode to REVERSE. We initialize `AnimatorSet setAnimation`
-     * with a new instance, create a `Builder` for it that will use `translateAnimation` as a dependency
-     * to run after `alphaAnimation` and before `rotateAnimation`, then create another `Builder`
+     * then we set our content view to our layout file [R.layout.activity_property_animations]. We
+     *  our [CheckBox] field [mCheckBox] by finding the view with id [R.id.checkbox] ("Use Animation
+     * Resources"), then initialize [Button] variable `val alphaButton` by finding the view with id
+     * [R.id.alphaButton] ("Alpha"), [Button] variable `val translateButton` by finding the view with
+     * id [R.id.translateButton] ("Translate"), [Button] variable `val rotateButton` by finding the
+     * view with id [R.id.rotateButton] ("Rotate"), [Button] variable `val scaleButton` by finding
+     * the view with id [R.id.scaleButton] ("Scale"), and [Button] variable `val setButton` by finding
+     * the view with id [R.id.setButton] ("Set"). We initialize [ObjectAnimator] variable
+     * `val alphaAnimation` with an instance which will animate the [View.ALPHA] property of
+     * `alphaButton` to 0, set its repeat count to 1, and set its repeat mode to [ValueAnimator.REVERSE].
+     * We initialize [ObjectAnimator] variable `val translateAnimation` with an instance which will
+     * animate the [View.TRANSLATION_X] property of `translateButton` to 800, set its repeat count
+     * to 1, and set its repeat mode to [ValueAnimator.REVERSE]. We initialize [ObjectAnimator] variable
+     * `val rotateAnimation` with an instance which will animate the [View.ROTATION] property of
+     * `rotateButton` to 360, set its repeat count to 1, and set its repeat mode to [ValueAnimator.REVERSE].
+     * We initialize [PropertyValuesHolder] variable `val pvhX` with an instance which will animate
+     * the [View.SCALE_X] property to 2, initialize [PropertyValuesHolder] variable `val pvhY` with
+     * an instance which will animate the [View.SCALE_Y] property to 2, then initialize [ObjectAnimator]
+     * `val scaleAnimation` with an instance which will apply the animations `pvhX` and `pvhY` to
+     * `scaleButton`, set its repeat count to 1, and set its repeat mode to [ValueAnimator.REVERSE].
+     * We initialize [AnimatorSet] variable `val setAnimation` with a new instance, create a
+     * [AnimatorSet.Builder] for it that will use `translateAnimation` as a dependency to run after
+     * `alphaAnimation` and before `rotateAnimation`, then create another [AnimatorSet.Builder]
      * for it that will use `rotateAnimation` as a dependency to have it run before `scaleAnimation`.
      *
+     * Having set up the animations to be used we call our method [setupAnimation] to have it add an
+     * [View.OnClickListener] to `alphaButton` whose [View.OnClickListener.onClick] override runs
+     * `alphaAnimation` if [mCheckBox] is unchecked or runs the xml animation with resource id
+     * [R.animator.fade] if it is checked, call our method [setupAnimation] to have it add a
+     * [View.OnClickListener] to `translateButton` whose [View.OnClickListener.onClick] override
+     * runs `translateAnimation` on it if [mCheckBox] is unchecked or runs the xml animation with
+     * resource id [R.animator.move] if it is checked, call our method [setupAnimation] to have it
+     * add an [View.OnClickListener] to `rotateButton` whose [View.OnClickListener.onClick] override
+     * runs `rotateAnimation` if [mCheckBox] is unchecked or runs the xml animation with resource id
+     * [R.animator.spin] if it is checked, call our method [setupAnimation] to have it add an
+     * [View.OnClickListener] to `scaleButton` whose [View.OnClickListener.onClick] override runs
+     * `scaleAnimation` if [mCheckBox] is unchecked or runs the xml animation with resource id
+     * [R.animator.scale] if it is checked, and finally call our method [setupAnimation] to have it
+     * add an [View.OnClickListener] to `setButton` whose [View.OnClickListener.onClick] override
+     * will run `setAnimation` to animate the other buttons if [mCheckBox] is unchecked or runs the
+     * xml animation with resource id [R.animator.combo] on itself if it is checked.
      *
-     * Having set up the animations to be used we call our method `setupAnimation` to have it add an
-     * `OnClickListener` to `alphaButton` whose `onClick` override runs `alphaAnimation`
-     * if `mCheckBox` is unchecked or runs the xml animation with resource id R.animator.fade if it is
-     * checked, call our method `setupAnimation` to have it add an `OnClickListener` to
-     * `translateButton` whose `onClick` override runs `translateAnimation` on it if
-     * `mCheckBox` is unchecked or runs the xml animation with resource id R.animator.move if it is
-     * checked, call our method `setupAnimation` to have it add an `OnClickListener` to
-     * `rotateButton` whose `onClick` override runs `rotateAnimation` if `mCheckBox`
-     * is unchecked or runs the xml animation with resource id R.animator.spin if it is checked, call our
-     * method `setupAnimation` to have it add an `OnClickListener` to `scaleButton`
-     * whose `onClick` override runs `scaleAnimation` if `mCheckBox` is unchecked or
-     * runs the xml animation with resource id R.animator.scale if it is checked, and finally call our
-     * method `setupAnimation` to have it add an `OnClickListener` to `setButton` whose
-     * `onClick` override will run `setAnimation` to animate the other buttons if `mCheckBox`
-     * is unchecked or runs the xml animation with resource id R.animator.combo on itself if it is checked.
-     *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_property_animations)
         mCheckBox = findViewById(R.id.checkbox)
-        val alphaButton = findViewById<Button>(R.id.alphaButton)
-        val translateButton = findViewById<Button>(R.id.translateButton)
-        val rotateButton = findViewById<Button>(R.id.rotateButton)
-        val scaleButton = findViewById<Button>(R.id.scaleButton)
-        val setButton = findViewById<Button>(R.id.setButton)
+        val alphaButton: Button = findViewById(R.id.alphaButton)
+        val translateButton: Button = findViewById(R.id.translateButton)
+        val rotateButton: Button = findViewById(R.id.rotateButton)
+        val scaleButton: Button = findViewById(R.id.scaleButton)
+        val setButton: Button = findViewById(R.id.setButton)
 
         // Fade the button out and back in
         val alphaAnimation = ObjectAnimator.ofFloat(alphaButton, View.ALPHA, 0f)
@@ -142,7 +145,7 @@ class PropertyAnimations : Activity() {
      * @param animationID Resource id of an xml `Animator` to run if `CheckBox mCheckBox` is checked
      */
     private fun setupAnimation(view: View, animation: Animator, animationID: Int) {
-        view.setOnClickListener(View.OnClickListener { v ->
+        view.setOnClickListener(View.OnClickListener { v: View ->
             /**
              * Called when a view has been clicked. If `CheckBox mCheckBox` is checked we initialize
              * `Animator anim` by inflating the xml `Animator` with the resource id `int animationID`,
