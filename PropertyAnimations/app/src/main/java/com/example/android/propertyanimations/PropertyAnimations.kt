@@ -135,16 +135,18 @@ class PropertyAnimations : Activity() {
     }
 
     /**
-     * Sets the `OnClickListener` of our parameter `View view` to an anonymous instance which
-     * runs the animation `Animator animation` if `CheckBox mCheckBox` is unchecked, or runs
-     * the xml `Animator` whose resource id is `int animationID` on the `View view`
-     * if `CheckBox mCheckBox` is checked.
+     * Sets the [View.OnClickListener] of our [View] parameter [view] to an anonymous instance which
+     * runs the animation in [Animator] parameter [animation] if [CheckBox] field [mCheckBox] is
+     * unchecked, or runs the xml [Animator] whose resource id is [Int] parameter [animationID] on
+     * the [View] paraemter [view] if [CheckBox] field [mCheckBox] is checked.
      *
-     * @param view `View` we are to add an `OnClickListener` to
-     * @param animation `Animator` to run if `CheckBox mCheckBox` is unchecked
-     * @param animationID Resource id of an xml `Animator` to run if `CheckBox mCheckBox` is checked
+     * @param view the [View] we are to add an [View.OnClickListener] to.
+     * @param animation the [Animator] to run if [CheckBox] field [mCheckBox] is unchecked
+     * @param animationID Resource id of an xml [Animator] to run if [CheckBox] field [mCheckBox]
+     * is checked
      */
     private fun setupAnimation(view: View, animation: Animator, animationID: Int) {
+
         view.setOnClickListener(View.OnClickListener { v: View ->
             /**
              * Called when a view has been clicked. If `CheckBox mCheckBox` is checked we initialize
