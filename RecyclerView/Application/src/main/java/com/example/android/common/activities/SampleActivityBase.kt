@@ -30,7 +30,7 @@ open class SampleActivityBase : FragmentActivity() {
      * Called when the activity is starting. We just call through to our super's implementation of
      * `onCreate`.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     @Suppress("RedundantOverride")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,11 +38,10 @@ open class SampleActivityBase : FragmentActivity() {
     }
 
     /**
-     * Called after [.onCreate]  or after [.onRestart] when
-     * the activity had been stopped, but is now again being displayed to the
-     * user.  It will be followed by [.onResume]. We call our super's implementation
-     * of `onStart` then call our method `initializeLogging` to set
-     * up targets to receive log data.
+     * Called after [onCreate] or after [onRestart] when the activity had been stopped, but is now
+     * again being displayed to the user. It will be followed by [onResume]. We call our super's
+     * implementation of `onStart` then call our method [initializeLogging] to set up targets to
+     * receive log data.
      */
     override fun onStart() {
         super.onStart()
