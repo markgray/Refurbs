@@ -19,6 +19,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import com.example.android.common.logger.Log
+import com.example.android.common.logger.LogNode
 import com.example.android.common.logger.LogWrapper
 
 /**
@@ -49,8 +50,9 @@ open class SampleActivityBase : FragmentActivity() {
     }
 
     /**
-     * Set up targets to receive log data. We initialize `LogWrapper logWrapper` with a new
-     * instance and set it to be the LogNode that data will be sent to. We then log the message "Ready"
+     * Set up targets to receive log data. We initialize [LogWrapper] variable `val logWrapper` with
+     * a new instance and set it to be the [LogNode] that data will be sent to. We then log the
+     * message "Ready"
      */
     open fun initializeLogging() {
         // Using Log, front-end to the logging chain, emulates android.util.log method signatures.

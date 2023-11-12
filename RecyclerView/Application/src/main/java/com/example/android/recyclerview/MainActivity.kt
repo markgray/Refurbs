@@ -33,13 +33,12 @@ import com.example.android.common.logger.MessageOnlyLogFilter
  * A simple launcher activity containing a summary sample description, sample log and a custom
  * [Fragment] which can display a view.
  *
- *
  * For devices with displays with a width of 720dp or greater, the sample log is always visible,
  * on other devices it's visibility is controlled by an item on the Action Bar.
  */
 class MainActivity : SampleActivityBase() {
     /**
-     * Whether the Log Fragment is currently shown
+     * Whether the Log [Fragment] is currently shown
      */
     private var mLogShown = false
 

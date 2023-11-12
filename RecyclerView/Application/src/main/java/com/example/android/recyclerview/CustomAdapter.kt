@@ -24,31 +24,32 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.common.logger.Log
 
 /**
- * Provide views to RecyclerView with data from mDataSet.
- */
-class CustomAdapter
-/**
- * Our constructor. We just initialize the dataset `String[] mDataSet` of the Adapter to our
- * parameter `String[] dataSet`.
+ * Provide views to RecyclerView with data from mDataSet. Our constructor. We just initialize the
+ * the [Array] of [String] dataset [mDataSet] of the Adapter to our parameter.
  *
- * @param mDataSet String[] containing the data to populate views to be used by RecyclerView.
- */(
+ * @param mDataSet the [Array] of [String] containing the data to populate views to be used by
+ * [RecyclerView].
+ *  */
+class CustomAdapter(
     /**
-     * Our dataset.
+     * Our dataset field.
      */
-    private val mDataSet: Array<String?>) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+    private val mDataSet: Array<String?>
+) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+
     /**
-     * Provide a reference to the type of views that you are using (custom ViewHolder)
-     * Our constructor. First we call our super's constructor, then we set the `OnClickListener`
-     * of our parameter `View v` to an anonymous class whose `onClick` override logs
-     * the position in the adapter of the view that was clicked, and toasts the same message. Finally
-     * we initialize our field `TextView textView` by finding the view with id R.id.textView.
+     * Provide a reference to the type of views that you are using (custom [ViewHolder]).
+     * Our constructor. First we call our super's constructor, then we set the [View.OnClickListener]
+     *  of our [View] parameter `v` to an anonymous class whose [View.OnClickListener.onClick]
+     *  override logs the position in the adapter of the view that was clicked, and toasts the same
+     *  message. Finally we initialize our [TextView] field [textView] by finding the view with id
+     *  [R.id.textView] in `v`.
      *
-     * @param v View we are to "hold"
+     * @param v the [View] we are to "hold"
      */
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         /**
-         * `TextView` in our view with ID R.id.textView.
+         * [TextView] in our view with ID [R.id.textView].
          */
         val textView: TextView
 
@@ -73,13 +74,13 @@ class CustomAdapter
     }
 
     /**
-     * Called when RecyclerView needs a new [RecyclerView.ViewHolder] of the given type to represent
-     * an item. Create new views (invoked by the layout manager).
+     * Called when [RecyclerView] needs a new [RecyclerView.ViewHolder] of the given type to
+     * represent an item. Create new views (invoked by the layout manager).
      *
-     * @param viewGroup The ViewGroup into which the new View will be added after it is bound to
+     * @param viewGroup The [ViewGroup] into which the new [View] will be added after it is bound to
      * an adapter position.
-     * @param viewType  The view type of the new View.
-     * @return A new ViewHolder that holds a View of the given view type.
+     * @param viewType  The view type of the new [View].
+     * @return A new [ViewHolder] that holds a View of the given view type.
      */
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view.
@@ -89,15 +90,15 @@ class CustomAdapter
     }
 
     /**
-     * Called by RecyclerView to display the data at the specified position. This method should
+     * Called by [RecyclerView] to display the data at the specified position. This method should
      * update the contents of the [RecyclerView.ViewHolder.itemView] to reflect the item at the
      * given position. Replace the contents of a view (invoked by the layout manager). First we log
-     * the `position` in the item within the adapter's data set. Then we fetch the `TextView`
-     * of our parameter `ViewHolder viewHolder` and set its text to the string at `position`
-     * in our dataset array `String[] mDataSet`.
+     * the [Int] parameter [position] of the item within the adapter's data set. Then we fetch the
+     * [TextView] of our [ViewHolder] parameter [viewHolder] and set its text to the string at
+     * [position] in our [Array] of [String] dataset [mDataSet].
      *
-     * @param viewHolder The ViewHolder which should be updated to represent the contents of the
-     * item at the given position in the data set.
+     * @param viewHolder The [ViewHolder] which should be updated to represent the contents of the
+     * item at the given [position] in the data set.
      * @param position   The position of the item within the adapter's data set.
      */
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
@@ -109,8 +110,8 @@ class CustomAdapter
     }
 
     /**
-     * Returns the total number of items in the data set held by the adapter. We just return the length
-     * of our dataset array `String[] mDataSet`.
+     * Returns the total number of items in the data set held by the adapter. We just return the
+     * length of our [Array] of [String] dataset field [mDataSet].
      *
      * @return The total number of items in this adapter.
      */
