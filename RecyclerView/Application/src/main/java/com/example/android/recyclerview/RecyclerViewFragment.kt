@@ -30,14 +30,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * Demonstrates the use of [RecyclerView] with a [LinearLayoutManager] and a
- * [GridLayoutManager].
+ * Demonstrates the use of [RecyclerView] with a [LinearLayoutManager] and a [GridLayoutManager].
  */
 class RecyclerViewFragment : Fragment() {
     /**
-     * `LayoutManager` types that can be used for our `RecyclerView`, used in our
-     * `setRecyclerViewLayoutManager` in a switch to choose between `GridLayoutManager`
-     * and `LinearLayoutManager`.
+     * `LayoutManager` types that can be used for our [RecyclerView], used in our
+     * [setRecyclerViewLayoutManager] in a switch to choose between [GridLayoutManager]
+     * and [LinearLayoutManager].
      */
     enum class LayoutManagerType {
         /**
