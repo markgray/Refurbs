@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 
 /**
  * Demonstrates the use of [RecyclerView] with a [LinearLayoutManager] and a [GridLayoutManager].
@@ -79,7 +80,7 @@ class RecyclerViewFragment : Fragment() {
     /**
      * Current [RecyclerView.LayoutManager] used by our [RecyclerView].
      */
-    var mLayoutManager: RecyclerView.LayoutManager? = null
+    var mLayoutManager: LayoutManager? = null
 
     /**
      * Our dataset, consists of 60 strings each formed by concatenating the element number to the
@@ -114,7 +115,6 @@ class RecyclerViewFragment : Fragment() {
      * using our [FragmentActivity] to access resources, and set our [LayoutManagerType] field
      * [mCurrentLayoutManagerType] to [LayoutManagerType.LINEAR_LAYOUT_MANAGER].
      *
-     *
      * If our [Bundle] parameter [savedInstanceState] is not `null`, we set [mCurrentLayoutManagerType]
      * to the [LayoutManagerType] stored in it under the key [KEY_LAYOUT_MANAGER]. We then call our
      * method [setRecyclerViewLayoutManager] to set the [RecyclerView.LayoutManager] of our [RecyclerView]
@@ -132,16 +132,20 @@ class RecyclerViewFragment : Fragment() {
      * set the [LayoutManagerType] of our [RecyclerView] to [LayoutManagerType.GRID_LAYOUT_MANAGER].
      * Finally we return `rootView` to the caller.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
+     * @param container If non-`null`, this is the parent view that the fragment's
      * UI should be attached to.  The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the View for the fragment's UI, or `null`.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val rootView = inflater.inflate(R.layout.recycler_view_frag, container, false)
         rootView.tag = TAG
 
@@ -181,31 +185,24 @@ class RecyclerViewFragment : Fragment() {
     }
 
     /**
-     * Set RecyclerView's LayoutManager to the one given. First we initialize `int scrollPosition`
-     * to 0. If the `LayoutManager` currently responsible for layout policy for the RecyclerView
-     * `mRecyclerView` is not null, we retrieve the adapter position of the first fully visible
-     * view from it to set `scrollPosition`. Then we switch on the value of our parameter
-     * `LayoutManagerType layoutManagerType`:
+     * Set [RecyclerView]'s LayoutManager to the one given. First we initialize [Int] variable
+     * `var scrollPosition` to 0. If the [LayoutManager] currently responsible for layout policy
+     * for the [RecyclerView] field [mRecyclerView] is not `null`, we retrieve the adapter position
+     * of the first fully visible view from it to set `scrollPosition`. Then if the value of our
+     * [LayoutManagerType] parameter [layoutManagerType] is:
      *
-     *  *
-     * GRID_LAYOUT_MANAGER: we set our field `LayoutManager mLayoutManager` to a new
-     * instance of `GridLayoutManager` constructed to have SPAN_COUNT columns in its
-     * grid, set our field `LayoutManagerType mCurrentLayoutManagerType` to GRID_LAYOUT_MANAGER
-     * and then break.
+     *  * [LayoutManagerType.GRID_LAYOUT_MANAGER]: we set our [LayoutManager] field [mLayoutManager]
+     *  to a new instance of [GridLayoutManager] constructed to have [SPAN_COUNT] columns in its
+     *  grid, and set our [LayoutManagerType] field [mCurrentLayoutManagerType] to
+     *  [LayoutManagerType.GRID_LAYOUT_MANAGER]
      *
-     *  *
-     * LINEAR_LAYOUT_MANAGER: we set our field `LayoutManager mLayoutManager` to a new
-     * instance of `LinearLayoutManager`, set our field `LayoutManagerType mCurrentLayoutManagerType`
-     * to LINEAR_LAYOUT_MANAGER and then break.
+     *  * [LayoutManagerType.LINEAR_LAYOUT_MANAGER] (or any other type): we set our [LayoutManager]
+     *  field [mLayoutManager] to a new instance of [LinearLayoutManager], and set our
+     *  [LayoutManagerType] field [mCurrentLayoutManagerType] to
+     *  [LayoutManagerType.LINEAR_LAYOUT_MANAGER].
      *
-     *  *
-     * default: we set our field `LayoutManager mLayoutManager` to a new instance of
-     * `LinearLayoutManager`, and set our field `LayoutManagerType mCurrentLayoutManagerType`
-     * to LINEAR_LAYOUT_MANAGER.
-     *
-     *
-     * We set the `LayoutManager` that the RecyclerView `mRecyclerView` will use to our field
-     * `LayoutManager mLayoutManager`, then scroll `mRecyclerView` to the position
+     * We set the [LayoutManager] that the [RecyclerView] field [mRecyclerView] will use to our
+     * [LayoutManager] field [mLayoutManager], then scroll [mRecyclerView] to the position
      * `scrollPosition`.
      *
      * @param layoutManagerType Type of layout manager to switch to.
@@ -231,9 +228,10 @@ class RecyclerViewFragment : Fragment() {
 
     /**
      * Called to ask the fragment to save its current dynamic state, so it can later be reconstructed
-     * in a new instance if its process is restarted. We save our field `mCurrentLayoutManagerType`
-     * as a Serializable value in our parameter `Bundle savedInstanceState` under the key
-     * KEY_LAYOUT_MANAGER, then call our super's implementation of `onSaveInstanceState`.
+     * in a new instance if its process is restarted. We save our [LayoutManagerType] field
+     * [mCurrentLayoutManagerType] as a Serializable value in our [Bundle] parameter
+     * [savedInstanceState] under the key [KEY_LAYOUT_MANAGER], then call our super's implementation
+     * of `onSaveInstanceState`.
      *
      * @param savedInstanceState Bundle in which to place your saved state.
      */
@@ -244,10 +242,10 @@ class RecyclerViewFragment : Fragment() {
     }
 
     /**
-     * Generates Strings for RecyclerView's adapter. This data would usually come  from a local
-     * content provider or remote server. We allocate DATASET_COUNT strings for our dataset field
-     * `String[] mDataset`. We then fill it with DATASET_COUNT strings each formed by concatenating
-     * the element number to the end of the string "This is element #".
+     * Generates Strings for [RecyclerView]'s adapter. This data would usually come from a local
+     * content provider or remote server. We allocate [DATASET_COUNT] (60) strings for our [Array]
+     * of [String] field [mDataset]. We then fill it with [DATASET_COUNT] strings each formed by
+     * concatenating the element number to the end of the string "This is element #".
      */
     private fun initDataset() {
         mDataset = arrayOfNulls(DATASET_COUNT)
@@ -258,24 +256,24 @@ class RecyclerViewFragment : Fragment() {
 
     companion object {
         /**
-         * TAG we set on the root view of our `Fragment` for some reason?
+         * TAG we set on the root view of our [Fragment] for some reason?
          */
         private const val TAG = "RecyclerViewFragment"
 
         /**
-         * Key for saving the serializable `LayoutManagerType mCurrentLayoutManagerType` in the
-         * bundle passed to our `onSaveInstanceState` override in order to restore it when our
-         * `onCreateView` override is called.
+         * Key for saving the serializable [LayoutManagerType] fiedl [mCurrentLayoutManagerType] in
+         * the bundle passed to our [onSaveInstanceState] override in order to restore it when our
+         * [onCreateView] override is called.
          */
         private const val KEY_LAYOUT_MANAGER = "layoutManager"
 
         /**
-         * The number of columns in the grid when a `GridLayoutManager` `LayoutManager` is used
+         * The number of columns in the grid when a [GridLayoutManager] type [LayoutManager] is used
          */
         private const val SPAN_COUNT = 2
 
         /**
-         * Number of entries in our dataset `String[] mDataset`.
+         * Number of entries in our [Array] of [String] dataset [mDataset].
          */
         private const val DATASET_COUNT = 60
     }
