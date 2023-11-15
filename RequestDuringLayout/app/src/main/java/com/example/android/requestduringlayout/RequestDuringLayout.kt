@@ -26,34 +26,34 @@ import android.widget.Button
  * This example shows what horrible things can result from calling requestLayout() during
  * a layout pass. DON'T DO THIS.
  *
- *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [...](https://www.youtube.com/watch?v=HbAeTGoKG6k).
  */
 class RequestDuringLayout : Activity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_request_during_layout. We
-     * initialize our variable `MyLayout myLayout` by finding the view with id R.id.container,
-     * initialize `Button addViewButton` by finding the view with id R.id.addView ("Add"), initialize
-     * `Button removeViewButton` by finding the view with id R.id.removeView ("Remove") and
-     * initialize `Button forceLayoutButton` by finding the view with id R.id.forceLayout ("Layout").
-     * Set the `OnClickListener` of `addViewButton` to an anonymous class which sets the
-     * `mAddRequestPending` field of `myLayout` to true, then calls its `requestLayout`
-     * method. Set the `OnClickListener` of `removeViewButton` to an anonymous class which
-     * sets the `mRemoveRequestPending` field of `myLayout` to true, then calls its
-     * `requestLayout` method. And we set the `OnClickListener` of `removeViewButton`
-     * to an anonymous class which calls the `requestLayout` method of `myLayout`.
+     * then we set our content view to our layout file [R.layout.activity_request_during_layout]. We
+     * initialize our [MyLayout] variable `val myLayout` by finding the view with id [R.id.container],
+     * initialize [Button] variable `val addViewButton` by finding the view with id [R.id.addView]
+     * ("Add"), initialize [Button] variable `val removeViewButton` by finding the view with id
+     * [R.id.removeView] ("Remove") and initialize [Button] variable `val forceLayoutButton` by
+     * finding the view with id [R.id.forceLayout] ("Layout"). We set the [View.OnClickListener] of
+     * `addViewButton` to an anonymous class which sets the [MyLayout.mAddRequestPending] field of
+     * `myLayout` to `true`, then calls its [MyLayout.requestLayout] method, and we set the
+     * [View.OnClickListener] of `removeViewButton` to an anonymous class which sets the
+     * [MyLayout.mRemoveRequestPending] field of `myLayout` to true, then calls its
+     * [MyLayout.requestLayout] method. Finally we set the [View.OnClickListener] of `removeViewButton`
+     * to an anonymous class which calls the [MyLayout.requestLayout] method of `myLayout`.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_request_during_layout)
-        val myLayout = findViewById<MyLayout>(R.id.container)
-        val addViewButton = findViewById<Button>(R.id.addView)
-        val removeViewButton = findViewById<Button>(R.id.removeView)
-        val forceLayoutButton = findViewById<Button>(R.id.forceLayout)
+        val myLayout: MyLayout = findViewById(R.id.container)
+        val addViewButton: Button = findViewById(R.id.addView)
+        val removeViewButton: Button = findViewById(R.id.removeView)
+        val forceLayoutButton: Button = findViewById(R.id.forceLayout)
         addViewButton.setOnClickListener { v: View? ->
             myLayout.mAddRequestPending = true
             myLayout.requestLayout()

@@ -5,6 +5,8 @@ package com.example.android.requestduringlayout
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 
@@ -16,17 +18,17 @@ import android.widget.LinearLayout
  */
 class MyLayout : LinearLayout {
     /**
-     * Number of the last `Button` added to our view.
+     * Number of the last [Button] added to our view.
      */
     var numButtons: Int = 0
 
     /**
-     * If this flag is true we call our `addButton` method in our `onLayout` override.
+     * If this flag is `true` we call our [addButton] method in our [onLayout] override.
      */
     var mAddRequestPending: Boolean = false
 
     /**
-     * If this flag is true we call our `removeButton` method in our `onLayout` override.
+     * If this flag is `true` we call our [removeButton] method in our [onLayout] override.
      */
     var mRemoveRequestPending: Boolean = false
 
@@ -34,7 +36,7 @@ class MyLayout : LinearLayout {
      * Perform inflation from XML and apply a class-specific base style from a theme attribute or
      * style resource. We just call our super's constructor.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      * @param defStyle An attribute in the current theme that contains a
@@ -46,7 +48,7 @@ class MyLayout : LinearLayout {
     /**
      * Perform inflation from XML. We just call our super's constructor.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
@@ -55,18 +57,18 @@ class MyLayout : LinearLayout {
     /**
      * Our one argument constructor. We just call our super's constructor.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      */
     constructor(context: Context?) : super(context)
 
     /**
      * Called from layout when this view should assign a size and position to each of its children.
-     * First we call our super's implementation of `onLayout`, then if our `mRemoveRequestPending`
-     * field is true we call our `removeButton` method to remove the first button we have added,
-     * then set our `mRemoveRequestPending` field to false. If our `mAddRequestPending`
-     * field is true we call our `addButton` method to add a new button to our view and then
-     * set the `mAddRequestPending` field to false.
+     * First we call our super's implementation of `onLayout`, then if our [mRemoveRequestPending]
+     * field is `true` we call our [removeButton] method to remove the first button we have added,
+     * then set our [mRemoveRequestPending] field to false. If our [mAddRequestPending] field is
+     * `true` we call our [addButton] method to add a new button to our view and then set the
+     * [mAddRequestPending] field to false.
      *
      * @param changed This is a new size or position for this view
      * @param l       Left position, relative to parent
@@ -92,7 +94,7 @@ class MyLayout : LinearLayout {
     }
 
     /**
-     * Removes the `View` at position 1 in our layout if we have 1 or more children.
+     * Removes the [View] at position 1 in our layout if we have 1 or more children.
      */
     private fun removeButton() {
         if (childCount > 1) {
@@ -101,16 +103,15 @@ class MyLayout : LinearLayout {
     }
 
     /**
-     * Adds a new button to our layout. We initialize `Button button` with a new instance, set
-     * its layout parameters to WRAP_CONTENT by WRAP_CONTENT, set its text to the string formed by
-     * concatenating the string value of `numButtons` (post incrementing it) to the string
-     * "Button ", then add the `addView` method to add it to our `ViewGroup`
+     * Adds a new button to our layout. We initialize [Button] variable `val button` with a new
+     * instance, set its layout parameters to `WRAP_CONTENT` by `WRAP_CONTENT`, set its text to the
+     * string formed by concatenating the string value of [numButtons] (post incrementing it) to the
+     * string "Button ", then call the [addView] method to add it to our [ViewGroup]
      */
     @SuppressLint("SetTextI18n")
     private fun addButton() {
         val button = Button(context)
-        button.layoutParams = LayoutParams(
-            LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        button.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         button.text = "Button " + numButtons++
         addView(button)
     }
