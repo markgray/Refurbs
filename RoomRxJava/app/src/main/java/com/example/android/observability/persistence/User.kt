@@ -19,6 +19,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.example.android.observability.ui.UserViewModel
 import java.util.UUID
 
 /**
@@ -27,21 +28,12 @@ import java.util.UUID
 @Entity(tableName = "users")
 class User {
     /**
-     * Getter for our `String mId` field (the "userid" column), we just return it.
-     *
-     * @return the contents of our `String mId` field (the "userid" column)
-     */
-    /**
      * The unique id we use as our primary key
      */
     @PrimaryKey
     @ColumnInfo(name = "userid")
     val id: String
-    /**
-     * Getter for our `String mUserName` field (the "username" column), we just return it.
-     *
-     * @return the contents of our `String mUserName` field (the "username" column)
-     */
+
     /**
      * Column in the data base where we store the current user name.
      */
@@ -50,10 +42,10 @@ class User {
 
     /**
      * Our constructor. The Ignore annotation tells the Room processor to ignore this constructor.
-     * Called from the `updateUserName` method of `UserViewModel` when the database is
-     * first created. We initialize our field `String mId` (the "userid" column) with a
-     * randomly generated UUID converted to a string, and set our field `String mUserName`
-     * (the "username" column) to our parameter `String userName`.
+     * Called from the [UserViewModel.updateUserName] method of [UserViewModel] when the database is
+     * first created. We initialize our [String] field [id] (the "userid" column) with a randomly
+     * generated UUID converted to a string, and set our [String] field [userName] (the "username"
+     * column) to our [String] parameter [userName].
      *
      * @param userName user name to store in our database
      */
@@ -64,16 +56,16 @@ class User {
     }
 
     /**
-     * Our two argment constructor. Called from the `updateUserName` method of `UserViewModel`
-     * when the entry for the user name is being updated. We set our field `String mId` (the
-     * "userid" column) to our parameter `String id` and our field `String mUserName`
-     * (the "username" column) to our parameter `String userName`.
+     * Our two argment constructor. Called from the [UserViewModel.updateUserName] method of
+     * [UserViewModel] when the entry for the user name is being updated. We set our [String] field
+     * [id] (the "userid" column) to our [String] parameter [id] and our [String] field [newUserName]
+     * (the "username" column) to our [String] parameter [newUserName]
      *
      * @param id       UUID to use for the "userid" column.
-     * @param userName user name to use for the "username" column
+     * @param newUserName user name to use for the "username" column
      */
-    constructor(id: String, userName: String) {
+    constructor(id: String, newUserName: String) {
         this.id = id
-        this.userName = userName
+        this.userName = newUserName
     }
 }

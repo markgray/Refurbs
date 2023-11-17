@@ -15,16 +15,18 @@
  */
 package com.example.android.observability.persistence
 
+import androidx.room.RoomDatabase
+import com.example.android.observability.Injection
 import com.example.android.observability.UserDataSource
 import io.reactivex.Flowable
 
 /**
- * Using the Room database as a data source. `UserDataSource` extends `RoomDatabase` and
+ * Using the Room database as a data source. [UserDataSource] extends [RoomDatabase] and
  * is annotated with: Database(entities = {User.class}, version = 1)
  */
 class LocalUserDataSource
 /**
- * Our constructor, called from the `provideUserDataSource` method of the `Injection`
+ * Our constructor, called from the `provideUserDataSource` method of the [Injection]
  * class. We simply save our parameter `UserDao userDao` in our field `UserDao mUserDao`.
  *
  * @param mUserDao the DAO we should use to access our database
@@ -34,10 +36,10 @@ class LocalUserDataSource
      */
     private val mUserDao: UserDao) : UserDataSource {
     /**
-     * Uses our DAO `mUserDao` to retrieve the `User` object from the database wrapped
-     * in a `Flowable` that will emit every time the user name has been updated
+     * Uses our [UserDao] field [mUserDao] to retrieve the [User] object from the database wrapped
+     * in a [Flowable] that will emit every time the user name has been updated
      *
-     * @return `User` returned by the DAO `mUserDao` wrapped in a flowable that will
+     * @return [User] returned by the DAO field [mUserDao] wrapped in a flowable that will
      * emit every time the user name has been updated.
      */
     override fun getUser(): Flowable<User?>? {
@@ -46,7 +48,7 @@ class LocalUserDataSource
 
     /**
      * Inserts the user into the data source, or, if this is an existing user, updates it. We just
-     * call the `insertUser` method of our DAO `mUserDao` to insert or update the user
+     * call the [UserDao.insertUser] method of our DAO field [mUserDao] to insert or update the user
      * entry in the database.
      *
      * @param user the user to be inserted or updated.
@@ -57,7 +59,7 @@ class LocalUserDataSource
 
     /**
      * Deletes all users from the data source. Used only for testing. We just call the
-     * `deleteAllUsers` method of our DAO `mUserDao` which runs the query
+     * [UserDao.deleteAllUsers] method of our DAO field [mUserDao] which runs the query
      * "DELETE FROM Users" to do the job.
      */
     override fun deleteAllUsers() {

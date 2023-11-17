@@ -36,30 +36,30 @@ import io.reactivex.schedulers.Schedulers
  */
 class UserActivity : AppCompatActivity() {
     /**
-     * `TextView` with id R.id.user_name in our layout file layout/activity_user.xml which is
+     * [TextView] with id [R.id.user_name] in our layout file layout/activity_user.xml which is
      * used to display the current user name.
      */
     private var mUserName: TextView? = null
 
     /**
-     * `EditText` with id R.id.user_name_input in our layout file layout/activity_user.xml
+     * [EditText] with id [R.id.user_name_input] in our layout file layout/activity_user.xml
      * which is used to enter a new user name
      */
     private var mUserNameInput: EditText? = null
 
     /**
-     * `Button` with id R.id.update_user in our layout file layout/activity_user.xml which is
-     * used to read the text in `EditText mUserNameInput` and use it to update the database.
+     * [Button] with id [R.id.update_user] in our layout file layout/activity_user.xml which is
+     * used to read the text in [EditText] field [mUserNameInput] and use it to update the database.
      */
     private var mUpdateButton: Button? = null
 
     /**
-     * `ViewModelFactory` instance we use to create `UserViewModel mViewModel`
+     * [ViewModelFactory] instance we use to create [UserViewModel] field [mViewModel].
      */
     private var mViewModelFactory: ViewModelFactory? = null
 
     /**
-     * This `ViewModel` is used to update our UI based on the contents of the database, and to
+     * This [UserViewModel] is used to update our UI based on the contents of the database, and to
      * update the database when the user changes the user name.
      */
     private var mViewModel: UserViewModel? = null
