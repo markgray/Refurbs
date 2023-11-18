@@ -24,11 +24,17 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.observability.Injection
 import com.example.android.observability.R
+import io.reactivex.Completable
+import io.reactivex.Flowable
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 
 /**
@@ -65,24 +71,24 @@ class UserActivity : AppCompatActivity() {
     private var mViewModel: UserViewModel? = null
 
     /**
-     * `CompositeDisposable` which is used to observe the `Flowable<String>` returned by
-     * the `getUserName` of our `UserViewModel mViewModel`.
+     * [CompositeDisposable] which is used to observe the [Flowable] of [String] returned by
+     * the [UserViewModel.userName] property of our [UserViewModel] field [mViewModel].
      */
     private val mDisposable = CompositeDisposable()
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_user. We
-     * initialize our field `TextView mUserName` by finding the view with id R.id.user_name,
-     * `EditText mUserNameInput` by finding the view with id R.id.user_name_input, and our field
-     * `Button mUpdateButton` by finding the view with id R.id.update_user. We initialize our
-     * field `ViewModelFactory mViewModelFactory` by calling the method `provideViewModelFactory`
-     * in `Injection`, and use that to initialize `UserViewModel mViewModel` using the
-     * `ViewModelProvider` created from it to get a `ViewModel` of the class `UserViewModel`.
-     * Finally we set the `View.OnClickListener` of `mUpdateButton` to a lambda which calls
-     * our method `updateUserName` to update the user name when clicked.
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_user]. We
+     * initialize our [TextView] field [mUserName] by finding the view with id [R.id.user_name],
+     * [EditText] field [mUserNameInput] by finding the view with id [R.id.user_name_input], and our
+     * [Button] field [mUpdateButton] by finding the view with id [R.id.update_user]. We initialize
+     * our [ViewModelFactory] field [mViewModelFactory] to the [ViewModelFactory] returned by the
+     * [Injection.provideViewModelFactory] method, and use that to initialize [UserViewModel] field
+     * [mViewModel] using the [ViewModelProvider] created from it to get a [ViewModel] of the class
+     * [UserViewModel]. Finally we set the [View.OnClickListener] of [mUpdateButton] to a lambda
+     * which calls our method [updateUserName] to update the user name when clicked.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,14 +102,14 @@ class UserActivity : AppCompatActivity() {
     }
 
     /**
-     * Called after [.onCreate]  or after [.onRestart]. First we call our super's
-     * implementation of `onStart`. Then we add a `Disposable` resource to our field
-     * `CompositeDisposable mDisposable` using the `Flowable<String>` returned by the
-     * `getUserName` method of `UserViewModel mViewModel` as the emitter which we subscribe
-     * using the `Scheduler` instance intended for IO-bound work, and observe using the
-     * scheduler running on the main thread to which we subscribe two lambdas whose onNext Consumer
-     * consumes the string `userName` by setting the text of `TextView mUserName` to it
-     * and whose onError Consumer consumes the `Throwable throwable` by logging it.
+     * Called after [onCreate]  or after [onRestart]. First we call our super's implementation of
+     * `onStart`. Then we add a [Disposable] resource to our [CompositeDisposable] field [mDisposable]
+     * using the [Flowable] of [String] returned by the [UserViewModel.userName] propetry of
+     * [UserViewModel] field [mViewModel] as the emitter which we subscribe using the [Scheduler]
+     * instance intended for IO-bound work, and observe using the scheduler running on the main
+     * thread to which we subscribe two lambdas whose `onNext` Consumer consumes the string
+     * `userName` by setting the text of [TextView] field [mUserName] to it and whose `onError`
+     * Consumer consumes the [Throwable] `throwable` passed it by logging it.
      */
     override fun onStart() {
         super.onStart()
@@ -114,14 +120,15 @@ class UserActivity : AppCompatActivity() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ userName: String? -> mUserName!!.text = userName }
-            ) { throwable: Throwable? -> Log.e(TAG, "Unable to update username", throwable) })
+            ) { throwable: Throwable? -> Log.e(TAG, "Unable to update username", throwable) }
+        )
     }
 
     /**
      * Called when you are no longer visible to the user. First we call our super's implementation
-     * of `onStop`, then we call the `clear` method of `CompositeDisposable mDisposable`
-     * to Atomically clear the container, and dispose of all the previously contained Disposables.
-     * (clears all the subscriptions).
+     * of `onStop`, then we call the [CompositeDisposable.clear] method of [CompositeDisposable]
+     * field [mDisposable] to Atomically clear the container, and dispose of all the previously
+     * contained Disposables. (clears all the subscriptions).
      */
     override fun onStop() {
         super.onStop()
@@ -131,16 +138,17 @@ class UserActivity : AppCompatActivity() {
     }
 
     /**
-     * `OnClickListener` for the `Button mUpdateButton`, we update the database entry for
-     * the user name with the value the user has entered in `EditText mUserNameInput`. First we
-     * retrieve the value the user has entered in `EditText mUserNameInput` to initialize
-     * `String userName`, then we disable `mUpdateButton`. Then we add a `Disposable`
-     * resource to our field `CompositeDisposable mDisposable` using the `Completable`
-     * returned when we call the `updateUserName` of `UserViewModel mViewModel` as the
-     * emitter which we subscribe to using the `Scheduler` instance intended for IO-bound work,
-     * and observe using the scheduler running on the main thread to which we subscribe two lambdas
-     * whose onNext Consumer consumes the completion by enabling `Button mUpdateButton`, and
-     * whose onError Consumer consumes the `Throwable throwable` by logging it.
+     * [View.OnClickListener] for the [Button] field [mUpdateButton], we update the database entry
+     * for the user name with the value the user has entered in [EditText] field [mUserNameInput].
+     * First we retrieve the value the user has entered in [EditText] field [mUserNameInput] to
+     * initialize [String] variable `val userName`, and we disable [mUpdateButton]. Then we add a
+     * [Disposable] resource to our [CompositeDisposable] field [mDisposable] using the
+     * [Completable] returned when we call the [UserViewModel.updateUserName] method of
+     * [UserViewModel] field [mViewModel] as the emitter which we subscribe to using the [Scheduler]
+     * instance intended for IO-bound work, and observe using the scheduler running on the main
+     * thread to which we subscribe two lambdas whose `onNext` [Consumer] consumes the completion by
+     * enabling [Button] field [mUpdateButton], and whose `onError` [Consumer] consumes the
+     * [Throwable] `throwable` passed it by logging it.
      */
     private fun updateUserName() {
         val userName = mUserNameInput!!.text.toString()

@@ -28,27 +28,28 @@ import io.reactivex.Flowable
  */
 class UserViewModel
 /**
- * Our constructor, called from the `create` method of `ViewModelFactory`. We just
- * save our parameter `UserDataSource dataSource` in our field `UserDataSource mDataSource`
+ * Our constructor, called from the [ViewModelFactory.create] method of [ViewModelFactory]. We just
+ * save our [UserDataSource] parameter in our [UserDataSource] field [mDataSource]
  *
- * @param mDataSource `UserDataSource` we are to use for our data
+ * @param mDataSource the [UserDataSource] we are to use for our data
  */
 (
     /**
      * `UserDataSource` we are constructed to use
      */
-    private val mDataSource: UserDataSource) : ViewModel() {
+    private val mDataSource: UserDataSource
+) : ViewModel() {
     /**
-     * `User` we are observing and displaying
+     * [User] we are observing and displaying
      */
     private var mUser: User? = null
 
     /**
-     * Get the user name of the user. We call the `map` method of the `Flowable<User>`
-     * returned from the `getUser` method of our field `UserDataSource mDataSource` to
-     * specify a lambda which will be executed every time that `Flowable<User>` emits an item.
-     * This lambda will use the `User user` it receives to update our field `User mUser`
-     * and will then return the string returned by the method `getUserName` of `user`.
+     * Get the user name of the user. We call the [Flowable.map] method of the [Flowable] of [User]
+     * returned from the [UserDataSource.getUser] method of our [UserDataSource] field [mDataSource]
+     * to specify a lambda which will be executed every time that the [Flowable] of [User] emits an
+     * item. This lambda will use the [User] `user` it receives to update our [User] field [mUser]
+     * and will then return the string returned by the method [User.userName] propery of `user`.
      *
      * @return a [Flowable] that will emit every time the user name has been updated.
      */
