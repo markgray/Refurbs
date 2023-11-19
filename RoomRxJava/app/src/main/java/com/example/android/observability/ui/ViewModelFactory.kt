@@ -17,6 +17,7 @@ package com.example.android.observability.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.android.observability.UserDataSource
 
 /**
@@ -42,9 +43,10 @@ class ViewModelFactory
      *
      * @param modelClass `UserViewModel.class`
      * @param <T>        `UserViewModel`
+     * @param extras an additional information for this creation request
      * @return new instance of `UserViewModel`
-    </T> */
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+     */
+    override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST") // It is checked by above if statement.
             return UserViewModel(mDataSource) as T

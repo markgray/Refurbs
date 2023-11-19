@@ -21,7 +21,9 @@ import androidx.lifecycle.ViewModel
 import com.example.android.observability.UserDataSource
 import com.example.android.observability.persistence.User
 import io.reactivex.Completable
+import io.reactivex.functions.Action
 import io.reactivex.Flowable
+import java.util.UUID
 
 /**
  * View Model for the [UserActivity]
@@ -61,20 +63,18 @@ class UserViewModel
             }
 
     /**
-     * Update the user name. We return a `Completable` created by its `fromAction` method
-     * using a lambda whose `run` sets our field `User mUser` depending on its current
-     * value:
+     * Update the user name. We return a [Completable] created by its [Completable.fromAction]
+     * method using a lambda whose `run` [Action] sets our [User] field [mUser] depending on its
+     * current value:
      *
-     *  *
-     * null - creates a new `User` from `userName` using the one argument constructor
+     *  * `null` - creates a new [User] from the [String] value of a random [UUID] and our [String]
+     *  parameter [userName].
      *
-     *  *
-     * not null - creates a new `User` from `userName` with the same ID as the old
-     * value of `mUser` and `userName` using the two argument constructor
+     *  * not `null` - creates a new [User] from our [String] parameter [userName] with the same ID
+     *  as the old value of [mUser].
      *
-     *
-     * The lambda finally calls the `insertOrUpdateUser` method of `mDataSource` to insert
-     * (or update) `mUser` into the database.
+     * The lambda finally calls the [UserDataSource.insertOrUpdateUser] method of [UserDataSource]
+     * field [mDataSource] to insert (or update) [mUser] into the database.
      *
      * @param userName the new user name
      * @return a [Completable] that completes when the user name is updated
@@ -85,7 +85,11 @@ class UserViewModel
             // if there's no use, create a new user.
             // if we already have a user, then, since the user object is immutable,
             // create a new user, with the id of the previous user and the updated user name.
-            mUser = if (mUser == null) User(userName) else User(mUser!!.id, userName)
+            mUser = if (mUser == null) {
+                User(UUID.randomUUID().toString(), userName)
+            } else {
+                User(mUser!!.id, userName)
+            }
             mDataSource.insertOrUpdateUser(mUser!!)
         }
     }
