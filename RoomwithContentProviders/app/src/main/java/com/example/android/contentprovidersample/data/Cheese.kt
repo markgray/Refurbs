@@ -23,13 +23,13 @@ import androidx.room.PrimaryKey
 
 /**
  * Represents one record of the Cheese table. The tableName defined by the Entity annotation is
- * Cheese.TABLE_NAME ("cheeses")
+ * [Cheese.TABLE_NAME] ("cheeses")
  */
 @Entity(tableName = Cheese.TABLE_NAME)
 class Cheese {
     /**
      * The unique ID of the cheese. This primary key is auto-generated. The ColumnInfo annotation
-     * specifies that this field should be indexed, and the "name" should be COLUMN_ID ("_id")
+     * specifies that this field should be indexed, and the "name" should be [COLUMN_ID] ("_id")
      */
     @JvmField
     @PrimaryKey(autoGenerate = true)
@@ -37,8 +37,8 @@ class Cheese {
     var id: Long = 0
 
     /**
-     * The name of the cheese. The ColumnInfo annotation specifies that the "name" should be COLUMN_NAME
-     * ("name")
+     * The name of the cheese. The ColumnInfo annotation specifies that the "name" should be
+     * [COLUMN_NAME] ("name")
      */
     @JvmField
     @ColumnInfo(name = COLUMN_NAME)
@@ -61,14 +61,14 @@ class Cheese {
         const val COLUMN_NAME: String = "name"
 
         /**
-         * Create a new [Cheese] from the specified [ContentValues]. First we initialize
-         * `Cheese cheese` with a new instance, then if our parameter `ContentValues values`
-         * contains a value for the key COLUMN_ID ("_id") we set the field `id` of `cheese`
-         * to the long value stored under the key COLUMN_ID. If `values` contains a value for the
-         * key COLUMN_NAME ("name") we set the field `name` of `cheese` to the string value
-         * stored under the key COLUMN_NAME. Finally we return `cheese` to the caller.
+         * Create a new [Cheese] from the specified [ContentValues]. First we initialize [Cheese]
+         * variable `val cheese` with a new instance, then if our [ContentValues] parameter [values]
+         * contains a value for the key [COLUMN_ID] ("_id") we set the [Cheese.id] field of `cheese`
+         * to the long value stored under the key [COLUMN_ID]. If `values` contains a value for the
+         * key [COLUMN_NAME] ("name") we set the [Cheese.name] field of `cheese` to the string value
+         * stored under the key [COLUMN_NAME]. Finally we return `cheese` to the caller.
          *
-         * @param values A [ContentValues] that at least contain [.COLUMN_NAME].
+         * @param values A [ContentValues] that at least contain [COLUMN_NAME].
          * @return A newly created [Cheese] instance.
          */
         fun fromContentValues(values: ContentValues?): Cheese {

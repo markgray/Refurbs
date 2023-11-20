@@ -35,9 +35,9 @@ interface CheeseDao {
     fun count(): Int
 
     /**
-     * Inserts a cheese into the table.
+     * Inserts a [cheese] into the table.
      *
-     * @param cheese A new cheese.
+     * @param cheese A new [Cheese].
      * @return The row ID of the newly inserted cheese.
      */
     @Insert

@@ -19,8 +19,10 @@ package com.example.android.contentprovidersample.provider
 import android.content.ContentProvider
 import android.content.ContentProviderOperation
 import android.content.ContentProviderResult
+import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
+import android.content.Context
 import android.content.OperationApplicationException
 import android.content.UriMatcher
 import android.database.Cursor
@@ -32,65 +34,65 @@ import com.example.android.contentprovidersample.data.SampleDatabase
 /**
  * A [ContentProvider] based on a Room database.
  *
- *
- *
- * Note that you don't need to implement a ContentProvider unless you want to expose the data
- * outside your process or your application already uses a ContentProvider.
+ * Note that you don't need to implement a [ContentProvider] unless you want to expose the data
+ * outside your process or your application already uses a [ContentProvider].
  */
 class SampleContentProvider : ContentProvider() {
     /**
-     * Implement this to initialize your content provider on startup. We do nothing but return true
-     * to the caller.
+     * Implement this to initialize your content provider on startup. We do nothing but return
+     * `true` to the caller.
      *
-     * @return true to indicate that the provider was successfully loaded
+     * @return `true` to indicate that the provider was successfully loaded
      */
     override fun onCreate(): Boolean {
         return true
     }
 
     /**
-     * We implement this to handle query requests from clients. We initialize `int code` by
-     * matching our parameter `Uri uri` using our field `UriMatcher MATCHER`. If the
-     * result is neither CODE_CHEESE_DIR or CODE_CHEESE_ITEM we throw an IllegalArgumentException,
-     * if it is one of these, we initialize `Context context` with the context that this provider
-     * is running in, and if that is null we return null to the caller (we were called before our
-     * `onCreate` override was called). We initialize `CheeseDao cheese` with the DAO
-     * for the Cheese table, and declare `Cursor cursor`. If `code` is:
+     * We implement this to handle query requests from clients. We initialize [Int] variable
+     * `val code` by matching our [Uri] parameter [uri] using our [UriMatcher] field [MATCHER].
+     * If the result is neither [CODE_CHEESE_DIR] or [CODE_CHEESE_ITEM] we throw an
+     * [IllegalArgumentException], if it is one of these, we initialize [Context] variable
+     * `val context` with the context that this provider is running in, and if that is `null` we
+     * return `null` to the caller (we were called before our [onCreate] override was called). We
+     * initialize [CheeseDao] variable `val cheese` with the DAO for the Cheese table, and declare
+     * [Cursor] variable `val cursor`. If `code` is:
      *
-     *  *
-     * CODE_CHEESE_DIR - we set `cursor` to the value returned by the `selectAll`
-     * method of `cheese`
+     *  * [CODE_CHEESE_DIR] - we set `cursor` to the value returned by the [CheeseDao.selectAll]
+     *  method of `cheese`.
      *
-     *  *
-     * CODE_CHEESE_ITEM - we set `cursor` to the value returned by the `selectById`
-     * method of `cheese` for the ID parsed from our parameter `Uri uri` by the
-     * method `ContentUris.parseId` (returns the long conversion of the last segment)
+     *  * [CODE_CHEESE_ITEM] - we set `cursor` to the value returned by the [CheeseDao.selectById]
+     *  method of `cheese` for the ID parsed from our [Uri] parameter [uri] by the method
+     *  [ContentUris.parseId] (returns the long conversion of the last segment)
      *
-     *
-     * We then call the `setNotificationUri` method of `cursor` to Register with a
-     * ContentResolver instance for our application's package to watch our content URI for changes.
+     * We then call the [Cursor.setNotificationUri] method of `cursor` to Register with a
+     * [ContentResolver] instance for our application's package to watch our content URI for changes.
      * Finally we return `cursor` to the caller.
      *
-     * @param uri           The URI to query. This will be the full URI sent by the client;
-     * if the client is requesting a specific record, the URI will end in a record number
-     * that the implementation should parse and add to a WHERE or HAVING clause, specifying
-     * that _id value.
-     * @param projection    The list of columns to put into the cursor. If
-     * `null` all columns are included.
-     * @param selection     A selection criteria to apply when filtering rows.
-     * If `null` then all rows are included.
-     * @param selectionArgs You may include ?s in selection, which will be replaced by
-     * the values from selectionArgs, in order that they appear in the selection.
-     * The values will be bound as Strings.
-     * @param sortOrder     How the rows in the cursor should be sorted.
-     * If `null` then the provider is free to define the sort order.
+     * @param uri The URI to query. This will be the full URI sent by the client; if the client is
+     * requesting a specific record, the URI will end in a record number that the implementation
+     * should parse and add to a WHERE or HAVING clause, specifying that _id value.
+     * @param projection The list of columns to put into the cursor. If `null` all columns are
+     * included.
+     * @param selection A selection criteria to apply when filtering rows. If `null` then all rows
+     * are included.
+     * @param selectionArgs You may include ?s in selection, which will be replaced by the values
+     * from [selectionArgs], in the order that they appear in the selection. The values will be
+     * bound as Strings.
+     * @param sortOrder How the rows in the cursor should be sorted. If `null` then the provider is
+     * free to define the sort order.
      * @return a Cursor or `null`.
      */
-    override fun query(uri: Uri, projection: Array<String>?, selection: String?,
-                       selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
+    override fun query(
+        uri: Uri,
+        projection: Array<String>?,
+        selection: String?,
+        selectionArgs: Array<String>?,
+        sortOrder: String?
+    ): Cursor? {
         val code = MATCHER.match(uri)
         return if (code == CODE_CHEESE_DIR || code == CODE_CHEESE_ITEM) {
-            val context = context ?: return null
+            val context: Context = context ?: return null
             val cheese: CheeseDao = SampleDatabase.getInstance(context).cheese()
             val cursor: Cursor = if (code == CODE_CHEESE_DIR) {
                 cheese.selectAll()
@@ -105,22 +107,17 @@ class SampleContentProvider : ContentProvider() {
     }
 
     /**
-     * We implement this to handle requests for the MIME type of the data at the given URI. We switch
-     * on the code returned when our field `UriMatcher MATCHER` matches our parameter
-     * `Uri uri`:
+     * We implement this to handle requests for the MIME type of the data at the given URI. We
+     * switch on the code returned when our [UriMatcher] field [MATCHER] matches our [Uri]
+     * parameter [uri]:
      *
-     *  *
-     * CODE_CHEESE_DIR - we return the string:
-     * "vnd.android.cursor.dir/com.example.android.contentprovidersample.provider.cheeses"
+     *  * [CODE_CHEESE_DIR] - we return the string:
+     *  "vnd.android.cursor.dir/com.example.android.contentprovidersample.provider.cheeses"
      *
-     *  *
-     * CODE_CHEESE_ITEM - we return the string:
-     * "vnd.android.cursor.item/com.example.android.contentprovidersample.provider.cheeses"
+     *  * [CODE_CHEESE_ITEM] - we return the string:
+     *  "vnd.android.cursor.item/com.example.android.contentprovidersample.provider.cheeses"
      *
-     *  *
-     * default - we throw an IllegalArgumentException
-     *
-     *
+     *  * default - we throw an [IllegalArgumentException]
      *
      * @param uri the URI to query.
      * @return a MIME type string, or `null` if there is no type.
@@ -135,37 +132,31 @@ class SampleContentProvider : ContentProvider() {
 
     /**
      * We implement this to handle requests to insert a new row. We switch on the code returned when
-     * our field `UriMatcher MATCHER` matches our parameter `Uri uri`:
+     * our [UriMatcher] field [MATCHER] matches our [Uri] parameter [uri]:
      *
-     *  *
-     * CODE_CHEESE_DIR - we initialize `Context context` with the Context this provider
-     * is running in and if it is null we return null to the caller. If it is not null we get
-     * our instance of `SampleDatabase` and use it to get the DAO for the Cheese table
-     * so we can use its `insert` method to insert a `Cheese` object created from
-     * our parameter `ContentValues values`, saving the ID returned by `insert`
-     * in our variable `long id`. We then fetch a ContentResolver instance for our
-     * application's package and call its `notifyChange` method to Notify registered
-     * observers that a row in `uri` was updated and attempt to sync changes to the
-     * network. Finally we append `id` to the end of the path of `uri` and return
-     * it to the caller.
+     *  * [CODE_CHEESE_DIR] - we initialize [Context] variable `val context` with the [Context] this
+     *  provider is running in and if it is `null` we return `null` to the caller. If it is not
+     *  `null` we get our instance of [SampleDatabase] and use it to get th [CheeseDao] for the
+     *  Cheese table so we can use its [CheeseDao.insert] method to insert a [Cheese] object created
+     *  from our [ContentValues] parameter [values], saving the ID returned by `insert` in our
+     *  [Long] variable `val id`. We then fetch a [ContentResolver] instance for our application's
+     *  package and call its [ContentResolver.notifyChange] method to Notify registered observers
+     *  that a row in [uri] was updated and attempt to sync changes to the network. Finally we
+     *  append `id` to the end of the path of [uri] and return it to the caller.
      *
-     *  *
-     * CODE_CHEESE_ITEM - We throw an IllegalArgumentException
+     *  * [CODE_CHEESE_ITEM] - We throw an [IllegalArgumentException]
      *
-     *  *
-     * default - We throw an IllegalArgumentException
+     *  * default - We throw an [IllegalArgumentException]
      *
-     *
-     *
-     * @param uri    The content:// URI of the insertion request. This must not be `null`.
+     * @param uri The content:// URI of the insertion request. This must not be `null`.
      * @param values A set of column_name/value pairs to add to the database.
      * This must not be `null`.
-     * @return The URI for the newly inserted item.
+     * @return The [Uri] for the newly inserted item.
      */
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
         return when (MATCHER.match(uri)) {
             CODE_CHEESE_DIR -> {
-                val context = context ?: return null
+                val context: Context = context ?: return null
                 val id: Long = SampleDatabase.getInstance(context).cheese()
                     .insert(Cheese.fromContentValues(values))
                 context.contentResolver.notifyChange(uri, null)
