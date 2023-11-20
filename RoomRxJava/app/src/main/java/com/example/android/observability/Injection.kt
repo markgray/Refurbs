@@ -27,9 +27,9 @@ import com.example.android.observability.ui.ViewModelFactory
  */
 object Injection {
     /**
-     * Creates a new `LocalUserDataSource`. First we get the singleton instance of our database
-     * to initialize `UsersDatabase database`, then we return a new instance of `LocalUserDataSource`
-     * constructed using the DAO of `database`
+     * Creates a new [LocalUserDataSource]. First we get the singleton instance of our database
+     * to initialize [UsersDatabase] variable `val database`, then we return a new instance of
+     * [LocalUserDataSource] constructed using the DAO of `database`
      *
      * @param context Context to use for the database.
      * @return new instance of `LocalUserDataSource` which uses an instance of `UserDoa`
@@ -41,11 +41,11 @@ object Injection {
     }
 
     /**
-     * Creates a new `ViewModelFactory` by using our apps instance of `UserDataSource` to
+     * Creates a new [ViewModelFactory] by using our apps instance of [UserDataSource] to
      * construct one.
      *
-     * @param context Context to use for the database.
-     * @return an instance of `ViewModelFactory` constructed to use our `LocalUserDataSource`.
+     * @param context the [Context] to use for the database.
+     * @return an instance of [ViewModelFactory] constructed to use our [LocalUserDataSource].
      */
     fun provideViewModelFactory(context: Context): ViewModelFactory {
         val dataSource = provideUserDataSource(context)

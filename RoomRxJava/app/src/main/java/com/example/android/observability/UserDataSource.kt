@@ -23,16 +23,17 @@ import io.reactivex.Flowable
  */
 interface UserDataSource {
     /**
-     * Gets the user from the data source.
+     * Gets the [User] from the data source.
      *
-     * @return the user from the data source.
+     * @return the [User] from the data source.
      */
     fun getUser(): Flowable<User?>?
 
     /**
-     * Inserts the user into the data source, or, if this is an existing user, updates it.
+     * Inserts the [User] parameter [user] into the data source, or if this is an existing user,
+     * updates it.
      *
-     * @param user the user to be inserted or updated.
+     * @param user the [User] to be inserted or updated.
      */
     fun insertOrUpdateUser(user: User)
 

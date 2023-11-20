@@ -19,32 +19,31 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.android.observability.UserDataSource
+import com.example.android.observability.persistence.User
 
 /**
- * Factory for ViewModels
- */
-class ViewModelFactory
-/**
- * Our constructor, we just save our parameter `UserDataSource dataSource` in our field
- * `UserDataSource mDataSource`.
+ * Factory for [UserViewModel]s. Our constructor just saves its [UserDataSource] parameter as its
+ * [UserDataSource] field [mDataSource].
  *
- * @param mDataSource `UserDataSource` managing our `User` database
- */(
+ * @param mDataSource the [UserDataSource] managing our [User] database
+ */
+class ViewModelFactory(
     /**
-     * The `UserDataSource` managing our `User` database, set by our constructor.
+     * The [UserDataSource] managing our [User] database, set by our constructor.
      */
-    private val mDataSource: UserDataSource) : ViewModelProvider.Factory {
+    private val mDataSource: UserDataSource
+) : ViewModelProvider.Factory {
     /**
-     * Factory method for `UserViewModel` called by the `ViewModelProvider` to create an
-     * instance of `UserViewModel`. We check to make sure that our parameter `modelClass`
-     * is a type we can cast to `UserViewModel` before constructing a new instance using our
-     * our field `UserDataSource mDataSource` as the database for that `UserViewModel`
-     * and returning it to the caller. If it is not a proper class we throw IllegalArgumentException
+     * Factory method for [UserViewModel] called by the [ViewModelProvider] to create an instance of
+     * [UserViewModel]. We check to make sure that our [Class] parameter [modelClass] is a type we
+     * can cast to [UserViewModel] before constructing a new instance using our our [UserDataSource]
+     * field [mDataSource] as the database for that [UserViewModel] and returning it to the caller.
+     * If it is not a proper class we throw [IllegalArgumentException]
      *
-     * @param modelClass `UserViewModel.class`
-     * @param <T>        `UserViewModel`
-     * @param extras an additional information for this creation request
-     * @return new instance of `UserViewModel`
+     * @param modelClass [UserViewModel.class]
+     * @param <T>        [UserViewModel]
+     * @param extras any additional information for this creation request
+     * @return new instance of [UserViewModel]
      */
     override fun <T : ViewModel> create(modelClass: Class<T>, extras: CreationExtras): T {
         if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
