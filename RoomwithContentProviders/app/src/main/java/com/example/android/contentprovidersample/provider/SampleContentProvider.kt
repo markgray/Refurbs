@@ -169,38 +169,38 @@ class SampleContentProvider : ContentProvider() {
     }
 
     /**
-     * We implement this to handle requests to delete one or more rows. We switch on the code returned
-     * when our field `UriMatcher MATCHER` matches our parameter `Uri uri`:
+     * We implement this to handle requests to delete one or more rows. We switch on the code
+     * returned when our [UriMatcher] field [MATCHER] matches our [Uri] parameter [uri]:
      *
-     *  *
-     * CODE_CHEESE_DIR - we throw IllegalArgumentException
+     *  * [CODE_CHEESE_DIR] - we throw [IllegalArgumentException]
      *
-     *  *
-     * CODE_CHEESE_ITEM - we initialize `Context context` with the context that this
-     * provider is running in, and if that is null we return 0 to the caller. If it is not
-     * null we get our instance of `SampleDatabase` and use it to get the DAO for the
-     * Cheese table so we can use its `deleteById` method to delete the `Cheese`
-     * object whose long id we parse from our parameter `Uri uri` using the method
-     * `ContentUris.parseId` saving the number of cheeses deleted in `int count`.
-     * We then fetch a ContentResolver instance for our application's package and call its
-     * `notifyChange` method to Notify registered observers that a row in `uri`
-     * was updated and attempt to sync changes to the network. Finally we return `count`
-     * to the caller
+     *  * [CODE_CHEESE_ITEM] - we initialize [Context] variable `val context` with the context that
+     *  this provider is running in, and if that is `null` we return 0 to the caller. If it is not
+     *  `null` we get our instance of [SampleDatabase] and use it to get the DAO for the Cheese
+     *  table so we can use its [CheeseDao.deleteById] method to delete the [Cheese] object whose
+     *  long id we parse from our [Uri] parameter [uri] using the method [ContentUris.parseId]
+     *  saving the number of cheeses deleted in [Int] variable `val count`. We then fetch a
+     *  [ContentResolver] instance for our application's package and call its
+     *  [ContentResolver.notifyChange] method to Notify registered observers that a row in [uri]
+     *  was updated and attempt to sync changes to the network. Finally we return `count` to the
+     *  caller
      *
-     *  *
-     * default - we throw IllegalArgumentException
+     *  * `else` - we throw [IllegalArgumentException]
      *
-     *
-     *
-     * @param uri           The full URI to query, including a row ID (if a specific record is requested).
-     * @param selection     An optional restriction to apply to rows when deleting.
-     * @param selectionArgs Optional arguments to replace "?" characters in `selection`
+     * @param uri The full [Uri] to query, including a row ID (if a specific record is requested).
+     * @param selection An optional restriction to apply to rows when deleting.
+     * @param selectionArgs Optional arguments to replace "?" characters in [selection]
      * @return The number of rows affected.
      */
-    override fun delete(uri: Uri, selection: String?,
-                        selectionArgs: Array<String>?): Int {
+    override fun delete(
+        uri: Uri,
+        selection: String?,
+        selectionArgs: Array<String>?
+    ): Int {
         return when (MATCHER.match(uri)) {
-            CODE_CHEESE_DIR -> throw IllegalArgumentException("Invalid URI, cannot update without ID$uri")
+            CODE_CHEESE_DIR -> {
+                throw IllegalArgumentException("Invalid URI, cannot update without ID$uri")
+            }
             CODE_CHEESE_ITEM -> {
                 val context = context ?: return 0
                 val count: Int = SampleDatabase.getInstance(context).cheese()
@@ -214,45 +214,45 @@ class SampleContentProvider : ContentProvider() {
     }
 
     /**
-     * We implement this to handle requests to update one or more rows. We switch on the code returned
-     * when our field `UriMatcher MATCHER` matches our parameter `Uri uri`:
+     * We implement this to handle requests to update one or more rows. We switch on the code
+     * returned when our [UriMatcher] field [MATCHER] matches our [Uri] parameter [uri]:
      *
-     *  *
-     * CODE_CHEESE_DIR - we throw IllegalArgumentException
+     *  * [CODE_CHEESE_DIR] - we throw [IllegalArgumentException]
      *
-     *  *
-     * CODE_CHEESE_ITEM - we initialize `Context context` with the context that this
-     * provider is running in, and if that is null we return 0 to the caller. If it is not
-     * null we initialize `Cheese cheese` with the `Cheese` in our parameter
-     * `ContentValues values`, and set its `id` field to the long id parsed from
-     * our parameter `Uri uri` by the `ContentUris.parseId` method. We get our
-     * instance of `SampleDatabase` and use it to get the DAO for the Cheese table in
-     * order to use its `update` method to update the entry in the database for
-     * `cheese` saving the number of cheeses updated in `int count` (should always
-     * be 1). We then fetch a ContentResolver instance for our application's package and call
-     * its `notifyChange` method to Notify registered observers that a row in `uri`
-     * was updated and attempt to sync changes to the network. Finally we return `count`
-     * to the caller
+     *  * [CODE_CHEESE_ITEM] - we initialize [Context] variable `val context` with the context that
+     *  this provider is running in, and if that is `null` we return 0 to the caller. If it is not
+     *  `null` we initialize [Cheese] variable `val cheese` with the [Cheese] in our [ContentValues]
+     *  parameter [values], and set its [Cheese.id] field to the long id parsed from our [Uri]
+     *  parameter [uri] by the [ContentUris.parseId] method. We get our instance of [SampleDatabase]
+     *  and use it to get the DAO for the Cheese table in order to use its [CheeseDao.update] method
+     *  to update the entry in the database for `cheese` saving the number of cheeses updated in
+     *  [Int] variable `val count` (should always be 1). We then fetch a [ContentResolver] instance
+     *  for our application's package and call its [ContentResolver.notifyChange] method to Notify
+     *  registered observers that a row in [uri] was updated and attempt to sync changes to the
+     *  network. Finally we return `count` to the caller
      *
-     *  *
-     * default - we throw IllegalArgumentException
+     *  * `else` - we throw [IllegalArgumentException]
      *
-     *
-     *
-     * @param uri           The URI to query. This can potentially have a record ID if this
-     * is an update request for a specific record.
-     * @param values        A set of column_name/value pairs to update in the database.
-     * This must not be `null`.
-     * @param selection     An optional filter to match rows to update.
-     * @param selectionArgs Optional arguments to replace "?" characters in `selection`
+     * @param uri The URI to query. This can potentially have a record ID if this is an update
+     * request for a specific record.
+     * @param values A set of column_name/value pairs to update in the database. This must not be
+     * `null`.
+     * @param selection An optional filter to match rows to update.
+     * @param selectionArgs Optional arguments to replace "?" characters in [selection]
      * @return the number of rows affected.
      */
-    override fun update(uri: Uri, values: ContentValues?, selection: String?,
-                        selectionArgs: Array<String>?): Int {
+    override fun update(
+        uri: Uri,
+        values: ContentValues?,
+        selection: String?,
+        selectionArgs: Array<String>?
+    ): Int {
         return when (MATCHER.match(uri)) {
-            CODE_CHEESE_DIR -> throw IllegalArgumentException("Invalid URI, cannot update without ID$uri")
+            CODE_CHEESE_DIR -> {
+                throw IllegalArgumentException("Invalid URI, cannot update without ID$uri")
+            }
             CODE_CHEESE_ITEM -> {
-                val context = context ?: return 0
+                val context: Context = context ?: return 0
                 val cheese: Cheese = Cheese.fromContentValues(values)
                 cheese.id = ContentUris.parseId(uri)
                 val count: Int = SampleDatabase.getInstance(context).cheese()
@@ -266,27 +266,28 @@ class SampleContentProvider : ContentProvider() {
     }
 
     /**
-     * We Override this to handle requests to perform a batch of operations. We initialize our variable
-     * `Context context` with the context this provider is running in, and if that is null we
-     * return a new instance of `ContentProviderResult` with 0 entries. We initialize variable
-     * `SampleDatabase database` with our apps instance and call its `beginTransaction`
-     * method. Then in a try block we initialize `ContentProviderResult[] result` with the
-     * result returned by our super's implementation of `applyBatch`. We then call the
-     * `setTransactionSuccessful` method of `database` to mark the current transaction
-     * as successful, and return `result` to the caller.
+     * We Override this to handle requests to perform a batch of operations. We initialize our
+     * [Context] variable `val context` with the context this provider is running in. We initialize
+     * [SampleDatabase] variable `val database` with our apps [SampleDatabase] instance and call its
+     * [SampleDatabase.beginTransaction] method. Then in a `try` block which ignores exceptions we
+     * initialize [Array] of  [ContentProviderResult] `val result` with the result returned by our
+     * super's implementation of `applyBatch`. We then call the [SampleDatabase.setTransactionSuccessful]
+     * method of `database` to mark the current transaction as successful, and return `result` to
+     * the caller.
      *
      * @param operations the operations to apply
      * @return the results of the applications
      */
     @Throws(OperationApplicationException::class)
     override fun applyBatch(
-        operations: ArrayList<ContentProviderOperation>): Array<ContentProviderResult> {
-        val context = context
+        operations: ArrayList<ContentProviderOperation>
+    ): Array<ContentProviderResult> {
+        val context: Context? = context
         val database: SampleDatabase = SampleDatabase.getInstance(context!!)
         @Suppress("DEPRECATION")
         database.beginTransaction()
         return try {
-            val result = super.applyBatch(operations)
+            val result: Array<ContentProviderResult> = super.applyBatch(operations)
             @Suppress("DEPRECATION")
             database.setTransactionSuccessful()
             result
@@ -298,27 +299,23 @@ class SampleContentProvider : ContentProvider() {
 
     /**
      * Override this to handle requests to insert a set of new rows. We switch on the code returned
-     * when our field `UriMatcher MATCHER` matches our parameter `Uri uri`:
+     * when our [UriMatcher] field [MATCHER] matches our [Uri] parameter [uri]:
      *
-     *  *
-     * CODE_CHEESE_DIR - We initialize our variable `Context context` with the context
-     * this provider is running in, and if that is null we return 0 to the caller. We
-     * initialize variable `SampleDatabase database` with our apps  instance, then
-     * allocate `Cheese[] cheeses` to have as many entries as our parameter
-     * `ContentValues[] valuesArray` has, and then we fill it with `Cheese`
-     * objects created form each of the entries in `valuesArray`. Then we retrieve
-     * the DAO of the cheese table in `database` in order to call its `insertAll`
-     * method for `cheeses` and return the length of the result it returns to the caller.
+     *  * [CODE_CHEESE_DIR] - We initialize our [Context] variable `val context` with the context
+     *  this provider is running in, and if that is `null` we return 0 to the caller. We initialize
+     *  [SampleDatabase] variable `val database` with our apps [SampleDatabase] instance, then
+     *  initialize our [MutableList] of [Cheese] variable `val cheeseList` to an [ArrayList]. Then
+     *  we fill it with [Cheese] objects created from each of the entries in [Array] of [ContentValues]
+     *  parameter [valuesArray]. Then we retrieve the DAO of the cheese table in `database` in order
+     *  to call its [CheeseDao.insertAll] method with the [Array] of [Cheese] objects created by the
+     *  [toTypedArray] method of `cheeseList` and return the length of the result it returns to the
+     *  caller.
      *
-     *  *
-     * CODE_CHEESE_ITEM - we throw IllegalArgumentException
+     *  * [CODE_CHEESE_ITEM] - we throw [IllegalArgumentException]
      *
-     *  *
-     * default - we throw IllegalArgumentException
+     *  * `else` - we throw [IllegalArgumentException]
      *
-     *
-     *
-     * @param uri         The content:// URI of the insertion request.
+     * @param uri The content:// URI of the insertion request.
      * @param valuesArray An array of sets of column_name/value pairs to add to the database.
      * This must not be `null`.
      * @return The number of values that were inserted.
@@ -326,7 +323,7 @@ class SampleContentProvider : ContentProvider() {
     override fun bulkInsert(uri: Uri, valuesArray: Array<ContentValues>): Int {
         return when (MATCHER.match(uri)) {
             CODE_CHEESE_DIR -> {
-                val context = context ?: return 0
+                val context: Context = context ?: return 0
                 val database: SampleDatabase = SampleDatabase.getInstance(context)
                 val cheeseList: MutableList<Cheese> = ArrayList()
                 for (i in valuesArray.indices) {
@@ -335,7 +332,10 @@ class SampleContentProvider : ContentProvider() {
                 database.cheese().insertAll(cheeseList.toTypedArray()).size
             }
 
-            CODE_CHEESE_ITEM -> throw IllegalArgumentException("Invalid URI, cannot insert with ID: $uri")
+            CODE_CHEESE_ITEM -> {
+                throw IllegalArgumentException("Invalid URI, cannot insert with ID: $uri")
+            }
+
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
     }
@@ -347,10 +347,12 @@ class SampleContentProvider : ContentProvider() {
         const val AUTHORITY: String = "com.example.android.contentprovidersample.provider"
 
         /**
-         * The URI for the Cheese table. "content://com.example.android.contentprovidersample.provider/cheeses"
+         * The URI for the Cheese table:
+         * "content://com.example.android.contentprovidersample.provider/cheeses"
          */
         val URI_CHEESE: Uri = Uri.parse(
-            "content://" + AUTHORITY + "/" + Cheese.TABLE_NAME)
+            /* uriString = */ "content://" + AUTHORITY + "/" + Cheese.TABLE_NAME
+        )
 
         /**
          * The match code for some items in the Cheese table.
@@ -368,8 +370,16 @@ class SampleContentProvider : ContentProvider() {
         private val MATCHER = UriMatcher(UriMatcher.NO_MATCH)
 
         init {
-            MATCHER.addURI(AUTHORITY, Cheese.TABLE_NAME, CODE_CHEESE_DIR)
-            MATCHER.addURI(AUTHORITY, Cheese.TABLE_NAME + "/*", CODE_CHEESE_ITEM)
+            MATCHER.addURI(
+                /* authority = */ AUTHORITY,
+                /* path = */ Cheese.TABLE_NAME,
+                /* code = */ CODE_CHEESE_DIR
+            )
+            MATCHER.addURI(
+                /* authority = */ AUTHORITY,
+                /* path = */ Cheese.TABLE_NAME + "/*",
+                /* code = */ CODE_CHEESE_ITEM
+            )
         }
     }
 }
