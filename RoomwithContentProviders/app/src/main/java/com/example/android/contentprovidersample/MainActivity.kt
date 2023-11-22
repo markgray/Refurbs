@@ -22,6 +22,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -34,37 +35,34 @@ import com.example.android.contentprovidersample.data.Cheese
 import com.example.android.contentprovidersample.provider.SampleContentProvider
 
 /**
- * Not very relevant to Room. This just shows data from [SampleContentProvider].
- *
- *
- *
- * Since the data is exposed through the ContentProvider, other apps can read and write the
- * content in a similar manner to this.
+ * Not very relevant to Room. This just shows data from [SampleContentProvider]. Since the data is
+ * exposed through the ContentProvider, other apps can read and write the content in a similar
+ * manner to this.
  */
 class MainActivity : AppCompatActivity() {
     /**
-     * The `CheeseAdapter` which supplies data for our `RecyclerView`
+     * The [CheeseAdapter] which supplies data for our [RecyclerView]
      */
     private var mCheeseAdapter: CheeseAdapter? = null
 
     /**
-     * Called when our `AppCompatActivity` is starting. First we call our super's implementation
-     * of `onCreate`, then we set our content view to our layout file R.layout.main_activity
-     * (it consists of a single `RecyclerView`). We initialize `RecyclerView list` by
-     * finding the view with id R.id.list, and set its layout manager to a new instance of
-     * `LinearLayoutManager` created to use the context of `list`. We initialize our field
-     * `CheeseAdapter mCheeseAdapter` with a new instance and set the adapter of `list` to
-     * it. Finally we call the `initLoader` method of the activity's `LoaderManager` to
-     * initialize (or reuse) a loader with id LOADER_CHEESES using our `LoaderCallbacks` field
-     * `mLoaderCallbacks` as the interface for the the `LoaderManager` to use to report
-     * changes in the state of the loader.
+     * Called when our [AppCompatActivity] is starting. First we call our super's implementation
+     * of `onCreate`, then we set our content view to our layout file [R.layout.main_activity]
+     * (it consists of a single [RecyclerView]). We initialize [RecyclerView] variable `val list`
+     * by finding the view with id [R.id.list], and set its layout manager to a new instance of
+     * [LinearLayoutManager] created to use the context of `list`. We initialize our [CheeseAdapter]
+     * field [mCheeseAdapter] with a new instance and set the adapter of `list` to it. Finally we
+     * call the [LoaderManager.initLoader] method of the activity's [LoaderManager] to initialize
+     * (or reuse) a loader with id [LOADER_CHEESES] using our [LoaderManager.LoaderCallbacks] field
+     * [mLoaderCallbacks] as the interface for the the [LoaderManager] to use to report changes in
+     * the state of the loader.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        val list = findViewById<RecyclerView>(R.id.list)
+        val list: RecyclerView = findViewById(R.id.list)
         list.layoutManager = LinearLayoutManager(list.context)
         mCheeseAdapter = CheeseAdapter()
         list.adapter = mCheeseAdapter
@@ -72,17 +70,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * `LoaderCallbacks` instance we use when initializing our loader.
+     * [LoaderManager.LoaderCallbacks] instance we use when initializing our loader.
      */
     private val mLoaderCallbacks: LoaderManager.LoaderCallbacks<Cursor> = object : LoaderManager.LoaderCallbacks<Cursor> {
         /**
-         * Instantiate and return a new Loader for the given ID. We switch on our parameter
-         * id in order to throw an IllegalArgumentException if it is not LOADER_CHEESES. If
-         * it is we create a new instance of `CursorLoader` created using our application
-         * context accessing the uri SampleContentProvider.URI_CHEESE (which is the string
-         * content://com.example.android.contentprovidersample.provider/cheeses) requesting
-         * the column Cheese.COLUMN_NAME ("name"), with a null for the selection, selection
-         * args, and sort order.
+         * Instantiate and return a new Loader for the given ID. If our [Int] parameter [id] is
+         * [LOADER_CHEESES] we create a new instance of [CursorLoader] created using our application
+         * context accessing the uri [SampleContentProvider.URI_CHEESE] (which is the string
+         * content://com.example.android.contentprovidersample.provider/cheeses) requesting the
+         * column [Cheese.COLUMN_NAME] ("name"), with a `null` for the selection, selection args,
+         * and sort order. If [id] is *not* [LOADER_CHEESES] we throw [IllegalArgumentException].
          *
          * @param id   The ID whose loader is to be created.
          * @param args Any arguments supplied by the caller.
@@ -99,14 +96,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         /**
-         * Called when a previously created loader has finished its load. We switch on the
-         * parameter `id` just in case, and if it is LOADER_CHEESES we call the
-         * `setCheeses` method of our field `CheeseAdapter mCheeseAdapter` with
-         * our parameter `Cursor data` so that it will begin to display the new data
-         * in its `RecyclerView`.
+         * Called when a previously created loader has finished its load. If the [Loader.getId]
+         * method (kotlin `id` property) of our [Loader] parameter [loader] returns [LOADER_CHEESES]
+         * we call the [CheeseAdapter.setCheeses] method of our [CheeseAdapter] field [mCheeseAdapter]
+         * with our [Cursor] parameter [data] so that it will begin to display the new data in its
+         * [RecyclerView]. Otherwise we ignore the call.
          *
-         * @param loader The Loader that has finished.
-         * @param data   The data generated by the Loader.
+         * @param loader The [Loader] that has finished.
+         * @param data   The data generated by the [Loader].
          */
         override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor) {
             if (loader.id == LOADER_CHEESES) {
@@ -115,13 +112,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         /**
-         * Called when a previously created loader is being reset. We switch on the id of
-         * our parameter `loader` in order to ignore all but LOADER_CHEESES, but if
-         * it is LOADER_CHEESES we call the `setCheeses` method of our field
-         * `CheeseAdapter mCheeseAdapter` with null so that it will set its cursor to
-         * null and stop displaying the old data.
+         * Called when a previously created loader is being reset. If the [Loader.getId] method
+         * (kotlin `id` property) of our [Loader] parameter [loader] returns [LOADER_CHEESES] we
+         * call the [CheeseAdapter.setCheeses] method of our [CheeseAdapter] field [mCheeseAdapter]
+         * with `null` so that it will set its cursor to `null` and stop displaying the old data.
+         * Otherwise we ignore the call.
          *
-         * @param loader The Loader that is being reset.
+         * @param loader The [Loader] that is being reset.
          */
         override fun onLoaderReset(loader: Loader<Cursor>) {
             if (loader.id == LOADER_CHEESES) {
@@ -131,36 +128,37 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * The `Adapter` class we use to fill our `RecyclerView` with cheeses.
+     * The custom [RecyclerView.Adapter] class we use to fill our [RecyclerView] with cheeses.
      */
     private class CheeseAdapter : RecyclerView.Adapter<CheeseAdapter.ViewHolder>() {
         /**
-         * `Cursor` we use to read our data from
+         * [Cursor] we use to read our data from
          */
         private var mCursor: Cursor? = null
 
         /**
-         * Called when RecyclerView needs a new `ViewHolder` of the given type to represent
-         * an item. We simply return a new instance of our class `ViewHolder`
+         * Called when [RecyclerView] needs a new [ViewHolder] of the given type to represent an
+         * item. We simply return a new instance of our class [ViewHolder].
          *
-         * @param parent   The ViewGroup into which the new View will be added after it is bound to
+         * @param parent The [ViewGroup] into which the new [View] will be added after it is bound to
          * an adapter position.
-         * @param viewType The view type of the new View. UNUSED
-         * @return A new ViewHolder that holds a View of the given view type.
+         * @param viewType The view type of the new [View]. UNUSED
+         * @return A new [ViewHolder] that holds a [View] of the given view type.
          */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(parent)
         }
 
         /**
-         * Called by RecyclerView to display the data at the specified position. We move our field
-         * `Cursor mCursor` to the position `position` and if that succeeds, we call the
-         * `setText` method of the `TextView mText` field of our parameter `holder`
-         * to set its text to the string value of the column in `mCursor` whose column index
-         * is named Cheese.COLUMN_NAME ("name") (throwing IllegalArgumentException if that column
-         * does not exist).
+         * Called by [RecyclerView] to display the data at the specified position. We move our
+         * [Cursor] field  [mCursor] to the position of [Int] parameter [position] and if that
+         * succeeds, we call the [TextView.setText] method (kotlin `text` property) of the [TextView]
+         * [ViewHolder.mText] field of our [ViewHolder] parameter [holder] to set its text to the
+         * string value of the column in [Cursor] field [mCursor] whose column index is named
+         * [Cheese.COLUMN_NAME] ("name") (throwing [IllegalArgumentException] if that column does
+         * not exist).
          *
-         * @param holder   The ViewHolder which should be updated to represent the contents of the
+         * @param holder The [ViewHolder] which should be updated to represent the contents of the
          * item at the given position in the data set.
          * @param position The position of the item within the adapter's data set.
          */
@@ -172,9 +170,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         /**
-         * Returns the total number of items in the data set held by the adapter. If our field
-         * `Cursor mCursor` is null we return 0, otherwise we return the numbers of rows
-         * in `Cursor mCursor`.
+         * Returns the total number of items in the data set held by the adapter. If our [Cursor]
+         * field [mCursor] is `null` we return 0, otherwise we return the numbers of rows in
+         * [mCursor] that is returned by its [Cursor.getCount] method (kotlin `count` property).
          *
          * @return The total number of items in this adapter.
          */
@@ -183,11 +181,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         /**
-         * Setter for our field `Cursor mCursor`. We save our parameter `Cursor cursor`
-         * in our field `Cursor mCursor` and call `notifyDataSetChanged` to notify any
-         * registered observers that the data set has changed.
+         * Setter for our [Cursor] field [mCursor]. We save our [Cursor] parameter [cursor] in our
+         * [Cursor] field [mCursor] and call [notifyDataSetChanged] to notify any registered
+         * observers that the data set has changed.
          *
-         * @param cursor `Cursor` we are to read our data from
+         * @param cursor the [Cursor] we are to read our data from
          */
         @SuppressLint("NotifyDataSetChanged")
         fun setCheeses(cursor: Cursor?) {
@@ -196,19 +194,27 @@ class MainActivity : AppCompatActivity() {
         }
 
         /**
-         * The `ViewHolder` subclass we use to display our data
-         * Our constructor. First we call our super's constructor with the inflated layout file
-         * android.R.layout.simple_list_item_1. Then we initialize our field `TextView mText`
-         * by finding the view with id android.R.id.text1 in our super's field `View itemView`
+         * The custom [RecyclerView.ViewHolder] subclass we use to display our data. Our constructor.
+         * First we call our super's constructor with the [View] that a [LayoutInflater] from the
+         * context of our [ViewGroup] parameter `parent` inflates from the layout file with ID
+         * [android.R.layout.simple_list_item_1]. Then we initialize our [TextView] field [mText]
+         * by finding the view with id [android.R.id.text1] in our super's [View] field [itemView].
          * (it is set to the view we used when we called our super's constructor (cute))
          *
-         * @param parent The ViewGroup into which the new View will be added after it is bound to
+         * @param parent The [ViewGroup] into which the new [View] will be added after it is bound to
          * an adapter position.
          */
-        class ViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(parent.context).inflate(
-            android.R.layout.simple_list_item_1, parent, false)) {
+        class ViewHolder(
+            parent: ViewGroup
+        ) : RecyclerView.ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                /* resource = */ android.R.layout.simple_list_item_1,
+                /* root = */ parent,
+                /* attachToRoot = */ false
+            )
+        ) {
             /**
-             * the `TextView` we display our data in
+             * the [TextView] we display our data in
              */
             var mText: TextView = itemView.findViewById(android.R.id.text1)
 
