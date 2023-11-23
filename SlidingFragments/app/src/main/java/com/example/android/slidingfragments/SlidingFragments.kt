@@ -38,7 +38,6 @@ import androidx.fragment.app.FragmentManager
  * provide a more natural way of displaying additional information to the user
  * using a different fragment.
  *
- *
  * In this specific demo, tapping on the screen toggles between the two
  * animated states of the fragment. When the animation is called,
  * the fragment with an image animates into the background while the fragment

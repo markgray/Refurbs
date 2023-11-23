@@ -20,38 +20,49 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 
 /**
- * TODO: Add kdoc
+ * This [Fragment] displays an [ImageView] whose ID is [R.drawable.golden_gate]
  */
 class ImageFragment : Fragment() {
     /**
-     * `OnClickListener` we should set our view's `OnClickListener` to.
+     * [View.OnClickListener] we should set our view's [View.OnClickListener] to.
      */
     private var mClickListener: View.OnClickListener? = null
 
     /**
-     * Called to have the fragment instantiate its user interface view. We initialize `View view`
-     * by using our parameter `LayoutInflater inflater` to inflate our layout file R.layout.image_fragment
-     * into it using our parameter `ViewGroup container` for layout params without attaching to it.
-     * Then we set our `OnClickListener` to our field `clickListener` and return `view` to the caller.
+     * Called to have the fragment instantiate its user interface view. We initialize [View] variable
+     * `val view` by using our [LayoutInflater] parameter [inflater] to inflate our layout file
+     * [R.layout.image_fragment] into it using our [ViewGroup] parameter [container] for its layout
+     * params without attaching to it. Then we set its [View.OnClickListener] to our
+     * [View.OnClickListener] field [mClickListener] and return `view` to the caller.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
-     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed, we ignore.
-     * @return Return the View for the fragment's UI, or null.
+     * @param inflater The [LayoutInflater] object that can be used to inflate any views in the fragment.
+     * @param container If non-`null`, this is the parent view that the fragment's UI will be attached to.
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed, we ignore.
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.image_fragment, container, false)
+    @Suppress("RedundantNullableReturnType") // Is is nullable in our super's implementation
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view: View = inflater.inflate(
+            /* resource = */ R.layout.image_fragment,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
         view.setOnClickListener(mClickListener)
         return view
     }
 
     /**
-     * Setter for our field `OnClickListener clickListener`.
+     * Setter for our [View.OnClickListener] field [mClickListener].
      *
-     * @param clickListener `OnClickListener` we should use for our view
+     * @param clickListener the [View.OnClickListener] we should use for our view.
      */
     fun setClickListener(clickListener: View.OnClickListener?) {
         this.mClickListener = clickListener
