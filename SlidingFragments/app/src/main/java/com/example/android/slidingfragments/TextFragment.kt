@@ -27,12 +27,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 
 /**
- * This is the `Fragment` which describes the image displayed in our `ImageFragment`,
+ * This is the [Fragment] which describes the image displayed in our [ImageFragment],
  * and we are toggled on and off the screen by a user click.
  */
 class TextFragment : Fragment() {
     /**
-     * `OnClickListener` we should set on the view returned by our `onCreateView` override
+     * [View.OnClickListener] we should set on the view returned by our [onCreateView] override
      */
     private var mClickListener: View.OnClickListener? = null
 
