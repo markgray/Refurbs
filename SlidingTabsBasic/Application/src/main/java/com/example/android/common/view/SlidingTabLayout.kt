@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress("unused", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
 
 package com.example.android.common.view
 
@@ -26,38 +26,35 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.HorizontalScrollView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.example.android.common.view.SlidingTabLayout.TabColorizer
 
 /**
- * To be used with ViewPager to provide a tab indicator component which gives constant feedback as to
- * the user's scroll progress.
- *
- *
- * To use the component, simply add it to your view hierarchy. Then in your
- * [android.app.Activity] or [Fragment] call
- * [.setViewPager] providing it the ViewPager this layout is being used for.
- *
+ * To be used with [ViewPager] to provide a tab indicator component which gives constant feedback as
+ * to the user's scroll progress. To use the component, simply add it to your view hierarchy. Then
+ * in your [android.app.Activity] or [Fragment] call [setViewPager] providing it the ViewPager this
+ * layout is being used for.
  *
  * The colors can be customized in two ways. The first and simplest is to provide an array of colors
- * via [.setSelectedIndicatorColors] and [.setDividerColors]. The
- * alternative is via the [TabColorizer] interface which provides you complete control over
- * which color is used for any individual position.
+ * via [setSelectedIndicatorColors] and [setDividerColors]. The alternative is via the [TabColorizer]
+ * interface which provides you complete control over which color is used for any individual position.
  *
- *
- * The views used as tabs can be customized by calling [.setCustomTabView],
- * providing the layout ID of your custom layout.
+ * The views used as tabs can be customized by calling [setCustomTabView], providing the layout ID
+ * of your custom layout.
  */
 open class SlidingTabLayout
 /**
  * Perform inflation from XML and apply a class-specific base style from a
  * theme attribute or style resource.
  *
- * @param context The Context the view is running in, through which it can
+ * @param context The [Context] the view is running in, through which it can
  * access the current theme, resources, etc.
  * @param attrs The attributes of the XML tag that is inflating the view.
  * @param defStyle An attribute in the current theme that contains a
@@ -65,14 +62,18 @@ open class SlidingTabLayout
  * the view. Can be 0 to not look for defaults.
  */
 @JvmOverloads
-constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : HorizontalScrollView(context, attrs, defStyle) {
+constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+) : HorizontalScrollView(context, attrs, defStyle) {
     /**
      * Allows complete control over the colors drawn in the tab layout. Set with
-     * [.setCustomTabColorizer].
+     * [setCustomTabColorizer].
      */
     interface TabColorizer {
         /**
-         * Returns the color of the indicator for the given `position` position.
+         * Returns the color of the indicator for the given [Int] parameter [position] position.
          *
          * @param position position we are to provide the color for.
          * @return return the color of the indicator used when `position` is selected.
@@ -80,7 +81,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
         fun getIndicatorColor(position: Int): Int
 
         /**
-         * Returns the color of the divider drawn to the right of `position`.
+         * Returns the color of the divider drawn to the right of [Int] parameter [position].
          *
          * @param position position we are to provide the color for.
          * @return return the color of the divider drawn to the right of `position`.
@@ -89,7 +90,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
     }
 
     /**
-     * Offset of the title in pixels (TITLE_OFFSET_DIPS times the display density).
+     * Offset of the title in pixels ([TITLE_OFFSET_DIPS] times the display density).
      */
     private val mTitleOffset: Int
 
@@ -104,21 +105,21 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
     private var mTabViewTextViewId = 0
 
     /**
-     * `ViewPager` that this `SlidingTabLayout` is associated with, set by calling our
-     * `setViewPager` method.
+     * [ViewPager] that this [SlidingTabLayout] is associated with, set by calling our
+     * [setViewPager] method.
      */
     private var mViewPager: ViewPager? = null
 
     /**
-     * `OnPageChangeListener` whose `onPageScrolled`, `onPageScrollStateChanged`,
-     * and `onPageSelected` overrides we are to call when our `OnPageChangeListener`
-     * overrides are called. Set in our `setOnPageChangeListener` method. Never used in this
-     * sample.
+     * [OnPageChangeListener] whose [OnPageChangeListener.onPageScrolled],
+     * [OnPageChangeListener.onPageScrollStateChanged], and [OnPageChangeListener.onPageSelected]
+     * overrides we are to call when our [OnPageChangeListener] overrides are called. Set in our
+     * [setOnPageChangeListener] method. Never used in this sample.
      */
     private var mViewPagerPageChangeListener: OnPageChangeListener? = null
 
     /**
-     * The `LinearLayout` which contains all our tabs.
+     * The [LinearLayout] which contains all our tabs.
      */
     private val mTabStrip: SlidingTabStrip
 
@@ -134,15 +135,13 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
     }
 
     /**
-     * Set the custom [TabColorizer] to be used. We just call the `setCustomTabColorizer`
-     * method of our field `SlidingTabStrip mTabStrip`.
+     * Set the custom [TabColorizer] to be used. We just call the [SlidingTabStrip.setCustomTabColorizer]
+     * method of our [SlidingTabStrip] field [mTabStrip]. If you only require simple customization
+     * then you can use [setSelectedIndicatorColors] and [setDividerColors] to achieve similar
+     * effects.
      *
-     *
-     * If you only require simple customization then you can use
-     * [.setSelectedIndicatorColors] and [.setDividerColors] to achieve
-     * similar effects.
-     *
-     * @param tabColorizer `TabColorizer` that our `SlidingTabStrip mTabStrip` should use.
+     * @param tabColorizer the [TabColorizer] instance that our [SlidingTabStrip] field [mTabStrip]
+     * should use.
      */
     fun setCustomTabColorizer(tabColorizer: TabColorizer?) {
         mTabStrip.setCustomTabColorizer(tabColorizer)
@@ -151,7 +150,8 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
     /**
      * Sets the colors to be used for indicating the selected tab. These colors are treated as a
      * circular array. Providing one color will mean that all tabs are indicated with the same color.
-     * We just call the `setSelectedIndicatorColors` method of our field `SlidingTabStrip mTabStrip`.
+     * We just call the [SlidingTabStrip.setSelectedIndicatorColors]  method of our [SlidingTabStrip]
+     * field [mTabStrip].
      *
      * @param colors array (or  Varargs) of colors
      */
@@ -162,7 +162,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
     /**
      * Sets the colors to be used for tab dividers. These colors are treated as a circular array.
      * Providing one color will mean that all tabs are indicated with the same color. We just call
-     * the `setDividerColors` method of our field `SlidingTabStrip mTabStrip`.
+     * the [SlidingTabStrip.setDividerColors] method of our [SlidingTabStrip] field [mTabStrip].
      *
      * @param colors array (or  Varargs) of colors
      */
@@ -174,9 +174,9 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
      * Set the [ViewPager.OnPageChangeListener]. When using [SlidingTabLayout] you are
      * required to set any [ViewPager.OnPageChangeListener] through this method. This is so
      * that the layout can update it's scroll position correctly. We just save our parameter in our
-     * field `ViewPager.OnPageChangeListener mViewPagerPageChangeListener`
+     * [OnPageChangeListener] field [mViewPagerPageChangeListener]
      *
-     * @param listener `OnPageChangeListener` we are to use
+     * @param listener [OnPageChangeListener] we are to use
      * @see ViewPager.setOnPageChangeListener
      */
     fun setOnPageChangeListener(listener: OnPageChangeListener?) {
@@ -184,9 +184,9 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
     }
 
     /**
-     * Set the custom layout to be inflated for the tab views. We save our parameter `layoutResId`
-     * in our field `mTabViewLayoutId`, and our parameter `textViewId` in our field
-     * `mTabViewTextViewId`.
+     * Set the custom layout to be inflated for the tab views. We save our [Int] parameter
+     * [layoutResId] in our [Int] field [mTabViewLayoutId], and our [Int] parameter [textViewId]
+     * in our [Int] field [mTabViewTextViewId].
      *
      * @param layoutResId Layout id to be inflated
      * @param textViewId id of the [TextView] in the inflated view
@@ -199,13 +199,13 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
     /**
      * Sets the associated view pager. Note that the assumption here is that the pager content
      * (number of tabs and tab titles) does not change after this call has been made. We call the
-     * `removeAllViews` method of our field `SlidingTabStrip mTabStrip` to remove all
-     * child views from the ViewGroup, then save our parameter `ViewPager viewPager` in our
-     * field `ViewPager mViewPager`. If `viewPager` is not null, we add a new instance
-     * of `InternalViewPagerListener` as the `OnPageChangeListener` of `viewPager`,
-     * then call our method `populateTabStrip` to populate our field `SlidingTabStrip mTabStrip`
-     * with tab views whose text is set the the title of the pages in the `ViewPager mViewPager`
-     * as determined by calling the `getPageTitle` method of the adapter for each page it contains.
+     * [SlidingTabStrip.removeAllViews] method of our [SlidingTabStrip] field [mTabStrip] to remove
+     * all child views from the [ViewGroup], then save our [ViewPager] parameter [viewPager] in our
+     * [ViewPager] field [mViewPager]. If [viewPager] is not `null`, we add a new instance of
+     * [InternalViewPagerListener] as the [OnPageChangeListener] of [viewPager], then call our
+     * method [populateTabStrip] to populate our [SlidingTabStrip] field [mTabStrip] with tab views
+     * whose text is set to the title of the pages in [ViewPager] field [mViewPager] as determined
+     * by calling the [PagerAdapter.getPageTitle] method of the adapter for each page it contains.
      *
      * @param viewPager our associated view pager.
      */
@@ -220,19 +220,20 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
 
     /**
      * Create a default view to be used for tabs. This is called if a custom tab view is not set via
-     * [.setCustomTabView]. We initialize `TextView textView` with a new instance,
-     * set its gravity to CENTER, set its text size to TAB_VIEW_TEXT_SIZE_SP (12) in COMPLEX_UNIT_SP
-     * units, and set its type face to DEFAULT_BOLD. We initialize `TypedValue outValue`, retrieve
-     * the attribute value for android.R.attr.selectableItemBackground from the Theme object associated
-     * with our Context into it walking the resource references, and then set the background of
-     * `textView` to the resource whose id is now stored in the `resourceId` field of
-     * `outValue`. If the SDK version of our device is greater than or equal to ICE_CREAM_SANDWICH
-     * we set `textView` to transform input to ALL CAPS. We calculate `int padding` by
-     * multiplying TAB_VIEW_PADDING_DIPS by the logical density of the display, then set the padding
-     * of `textView` to it on all four sides. Finally we return `textView` to the caller.
+     * [setCustomTabView]. We initialize [TextView] variable `val textView` with a new instance,
+     * set its gravity to [Gravity.CENTER], set its text size to [TAB_VIEW_TEXT_SIZE_SP] (12) in
+     * [TypedValue.COMPLEX_UNIT_SP] units, and set its type face to [Typeface.DEFAULT_BOLD]. We
+     * initialize [TypedValue] variable `val outValue` with a new instance, retrieve the attribute
+     * value for [android.R.attr.selectableItemBackground] from the Theme object associated with our
+     * [Context] into it walking the resource references, and then set the background of `textView`
+     * to the resource whose id is now stored in the [TypedValue.resourceId] field of `outValue`.
+     * If the SDK version of our device is greater than or equal to `ICE_CREAM_SANDWICH` we set
+     * `textView` to transform input to ALL CAPS. We calculate [Int] variable `val padding` by
+     * multiplying [TAB_VIEW_PADDING_DIPS] by the logical density of the display, then set the
+     * padding of `textView` to it on all four sides. Finally we return `textView` to the caller.
      *
-     * @param context context the `SlidingTabLayout` view is running in
-     * @return a `TextView` configured to be used as a tab view in a `SlidingTabStrip`
+     * @param context the context of the [SlidingTabLayout] that the view is running in
+     * @return a [TextView] configured to be used as a tab view in a `SlidingTabStrip`
      */
     @SuppressLint("ObsoleteSdkInt")
     protected fun createDefaultTabView(context: Context?): TextView {
@@ -244,22 +245,25 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
         // If we're running on Honeycomb or newer, then we can use the Theme's
         // selectableItemBackground to ensure that the View has a pressed state
         val outValue = TypedValue()
-        getContext().theme.resolveAttribute(android.R.attr.selectableItemBackground,
-            outValue, true)
+        getContext().theme.resolveAttribute(
+            /* resid = */ android.R.attr.selectableItemBackground,
+            /* outValue = */ outValue,
+            /* resolveRefs = */ true
+        )
         textView.setBackgroundResource(outValue.resourceId)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             // If we're running on ICS or newer, enable all-caps to match the Action Bar tab style
             textView.isAllCaps = true
         }
-        val padding = (TAB_VIEW_PADDING_DIPS * resources.displayMetrics.density).toInt()
+        val padding: Int = (TAB_VIEW_PADDING_DIPS * resources.displayMetrics.density).toInt()
         textView.setPadding(padding, padding, padding, padding)
         return textView
     }
 
     /**
-     * Populates our field `SlidingTabStrip mTabStrip` with `TextViews` representing each
-     * of the pages in the adapter of our field `ViewPager mViewPager`. We initialize our variable
-     * `PagerAdapter adapter` with the adapter from our field `ViewPager mViewPager`, and
+     * Populates our [SlidingTabStrip] field [mTabStrip] with [TextView]s representing each of the
+     * pages in the adapter of our [ViewPager] field [mViewPager]. We initialize our [PagerAdapter]
+     * variable `val adapter` to the adapter of our [ViewPager] field [mViewPager], and
      * initialize `OnClickListener tabClickListener` with a new instance of `TabClickListener`.
      * We loop over `int i` for all of the views available in `adapter`:
      *
@@ -292,7 +296,7 @@ constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : 
      *
      */
     private fun populateTabStrip() {
-        val adapter = mViewPager!!.adapter
+        val adapter: PagerAdapter? = mViewPager!!.adapter
         val tabClickListener: OnClickListener = TabClickListener()
         for (i in 0 until adapter!!.count) {
             var tabView: View? = null
