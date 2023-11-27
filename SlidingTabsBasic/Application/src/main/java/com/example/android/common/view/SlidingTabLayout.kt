@@ -416,11 +416,12 @@ constructor(
         }
 
         /**
-         * Called when the scroll state changes. Useful for discovering when the user
-         * begins dragging, when the pager is automatically settling to the current page,
-         * or when it is fully stopped/idle. We save our parameter `int state` in our
-         * field `int mScrollState`, and if our field `OnPageChangeListener mViewPagerPageChangeListener`
-         * is not null we call its `onPageScrollStateChanged` method to pass on the new info.
+         * Called when the scroll state changes. Useful for discovering when the user begins
+         * dragging, when the pager is automatically settling to the current page, or when it
+         * is fully stopped/idle. We save our [Int] parameter [state] in our [Int] field
+         * [mScrollState], and if our [OnPageChangeListener] field [mViewPagerPageChangeListener]
+         * is not `null` we call its [OnPageChangeListener.onPageScrollStateChanged] method to
+         * pass on the new info.
          *
          * @param state The new scroll state.
          */
@@ -433,19 +434,20 @@ constructor(
 
         /**
          * This method will be invoked when a new page becomes selected. Animation is not
-         * necessarily complete. If our field `int mScrollState` is equal to SCROLL_STATE_IDLE,
-         * we call the `onViewPagerPageChanged` method of our field `SlidingTabStrip mTabStrip`
-         * to report the new position of the `ViewPager`, then call our method `scrollToTab`
-         * to scroll our `SlidingTabLayout` `HorizontalScrollView` to tab `position`.
-         * If our field `OnPageChangeListener mViewPagerPageChangeListener` is not null we call its
-         * `onPageSelected` method to pass on the new `position`.
+         * necessarily complete. If our [Int] field [mScrollState] is equal to
+         * [ViewPager.SCROLL_STATE_IDLE], we call the [SlidingTabStrip.onViewPagerPageChanged]
+         * method of our [SlidingTabStrip] field [mTabStrip] to report the new position of the
+         * [ViewPager], then call our method [scrollToTab] to scroll our [SlidingTabLayout]
+         * custom [HorizontalScrollView] to tab [Int] parameter [position]. If our
+         * [OnPageChangeListener] field [mViewPagerPageChangeListener] is not `null` we call its
+         * [OnPageChangeListener.onPageSelected] method to pass on the new [position].
          *
          * @param position Position index of the new selected page.
          */
         override fun onPageSelected(position: Int) {
             if (mScrollState == ViewPager.SCROLL_STATE_IDLE) {
-                mTabStrip.onViewPagerPageChanged(position, 0f)
-                scrollToTab(position, 0)
+                mTabStrip.onViewPagerPageChanged(position = position, positionOffset = 0f)
+                scrollToTab(tabIndex = position, positionOffset = 0)
             }
             if (mViewPagerPageChangeListener != null) {
                 mViewPagerPageChangeListener!!.onPageSelected(position)
@@ -454,16 +456,17 @@ constructor(
     }
 
     /**
-     * `OnClickListener` that we use for each of the tab views in our `SlidingTabStrip`
+     * [TabClickListener] that we use for each of the tab views in our [SlidingTabStrip]
      */
     private inner class TabClickListener : OnClickListener {
         /**
-         * Called when a view has been clicked. We loop over `int i` for each of the children
-         * in `SlidingTabStrip mTabStrip`, and if our parameter `View v` is equal to child
-         * view `i` of `mTabStrip` we call the `setCurrentItem` method of our field
-         * `ViewPager mViewPager` to set its currently selected page to `i` and then return.
+         * Called when a view has been clicked. We loop over [Int] variable `var i` for each of the
+         * children in [SlidingTabStrip] field [mTabStrip], and if our [View] parameter [v] is equal
+         * to child view `i` of [mTabStrip] we call the [ViewPager.setCurrentItem] method (kotlin
+         * `currentItem` property) of our [ViewPager] field [mViewPager] to set its currently
+         * selected page to `i` and then return.
          *
-         * @param v The view that was clicked.
+         * @param v The [View] that was clicked.
          */
         override fun onClick(v: View) {
             for (i in 0 until mTabStrip.childCount) {
