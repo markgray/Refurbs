@@ -24,6 +24,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.View
 import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
 import com.example.android.common.view.SlidingTabLayout.TabColorizer
@@ -168,12 +169,12 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
     }
 
     /**
-     * Set the array of colors that our `SimpleTabColorizer mDefaultTabColorizer` will use to
-     * draw the tabs. First we set our field `TabColorizer mCustomTabColorizer` to null so that
-     * it will no longer be used, then we call the `setIndicatorColors` method of our field
-     * `SimpleTabColorizer mDefaultTabColorizer` to set its indicator colors to our parameter
-     * `colors`. Finally we call the `invalidate` method to invalidate the whole view so
-     * that our `onDraw` method will be called.
+     * Set the array of colors that our [SimpleTabColorizer] field [mDefaultTabColorizer] will use
+     * to draw the tabs. First we set our [TabColorizer] field [mCustomTabColorizer] to `null` so
+     * that it will no longer be used, then we call the [SimpleTabColorizer.setIndicatorColors]
+     * method of our [SimpleTabColorizer] field [mDefaultTabColorizer] to set its indicator colors
+     * to our [Int] vararg parameter [colors]. Finally we call the [invalidate] method to invalidate
+     * the whole view so that our [onDraw] method will be called.
      *
      * @param colors array or varargs containing 1 or more colors.
      */
@@ -185,12 +186,12 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
     }
 
     /**
-     * Set the array of colors that our `SimpleTabColorizer mDefaultTabColorizer` will use to
-     * draw the dividers. First we set our field `TabColorizer mCustomTabColorizer` to null so
-     * that it will no longer be used, then we call the `setDividerColors` method of our field
-     * `SimpleTabColorizer mDefaultTabColorizer` to set its indicator colors to our parameter
-     * `colors`. Finally we call the `invalidate` method to invalidate the whole view so
-     * that our `onDraw` method will be called.
+     * Set the array of colors that our [SimpleTabColorizer] field [mDefaultTabColorizer] will use
+     * to draw the dividers. First we set our [TabColorizer] field [mCustomTabColorizer] to `null`
+     * so that it will no longer be used, then we call the [SimpleTabColorizer.setDividerColors]
+     * method of our [SimpleTabColorizer] field [mDefaultTabColorizer] to set its indicator colors
+     * to our [Int] varargs parameter [colors]. Finally we call the [invalidate] method to invalidate
+     * the whole view so that our [onDraw] method will be called.
      *
      * @param colors array or varargs containing 1 or more colors.
      */
@@ -202,13 +203,13 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
     }
 
     /**
-     * Called when the current page of our associated `ViewPager` is scrolled. We save our parameter
-     * `position` in our field `mSelectedPosition`, and our parameter `positionOffset`
-     * in our field `mSelectionOffset` then call the `invalidate` method to invalidate the
-     * whole view so that our `onDraw` method will be called.
+     * Called when the current page of our associated [ViewPager] is scrolled. We save our [Int]
+     * parameter [position] in our [Int] field [mSelectedPosition], and our [Float] parameter
+     * [positionOffset] in our [Float] field [mSelectionOffset] then call the [invalidate] method to
+     * invalidate the whole view so that our [onDraw] method will be called.
      *
-     * @param position       Position index of the first page currently being displayed.
-     * Page position+1 will be visible if positionOffset is nonzero.
+     * @param position Position index of the first page currently being displayed.
+     * Page position+1 will be visible if [positionOffset] is nonzero.
      * @param positionOffset Value from [0, 1) indicating the offset from the page at position.
      */
     fun onViewPagerPageChanged(position: Int, positionOffset: Float) {
@@ -218,89 +219,110 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
     }
 
     /**
-     * We implement this to do our drawing. We initialize `int height` with the height of our
-     * view, and `int childCount` with the number of children in our group. We initialize
-     * `int dividerHeightPx` with the int value of `height` times the minimum of our
-     * field `mDividerHeight` and 1.0f (assuming `mDividerHeight` is larger than 0f).
-     * If our field `mCustomTabColorizer` is not null we we `TabColorizer tabColorizer`
-     * to it, otherwise we set it to `mDefaultTabColorizer`.
+     * We implement this to do our drawing. We initialize [Int] variable `val height` with the
+     * height of our view, and [Int] variable `val childCount` with the number of children in our
+     * group. We initialize [Int] variable `val dividerHeightPx` with the [Int] value of `height`
+     * times the minimum of our [Float] field [mDividerHeight] and 1.0f (assuming [mDividerHeight]
+     * is larger than 0f). If our [TabColorizer] field [mCustomTabColorizer] is not `null` we set
+     * [TabColorizer] variable `val tabColorizer` to it, otherwise we set it to our [SimpleTabColorizer]
+     * field [mDefaultTabColorizer].
      *
+     * If `childCount` is greater than 0, we initialize [View] variable `val selectedTitle` with our
+     * child view at [Int] field [mSelectedPosition], [Int] variable `var left` with the left edge
+     * of this view in pixels and [Int] variable `val right` with the right edge of this view in
+     * pixels. We initialize [Int] variable `val color` with the color returned by the
+     * [TabColorizer.getIndicatorColor] method of `tabColorizer` for [mSelectedPosition]. If
+     * [Float] field [mSelectionOffset] is greater than 0 (page is partially off the screen) and
+     * [mSelectedPosition] is less than the last of our children tabs, we initialize [Int] variable
+     * `val nextColor` with the color that the [TabColorizer.getIndicatorColor] method of
+     * `tabColorizer` returns for the next tab and if `color` is not equal to `nextColor` we set
+     * color to the color that our [blendColors] method `nextColor` and `color` at the ratio given
+     * by [Float] field [mSelectionOffset]. We then initialize [View] variable `val nextTitle` with
+     * the view for the next tab after [Int] field [mSelectedPosition], and recalculate `left` and
+     * `right` so that they accurately portray the fact that the page is offset by [mSelectionOffset].
      *
-     * If `childCount` is greater than 0, we initialize `View selectedTitle` with our
-     * child view at `mSelectedPosition`, `int left` with the left edge of this view, in
-     * pixels and `int right` with the right edge of this view, in pixels. We initialize
-     * `int color` with the color returned by the `getIndicatorColor` method of
-     * `tabColorizer` for `mSelectedPosition`. If `mSelectionOffset` is greater than
-     * 0 (page is partially off the screen) and `mSelectedPosition` is less than the last of our
-     * children tabs, we initialize `int nextColor` with the color that the `getIndicatorColor`
-     * method of `tabColorizer` returns for the next tab and if `color` is not equal to
-     * `nextColor` we set color to the color that our `blendColors` calculates when it blends
-     * `nextColor` and `color` at the ratio given by `mSelectionOffset`. We then
-     * initialize `View nextTitle` with the view for the next tab after `mSelectedPosition`,
-     * and recalculate `left` and `right` so that they accurately portray the fact that the
-     * page is offset by `mSelectionOffset`.
-     *
-     *
-     * Now we set the color of `mSelectedIndicatorPaint` to `color` and then we use it to
-     * draw a rectangle on our parameter `Canvas canvas` whose top left corner is at
+     * Now we set the `color` of [Paint] field [mSelectedIndicatorPaint] to `color` and then we use
+     * it to draw a rectangle on our [Canvas] parameter [canvas] whose top left corner is at
      * (`left`, `height-mSelectedIndicatorThickness`) and whose bottom right corner is at
      * (`right`,`height`) (our indicator for the selected page). We then draw a thin underline
-     * along the entire bottom edge of `Canvas canvas`, a rectangle whose top left corner is at
-     * (0,`height-mBottomBorderThickness`), whose right bottom corner is at (`right`,`height`)
-     * and whose `Paint` is `mBottomBorderPaint`.
+     * along the entire bottom edge of [Canvas] parameter [canvas]`, a rectangle whose top left
+     * corner is at (0,`height-mBottomBorderThickness`), whose right bottom corner is at
+     * (`right`,`height`) and whose `Paint` is [Paint] field [mBottomBorderPaint].
      *
+     * We initialize [Int] variable `val separatorTop` to the quantity one half of the difference
+     * between `height` and `dividerHeightPx`. We then loop over [Int] variable `var i` for all of
+     * our children tabs, setting [View] variable `val child` to each child in turn, setting the
+     * color of [Paint] field [mDividerPaint] to the color that the [TabColorizer.getDividerColor]
+     * method of `tabColorizer` specifies for child `i`, and then drawing a vertical line on [Canvas]
+     * parameter [canvas] along the right edge of  `child` from `separatorTop` down to
+     * `separatorTop+dividerHeightPx` using [mDividerPaint] as the [Paint].
      *
-     * We initialize `int separatorTop` to the quantity one half of the difference between `height`
-     * and `dividerHeightPx`. We then loop over `int i` for all of our children tabs, setting
-     * `View child` to each child in turn, setting the color of `Paint mDividerPaint` to the
-     * color that the `getDividerColor` method of `tabColorizer` specifies for child `i`,
-     * and then drawing a vertical line on `Canvas canvas` along the right edge of  `child`
-     * from `separatorTop` down to `separatorTop+dividerHeightPx` using `mDividerPaint`
-     * as the `Paint`.
-     *
-     * @param canvas the canvas on which the background will be drawn
+     * @param canvas the [Canvas] on which the background will be drawn
      */
     override fun onDraw(canvas: Canvas) {
-        val height = height
-        val childCount = childCount
-        val dividerHeightPx = (Math.min(Math.max(0f, mDividerHeight), 1f) * height).toInt()
-        val tabColorizer = if (mCustomTabColorizer != null) mCustomTabColorizer!! else mDefaultTabColorizer
+        val height: Int = height
+        val childCount: Int = childCount
+        val dividerHeightPx: Int = (Math.min(Math.max(0f, mDividerHeight), 1f) * height).toInt()
+        val tabColorizer: TabColorizer = if (mCustomTabColorizer != null) {
+            mCustomTabColorizer!!
+        } else {
+            mDefaultTabColorizer
+        }
 
         // Thick colored underline below the current selection
         if (childCount > 0) {
-            val selectedTitle = getChildAt(mSelectedPosition)
-            var left = selectedTitle.left
-            var right = selectedTitle.right
-            var color = tabColorizer.getIndicatorColor(mSelectedPosition)
+            val selectedTitle: View = getChildAt(mSelectedPosition)
+            var left: Int = selectedTitle.left
+            var right: Int = selectedTitle.right
+            var color: Int = tabColorizer.getIndicatorColor(mSelectedPosition)
             if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
-                val nextColor = tabColorizer.getIndicatorColor(mSelectedPosition + 1)
+                val nextColor: Int = tabColorizer.getIndicatorColor(mSelectedPosition + 1)
                 if (color != nextColor) {
-                    color = blendColors(nextColor, color, mSelectionOffset)
+                    color = blendColors(
+                        color1 = nextColor,
+                        color2 = color,
+                        ratio = mSelectionOffset
+                    )
                 }
 
                 // Draw the selection partway between the tabs
-                val nextTitle = getChildAt(mSelectedPosition + 1)
+                val nextTitle: View = getChildAt(mSelectedPosition + 1)
                 left = (mSelectionOffset * nextTitle.left +
                     (1.0f - mSelectionOffset) * left).toInt()
                 right = (mSelectionOffset * nextTitle.right +
                     (1.0f - mSelectionOffset) * right).toInt()
             }
             mSelectedIndicatorPaint.color = color
-            canvas.drawRect(left.toFloat(), (height - mSelectedIndicatorThickness).toFloat(), right.toFloat(),
-                height.toFloat(), mSelectedIndicatorPaint)
+            canvas.drawRect(
+                /* left = */ left.toFloat(),
+                /* top = */ (height - mSelectedIndicatorThickness).toFloat(),
+                /* right = */ right.toFloat(),
+                /* bottom = */ height.toFloat(),
+                /* paint = */ mSelectedIndicatorPaint
+            )
         }
 
         // Thin underline along the entire bottom edge
-        canvas.drawRect(0f, (height - mBottomBorderThickness).toFloat(), width.toFloat(), height.toFloat(), mBottomBorderPaint)
+        canvas.drawRect(
+            /* left = */ 0f,
+            /* top = */ (height - mBottomBorderThickness).toFloat(),
+            /* right = */ width.toFloat(),
+            /* bottom = */ height.toFloat(),
+            /* paint = */ mBottomBorderPaint
+        )
 
         // Vertical separators between the titles
-        val separatorTop = (height - dividerHeightPx) / 2
+        val separatorTop: Int = (height - dividerHeightPx) / 2
         for (i in 0 until childCount - 1) {
-            val child = getChildAt(i)
+            val child: View = getChildAt(i)
             mDividerPaint.color = tabColorizer.getDividerColor(i)
-            canvas.drawLine(child.right.toFloat(), separatorTop.toFloat(), child.right.toFloat(),
-                (
-                    separatorTop + dividerHeightPx).toFloat(), mDividerPaint)
+            canvas.drawLine(
+                /* startX = */ child.right.toFloat(),
+                /* startY = */ separatorTop.toFloat(),
+                /* stopX = */ child.right.toFloat(),
+                /* stopY = */ (separatorTop + dividerHeightPx).toFloat(),
+                /* paint = */ mDividerPaint
+            )
         }
     }
 
