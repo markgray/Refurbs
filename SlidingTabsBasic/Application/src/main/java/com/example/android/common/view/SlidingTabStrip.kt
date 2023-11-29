@@ -327,7 +327,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
     }
 
     /**
-     * A basic `TabColorizer`
+     * A basic [TabColorizer]
      */
     private class SimpleTabColorizer : TabColorizer {
         /**
@@ -341,27 +341,27 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
         private lateinit var mDividerColors: IntArray
 
         /**
-         * Returns the color of the indicator for the given `position` position.
+         * Returns the color of the indicator for the given [Int] parameter [position] position.
          *
          * @param position position we are to provide the color for.
-         * @return return the color of the indicator used when `position` is selected.
+         * @return return the color of the indicator used when [position] is selected.
          */
         override fun getIndicatorColor(position: Int): Int {
             return mIndicatorColors[position % mIndicatorColors.size]
         }
 
         /**
-         * Returns the color of the divider drawn to the right of `position`.
+         * Returns the color of the divider drawn to the right of [Int] parameter [position].
          *
          * @param position position we are to provide the color for.
-         * @return return the color of the divider drawn to the right of `position`.
+         * @return return the color of the divider drawn to the right of [position].
          */
         override fun getDividerColor(position: Int): Int {
             return mDividerColors[position % mDividerColors.size]
         }
 
         /**
-         * Setter for our field `int[] mIndicatorColors`.
+         * Setter for our [IntArray] field [mIndicatorColors].
          *
          * @param colors array or varags of `Colors`
          */
@@ -370,7 +370,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
         }
 
         /**
-         * Setter for our field `int[] mDividerColors`.
+         * Setter for our [IntArray] field [mDividerColors]
          *
          * @param colors array or varags of `Colors`
          */
@@ -418,24 +418,26 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
         private const val DEFAULT_DIVIDER_HEIGHT = 0.5f
 
         /**
-         * Set the alpha value of the `color` to be the given `alpha` value.
+         * Set the alpha value of the [Int] parameter [color] to be the given [Byte] parameter
+         * [alpha] value.
          *
          * @param color `Color` to start with
          * @param alpha alpha value to use instead
-         * @return a `Color` whose alpha value is `alpha` and whose RGB values are those of `color`
+         * @return a `Color` whose alpha value is [alpha] and whose RGB values are those of [color]
          */
         private fun setColorAlpha(color: Int, alpha: Byte): Int {
             return Color.argb(alpha.toInt(), Color.red(color), Color.green(color), Color.blue(color))
         }
 
         /**
-         * Blend `color1` and `color2` using the given ratio.
+         * Blend [Int] parameter [color1] and [Int] parameter [color2] using the given [Float]
+         * parameter [ratio].
          *
          * @param color1 First color
          * @param color2 Second color
-         * @param ratio of which to blend. 1.0 will return `color1`, 0.5 will give an even blend,
-         * 0.0 will return `color2`.
-         * @return color which is a ratio of `color1` blended wiht `color2`
+         * @param ratio of which to blend. 1.0 will return [color1], 0.5 will give an even blend,
+         * 0.0 will return [color2].
+         * @return color which is a ratio of [color1] blended with [color2]
          */
         private fun blendColors(color1: Int, color2: Int, ratio: Float): Int {
             val inverseRation = 1f - ratio

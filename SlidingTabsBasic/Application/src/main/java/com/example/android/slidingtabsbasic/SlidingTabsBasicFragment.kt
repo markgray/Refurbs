@@ -30,9 +30,8 @@ import com.example.android.common.logger.Log
 import com.example.android.common.view.SlidingTabLayout
 
 /**
- * A basic sample which shows how to use [com.example.android.common.view.SlidingTabLayout]
- * to display a custom [ViewPager] title strip which gives continuous feedback to the user
- * when scrolling.
+ * A basic sample which shows how to use [SlidingTabLayout] to display a custom [ViewPager] title
+ * strip which gives continuous feedback to the user when scrolling.
  */
 class SlidingTabsBasicFragment : Fragment() {
     /**
@@ -48,31 +47,31 @@ class SlidingTabsBasicFragment : Fragment() {
 
     /**
      * Inflates the [View] which will be displayed by this [Fragment], from the app's
-     * resources. We return the `View` inflated by our parameter `LayoutInflater inflater`
-     * from our layout file R.layout.fragment_sample using our parameter `ViewGroup container`
+     * resources. We return the [View] inflated by our [LayoutInflater] parameter [inflater]
+     * from our layout file [R.layout.fragment_sample] using our [ViewGroup] parameter [container]
      * for the LayoutParams without attaching to it.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here, we do not use.
-     * @return Return the View for the fragment's UI
+     * @return Return the [View] for the fragment's UI
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_sample, container, false)
     }
 
     /**
-     * This is called after the [.onCreateView] has finished.
-     * Here we can pick out the [View]s we need to configure from the content view.
-     * We set the [ViewPager]'s adapter to be an instance of [SamplePagerAdapter]. The
-     * [SlidingTabLayout] is then given the [ViewPager] so that it can populate itself.
+     * This is called after the [onCreateView] has finished. Here we can pick out the [View]s we
+     * need to configure from the content view. We set the [ViewPager]'s adapter to be an instance
+     * of [SamplePagerAdapter]. The [SlidingTabLayout] is then given the [ViewPager] so that it can
+     * populate itself.
      *
-     * @param view View created in [.onCreateView]
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param view View created in [onCreateView]
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,10 +86,9 @@ class SlidingTabsBasicFragment : Fragment() {
     }
 
     /**
-     * The [PagerAdapter] used to display pages in this sample.
-     * The individual pages are simple and just display two lines of text. The important section of
-     * this class is the [.getPageTitle] method which controls what is displayed in the
-     * [SlidingTabLayout].
+     * The [PagerAdapter] used to display pages in this sample. The individual pages are simple and
+     * just display two lines of text. The important section of this class is the [getPageTitle]
+     * method which controls what is displayed in the [SlidingTabLayout].
      */
     internal inner class SamplePagerAdapter : PagerAdapter() {
         /**
@@ -103,10 +101,9 @@ class SlidingTabsBasicFragment : Fragment() {
         }
 
         /**
-         * Determines whether a page View is associated with a specific key object
-         * as returned by [.instantiateItem]. This method is
-         * required for a PagerAdapter to function properly. We return true is our
-         * parameter `Object o` is equal to our parameter `View view`.
+         * Determines whether a page View is associated with a specific key object as returned by
+         * [instantiateItem]. This method is required for a [PagerAdapter] to function properly.
+         * We return true if our [Any] parameter [o] is equal to our [View] parameter [view].
          *
          * @param view Page View to check for association with `object`
          * @param o Object to check for association with `view`
@@ -118,18 +115,14 @@ class SlidingTabsBasicFragment : Fragment() {
         }
 
         /**
-         * This method may be called by the ViewPager to obtain a title string
-         * to describe the specified page. This method may return null
-         * indicating no title for this page. The default implementation returns
-         * null.
+         * This method may be called by the [ViewPager] to obtain a title string to describe the
+         * specified page. This method may return `null` indicating no title for this page. The
+         * default implementation returns `null`. Return the title of the item at [Int] parameter
+         * [position]. This is important as what this method returns is what is displayed in the
+         * [SlidingTabLayout].
          *
-         *
-         * Return the title of the item at `position`. This is important as what this method
-         * returns is what is displayed in the [SlidingTabLayout].
-         *
-         *
-         * Here we construct one using the position value, but for real application the title should
-         * refer to the item's contents.
+         * Here we construct one using the [Int] parameter [position] value, but for real
+         * application the title should refer to the item's contents.
          *
          * @param position The position of the title requested
          * @return A title for the requested page
@@ -139,31 +132,34 @@ class SlidingTabsBasicFragment : Fragment() {
         }
 
         /**
-         * Instantiate the [View] which should be displayed at `position`. Here we inflate
-         * a layout from the apps resources and then change the text view to signify the position.
-         * We initialize `View view` by using the [LayoutInflater] instance that our
-         * activity used to inflate its Window to inflate our layout file R.layout.pager_item using
-         * our parameter `ViewGroup container` for the LayoutParams with our attaching to it.
-         * We then add `view` to our parameter `container`. We initialize `TextView title`
-         * by finding the view in `view` with id R.id.item_title and set the text of `title`
-         * to the string value of our parameter `int position`, and we then log what we just did.
-         * Finally we return `view` to the caller.
+         * Instantiate the [View] which should be displayed at [Int] parameter [position]. Here we
+         * inflate a layout from the apps resources and then change the text view to signify the
+         * position. We initialize [View] variable `val view` by using the [LayoutInflater] instance
+         * that our activity used to inflate its Window to inflate our layout file [R.layout.pager_item]
+         * using our [ViewGroup] parameter [container] for the LayoutParams with our attaching to it.
+         * We then add `view` to our parameter [container]. We initialize [TextView] variable
+         * `val title` by finding the view in `view` with id [R.id.item_title] and set the text of
+         * `title` to the string value of our [Int] parameter [position] plus 1, and we then log
+         * what we just did. Finally we return `view` to the caller.
          *
          * @param container The containing View in which the page will be shown.
          * @param position The page position to be instantiated.
-         * @return Returns an Object representing the new page.  This does not
+         * @return Returns an Object representing the new page. This does not
          * need to be a View, but can be some other container of the page.
          */
         @SuppressLint("SetTextI18n")
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
             // Inflate a new layout from our resources
-            val view = activity!!.layoutInflater.inflate(R.layout.pager_item,
-                container, false)
+            val view: View = activity!!.layoutInflater.inflate(
+                /* resource = */ R.layout.pager_item,
+                /* root = */ container,
+                /* attachToRoot = */ false
+            )
             // Add the newly created View to the ViewPager
             container.addView(view)
 
             // Retrieve a TextView from the inflated View, and update it's text
-            val title = view.findViewById<TextView>(R.id.item_title)
+            val title: TextView = view.findViewById(R.id.item_title)
             title.text = (position + 1).toString()
             Log.i(LOG_TAG, "instantiateItem() [position: $position]")
 
