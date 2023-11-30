@@ -170,21 +170,18 @@ class SlidingTabsBasicFragment : Fragment() {
         /**
          * Remove a page for the given position. The adapter is responsible for removing the view
          * from its container, although it only must ensure this is done by the time it returns from
-         * [.finishUpdate].
+         * [finishUpdate].
          *
-         *
-         * Destroy the item from the [ViewPager]. In our case this is simply removing the
-         * parameter `Object object` (cast to `View`) from our parameter
-         * `ViewGroup container`, and logging which `int position` we were asked to
-         * remove.
+         * Destroy the item from the [ViewPager]. In our case this is simply removing the [Any]
+         * parameter [pageToRemove] (cast to [View]) from our [ViewGroup] parameter [container],
+         * and logging which [Int] parameter [position] we were asked to remove.
          *
          * @param container The containing View from which the page will be removed.
          * @param position The page position to be removed.
-         * @param object The same object that was returned by
-         * [.instantiateItem].
+         * @param [pageToRemove] The same object that was returned by [instantiateItem].
          */
-        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-            container.removeView(`object` as View)
+        override fun destroyItem(container: ViewGroup, position: Int, pageToRemove: Any) {
+            container.removeView(pageToRemove as View)
             Log.i(LOG_TAG, "destroyItem() [position: $position]")
         }
     }
