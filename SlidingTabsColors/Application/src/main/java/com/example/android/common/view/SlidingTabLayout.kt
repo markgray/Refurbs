@@ -161,7 +161,6 @@ constructor(
      *
      * @param colors array (or Varargs) of colors
      */
-    @Suppress("unused")
     fun setSelectedIndicatorColors(vararg colors: Int) {
         mTabStrip.setSelectedIndicatorColors(*colors)
     }
@@ -173,7 +172,6 @@ constructor(
      *
      * @param colors array (or Varargs) of colors
      */
-    @Suppress("unused")
     fun setDividerColors(vararg colors: Int) {
         mTabStrip.setDividerColors(*colors)
     }
@@ -187,7 +185,6 @@ constructor(
      * @param listener the [OnPageChangeListener] we are to use
      * @see ViewPager.setOnPageChangeListener
      */
-    @Suppress("unused")
     fun setOnPageChangeListener(listener: OnPageChangeListener?) {
         mViewPagerPageChangeListener = listener
     }
@@ -200,7 +197,6 @@ constructor(
      * @param layoutResId Layout id to be inflated
      * @param textViewId id of the [TextView] in the inflated view
      */
-    @Suppress("unused")
     fun setCustomTabView(layoutResId: Int, textViewId: Int) {
         mTabViewLayoutId = layoutResId
         mTabViewTextViewId = textViewId
