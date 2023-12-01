@@ -31,8 +31,10 @@ import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.example.android.common.view.SlidingTabLayout.Companion.TITLE_OFFSET_DIPS
 import com.example.android.common.view.SlidingTabLayout.TabColorizer
 
 /**
@@ -206,12 +208,13 @@ constructor(
      * Sets the associated view pager. Note that the assumption here is that the pager content
      * (number of tabs and tab titles) does not change after this call has been made. We call the
      * [SlidingTabStrip.removeAllViews] method of our [SlidingTabStrip] field [mTabStrip] to remove
-     * all child views from the [ViewGroup], then save our parameter `ViewPager viewPager` in our
-     * field `ViewPager mViewPager`. If `viewPager` is not null, we add a new instance
-     * of `InternalViewPagerListener` as the `OnPageChangeListener` of `viewPager`,
-     * then call our method `populateTabStrip` to populate our field `SlidingTabStrip mTabStrip`
-     * with tab views whose text is set the the title of the pages in the `ViewPager mViewPager`
-     * as determined by calling the `getPageTitle` method of the adapter for each page it contains.
+     * all child views from the [ViewGroup], then save our [ViewPager] parameter [viewPager] in our
+     * [ViewPager] field [mViewPager]. If [viewPager] is not `null`, we add a new instance of
+     * [InternalViewPagerListener] as the [OnPageChangeListener] of `viewPager`, then call our
+     * method [populateTabStrip] to populate our [SlidingTabStrip] field [mTabStrip] with tab views
+     * whose text is set the the title of the pages in the [ViewPager] field [mViewPager] as
+     * determined by calling the [PagerAdapter.getPageTitle] method of the adapter for each page it
+     * contains.
      *
      * @param viewPager our associated view pager.
      */
@@ -226,19 +229,20 @@ constructor(
 
     /**
      * Create a default view to be used for tabs. This is called if a custom tab view is not set via
-     * [.setCustomTabView]. We initialize `TextView textView` with a new instance,
-     * set its gravity to CENTER, set its text size to TAB_VIEW_TEXT_SIZE_SP (12) in COMPLEX_UNIT_SP
-     * units, and set its type face to DEFAULT_BOLD. We initialize `TypedValue outValue`, retrieve
-     * the attribute value for android.R.attr.selectableItemBackground from the Theme object associated
-     * with our Context into it walking the resource references, and then set the background of
-     * `textView` to the resource whose id is now stored in the `resourceId` field of
-     * `outValue`. We set `textView` to transform input to ALL CAPS. We calculate
-     * `int padding` by multiplying TAB_VIEW_PADDING_DIPS by the logical density of the display,
-     * then set the padding of `textView` to it on all four sides. Finally we return `textView`
-     * to the caller.
+     * [setCustomTabView]. We initialize [TextView] variable `val textView` with a new instance, set
+     * its gravity to [Gravity.CENTER], set its text size to [TAB_VIEW_TEXT_SIZE_SP] (12) in
+     * [TypedValue.COMPLEX_UNIT_SP] units, and set its type face to [Typeface.DEFAULT_BOLD]. We
+     * initialize [TypedValue] variable `val outValue` to a new instance, retrieve the attribute
+     * value for [android.R.attr.selectableItemBackground] from the [Resources.Theme] object
+     * associated with our [Context] into it walking the resource references, and then set the
+     * background of `textView` to the resource whose id is now stored in the [TypedValue.resourceId]
+     * field of `outValue`. We set `textView` to transform input to ALL CAPS. We calculate [Int]
+     * variable `val padding` by multiplying [TAB_VIEW_PADDING_DIPS] by the logical density of the
+     * display, then set the padding of `textView` to it on all four sides. Finally we return
+     * `textView` to the caller.
      *
-     * @param context context the `SlidingTabLayout` view is running in
-     * @return a `TextView` configured to be used as a tab view in a `SlidingTabStrip`
+     * @param context the [Context] the [SlidingTabLayout] view is running in
+     * @return a [TextView] configured to be used as a tab view in a [SlidingTabStrip]
      */
     @Suppress("ProtectedInFinal")
     protected fun createDefaultTabView(context: Context?): TextView {
@@ -250,8 +254,11 @@ constructor(
         // If we're running on Honeycomb or newer, then we can use the Theme's
         // selectableItemBackground to ensure that the View has a pressed state
         val outValue = TypedValue()
-        getContext().theme.resolveAttribute(android.R.attr.selectableItemBackground,
-            outValue, true)
+        getContext().theme.resolveAttribute(
+            /* resid = */ android.R.attr.selectableItemBackground,
+            /* outValue = */ outValue,
+            /* resolveRefs = */ true
+        )
         textView.setBackgroundResource(outValue.resourceId)
 
         // If we're running on ICS or newer, enable all-caps to match the Action Bar tab style
@@ -262,14 +269,14 @@ constructor(
     }
 
     /**
-     * Populates our field `SlidingTabStrip mTabStrip` with `TextViews` representing each
-     * of the pages in the adapter of our field `ViewPager mViewPager`. We initialize our variable
-     * `PagerAdapter adapter` with the adapter from our field `ViewPager mViewPager`, and
-     * initialize `OnClickListener tabClickListener` with a new instance of `TabClickListener`.
-     * We loop over `int i` for all of the views available in `adapter`:
+     * Populates our [SlidingTabStrip] field [mTabStrip] with [TextView]s representing each of the
+     * pages in the adapter of our [ViewPager] field [mViewPager]. We initialize our [PagerAdapter]
+     * variable `val adapter` with the adapter from our [ViewPager] field [mViewPager], and
+     * initialize [TabClickListener] variable `val tabClickListener` with a new instance of
+     * [TabClickListener]. We loop over [Int] variable `var i` for all of the views available in
+     * `adapter`:
      *
-     *  1.
-     * We initialize `View tabView` and `TextView tabTitleView` to null
+     *  1. We initialize `View tabView` and `TextView tabTitleView` to null
      *
      *  1.
      * If our field `mTabViewLayoutId` is not 0, we set `tabView` to the `View`
@@ -297,8 +304,8 @@ constructor(
      *
      */
     private fun populateTabStrip() {
-        val adapter = mViewPager!!.adapter
-        val tabClickListener: OnClickListener = TabClickListener()
+        val adapter: PagerAdapter? = mViewPager!!.adapter
+        val tabClickListener = TabClickListener()
         for (i in 0 until adapter!!.count) {
             var tabView: View? = null
             var tabTitleView: TextView? = null
