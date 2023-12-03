@@ -18,115 +18,123 @@
 package com.example.android.common.view
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.View
 import android.widget.LinearLayout
+import androidx.viewpager.widget.ViewPager
 import com.example.android.common.view.SlidingTabLayout.TabColorizer
 
 /**
- * Horizontal `LinearLayout` which holds all the tabs for our sliding tab UI.
+ * Horizontal [LinearLayout] which holds all the tabs for our sliding tab UI.
  */
 internal class SlidingTabStrip
 /**
  * Perform inflation from XML and apply a class-specific base style from a theme attribute or
- * style resource. First we call our super's constructor, then we call the `setWillNotDraw`
- * method to clear the "will not draw flag" so that our `onDraw` override will be called.
- * We initialize `float density` with the logical density of the display in order to use it
- * to scale DIPS to pixels. We initialize `TypedValue outValue` with a new instance then
- * store the value that the `resolveAttribute` method of the Theme object associated with
- * `Context context` resolves for the attribute colorForeground in it. We then initialize
- * `int themeForegroundColor` with the `data` field of `outValue`. We initialize
- * our field `int mDefaultBottomBorderColor` by calling our method `setColorAlpha` to
- * create a new color by replacing the alpha component of `themeForegroundColor` with
- * DEFAULT_BOTTOM_BORDER_COLOR_ALPHA (0x26). We initialize `SimpleTabColorizer mDefaultTabColorizer`
- * with a new instance, then set its indicator colors to DEFAULT_SELECTED_INDICATOR_COLOR (0xFF33B5E5),
- * and its divider colors to the color our method `setColorAlpha` creates by replacing the alpha
- * component of `themeForegroundColor` with DEFAULT_DIVIDER_COLOR_ALPHA (0x20). We initialize
- * our field `mBottomBorderThickness` by multiplying DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS by
- * `density`, then initialize our field `Paint mBottomBorderPaint` with a new instance
- * and set its color to `mDefaultBottomBorderColor`. We initialize our field `mSelectedIndicatorThickness`
- * by multiplying SELECTED_INDICATOR_THICKNESS_DIPS by `density`, and initialize our field
- * `Paint mSelectedIndicatorPaint` with a new instance. We initialize our field `mDividerHeight`
- * to DEFAULT_DIVIDER_HEIGHT (0.5f), initialize our field `Paint mDividerPaint` with a new
- * instance and set its stroke width to DEFAULT_DIVIDER_THICKNESS_DIPS multiplied by `density`.
+ * style resource. First we call our super's constructor, then in our `init` block we call the
+ * [setWillNotDraw] method with `false` to clear the "will not draw flag" so that our [onDraw]
+ * override will be called. We initialize [Float] variable `val density` with the logical density
+ * of the display in order to use it to scale DIPS to pixels. We initialize [TypedValue] variable
+ * `val outValue` with a new instance then store the value that the [Resources.Theme.resolveAttribute]
+ * method of the [Resources.Theme] object associated with [Context] parameter `context` resolves
+ * for the attribute [android.R.attr.colorForeground] in it. We then initialize [Int] variable
+ * `val themeForegroundColor` with the [TypedValue.data] field of `outValue`. We initialize our
+ * [Int] field [mDefaultBottomBorderColor] by calling our method [setColorAlpha] to create a new
+ * color by replacing the alpha component of `themeForegroundColor` with
+ * [DEFAULT_BOTTOM_BORDER_COLOR_ALPHA] (0x26). We initialize [SimpleTabColorizer] field
+ * [mDefaultTabColorizer] with a new instance, then set its indicator colors to
+ * [DEFAULT_SELECTED_INDICATOR_COLOR] (0xFF33B5E5), and its divider colors to the color our method
+ * [setColorAlpha] creates by replacing the alpha component of `themeForegroundColor` with
+ * [DEFAULT_DIVIDER_COLOR_ALPHA] (0x20). We initialize our [Int] field [mBottomBorderThickness]
+ * by multiplying [DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS] by `density`, then initialize our [Paint]
+ * field [mBottomBorderPaint] with a new instance and set its color to [mDefaultBottomBorderColor].
+ * We initialize our [Int] field [mSelectedIndicatorThickness] by multiplying
+ * [SELECTED_INDICATOR_THICKNESS_DIPS] by `density`, and initialize our [Paint] field
+ * [mSelectedIndicatorPaint] with a new instance. We initialize our [Float] field [mDividerHeight]
+ * to [DEFAULT_DIVIDER_HEIGHT] (0.5f), initialize our [Paint] field [mDividerPaint] with a new
+ * instance and set its stroke width to [DEFAULT_DIVIDER_THICKNESS_DIPS] multiplied by `density`.
  *
- * @param context The Context the view is running in, through which it can
+ * @param context The [Context] the view is running in, through which it can
  * access the current theme, resources, etc.
  * @param attrs The attributes of the XML tag that is inflating the view.
  */
 @JvmOverloads
 constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {
     /**
-     * DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS converted to pixels, used as the bottom border thickness.
+     * [DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS] converted to pixels, used as the bottom border thickness.
      */
     private val mBottomBorderThickness: Int
 
     /**
-     * `Paint` used to draw the bottom border, uses `mDefaultBottomBorderColor` as its color.
+     * [Paint] used to draw the bottom border, uses [mDefaultBottomBorderColor] as its color.
      */
     private val mBottomBorderPaint: Paint
 
     /**
-     * SELECTED_INDICATOR_THICKNESS_DIPS converted to pixels, used as the height of the rectangle at
-     * the bottom of the tabs which indicates the selected tab.
+     * [SELECTED_INDICATOR_THICKNESS_DIPS] converted to pixels, used as the height of the rectangle
+     * at the bottom of the tabs which indicates the selected tab.
      */
     private val mSelectedIndicatorThickness: Int
 
     /**
-     * `Paint` used to draw the rectangle at the bottom of the tabs which indicates the selected
+     * [Paint] used to draw the rectangle at the bottom of the tabs which indicates the selected
      * tab (color varies depending on the tab, and whether it is selected or not)
      */
     private val mSelectedIndicatorPaint: Paint
 
     /**
-     * Color used to draw the bottom border, the resolved `android.R.attr.colorForeground` with
-     * DEFAULT_BOTTOM_BORDER_COLOR_ALPHA as its alpha.
+     * Color used to draw the bottom border, the resolved [android.R.attr.colorForeground] with
+     * [DEFAULT_BOTTOM_BORDER_COLOR_ALPHA] as its alpha.
      */
     private val mDefaultBottomBorderColor: Int
 
     /**
-     * `Paint` used to draw the separator between tabs
+     * [Paint] used to draw the separator between tabs
      */
     private val mDividerPaint: Paint
 
     /**
-     * Just a copy of DEFAULT_DIVIDER_HEIGHT
+     * Just a copy of [DEFAULT_DIVIDER_HEIGHT]
      */
     private val mDividerHeight: Float
 
     /**
-     * Which position in our associated `ViewPager` is currently selected.
+     * Which position in our associated [ViewPager] is currently selected.
      */
     private var mSelectedPosition = 0
 
     /**
-     * Offset of the partially onscreen selected page in our associated `ViewPager`
+     * Offset of the partially onscreen selected page in our associated [ViewPager]
      */
-    private var mSelectionOffset = 0f
+    private var mSelectionOffset: Float = 0f
 
     /**
-     * Custom `TabColorizer` to use to set the colors for each tab, set by our
-     * `setCustomTabColorizer` method, called by the `setCustomTabColorizer`
-     * method of `SlidingTabLayout`
+     * Custom [TabColorizer] to use to set the colors for each tab, set by our
+     * [setCustomTabColorizer] method, called by the [SlidingTabLayout.setCustomTabColorizer]
+     * method of [SlidingTabLayout]
      */
     private var mCustomTabColorizer: TabColorizer? = null
 
     /**
-     * `TabColorizer` which uses only a single color for selected indicator, and another
+     * [TabColorizer] which uses only a single color for selected indicator, and another
      * single color for the divider.
      */
     private val mDefaultTabColorizer: SimpleTabColorizer
 
     init {
         setWillNotDraw(false)
-        val density = resources.displayMetrics.density
+        val density: Float = resources.displayMetrics.density
         val outValue = TypedValue()
         context.theme.resolveAttribute(android.R.attr.colorForeground, outValue, true)
-        val themeForegroundColor = outValue.data
-        mDefaultBottomBorderColor = setColorAlpha(themeForegroundColor, DEFAULT_BOTTOM_BORDER_COLOR_ALPHA)
+        val themeForegroundColor: Int = outValue.data
+        mDefaultBottomBorderColor = setColorAlpha(
+            color = themeForegroundColor,
+            alpha = DEFAULT_BOTTOM_BORDER_COLOR_ALPHA
+        )
         mDefaultTabColorizer = SimpleTabColorizer()
         mDefaultTabColorizer.setIndicatorColors(DEFAULT_SELECTED_INDICATOR_COLOR)
         mDefaultTabColorizer.setDividerColors(setColorAlpha(themeForegroundColor, DEFAULT_DIVIDER_COLOR_ALPHA))
@@ -141,11 +149,11 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
     }
 
     /**
-     * Setter for our `TabColorizer mCustomTabColorizer` field. We save our parameter in our
-     * field `mCustomTabColorizer` then call the `invalidate` method to invalidate the
-     * whole view so that our `onDraw` method will be called.
+     * Setter for our [TabColorizer] field [mCustomTabColorizer]. We save our parameter in our
+     * [TabColorizer] field [mCustomTabColorizer] then call the [invalidate] method to invalidate
+     * the whole view so that our [onDraw] method will be called.
      *
-     * @param customTabColorizer `TabColorizer` that we should use.
+     * @param customTabColorizer the [TabColorizer] that we should use.
      */
     fun setCustomTabColorizer(customTabColorizer: TabColorizer?) {
         mCustomTabColorizer = customTabColorizer
@@ -153,12 +161,12 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
     }
 
     /**
-     * Set the array of colors that our `SimpleTabColorizer mDefaultTabColorizer` will use to
-     * draw the tabs. First we set our field `TabColorizer mCustomTabColorizer` to null so that
-     * it will no longer be used, then we call the `setIndicatorColors` method of our field
-     * `SimpleTabColorizer mDefaultTabColorizer` to set its indicator colors to our parameter
-     * `colors`. Finally we call the `invalidate` method to invalidate the whole view so
-     * that our `onDraw` method will be called.
+     * Set the array of colors that our [SimpleTabColorizer] field [mDefaultTabColorizer] will use
+     * to draw the tabs. First we set our [TabColorizer] field [mCustomTabColorizer] to `null` so
+     * that it will no longer be used, then we call the [SimpleTabColorizer.setIndicatorColors]
+     * method of our [SimpleTabColorizer] field [mDefaultTabColorizer]` to set its indicator colors
+     * to our [Int] parameter [colors]. Finally we call the [invalidate] method to invalidate the
+     * whole view so that our [onDraw] method will be called.
      *
      * @param colors array or varargs containing 1 or more colors.
      */
@@ -170,12 +178,12 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
     }
 
     /**
-     * Set the array of colors that our `SimpleTabColorizer mDefaultTabColorizer` will use to
-     * draw the dividers. First we set our field `TabColorizer mCustomTabColorizer` to null so
-     * that it will no longer be used, then we call the `setDividerColors` method of our field
-     * `SimpleTabColorizer mDefaultTabColorizer` to set its indicator colors to our parameter
-     * `colors`. Finally we call the `invalidate` method to invalidate the whole view so
-     * that our `onDraw` method will be called.
+     * Set the array of colors that our [SimpleTabColorizer] field [mDefaultTabColorizer] will use
+     * to draw the dividers. First we set our [TabColorizer] field [mCustomTabColorizer] to `null`
+     * so that it will no longer be used, then we call the [SimpleTabColorizer.setDividerColors]
+     * method of our [SimpleTabColorizer] field [mDefaultTabColorizer] to set its indicator colors
+     * to our [IntArray] parameter [colors]. Finally we call the [invalidate] method to invalidate
+     * the whole view so that our [onDraw] method will be called.
      *
      * @param colors array or varargs containing 1 or more colors.
      */
@@ -187,14 +195,14 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
     }
 
     /**
-     * Called when the current page of our associated `ViewPager` is scrolled. We save our parameter
-     * `position` in our field `mSelectedPosition`, and our parameter `positionOffset`
-     * in our field `mSelectionOffset` then call the `invalidate` method to invalidate the
-     * whole view so that our `onDraw` method will be called.
+     * Called when the current page of our associated [ViewPager] is scrolled. We save our [Int]
+     * parameter [position] in our [Int] field [mSelectedPosition], and our [Float] parameter
+     * [positionOffset] in our [Float] field [mSelectionOffset] then call the [invalidate] method
+     * to invalidate the whole view so that our [onDraw] method will be called.
      *
-     * @param position       Position index of the first page currently being displayed.
-     * Page position+1 will be visible if positionOffset is nonzero.
-     * @param positionOffset Value from [0, 1) indicating the offset from the page at position.
+     * @param position Position index of the first page currently being displayed. Page position+1
+     * will be visible if [positionOffset] is nonzero.
+     * @param positionOffset Value from [0, 1) indicating the offset from the page at [position].
      */
     fun onViewPagerPageChanged(position: Int, positionOffset: Float) {
         mSelectedPosition = position
@@ -203,22 +211,23 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
     }
 
     /**
-     * We implement this to do our drawing. We initialize `int height` with the height of our
-     * view, and `int childCount` with the number of children in our group. We initialize
-     * `int dividerHeightPx` with the int value of `height` times the minimum of our
-     * field `mDividerHeight` and 1.0f (assuming `mDividerHeight` is larger than 0f).
-     * If our field `mCustomTabColorizer` is not null we we `TabColorizer tabColorizer`
-     * to it, otherwise we set it to `mDefaultTabColorizer`.
+     * We implement this to do our drawing. We initialize [Int] variable `val height` with the
+     * height of our [View], and [Int] variable `val childCount` with the number of children in
+     * our group. We initialize [Int] variable `val dividerHeightPx` with the value of `height`
+     * times the minimum of our [Float] field [mDividerHeight] and 1.0f (assuming [mDividerHeight]
+     * is larger than 0f). If our [TabColorizer] field [mCustomTabColorizer] is not null we
+     * initialize [TabColorizer] variable `val tabColorizer` to it, otherwise we initialize it
+     * to [mDefaultTabColorizer].
      *
-     *
-     * If `childCount` is greater than 0, we initialize `View selectedTitle` with our
-     * child view at `mSelectedPosition`, `int left` with the left edge of this view, in
-     * pixels and `int right` with the right edge of this view, in pixels. We initialize
-     * `int color` with the color returned by the `getIndicatorColor` method of
-     * `tabColorizer` for `mSelectedPosition`. If `mSelectionOffset` is greater than
-     * 0 (page is partially off the screen) and `mSelectedPosition` is less than the last of our
-     * children tabs, we initialize `int nextColor` with the color that the `getIndicatorColor`
-     * method of `tabColorizer` returns for the next tab and if `color` is not equal to
+     * If `childCount` is greater than 0, we initialize [View] variable `val selectedTitle` with our
+     * child [View] at [Int] field [mSelectedPosition], [Int] variable `var left` with the left edge
+     * of this [View], in pixels and [Int] variable `var right` with the right edge of this [View]
+     * in pixels. We initialize [Int] variable `var color` with the color returned by the
+     * [TabColorizer.getIndicatorColor] method of `tabColorizer` for [Int] field [mSelectedPosition].
+     * If [Float] field [mSelectionOffset] is greater than 0 (page is partially off the screen) and
+     * [Int] field [mSelectedPosition] is less than the last of our children tabs, we initialize
+     * [Int] variable `val nextColor` with the color that the [TabColorizer.getIndicatorColor]
+     * method of `tabColorizer` returns for the next tab and if `color` is not equal to **markgray**
      * `nextColor` we set color to the color that our `blendColors` calculates when it blends
      * `nextColor` and `color` at the ratio given by `mSelectionOffset`. We then
      * initialize `View nextTitle` with the view for the next tab after `mSelectedPosition`,
@@ -246,25 +255,29 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
      * @param canvas the canvas on which the background will be drawn
      */
     override fun onDraw(canvas: Canvas) {
-        val height = height
-        val childCount = childCount
-        val dividerHeightPx = (Math.min(Math.max(0f, mDividerHeight), 1f) * height).toInt()
-        val tabColorizer = if (mCustomTabColorizer != null) mCustomTabColorizer!! else mDefaultTabColorizer
+        val height: Int = height
+        val childCount: Int = childCount
+        val dividerHeightPx: Int = (Math.min(Math.max(0f, mDividerHeight), 1f) * height).toInt()
+        val tabColorizer: TabColorizer = if (mCustomTabColorizer != null) {
+            mCustomTabColorizer!!
+        } else {
+            mDefaultTabColorizer
+        }
 
         // Thick colored underline below the current selection
         if (childCount > 0) {
-            val selectedTitle = getChildAt(mSelectedPosition)
-            var left = selectedTitle.left
-            var right = selectedTitle.right
-            var color = tabColorizer.getIndicatorColor(mSelectedPosition)
+            val selectedTitle: View = getChildAt(mSelectedPosition)
+            var left: Int = selectedTitle.left
+            var right: Int = selectedTitle.right
+            var color: Int = tabColorizer.getIndicatorColor(mSelectedPosition)
             if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
-                val nextColor = tabColorizer.getIndicatorColor(mSelectedPosition + 1)
+                val nextColor: Int = tabColorizer.getIndicatorColor(position = mSelectedPosition + 1)
                 if (color != nextColor) {
-                    color = blendColors(nextColor, color, mSelectionOffset)
+                    color = blendColors(color1 = nextColor, color2 = color, ratio = mSelectionOffset)
                 }
 
                 // Draw the selection partway between the tabs
-                val nextTitle = getChildAt(mSelectedPosition + 1)
+                val nextTitle: View = getChildAt(mSelectedPosition + 1)
                 left = (mSelectionOffset * nextTitle.left +
                     (1.0f - mSelectionOffset) * left).toInt()
                 right = (mSelectionOffset * nextTitle.right +
