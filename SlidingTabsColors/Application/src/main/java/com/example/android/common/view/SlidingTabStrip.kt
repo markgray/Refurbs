@@ -227,32 +227,30 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
      * If [Float] field [mSelectionOffset] is greater than 0 (page is partially off the screen) and
      * [Int] field [mSelectedPosition] is less than the last of our children tabs, we initialize
      * [Int] variable `val nextColor` with the color that the [TabColorizer.getIndicatorColor]
-     * method of `tabColorizer` returns for the next tab and if `color` is not equal to **markgray**
-     * `nextColor` we set color to the color that our `blendColors` calculates when it blends
-     * `nextColor` and `color` at the ratio given by `mSelectionOffset`. We then
-     * initialize `View nextTitle` with the view for the next tab after `mSelectedPosition`,
-     * and recalculate `left` and `right` so that they accurately portray the fact that the
-     * page is offset by `mSelectionOffset`.
+     * method of `tabColorizer` returns for the next tab and if `color` is not equal to `nextColor`
+     * we set color to the color that our [blendColors] method calculates when it blends `nextColor`
+     * and `color` at the ratio given by [Float] field [mSelectionOffset]. We then initialize [View]
+     * variable `val nextTitle` with the view for the next tab after [mSelectedPosition], and
+     * recalculate `left` and `right` so that they accurately portray the fact that the page is
+     * offset by [Float] field [mSelectionOffset].
      *
-     *
-     * Now we set the color of `mSelectedIndicatorPaint` to `color` and then we use it to
-     * draw a rectangle on our parameter `Canvas canvas` whose top left corner is at
+     * Now we set the color of [Paint] field [mSelectedIndicatorPaint] to `color` and then we use
+     * it to draw a rectangle on our [Canvas] parameter [canvas] whose top left corner is at
      * (`left`, `height-mSelectedIndicatorThickness`) and whose bottom right corner is at
      * (`right`,`height`) (our indicator for the selected page). We then draw a thin underline
-     * along the entire bottom edge of `Canvas canvas`, a rectangle whose top left corner is at
-     * (0,`height-mBottomBorderThickness`), whose right bottom corner is at (`right`,`height`)
-     * and whose `Paint` is `mBottomBorderPaint`.
+     * along the entire bottom edge of [Canvas] parameter [canvas], a rectangle whose top left
+     * corner is at (0,`height-mBottomBorderThickness`), whose right bottom corner is at
+     * (`right`,`height`) and whose [Paint] is [Paint] field [mBottomBorderPaint].
      *
+     * We initialize [Int] variable `val separatorTop` to the quantity one half of the difference
+     * between `height` and `dividerHeightPx`. We then loop over [Int] variable `var i` for all of
+     * our children tabs, setting [View] variable `val child` to each child in turn, setting the
+     * color of [Paint] field [mDividerPaint] to the color that the [TabColorizer.getDividerColor]
+     * method of `tabColorizer` specifies for child `i`, and then drawing a vertical line on [Canvas]
+     * parameter [canvas] along the right edge of `child` from `separatorTop` down to
+     * `separatorTop+dividerHeightPx` using [Paint] field [mDividerPaint] as the [Paint].
      *
-     * We initialize `int separatorTop` to the quantity one half of the difference between `height`
-     * and `dividerHeightPx`. We then loop over `int i` for all of our children tabs, setting
-     * `View child` to each child in turn, setting the color of `Paint mDividerPaint` to the
-     * color that the `getDividerColor` method of `tabColorizer` specifies for child `i`,
-     * and then drawing a vertical line on `Canvas canvas` along the right edge of  `child`
-     * from `separatorTop` down to `separatorTop+dividerHeightPx` using `mDividerPaint`
-     * as the `Paint`.
-     *
-     * @param canvas the canvas on which the background will be drawn
+     * @param canvas the [Canvas] on which the background will be drawn
      */
     override fun onDraw(canvas: Canvas) {
         val height: Int = height
@@ -277,7 +275,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
                 }
 
                 // Draw the selection partway between the tabs
-                val nextTitle: View = getChildAt(mSelectedPosition + 1)
+                val nextTitle: View = getChildAt(/* index = */ mSelectedPosition + 1)
                 left = (mSelectionOffset * nextTitle.left +
                     (1.0f - mSelectionOffset) * left).toInt()
                 right = (mSelectionOffset * nextTitle.right +
@@ -292,17 +290,17 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
         canvas.drawRect(0f, (height - mBottomBorderThickness).toFloat(), width.toFloat(), height.toFloat(), mBottomBorderPaint)
 
         // Vertical separators between the titles
-        val separatorTop = (height - dividerHeightPx) / 2
+        val separatorTop: Int = (height - dividerHeightPx) / 2
         for (i in 0 until childCount - 1) {
-            val child = getChildAt(i)
-            mDividerPaint.color = tabColorizer.getDividerColor(i)
+            val child: View = getChildAt(i)
+            mDividerPaint.color = tabColorizer.getDividerColor(position = i)
             canvas.drawLine(child.right.toFloat(), separatorTop.toFloat(),
                 child.right.toFloat(), (separatorTop + dividerHeightPx).toFloat(), mDividerPaint)
         }
     }
 
     /**
-     * A basic `TabColorizer`
+     * A basic [TabColorizer]
      */
     private class SimpleTabColorizer : TabColorizer {
         /**
@@ -316,27 +314,27 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
         private lateinit var mDividerColors: IntArray
 
         /**
-         * Returns the color of the indicator for the given `position` position.
+         * Returns the color of the indicator for the given [Int] parameter [position] position.
          *
          * @param position position we are to provide the color for.
-         * @return return the color of the indicator used when `position` is selected.
+         * @return return the color of the indicator used when [position] is selected.
          */
         override fun getIndicatorColor(position: Int): Int {
             return mIndicatorColors[position % mIndicatorColors.size]
         }
 
         /**
-         * Returns the color of the divider drawn to the right of `position`.
+         * Returns the color of the divider drawn to the right of [Int] parameter [position].
          *
          * @param position position we are to provide the color for.
-         * @return return the color of the divider drawn to the right of `position`.
+         * @return return the color of the divider drawn to the right of [position].
          */
         override fun getDividerColor(position: Int): Int {
             return mDividerColors[position % mDividerColors.size]
         }
 
         /**
-         * Setter for our field `int[] mIndicatorColors`.
+         * Setter for our [IntArray] field [mIndicatorColors].
          *
          * @param colors array or varags of `Colors`
          */
@@ -345,7 +343,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
         }
 
         /**
-         * Setter for our field `int[] mDividerColors`.
+         * Setter for our [IntArray] field [mDividerColors].
          *
          * @param colors array or varags of `Colors`
          */
@@ -362,7 +360,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
 
         /**
          * Alpha value used for the bottom border, used to modify the resolved color for
-         * `android.R.attr.colorForeground`
+         * [android.R.attr.colorForeground]
          */
         private const val DEFAULT_BOTTOM_BORDER_COLOR_ALPHA: Byte = 0x26
 
@@ -384,7 +382,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
 
         /**
          * Alpha value used for the divider line between tabs, used to modify the resolved color for
-         * `android.R.attr.colorForeground`
+         * [android.R.attr.colorForeground]
          */
         private const val DEFAULT_DIVIDER_COLOR_ALPHA: Byte = 0x20
 
@@ -394,7 +392,8 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
         private const val DEFAULT_DIVIDER_HEIGHT = 0.5f
 
         /**
-         * Set the alpha value of the `color` to be the given `alpha` value.
+         * Set the alpha value of the [Int] parameter [color] to be the given [Byte] parameter
+         * [alpha] value and return the result.
          *
          * @param color `Color` to start with
          * @param alpha alpha value to use instead
@@ -405,12 +404,13 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
         }
 
         /**
-         * Blend `color1` and `color2` using the given ratio.
+         * Blend [Int] parameter [color1] and [Int] parameter [color2] using the given [Float]
+         * parameter [ratio].
          *
          * @param color1 First color
          * @param color2 Second color
-         * @param ratio of which to blend. 1.0 will return `color1`, 0.5 will give an even blend,
-         * 0.0 will return `color2`.
+         * @param ratio of which to blend. 1.0 will return [color1], 0.5 will give an even blend,
+         * 0.0 will return [color2].
          * @return color which is a ratio of `color1` blended wiht `color2`
          */
         private fun blendColors(color1: Int, color2: Int, ratio: Float): Int {
