@@ -989,8 +989,7 @@ class DiskLruCache private constructor(
      * name.
      *
      * @param entry `Entry` we are to edit
-     */
-    constructor(
+     */(
         /**
          * `Entry` we are editing.
          */
@@ -1017,7 +1016,6 @@ class DiskLruCache private constructor(
         fun newInputStream(index: Int): InputStream? {
             synchronized(this@DiskLruCache) {
                 check(entry.currentEditor == this)
-                @Suppress("BlockingMethodInNonBlockingContext")
                 return if (!entry.readable) {
                     null
                 } else FileInputStream(entry.getCleanFile(index))
@@ -1059,7 +1057,6 @@ class DiskLruCache private constructor(
         fun newOutputStream(index: Int): OutputStream {
             synchronized(this@DiskLruCache) {
                 check(entry.currentEditor == this)
-                @Suppress("BlockingMethodInNonBlockingContext")
                 return FaultHidingOutputStream(FileOutputStream(entry.getDirtyFile(index)))
             }
         }
@@ -1195,7 +1192,7 @@ class DiskLruCache private constructor(
     /**
      * Object controlling a cache entry that is on the disk (or headed to disk(
      */
-    inner class Entry constructor(
+    inner class Entry(
         /** Key for referencing this `Entry` and creating file names  */
         val key: String) {
         /** Lengths of this entry's files.  */
