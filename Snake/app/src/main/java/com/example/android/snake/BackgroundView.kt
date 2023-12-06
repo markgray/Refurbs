@@ -33,7 +33,7 @@ class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, att
      * BackgroundView_colorSegmentTwo, BackgroundView_colorSegmentThree, and
      * BackgroundView_colorSegmentFour
      */
-    private val mColors = IntArray(4)
+    private val mColors = IntArray(size = 4)
 
     /**
      * The [Paint] we use to draw our triangles.
