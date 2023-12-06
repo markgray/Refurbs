@@ -25,15 +25,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.android.common.view.SlidingTabLayout
 import com.example.android.common.view.SlidingTabLayout.TabColorizer
 
 /**
- * A basic sample which shows how to use [com.example.android.common.view.SlidingTabLayout]
- * to display a custom [ViewPager] title strip which gives continuous feedback to the user
- * when scrolling.
+ * A basic sample which shows how to use [SlidingTabLayout] to display a custom [ViewPager] title
+ * strip which gives continuous feedback to the user when scrolling.
  */
 class SlidingTabsColorsFragment : Fragment() {
     /**
@@ -49,36 +47,19 @@ class SlidingTabsColorsFragment : Fragment() {
      * @param dividerColor Right divider color of the tab
      */(
         /**
-         * Title of the tab, set in our constructor, retrieved using our
-         * `getTitle` method.
+         * Title of the tab, set in our constructor, retrieved directly.
          */
         val title: CharSequence,
         /**
-         * Indicator color of the tab, set in our constructor, retrieved using our
-         * `getIndicatorColor` method.
+         * Indicator color of the tab, set in our constructor, retrieved using the
+         * [TabColorizer.getIndicatorColor] method (which retrieves it directly).
          */
         val indicatorColor: Int,
         /**
-         * Right divider color of the tab, set in our constructor, retrieved using our
-         * `getDividerColor` method.
+         * Right divider color of the tab, set in our constructor, retrieved using the
+         * [TabColorizer.getDividerColor] method (which retrieves it directly).
          */
         val dividerColor: Int) {
-        /**
-         * Getter for our `CharSequence mTitle` field.
-         *
-         * @return the title which represents this tab. In this sample this is used directly by
-         * [PagerAdapter.getPageTitle]
-         */
-        /**
-         * Getter for our `int mIndicatorColor` field.
-         *
-         * @return the color to be used for indicator on the [SlidingTabLayout]
-         */
-        /**
-         * Getter for our `int mDividerColor` field.
-         *
-         * @return the color to be used for right divider on the [SlidingTabLayout]
-         */
 
         /**
          * Factory method to create a new instance of `ContentFragment` to display our fields.
@@ -86,7 +67,11 @@ class SlidingTabsColorsFragment : Fragment() {
          * @return A new [Fragment] to be displayed by a [ViewPager]
          */
         fun createFragment(): Fragment {
-            return ContentFragment.newInstance(title, indicatorColor, dividerColor)
+            return ContentFragment.newInstance(
+                title = title,
+                indicatorColor = indicatorColor,
+                dividerColor = dividerColor
+            )
         }
     }
 
@@ -107,32 +92,27 @@ class SlidingTabsColorsFragment : Fragment() {
     private val mTabs: MutableList<SamplePagerItem> = ArrayList()
 
     /**
-     * Called when this `Fragment` is starting. We add four `SamplePagerItem` objects to
-     * our field `List<SamplePagerItem> mTabs`:
+     * Called when this [Fragment] is starting. We add four [SamplePagerItem] objects to
+     * our [MutableList] of [SamplePagerItem] field [mTabs]:
      *
-     *  *
-     * Title: R.string.tab_stream ("Stream"), Indicator color: BLUE, Divider color: GRAY
+     *  * Title: [R.string.tab_stream] ("Stream"), Indicator color: BLUE, Divider color: GRAY
      *
-     *  *
-     * Title: R.string.tab_messages ("Messages"), Indicator color: RED, Divider color: GRAY
+     *  * Title: [R.string.tab_messages] ("Messages"), Indicator color: RED, Divider color: GRAY
      *
-     *  *
-     * Title: R.string.tab_photos ("Photos"), Indicator color: YELLOW, Divider color: GRAY
+     *  * Title: [R.string.tab_photos] ("Photos"), Indicator color: YELLOW, Divider color: GRAY
      *
-     *  *
-     * Title: R.string.tab_notifications ("Notifications"), Indicator color: GREEN, Divider color: GRAY
+     *  * Title: [R.string.tab_notifications] ("Notifications"), Indicator color: GREEN,
+     *  Divider color: GRAY
      *
-     *
-     *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         /*
          * Populate our tab list with tabs. Each item contains a title, indicator color and divider
          * color, which are used by {@link SlidingTabLayout}.
-         */mTabs.add(SamplePagerItem(
+         */
+        mTabs.add(SamplePagerItem(
             getString(R.string.tab_stream),  // Title
             Color.BLUE,  // Indicator color
             Color.GRAY // Divider color
@@ -157,36 +137,39 @@ class SlidingTabsColorsFragment : Fragment() {
     /**
      * Called to have the fragment instantiate its user interface view. Inflates the [View]
      * which will be displayed by this [Fragment] from the app's resources. We just return the
-     * view which our parameter `LayoutInflater inflater` inflates from our layout file
-     * R.layout.fragment_sample using our parameter `ViewGroup container` for the LayoutParams
+     * [View] which our [LayoutInflater] parameter [inflater] inflates from our layout file
+     * [R.layout.fragment_sample] using our [ViewGroup] parameter [container] for the LayoutParams
      * without attaching to it.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the [View] for the fragment's UI, or `null`.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_sample, container, false)
     }
 
     /**
-     * Called immediately after [.onCreateView] has returned,
-     * but before any saved state has been restored in to the view. We initialize our field
-     * `ViewPager mViewPager` by finding the view in our parameter `View view` with id
-     * R.id.viewpager, and set its adapter to a new instance of `SampleFragmentPagerAdapter`
-     * constructed using a private FragmentManager for placing and managing Fragments inside of our
-     * Fragment. We initialize our field `SlidingTabLayout mSlidingTabLayout` by finding the
-     * view in `view` with id R.id.sliding_tabs, and give it the `ViewPager mViewPager`
-     * so that it may populate itself. We set an anonymous `TabColorizer` as the custom tab
-     * colorizer of `SlidingTabLayout mSlidingTabLayout` whose `getIndicatorColor`, and
-     * `getDividerColor` overrides return the indicator color and divider color of the
-     * `SamplePagerItem` respectively of the tab in position `position` of our field
-     * `List<SamplePagerItem> mTabs`.
+     * Called immediately after [onCreateView] has returned, but before any saved state has been
+     * restored in to the view. We initialize our [ViewPager] field [mViewPager] by finding the
+     * view in our [View] parameter [view] with id [R.id.viewpager], and set its adapter to a new
+     * instance of [SampleFragmentPagerAdapter] constructed using a private [FragmentManager] for
+     * placing and managing Fragments inside of our [Fragment]. We initialize our [SlidingTabLayout]
+     * field [mSlidingTabLayout] by finding the [View] in [view] with id [R.id.sliding_tabs], and
+     * give it the [ViewPager] field [mViewPager] so that it may populate itself. We set an anonymous
+     * [TabColorizer] as the custom tab colorizer of [SlidingTabLayout] field [mSlidingTabLayout]
+     * whose [TabColorizer.getIndicatorColor], and [TabColorizer.getDividerColor] overrides return
+     * the indicator color and divider color of the [SamplePagerItem] respectively of the tab in
+     * position `position` of our field [MutableList] of [SamplePagerItem] field [mTabs].
      *
      * @param view The View returned by [.onCreateView].
      * @param savedInstanceState If non-null, this fragment is being re-constructed
@@ -206,20 +189,21 @@ class SlidingTabsColorsFragment : Fragment() {
         // the tab at the position, and return it's set color
         mSlidingTabLayout!!.setCustomTabColorizer(object : TabColorizer {
             /**
-             * Returns the color of the indicator for the given `position` position.
+             * Returns the color of the indicator for the given [Int] parameter [position] position.
              *
              * @param position position we are to provide the color for.
-             * @return return the color of the indicator used when `position` is selected.
+             * @return return the color of the indicator used when [position] is selected.
              */
             override fun getIndicatorColor(position: Int): Int {
                 return mTabs[position].indicatorColor
             }
 
             /**
-             * Returns the color of the divider drawn to the right of `position`.
+             * Returns the color of the divider drawn to the right of [Int] parameter [position]
+             * position.
              *
              * @param position position we are to provide the color for.
-             * @return return the color of the divider drawn to the right of `position`.
+             * @return return the color of the divider drawn to the right of [position].
              */
             override fun getDividerColor(position: Int): Int {
                 return mTabs[position].dividerColor
@@ -232,8 +216,7 @@ class SlidingTabsColorsFragment : Fragment() {
      * are instances of [ContentFragment] which just display three lines of text. Each page is
      * created by the relevant [SamplePagerItem] for the requested position.
      *
-     *
-     * The important section of this class is the [.getPageTitle] method which controls
+     * The important section of this class is the [getPageTitle] method which controls
      * what is displayed in the [SlidingTabLayout].
      */
     internal inner class SampleFragmentPagerAdapter
@@ -245,22 +228,20 @@ class SlidingTabsColorsFragment : Fragment() {
      */
     (fm: FragmentManager?) : FragmentPagerAdapter(fm!!) {
         /**
-         * Return the [Fragment] to be displayed at position `i`/
-         *
-         *
-         * Here we return the value returned from [SamplePagerItem.createFragment] by the
-         * `SamplePagerItem` in position `i` of our field `List<SamplePagerItem> mTabs`
+         * Return the [Fragment] to be displayed at position [Int] parameter [i]. Here we return the
+         * value returned from [SamplePagerItem.createFragment] by the [SamplePagerItem] in position
+         * [i] of our [MutableList] of [SamplePagerItem] field [mTabs].
          *
          * @param i position of the item in our data set.
-         * @return a `ContentFragment` for the item in question.
+         * @return a [ContentFragment] for the item in question.
          */
         override fun getItem(i: Int): Fragment {
             return mTabs[i].createFragment()
         }
 
         /**
-         * Return the number of views available, we return the size of our dataset
-         * `List<SamplePagerItem> mTabs`
+         * Return the number of views available, we return the size of our [MutableList] of
+         * [SamplePagerItem] dataset field [mTabs].
          *
          * @return the number of views available.
          */
@@ -269,15 +250,13 @@ class SlidingTabsColorsFragment : Fragment() {
         }
 
         /**
-         * Return the title of the item at `position`. This is important as what this method
-         * returns is what is displayed in the [SlidingTabLayout].
-         *
-         *
-         * Here we return the value returned from the [SamplePagerItem.title] method of
-         * the item at position `position` in our dataset `List<SamplePagerItem> mTabs`.
+         * Return the title of the item at [Int] parameter [position]. This is important as what
+         * this method returns is what is displayed in the [SlidingTabLayout]. Here we return the
+         * value returned from the [SamplePagerItem.title] property of the item at position [position]
+         * in our [MutableList] of [SamplePagerItem] dataset field [mTabs].
          *
          * @param position position of the item whose title we need.
-         * @return the title of the item in position `position`
+         * @return the title of the item in position [position]
          */
         override fun getPageTitle(position: Int): CharSequence {
             return mTabs[position].title

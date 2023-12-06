@@ -29,7 +29,9 @@ import androidx.fragment.app.FragmentTransaction
 import com.example.android.common.activities.SampleActivityBase
 import com.example.android.common.logger.Log
 import com.example.android.common.logger.LogFragment
+import com.example.android.common.logger.LogNode
 import com.example.android.common.logger.LogWrapper
+import com.example.android.common.logger.LogView
 import com.example.android.common.logger.MessageOnlyLogFilter
 
 /**
@@ -135,14 +137,14 @@ class MainActivity : SampleActivityBase() {
     }
 
     /**
-     * Create a chain of targets that will receive log data. We initialize `LogWrapper logWrapper`
-     * with a new instance, and set it as the LogNode that log data will be sent to. We create a new
-     * instance for `MessageOnlyLogFilter msgFilter` (strips out everything except the message
-     * text) and set it as the LogNode that `logWrapper` will next send data to. We then initialize
-     * `LogFragment logFragment` by using the FragmentManager for interacting with fragments
-     * associated with this activity to find the fragment with the resource id R.id.log_fragment,
-     * then set its `LogView` as the LogNode that `msgFilter` will send data to. Finally
-     * we log the message "Ready".
+     * Create a chain of targets that will receive log data. We initialize [LogWrapper] variable
+     * `val logWrapper` with a new instance, and set it as the [LogNode] that log data will be sent
+     * to. We create a new instance for [MessageOnlyLogFilter] variable `val msgFilter` (strips out
+     * everything except the message text) and set it as the [LogNode] that `logWrapper` will next
+     * send data to. We then initialize [LogFragment] variable `val logFragment` by using the
+     * [FragmentManager] for interacting with fragments associated with this activity to find the
+     * fragment with the resource id [R.id.log_fragment], then set its [LogView] as the [LogNode]
+     * that `msgFilter` will send data to. Finally we log the message "Ready".
      */
     override fun initializeLogging() {
         // Wraps Android's native log framework.
