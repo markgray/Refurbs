@@ -107,7 +107,7 @@ class LayoutTransChanging : Activity() {
      * @param context The [Context] the view is running in, through which it can access the
      * current theme, resources, etc.
      */
-    class ColoredView constructor(context: Context) : View(context) {
+    class ColoredView(context: Context) : View(context) {
         /**
          * Flag to indicate whether we are in the expanded state (`true`) or not (`false`).
          */
