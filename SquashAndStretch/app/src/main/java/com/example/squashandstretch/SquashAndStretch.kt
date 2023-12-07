@@ -24,18 +24,20 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.Button
+import android.widget.RelativeLayout
 
 /**
  * This example shows how to add some life to a view during animation by deforming the shape.
  * As the button "falls", it stretches along the line of travel. When it hits the bottom, it
  * squashes, like a real object when hitting a surface. Then the button reverses these actions
  * to bounce back up to the start.
- *
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on the DevBytes playlist in the android developers channel on YouTube at
@@ -44,7 +46,7 @@ import android.view.animation.DecelerateInterpolator
  */
 class SquashAndStretch : Activity() {
     /**
-     * The `RelativeLayout` in our layout file with id R.id.container which contains our button.
+     * The [RelativeLayout] in our layout file with id [R.id.container] which contains our button.
      */
     private var mContainer: ViewGroup? = null
 
@@ -55,10 +57,10 @@ class SquashAndStretch : Activity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.main, and finally we initialize our
-     * field `ViewGroup mContainer` by finding the view with id R.id.container
+     * then we set our content view to our layout file [R.layout.main], and finally we initialize
+     * our [ViewGroup] field [mContainer] by finding the view with id [R.id.container].
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,30 +69,31 @@ class SquashAndStretch : Activity() {
     }
 
     /**
-     * Initialize the contents of the Activity's standard options menu. We retrieve a `MenuInflater`
-     * for our context and use it to inflate our menu layout file R.menu.main into our parameter
-     * `Menu menu`, then return true so that our menu will be displayed.
+     * Initialize the contents of the Activity's standard options menu. We retrieve a [MenuInflater]
+     * for our context and use it to inflate our menu layout file [R.menu.main] into our [Menu]
+     * parameter [menu], then return `true` so that our menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
      * @return You must return true for the menu to be displayed.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(/* menuRes = */ R.menu.main, /* menu = */ menu)
         return true
     }
 
     /**
-     * This hook is called whenever an item in your options menu is selected. If the id of our parameter
-     * `MenuItem item` is R.id.menu_slow we set our field `sAnimatorScale` to 1 if that
-     * item is currently checked, or to 5 if it is unchecked, then we toggle the checked state of `item`.
-     * In any case we return the value returned by our super's implementation of `onOptionsItemSelected`
+     * This hook is called whenever an item in your options menu is selected. If the
+     * [MenuItem.getItemId] method (kotlin `itemId` property) of our [MenuItem] parameter [item]
+     * is [R.id.menu_slow] we set our [Long] field [sAnimatorScale] to 1 if that item is currently
+     * checked, or to 5 if it is unchecked, then we toggle the checked state of [item]. In any case
+     * we return the value returned by our super's implementation of `onOptionsItemSelected`
      * to the caller.
      *
      * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
+     * @return [Boolean] Return `false` to allow normal menu processing to
+     * proceed, `true` to consume it here.
      *
-     * @see .onCreateOptionsMenu
+     * @see onCreateOptionsMenu
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_slow) {
@@ -101,19 +104,21 @@ class SquashAndStretch : Activity() {
     }
 
     /**
-     * Specified to be called when the "Click Me!" `Button` in our layout file is clicked by an
+     * Specified to be called when the "Click Me!" [Button] in our layout file is clicked by an
      * android:onClick="onButtonClick" attribute. We animate the fall of the button from the top of
-     * the screen to the bottom with appropriate deformation of the button. We initialize our variable
-     * `long animationDuration` to BASE_DURATION times our field `sAnimatorScale`. We set
-     * the X location of the point around which our parameter `View view` is scaled to the middle
-     * of the view, and the Y location of the point to the height of the view. We initialize `PropertyValuesHolder pvhTY`
-     * with an instance that will animate the TRANSLATION_Y property to the height of our field `ViewGroup mContainer`
-     * minus the height of our parameter `view`, initialize `PropertyValuesHolder pvhSX` to an
-     * instance which will animate the SCALE_X property to .7f, and initialize `PropertyValuesHolder pvhSY`
-     * to an instance which will animate the SCALE_Y property to 1.2f, then initialize `ObjectAnimator downAnim`
-     * to an instance which will apply `pvhTY`, `pvhSX`, and `pvhSY` to `view`, set its
-     * interpolator to `sAccelerator` and set its duration to 2 times `animationDuration`.
-     *
+     * the screen to the bottom with appropriate deformation of the button. We initialize our [Long]
+     * variable `val animationDuration` to [BASE_DURATION] times our [Long] field [sAnimatorScale].
+     * We set the X location of the point around which our [View] parameter [view] is scaled to the
+     * middle of the view, and the Y location of the point to the height of the view. We initialize
+     * [PropertyValuesHolder] variable `var pvhTY` with an instance that will animate the
+     * [View.TRANSLATION_Y] property to the height of our [ViewGroup] field [mContainer] minus the
+     * height of our [View] parameter [view], initialize [PropertyValuesHolder] variable `var pvhSX`
+     * to an instance which will animate the [View.SCALE_X] property to .7f, and initialize
+     * [PropertyValuesHolder] variable `var pvhSY` to an instance which will animate the
+     * [View.SCALE_Y] property to 1.2f, then initialize [ObjectAnimator] variable `val downAnim`
+     * to an instance which will apply `pvhTY`, `pvhSX`, and `pvhSY` to [view], set its
+     * interpolator to [AccelerateInterpolator] field [sAccelerator]` and set its duration to 2
+     * times `animationDuration`.
      *
      * We then set `pvhSX` to an instance which will animate the SCALE_X property to 2, and
      * `pvhSY` to an instance which will animate the SCALE_Y property to .5f, initialize `ObjectAnimator stretchAnim`
@@ -142,9 +147,10 @@ class SquashAndStretch : Activity() {
         view.pivotY = view.height.toFloat()
 
         // Animate the button down, accelerating, while also stretching in Y and squashing in X
-        var pvhTY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y,
-            (
-                mContainer!!.height - view.height).toFloat())
+        var pvhTY = PropertyValuesHolder.ofFloat(
+            /* property = */ View.TRANSLATION_Y,
+            /* ...values = */ (mContainer!!.height - view.height).toFloat()
+        )
         var pvhSX = PropertyValuesHolder.ofFloat(View.SCALE_X, .7f)
         var pvhSY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.2f)
         val downAnim = ObjectAnimator.ofPropertyValuesHolder(view, pvhTY, pvhSX, pvhSY)
