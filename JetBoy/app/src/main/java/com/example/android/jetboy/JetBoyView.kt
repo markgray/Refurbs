@@ -63,7 +63,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  * theme, resources, etc.
  * @param attrs   The attributes of the XML tag that is inflating the view.
  */
-class JetBoyView constructor(
+class JetBoyView(
     context: Context,
     attrs: AttributeSet?
 ) : SurfaceView(context, attrs), SurfaceHolder.Callback {
