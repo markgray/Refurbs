@@ -49,5 +49,8 @@ android {
         androidTest.setRoot('tests')
         androidTest.java.srcDirs = ['tests/src']
     }
+    buildFeatures {
+        buildConfig true
+    }
 
 }
