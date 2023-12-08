@@ -62,7 +62,7 @@ import android.widget.TextView
  * @param attrs   The attributes of the XML tag that is inflating the view.
  */
 @SuppressLint("HandlerLeak")
-internal class LunarView constructor(
+internal class LunarView(
     context: Context,
     attrs: AttributeSet?
 ) : SurfaceView(context, attrs), SurfaceHolder.Callback {

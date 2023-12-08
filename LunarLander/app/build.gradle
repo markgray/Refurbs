@@ -27,5 +27,4 @@ android {
         jvmTarget = '17'
     }
     namespace "com.example.android.lunarlander"
-
 }
