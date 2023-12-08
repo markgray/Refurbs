@@ -120,24 +120,24 @@ class SquashAndStretch : Activity() {
      * interpolator to [AccelerateInterpolator] field [sAccelerator]` and set its duration to 2
      * times `animationDuration`.
      *
-     * We then set `pvhSX` to an instance which will animate the SCALE_X property to 2, and
-     * `pvhSY` to an instance which will animate the SCALE_Y property to .5f, initialize `ObjectAnimator stretchAnim`
-     * to an instance which will apply `pvhSX`, and `pvhSY` to `view`, set its repeat
-     * count to 1, its repeat mode to REVERSE, its interpolator to `sDecelerator` and its duration
-     * to `animationDuration`.
+     * We then set `pvhSX` to an instance which will animate the [View.SCALE_X] property to 2, and
+     * `pvhSY` to an instance which will animate the [View.SCALE_Y] property to .5f, initialize
+     * [ObjectAnimator] variable `val stretchAnim` to an instance which will apply `pvhSX`, and
+     * `pvhSY` to [view], set its repeat count to 1, its repeat mode to [ValueAnimator.REVERSE],
+     * its interpolator to [DecelerateInterpolator] field [sDecelerator] and its duration to
+     * `animationDuration`.
      *
+     * We then set `pvhTY` to an instance which will animate the [View.TRANSLATION_Y] property to 0,
+     * `pvhSX` to an instance which will animate the [View.SCALE_X] property to 1, and `pvhSY` to an
+     * instance which will animate the [View.SCALE_Y] property to 1, then initialize [ObjectAnimator]
+     * variable `val upAnim` to an instance which will apply `pvhTY`, `pvhSX`, and `pvhSY` to [view],
+     * set its duration to 2 times `animationDuration`, and set its interpolator to [DecelerateInterpolator]
+     * field [sDecelerator].
      *
-     * We then set `pvhTY` to an instance which will animate the `TRANSLATION_Y` property to 0,
-     * `pvhSX` to an instance which will animate the SCALE_X property to 1, and `pvhSY` to an
-     * instance which will animate the SCALE_Y property to 1, then initialize `ObjectAnimator downAnim`
-     * to an instance which will apply `pvhTY`, `pvhSX`, and `pvhSY` to `view`, set its
-     * set its duration to 2 times `animationDuration`, and set its interpolator to `sDecelerator`.
+     * We then initialize [AnimatorSet] variable `val set` with a new instance, set it to play
+     * sequentially `downAnim`, `stretchAnim`, and `upAnim` and then start it running.
      *
-     *
-     * We then initialize `AnimatorSet set` with a new instance, set it to play sequentially
-     * `downAnim`, `stretchAnim`, and `upAnim` and then start it running.
-     *
-     * @param view `View` that was clicked.
+     * @param view the [View] that was clicked.
      */
     fun onButtonClick(view: View) {
         val animationDuration = BASE_DURATION * sAnimatorScale
@@ -180,12 +180,12 @@ class SquashAndStretch : Activity() {
 
     companion object {
         /**
-         * The `AccelerateInterpolator` we use for the down animation
+         * The [AccelerateInterpolator] we use for the down animation
          */
         private val sAccelerator = AccelerateInterpolator()
 
         /**
-         * The `DecelerateInterpolator` we use for the stretch and up animations.
+         * The [DecelerateInterpolator] we use for the stretch and up animations.
          */
         private val sDecelerator = DecelerateInterpolator()
 
