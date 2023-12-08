@@ -32,7 +32,7 @@ class LogView : AppCompatTextView, LogNode {
     constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context!!, attrs, defStyle)
 
     /**
-     * Formats the log data and prints it out to the LogView.
+     * Formats the log data and prints it out to the [LogView].
      *
      * @param priority Log level of the data being logged.  Verbose, Error, etc.
      * @param tag Tag for for the log data.  Can be used to organize log statements.
@@ -82,11 +82,11 @@ class LogView : AppCompatTextView, LogNode {
      * the logger takes so many arguments that might be null, this method helps cut out some of the
      * agonizing tedium of writing the same 3 lines over and over.
      *
-     * @param source StringBuilder containing the text to append to.
-     * @param addStr The String to append
-     * @param delimiter The String to separate the source and appended strings. A tab or comma,
+     * @param source the [StringBuilder] containing the text to append to.
+     * @param addStr The [String] to append
+     * @param delimiter The [String] to separate the source and appended strings. A tab or comma,
      * for instance.
-     * @return The fully concatenated String as a StringBuilder
+     * @return The fully concatenated [String] as a [StringBuilder]
      */
     @Suppress("SameParameterValue")
     private fun appendIfNotNull(source: StringBuilder, addStr: String?, delimiter: String): StringBuilder {

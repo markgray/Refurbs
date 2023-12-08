@@ -1,3 +1,4 @@
+@file:Suppress("DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "MemberVisibilityCanBePrivate")
 /*
 * Copyright (C) 2012 The Android Open Source Project
 *
@@ -13,13 +14,13 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-@file:Suppress("DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "MemberVisibilityCanBePrivate")
 
 package com.example.android.storageclient
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
+import android.content.ContentResolver
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -44,10 +45,10 @@ import java.io.IOException
 class StorageClientFragment : Fragment() {
     /**
      * Called when the fragment is starting. First we call through to our super's implementation of
-     * `onCreate`, then we call the `setHasOptionsMenu` method to report that this fragment
-     * has menu items to contribute.
+     * `onCreate`, then we call the [setHasOptionsMenu] method to report that this fragment has menu
+     * items to contribute.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,14 +56,14 @@ class StorageClientFragment : Fragment() {
     }
 
     /**
-     * This hook is called whenever an item in your options menu is selected. If the id of our parameter
-     * `MenuItem item` is R.id.sample_action we call our method `performFileSearch` to
-     * launch the "file chooser" UI and select an image. In any case we return true to consume the
-     * event here.
+     * This hook is called whenever an item in your options menu is selected. If the
+     * [MenuItem.getItemId] method (kotlin `itemId` property) of our [MenuItem] parameter [item]
+     * returns [R.id.sample_action] we call our method [performFileSearch] to launch the "file
+     * chooser" UI and select an image. In any case we return `true` to consume the event here.
      *
      * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
+     * @return [Boolean] Return `false` to allow normal menu processing to
+     * proceed, `true` to consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.sample_action) {
@@ -73,11 +74,11 @@ class StorageClientFragment : Fragment() {
 
     /**
      * Fires an intent to spin up the "file chooser" UI and select an image. First we initialize
-     * `Intent intent` with an intent whose action is ACTION_OPEN_DOCUMENT (Allow the user to
-     * select and return one or more existing documents). Then we add the category CATEGORY_OPENABLE
-     * (indicates that the intent only wants URIs that can be opened with `openFileDescriptor`).
-     * We then set the MIME data type to "image/ *" and then start the intent for its result using the
-     * request code READ_REQUEST_CODE.
+     * [Intent] variable `val intent` with an intent whose action is [Intent.ACTION_OPEN_DOCUMENT]
+     * (Allow the user to select and return one or more existing documents). Then we add the
+     * category [Intent.CATEGORY_OPENABLE] (indicates that the intent only wants URIs that can be
+     * opened with [ContentResolver.openFileDescriptor]). We then set the MIME data type to "image/ *"
+     * and then start the intent for its result using the request code [READ_REQUEST_CODE].
      */
     fun performFileSearch() {
 
