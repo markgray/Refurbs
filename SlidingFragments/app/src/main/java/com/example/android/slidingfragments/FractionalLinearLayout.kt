@@ -86,7 +86,7 @@ class FractionalLinearLayout : LinearLayout {
      *
      * @return current value of our [mYFraction] field
      */
-    @Suppress("unused", "MemberVisibilityCanBePrivate") // Used by the animation framework
+    @Suppress("MemberVisibilityCanBePrivate") // Used by the animation framework
     var yFraction: Float
         get() = mYFraction
         /**
