@@ -34,7 +34,9 @@ import android.view.Window
 import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.example.android.common.logger.Log
+import java.io.FileDescriptor
 import java.io.IOException
 
 /**
@@ -100,19 +102,19 @@ class StorageClientFragment : Fragment() {
     }
 
     /**
-     * Receive the result from a previous call to [.startActivityForResult]. First
-     * we log the fact that we were called, then if our parameter `requestCode` is READ_REQUEST_CODE
-     * and the parameter `resultCode` is RESULT_OK we declare `Uri uri` and if our parameter
-     * `resultData` is not null we set `uri` to the data `resultData` is operating on,
-     * log its string value then call our method `showImage` to show the image using a DialogFragment.
+     * Receive the result from a previous call to [startActivityForResult]. First we log the fact
+     * that we were called, then if our [Int] parameter [requestCode] is [READ_REQUEST_CODE] and our
+     * [Int] parameter [resultCode] is [Activity.RESULT_OK] we declare [Uri] variable `val uri` and
+     * if our [Intent] parameter [resultData] is not `null` we set `uri` to the value returned by
+     * the [Intent.getData] method (kotlin `data` property) of [resultData] (URI of the data this
+     * [Intent] is targeting), log its string value, then call our method [showImage] to show the
+     * image using a [DialogFragment].
      *
-     * @param requestCode The integer request code originally supplied to
-     * startActivityForResult(), allowing you to identify who this
-     * result came from.
-     * @param resultCode The integer result code returned by the child activity
-     * through its setResult().
-     * @param resultData An Intent, which can return result data to the caller
-     * (various data can be attached to Intent "extras").
+     * @param requestCode The integer request code originally supplied to [startActivityForResult],
+     * allowing you to identify who this result came from.
+     * @param resultCode The integer result code returned by the child activity through its `setResult`.
+     * @param resultData An [Intent], which can return result data to the caller (various data can
+     * be attached to [Intent] "extras").
      */
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
@@ -136,23 +138,24 @@ class StorageClientFragment : Fragment() {
     }
 
     /**
-     * Given the URI of an image, shows it on the screen using a DialogFragment. If our parameter
-     * `Uri uri` is not null we initialize `FragmentManager fm` with the FragmentManager
-     * for interacting with fragments associated with this activity, initialize `ImageDialogFragment imageDialog`
-     * with a new instance and initialize `Bundle fragmentArguments` with a new instance. We
-     * add `uri` as a parcelable to `fragmentArguments` under the key "URI" then set the
-     * arguments of `imageDialog` to `fragmentArguments`. Finally we call the `show`
-     * method of `imageDialog` to display the dialog, adding the fragment to the FragmentManager
-     * `fm` using "image_dialog" as the fragment tag.
+     * Given the URI of an image, shows it on the screen using a [DialogFragment]. If our [Uri]
+     * parameter [uri] is not null we initialize [FragmentManager] variable `val fm` with the
+     * [FragmentManager] for interacting with fragments associated with this activity, initialize
+     * [ImageDialogFragment] variable `val imageDialog` with a new instance and initialize [Bundle]
+     * variable `val fragmentArguments` with a new instance. We add [uri] as a parcelable to
+     * `fragmentArguments` under the key "URI" then set the arguments of `imageDialog` to
+     * `fragmentArguments`. Finally we call the [DialogFragment.show] method of `imageDialog` to
+     * display the dialog, adding the fragment to the [FragmentManager] `fm` using "image_dialog"
+     * as the fragment tag.
      *
-     * @param uri the Uri of the image to display.
+     * @param uri the [Uri] of the image to display.
      */
     fun showImage(uri: Uri?) {
         // BEGIN_INCLUDE (create_show_image_dialog)
         if (uri != null) {
             // Since the URI is to an image, create and show a DialogFragment to display the
             // image to the user.
-            val fm = requireActivity().supportFragmentManager
+            val fm: FragmentManager = requireActivity().supportFragmentManager
             val imageDialog = ImageDialogFragment()
             val fragmentArguments = Bundle()
             fragmentArguments.putParcelable("URI", uri)
@@ -163,26 +166,26 @@ class StorageClientFragment : Fragment() {
     }
 
     /**
-     * DialogFragment which displays an image, given a URI.
+     * [DialogFragment] which displays an image, given a URI.
      */
     class ImageDialogFragment : DialogFragment() {
         /**
-         * `Dialog` we are modifying to be a `DialogFragment`.
+         * [Dialog] we are modifying to be a [DialogFragment].
          */
         private var mDialog: Dialog? = null
 
         /**
-         * The `Uri` we find in our arguments, points to an image to display.
+         * The [Uri] we find in our arguments, points to an image to display.
          */
         private var mUri: Uri? = null
 
         /**
-         * Called to do initial creation of a `DialogFragment`. First we call our super's implementation
-         * of `onCreate`, then we initialize our field `Uri mUri` with the parcelable object
-         * stored in our arguments under the key "URI".
+         * Called to do initial creation of a [DialogFragment]. First we call our super's
+         * implementation of `onCreate`, then we initialize our [Uri] field [mUri] with the
+         * parcelable object stored in our arguments under the key "URI".
          *
-         * @param savedInstanceState If the fragment is being re-created from
-         * a previous saved state, this is the state.
+         * @param savedInstanceState If the fragment is being re-created from a previous saved
+         * state, this is the state.
          */
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -190,8 +193,9 @@ class StorageClientFragment : Fragment() {
         }
 
         /**
-         * Create a Bitmap from the URI for that image and return it. First we initialize our variable
-         * `ParcelFileDescriptor parcelFileDescriptor` to null. Then wrapped in a try block intended
+         * Create a [Bitmap] from the image located at our [Uri] parameter [uri] and return it.
+         * First we initialize our [ParcelFileDescriptor] variable `var parcelFileDescriptor` to
+         * `null`. Then wrapped in a try block intended
          * to catch and log any exceptions, and whose finally block tries to close `parcelFileDescriptor`
          * if it is not null we set `parcelFileDescriptor` to the `ParcelFileDescriptor`
          * that is a raw file descriptor to access data in read only mode from `uri` (we do this
@@ -208,8 +212,8 @@ class StorageClientFragment : Fragment() {
             var parcelFileDescriptor: ParcelFileDescriptor? = null
             return try {
                 parcelFileDescriptor = requireActivity().contentResolver.openFileDescriptor(uri, "r")
-                val fileDescriptor = parcelFileDescriptor!!.fileDescriptor
-                val image = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+                val fileDescriptor: FileDescriptor = parcelFileDescriptor!!.fileDescriptor
+                val image: Bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
                 parcelFileDescriptor.close()
                 image
             } catch (e: Exception) {
