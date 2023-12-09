@@ -155,7 +155,7 @@ class MainActivity : Activity() {
     /**
      * View model for interacting with Activity UI elements. (Keeps core logic for sample separate.)
      */
-    internal inner class MainUi constructor(root: View) : OnClickListener {
+    internal inner class MainUi(root: View) : OnClickListener {
         /**
          * [EditText] with id [R.id.main_primary_title], displays the text "Primary Channel" to
          * start with, we use its text as the title for the primary channel notifications sent.
