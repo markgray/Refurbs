@@ -195,18 +195,18 @@ class StorageClientFragment : Fragment() {
         /**
          * Create a [Bitmap] from the image located at our [Uri] parameter [uri] and return it.
          * First we initialize our [ParcelFileDescriptor] variable `var parcelFileDescriptor` to
-         * `null`. Then wrapped in a try block intended
-         * to catch and log any exceptions, and whose finally block tries to close `parcelFileDescriptor`
-         * if it is not null we set `parcelFileDescriptor` to the `ParcelFileDescriptor`
-         * that is a raw file descriptor to access data in read only mode from `uri` (we do this
-         * by calling the `openFileDescriptor` method of a ContentResolver instance for our application's
-         * package). We then initialize `FileDescriptor fileDescriptor` with the actual FileDescriptor
-         * associated with `parcelFileDescriptor`. We initialize `Bitmap image` to the bitmap
-         * that the `decodeFileDescriptor` method decodes from the contents of the file referenced by
-         * `fileDescriptor`, close `parcelFileDescriptor` and return `image` to the
-         * caller.
+         * `null`. Then wrapped in a try block intended to catch and log any exceptions, and whose
+         * finally block tries to close `parcelFileDescriptor` if it is not `null`, we set
+         * `parcelFileDescriptor` to the [ParcelFileDescriptor] that is a raw file descriptor to
+         * access data in read only mode from [Uri] parameter [uri] (we do this by calling the
+         * [ContentResolver.openFileDescriptor] method of a [ContentResolver] instance for our
+         * application's package). We then initialize [FileDescriptor] variable `val fileDescriptor`
+         * with the actual [FileDescriptor] associated with `parcelFileDescriptor`. We initialize
+         * [Bitmap] variable `val image` to the bitmap that the [BitmapFactory.decodeFileDescriptor]
+         * method decodes from the contents of the file referenced by `fileDescriptor`, close
+         * `parcelFileDescriptor` and return `image` to the caller.
          *
-         * @param uri the Uri for the image to return.
+         * @param uri the [Uri] for the image to return.
          */
         private fun getBitmapFromUri(uri: Uri): Bitmap? {
             var parcelFileDescriptor: ParcelFileDescriptor? = null
@@ -230,21 +230,21 @@ class StorageClientFragment : Fragment() {
         }
 
         /**
-         * Override to build your own custom Dialog container. We initialize our field `Dialog mDialog`
-         * with the `Dialog` returned by our super's constructor, fetch its window and request
-         * the feature FEATURE_NO_TITLE, initialize `ImageView imageView` with a new instance and
-         * set it to be the content view of `mDialog`. We next construct a new `AsyncTask`
-         * `imageLoadAsyncTask` whose `doInBackground` override calls our `dumpImageMetaData`
-         * method to dump the filename and size of the `Uri` in its zeroth parameter to the log,
-         * then returns the `Bitmap` produced by our `getBitmapFromUri` method by reading the
-         * file pointed to by that `Uri`. Its `onPostExecute` override then sets the image
-         * of `ImageView imageView` to the bitmap returned by `doInBackground`. We then
-         * execute `imageLoadAsyncTask` with our field `mUri` and return `mDialog`
-         * to the caller.
+         * Override to build your own custom [Dialog] container. We initialize our [Dialog] field
+         * [mDialog] with the [Dialog] returned by our super's constructor, fetch its window and
+         * request the feature [Window.FEATURE_NO_TITLE], initialize [ImageView] variable
+         * `val imageView` with a new instance and set it to be the content view of [mDialog].
+         * We next construct a new [AsyncTask] variable `val imageLoadAsyncTask` whose
+         * `doInBackground` override calls our `dumpImageMetaData` method will dump the filename
+         * and size of the [Uri] in its zeroth parameter to the log, then returns the [Bitmap]
+         * produced by our [getBitmapFromUri] method by reading the file pointed to by that [Uri].
+         * Its `onPostExecute` override then sets the image of `imageView` to the bitmap returned
+         * by `doInBackground`. We then execute `imageLoadAsyncTask` with our field [mUri] and
+         * return [mDialog] to the caller.
          *
          * @param savedInstanceState The last saved instance state of the Fragment,
-         * or null if this is a freshly created Fragment.
-         * @return Return a new Dialog instance to be displayed by the Fragment.
+         * or `null` if this is a freshly created Fragment.
+         * @return Return a new [Dialog] instance to be displayed by the Fragment.
          */
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
             mDialog = super.onCreateDialog(savedInstanceState)
@@ -263,11 +263,12 @@ class StorageClientFragment : Fragment() {
             // UI thread.
             @Suppress("RedundantVisibilityModifier")
             @SuppressLint("StaticFieldLeak")
-            val imageLoadAsyncTask: AsyncTask<Uri, Void, Bitmap> = object : AsyncTask<Uri, Void, Bitmap>() {
+            val imageLoadAsyncTask: AsyncTask<Uri, Void, Bitmap> =
+                object : AsyncTask<Uri, Void, Bitmap>() {
                 /**
                  * Override this method to perform a computation on a background thread. The specified
-                 * parameters are the parameters passed to [.execute] by the caller of this task.
-                 * We call our `dumpImageMetaData` method to dump the filename and size of
+                 * parameters are the parameters passed to [execute] by the caller of this task.
+                 * We call our [dumpImageMetaData] method to dump the filename and size of
                  * `Uri uris[0]` to the log, then return the `Bitmap` produced by our
                  * `getBitmapFromUri` method by reading the file pointed to by that `Uri`.
                  *
@@ -299,8 +300,8 @@ class StorageClientFragment : Fragment() {
 
         /**
          * Called when the Fragment is no longer started. We call our super's implementation of
-         * `onStop`, then if the method `getDialog` returns a non-null value, we call
-         * the `dismiss` method of that `Dialog`.
+         * `onStop`, then if the method [getDialog] (kotlin `dialog` property) returns a non-`null`
+         * value, we call the [Dialog.dismiss] method of that [Dialog].
          */
         override fun onStop() {
             super.onStop()
