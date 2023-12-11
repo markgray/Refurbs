@@ -22,6 +22,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.ContentResolver
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -311,18 +312,20 @@ class StorageClientFragment : Fragment() {
         }
 
         /**
-         * Grabs metadata for a document specified by URI, logs it to the screen. We use a ContentResolver
-         * instance for our application's package to query our parameter `uri` for all columns
-         * saving the result in `Cursor cursor`. Then wrapped in a try block whose finally block
-         * closes `cursor` if `cursor` is not null, and the `moveToFirst` method of
-         * `cursor` returns true we initialize `String displayName` with the string in column
-         * DISPLAY_NAME of `cursor` and log this. We initialize `int sizeIndex` with the
-         * index number for the SIZE column in `cursor`, and declare `String size`. If column
-         * `sizeIndex` in `cursor` is not null we set `size` to the string in column
-         * number `sizeIndex` in `cursor`, otherwise we set it to "Unknown". Then we log
-         * the string "Size: " followed by `size`.
+         * Grabs metadata for a document specified by [Uri] parameter [uri], logs it to the screen.
+         * We use a [ContentResolver] instance for our application's package to query our [Uri]
+         * parameter [uri] for all columns saving the result in [Cursor] variable `val cursor`.
+         * Then wrapped in a try block whose finally block closes `cursor` if `cursor` is not
+         * `null`, and the [Cursor.moveToFirst] method of `cursor` returns `true` we initialize
+         * [String] variable `var displayName` with the string in the column
+         * [OpenableColumns.DISPLAY_NAME] ("_display_name") of `cursor` and log this. We initialize
+         * [Int] variable `val sizeIndex` with the index number for the [OpenableColumns.SIZE]
+         * column in `cursor`, and declare [String] variable `val size`. If column `sizeIndex` in
+         * `cursor` is not `null` we set `size` to the string in column number `sizeIndex` in
+         * `cursor`, otherwise we set it to "Unknown". Then we log the string "Size: " followed
+         * by `size`.
          *
-         * @param uri The uri for the document whose metadata should be printed.
+         * @param uri The [Uri] for the document whose metadata should be printed.
          */
         fun dumpImageMetaData(uri: Uri?) {
             // BEGIN_INCLUDE (dump_metadata)
@@ -330,14 +333,20 @@ class StorageClientFragment : Fragment() {
             // The query, since it only applies to a single document, will only return one row.
             // no need to filter, sort, or select fields, since we want all fields for one
             // document.
-            val cursor = requireActivity().contentResolver
-                .query(uri!!, null, null, null, null, null)
+            val cursor: Cursor? = requireActivity().contentResolver.query(
+                /* uri = */ uri!!,
+                /* projection = */ null,
+                /* selection = */ null,
+                /* selectionArgs = */ null,
+                /* sortOrder = */ null,
+                /* cancellationSignal = */ null
+            )
             @Suppress("ConvertTryFinallyToUseCall")
             try {
                 // moveToFirst() returns false if the cursor has 0 rows.  Very handy for
                 // "if there's anything to look at, look at it" conditionals.
                 if (cursor != null && cursor.moveToFirst()) {
-                    val column = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    val column: Int = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
                     // Note it's called "Display Name".  This is provider-specific, and
                     // might not necessarily be the file name.
                     var displayName: String? = null
@@ -345,7 +354,7 @@ class StorageClientFragment : Fragment() {
                         displayName = cursor.getString(column)
                     }
                     Log.i(TAG, "Display Name: $displayName")
-                    val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+                    val sizeIndex: Int = cursor.getColumnIndex(OpenableColumns.SIZE)
                     // If the size is unknown, the value stored is null.  But since an int can't be
                     // null in java, the behavior is implementation-specific, which is just a fancy
                     // term for "unpredictable".  So as a rule, check if it's null before assigning
@@ -370,7 +379,7 @@ class StorageClientFragment : Fragment() {
 
     companion object {
         /**
-         * A request code's purpose is to match the result of a "startActivityForResult" with
+         * A request code's purpose is to match the result of a [startActivityForResult] with
          * the type of the original request. Choose any value.
          */
         private const val READ_REQUEST_CODE = 1337
