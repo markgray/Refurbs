@@ -21,9 +21,14 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.android.common.activities.SampleActivityBase
 import com.example.android.common.logger.Log
 import com.example.android.common.logger.LogFragment
+import com.example.android.common.logger.LogNode
+import com.example.android.common.logger.LogView
 import com.example.android.common.logger.LogWrapper
 import com.example.android.common.logger.MessageOnlyLogFilter
 
@@ -34,11 +39,13 @@ import com.example.android.common.logger.MessageOnlyLogFilter
 class MainActivity : SampleActivityBase() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_main. If
-     * the FragmentManager for interacting with fragments associated with this activity is unable to
-     * find a fragment with the tag FRAGTAG, we initialize `FragmentTransaction transaction` by
-     * beginning it, create a new instance for `StorageProviderFragment fragment`, add `fragment`
-     * to `transaction` with the tag FRAGTAG and commit `transaction`.
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. If the
+     * [FragmentManager] for interacting with fragments associated with this activity is unable to
+     * find a fragment with the tag [FRAGTAG], we initialize [FragmentTransaction] variable
+     * `val transaction` by using the [FragmentManager.beginTransaction] method to begin it, create
+     * a new instance for [StorageProviderFragment] variable `val fragment`, use `transaction`'s
+     * [FragmentTransaction.add] method to add `fragment` to `transaction` with the tag [FRAGTAG]
+     * and then use `transaction`'s [FragmentTransaction.commit] method to commit `transaction`.
      *
      * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
      */
@@ -46,7 +53,7 @@ class MainActivity : SampleActivityBase() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (supportFragmentManager.findFragmentByTag(FRAGTAG) == null) {
-            val transaction = supportFragmentManager.beginTransaction()
+            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
             val fragment = StorageProviderFragment()
             transaction.add(fragment, FRAGTAG)
             transaction.commit()
@@ -54,13 +61,13 @@ class MainActivity : SampleActivityBase() {
     }
 
     /**
-     * Initialize the contents of the Activity's standard options menu. We use a `MenuInflater`
-     * for this context to inflate our menu layout file R.menu.main into our parameter `Menu menu`
-     * and return true so the menu will be displayed.
+     * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater] for
+     * this context to inflate our menu layout file [R.menu.main] into our [Menu] parameter [menu]
+     * and return `true` so the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
-     * @return You must return true for the menu to be displayed;
-     * if you return false it will not be shown.
+     * @return You must return `true` for the menu to be displayed;
+     * if you return `false` it will not be shown.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
@@ -68,15 +75,16 @@ class MainActivity : SampleActivityBase() {
     }
 
     /**
-     * Create a chain of targets that will receive log data. We initialize `LogWrapper logWrapper`
-     * with a new instance, then set it to be the LogNode that data will be sent to. We initialize
-     * `MessageOnlyLogFilter msgFilter` with a new instance and set it to be the LogNode that
-     * `logWrapper` will send data to. We initialize `LogFragment logFragment` by using
-     * the FragmentManager for interacting with fragments associated with this activity to find the
-     * fragment whose container has the id R.id.log_fragment, and set its `LogView` to be the
-     * LogNode that `msgFilter` will send data to. We then set the text appearance of the
-     * `LogView` of `logFragment` to be that indicated by the style file R.style.Log,
-     * and set its background color to WHITE. Finally we log the message "Ready".
+     * Create a chain of targets that will receive log data. We initialize [LogWrapper] variable
+     * `val logWrapper` with a new instance, then set it to be the [LogNode] that data will be sent
+     * to. We initialize [MessageOnlyLogFilter] variable `val msgFilter` with a new instance and set
+     * it to be the [LogNode] that `logWrapper` will send data to. We initialize [LogFragment]
+     * variable `val logFragment` by using the [FragmentManager] for interacting with fragments
+     * associated with this activity to find the fragment whose container has the id
+     * [R.id.log_fragment], and set its [LogView] to be the [LogNode] that `msgFilter` will send
+     * data to. We then set the text appearance of the [LogView] of `logFragment` to be that
+     * indicated by the style file [R.style.Log], and set its background color to [Color.WHITE].
+     * Finally we log the message "Ready".
      */
     override fun initializeLogging() {
         // Wraps Android's native log framework.
@@ -89,8 +97,7 @@ class MainActivity : SampleActivityBase() {
         logWrapper.next = msgFilter
 
         // On screen logging via a fragment with a TextView.
-        val logFragment = supportFragmentManager
-            .findFragmentById(R.id.log_fragment) as LogFragment?
+        val logFragment = supportFragmentManager.findFragmentById(R.id.log_fragment) as LogFragment?
         msgFilter.next = logFragment!!.logView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             logFragment.logView!!.setTextAppearance(R.style.Log)

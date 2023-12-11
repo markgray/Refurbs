@@ -44,7 +44,7 @@ import java.util.PriorityQueue
  */
 class MyCloudProvider : DocumentsProvider() {
     /**
-     * A file object at the root of the file hierarchy. Depending on your implementation, the root
+     * A [File] object at the root of the file hierarchy. Depending on your implementation, the root
      * does not need to be an existing file system directory. For example, a tag-based document
      * provider might return a directory containing all tags, represented as child directories.
      */
