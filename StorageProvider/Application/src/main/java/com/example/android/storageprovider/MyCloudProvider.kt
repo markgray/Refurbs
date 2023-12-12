@@ -55,15 +55,14 @@ class MyCloudProvider : DocumentsProvider() {
      * registered content providers on the application main thread at application launch time. It
      * must not perform lengthy operations, or application startup will be delayed.
      *
+     * First we log that we were called. Then we initialize our [File] field [mBaseDir] by calling
+     * the [Context.getFilesDir] method (kotlin `filesDir` property) of the [Context] this provider
+     * is running in to get the absolute path to the directory on the filesystem where files created
+     * with [Context.openFileOutput] are stored. Then we call our [writeDummyFilesToStorage] method
+     * to transfer the dummy content files we provide from the apk to the file storage. Finally we
+     * return `true` to indicate the provider was successfully loaded
      *
-     * First we log that we were called. Then we initialize our field `File mBaseDir` by calling
-     * the `getFilesDir` method of the Context this provider is running in to get the absolute
-     * path to the directory on the filesystem where files created with `openFileOutput` are stored.
-     * Then we call our `writeDummyFilesToStorage` method to transfer the dummy content files
-     * we provide from the apk to the file storage. Finally we return true to indicate the provider
-     * was successfully loaded
-     *
-     * @return true to indicate the provider was successfully loaded
+     * @return `true` to indicate the provider was successfully loaded
      */
     override fun onCreate(): Boolean {
         Log.v(TAG, "onCreate")
@@ -73,26 +72,25 @@ class MyCloudProvider : DocumentsProvider() {
     }
 
     /**
-     * Return all roots currently provided. First we log the fact that we were called. Then we initialize
-     * `MatrixCursor result` with a new instance using our parameter `projection` for the
-     * column names if it is not null or DEFAULT_ROOT_PROJECTION if it is null. If our method `isUserLoggedIn`
-     * returns false (the user is not logged in) we return the empty `result` which will remove us
-     * from the list of providers. Otherwise we initialize `MatrixCursor.RowBuilder row` by calling
-     * the `newRow` method of `result` to add a new row to it, saving the `RowBuilder`
-     * it returns for that row in `row`. We now proceed to add the following columns to row:
+     * Return all roots currently provided. First we log the fact that we were called. Then we
+     * initialize [MatrixCursor] variable `val result` with a new instance using our method
+     * [resolveRootProjection] to choose between using our [Array] of [String] parameter [projection]
+     * for the column names if it is not `null` or [DEFAULT_ROOT_PROJECTION] if it is `null`. If our
+     * property [isUserLoggedIn] returns `false` (the user is not logged in) we return the empty
+     * `result` which will remove us from the list of providers. Otherwise we initialize
+     * [MatrixCursor.RowBuilder] variable `val row` by calling the [MatrixCursor.newRow] method of
+     * `result` to add a new row to it. We now proceed to add the following columns to row:
      *
-     *  *
-     * COLUMN_ROOT_ID: (Unique ID of a root) ROOT "root"
+     *  * [Root.COLUMN_ROOT_ID]: (Unique ID of a root) [ROOT] "root"
      *
-     *  *
-     * COLUMN_SUMMARY: (Summary for this root, which may be shown to a user) the string with
-     * resource id R.string.root_summary ("cloudy with a chance of...")
+     *  * [Root.COLUMN_SUMMARY]: (Summary for this root, which may be shown to a user) the string
+     *  with resource id [R.string.root_summary] ("cloudy with a chance of...")
      *
-     *  *
-     * COLUMN_FLAGS: (Flags that apply to a root) bitwise or of FLAG_SUPPORTS_CREATE (Flag
-     * indicating that at least one directory under this root supports creating content),
-     * FLAG_SUPPORTS_RECENTS (Flag indicating that this root can be queried to provide recently
-     * modified documents), FLAG_SUPPORTS_SEARCH (Flag indicating that this root supports search)
+     *  * [Root.COLUMN_FLAGS]: (Flags that apply to a root) bitwise or of [Root.FLAG_SUPPORTS_CREATE]
+     *  (Flag indicating that at least one directory under this root supports creating content),
+     *  [Root.FLAG_SUPPORTS_RECENTS] (Flag indicating that this root can be queried to provide
+     *  recently modified documents), [Root.FLAG_SUPPORTS_SEARCH] (Flag indicating that this root
+     *  supports search)
      *
      *  *
      * COLUMN_TITLE: (Title for a root, which will be shown to a user) the string with resource
@@ -129,7 +127,7 @@ class MyCloudProvider : DocumentsProvider() {
         // Create a cursor with either the requested fields, or the default projection.  This
         // cursor is returned to the Android system picker UI and used to display all roots from
         // this provider.
-        val result = MatrixCursor(resolveRootProjection(projection))
+        val result = MatrixCursor(resolveRootProjection(projection = projection))
 
         // If user is not logged in, return an empty root cursor.  This removes our provider from
         // the list entirely.
@@ -140,7 +138,7 @@ class MyCloudProvider : DocumentsProvider() {
         // It's possible to have multiple roots (e.g. for multiple accounts in the same app) -
         // just add multiple cursor rows.
         // Construct one row for a root called "MyCloud".
-        val row = result.newRow()
+        val row: MatrixCursor.RowBuilder = result.newRow()
         row.add(Root.COLUMN_ROOT_ID, ROOT)
         row.add(Root.COLUMN_SUMMARY, context!!.getString(R.string.root_summary))
 
