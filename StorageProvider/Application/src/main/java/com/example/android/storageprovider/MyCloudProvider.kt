@@ -92,34 +92,28 @@ class MyCloudProvider : DocumentsProvider() {
      *  recently modified documents), [Root.FLAG_SUPPORTS_SEARCH] (Flag indicating that this root
      *  supports search)
      *
-     *  *
-     * COLUMN_TITLE: (Title for a root, which will be shown to a user) the string with resource
-     * id R.string.app_name (StorageProvider)
+     *  * [Root.COLUMN_TITLE]: (Title for a root, which will be shown to a user) the string with
+     *  resource id [R.string.app_name] ("StorageProvider")
      *
-     *  *
-     * COLUMN_DOCUMENT_ID: (Document which is a directory that represents the top directory of
-     * this root) the string returned by our `getDocIdForFile` method when passed our
-     * field `File mBaseDir`.
+     *  * [Root.COLUMN_DOCUMENT_ID]: (Document id which is a directory that represents the top
+     *  directory of this root) the string returned by our [getDocIdForFile] method when passed our
+     *  [File] field [mBaseDir].
      *
-     *  *
-     * COLUMN_MIME_TYPES: (MIME types supported by this root) the string returned by our method
-     * `getChildMimeTypes`
+     *  * [Root.COLUMN_MIME_TYPES]: (MIME types supported by this root) the string returned by our
+     *  [childMimeTypes] property.
      *
-     *  *
-     * COLUMN_AVAILABLE_BYTES: (Number of bytes available in this root) the value returned by
-     * the `getFreeSpace` method of `mBaseDir` (Returns the number of unallocated
-     * bytes in the partition containing it)
+     *  * [Root.COLUMN_AVAILABLE_BYTES]: (Number of bytes available in this root) the value returned
+     *  by the [File.getFreeSpace] method (kotlin `freeSpace` property) of [File] field [mBaseDir]
+     *  (Returns the number of unallocated bytes in the partition containing it).
      *
-     *  *
-     * COLUMN_ICON: (Icon resource ID for a root) R.drawable.ic_launcher (a cloud icon)
-     *
+     *  * [Root.COLUMN_ICON]: (Icon resource ID for a root) [R.drawable.ic_launcher] (a cloud icon)
      *
      * Finally we return `result` to the caller.
      *
-     * @param projection list of [Root] columns to put into the cursor. If
-     * `null` all supported columns should be included.
-     * @return `MatrixCursor` containing all the columns in our parameter `projection`
-     * for our root called "MyCloud".
+     * @param projection list of [Root] columns to put into the cursor. If `null` all supported
+     * columns should be included.
+     * @return [MatrixCursor] containing all the columns in our [Array] of [String] parameter
+     * [projection] for our root called "MyCloud".
      */
     override fun queryRoots(projection: Array<String>?): Cursor {
         Log.v(TAG, "queryRoots")
@@ -166,15 +160,16 @@ class MyCloudProvider : DocumentsProvider() {
     }
 
     /**
-     * Return recently modified documents under the requested root. First we log the fact that we were
-     * called. Then we initialize `MatrixCursor result` with a new instance using our parameter
-     * `projection` for the column names if it is not null or DEFAULT_DOCUMENT_PROJECTION if it
-     * is null. We next initialize `File parent` with the File that our method `getFileForDocId`
-     * locates when given `rootId` for the document ID representing the desired file. We create
-     * `PriorityQueue<File> lastModifiedFiles` with an initial capacity of 5 and an anonymous
-     * class as its `Comparator` whose `compare` override orders the files by last modified
-     * time.
-     *
+     * Return recently modified documents under the requested root. First we log the fact that we
+     * were called. Then we initialize [MatrixCursor] variable `val result` with a new instance
+     * using the [Array] of [String] returned by our method [resolveDocumentProjection] given
+     * [Array] of [String] parameter [projection] for the column names (returns [projection] if it
+     * is not `null` or [DEFAULT_DOCUMENT_PROJECTION] if it is null). We next initialize [File]
+     * variable `val parent` with the [File] that our method [getFileForDocId] locates when given
+     * our [String] parameter [rootId] for the document ID representing the desired file. We create
+     * [PriorityQueue] of [File] variable `val lastModifiedFiles` with an initial capacity of 5 and
+     * an anonymous class as its [Comparator] whose `compare` override orders the files by last
+     * modified time.
      *
      * We initialize `LinkedList<File> pending` with a new instance, and add `parent` to
      * it. Then we loop while `pending` is not empty we initialize `File file` by removing
@@ -207,8 +202,8 @@ class MyCloudProvider : DocumentsProvider() {
         // server.
 
         // Create a cursor with the requested projection, or the default projection.
-        val result = MatrixCursor(resolveDocumentProjection(projection))
-        val parent = getFileForDocId(rootId)
+        val result = MatrixCursor(resolveDocumentProjection(projection = projection))
+        val parent: File? = getFileForDocId(rootId)
 
         // Create a queue to store the most recent documents, which orders by last modified.
         val lastModifiedFiles = PriorityQueue<File?>(5) { i, j ->
