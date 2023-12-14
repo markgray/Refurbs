@@ -171,26 +171,24 @@ class MyCloudProvider : DocumentsProvider() {
      * an anonymous class as its [Comparator] whose `compare` override orders the files by last
      * modified time.
      *
-     * We initialize `LinkedList<File> pending` with a new instance, and add `parent` to
-     * it. Then we loop while `pending` is not empty we initialize `File file` by removing
-     * the first file in `pending` and if it is a directory we add the array of abstract path
-     * names of the files in the directory to `pending` (its children). If it is a File we add
-     * it to `lastModifiedFiles`.
+     * We initialize [LinkedList] of [File] variable `val pending` with a new instance, and add
+     * `parent` to it. Then we loop while `pending` is not empty initializing [File] variable
+     * `val file` by removing the first file in `pending` and if it is a directory we add the array
+     * of abstract path names of the files in that directory to `pending` (its children). If it is
+     * a [File] we add it to `lastModifiedFiles`.
      *
-     *
-     * When we have processed all the entries in `pending` we loop over `int i` for the
-     * minimum of MAX_LAST_MODIFIED+1 and the size of `lastModifiedFiles` initializing `File file`
-     * by removing the head of the queue `lastModifiedFiles`. We then pass `file` to our
-     * method `includeFile` to add it to our `MatrixCursor result`.
-     *
+     * When we have processed all the entries in `pending` we loop over [Int] variable `var i` for
+     * the minimum of [MAX_LAST_MODIFIED] plus 1 and the size of `lastModifiedFiles` initializing
+     * [File] variable `val file` by removing the head of the [PriorityQueue] `lastModifiedFiles`.
+     * We then pass `file` to our method [includeFile] to add it to our [MatrixCursor] variable
+     * `result`.
      *
      * Finally we return `result` to the caller.
      *
      * @param rootId the document ID representing the root document.
-     * @param projection list of [ Document ] columns to put into the
-     * cursor. If `null` all supported columns should be
-     * included.
-     * @return `Cursor` containing list of recently modified documents under the requested root.
+     * @param projection list of `Document` columns to put into the cursor. If `null` all supported
+     * columns should be included.
+     * @return [Cursor] containing list of recently modified documents under the requested root.
      * @throws FileNotFoundException if a file is not found by our `getFileForDocId` method
      */
     @Throws(FileNotFoundException::class)
@@ -221,7 +219,7 @@ class MyCloudProvider : DocumentsProvider() {
         // Do while we still have unexamined files
         while (!pending.isEmpty()) {
             // Take a file from the list of unprocessed files
-            val file = pending.removeFirst()
+            val file: File? = pending.removeFirst()
             if (file!!.isDirectory) {
                 // If it's a directory, add all its children to the unprocessed list
                 Collections.addAll(pending, *file.listFiles()!!)
@@ -233,7 +231,7 @@ class MyCloudProvider : DocumentsProvider() {
 
         // Add the most recent files to the cursor, not exceeding the max number of results.
         for (i in 0 until Math.min(MAX_LAST_MODIFIED + 1, lastModifiedFiles.size)) {
-            val file = lastModifiedFiles.remove()
+            val file: File? = lastModifiedFiles.remove()
             includeFile(result, null, file)
         }
         return result
