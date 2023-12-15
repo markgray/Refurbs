@@ -238,33 +238,37 @@ class MyCloudProvider : DocumentsProvider() {
     }
 
     /**
-     * Return documents that match the given query under the requested root. First we log the fact that
-     * we were called. We initialize `MatrixCursor result` with a new instance using our parameter
-     * `projection` for the column names if it is not null or DEFAULT_DOCUMENT_PROJECTION if it
-     * is null. We next initialize `File parent` with the File that our method `getFileForDocId`
-     * locates when given `rootId` for the document ID representing the desired file.
+     * Return documents that match the given query under the requested root. First we log the fact
+     * that we were called. We initialize [MatrixCursor] variable `val result` with a new instance
+     * using our [resolveDocumentProjection] method to decide to use [Array] of [String] parameter
+     * [projection] for the column names if it is not `null` or [DEFAULT_DOCUMENT_PROJECTION] if it
+     * is `null`. We next initialize [File] variable `val parent` with the [File] that our method
+     * [getFileForDocId] locates when given [String] parameter [rootId] for the document ID
+     * representing the desired file.
      *
-     *
-     * We initialize `LinkedList<File> pending` with a new instance, and add `parent` to
+     * We initialize [LinkedList] of [File] `val pending` with a new instance, and add `parent` to
      * it. Then we loop while `pending` is not empty and the numbers of rows in the cursor `result`
-     * is less than MAX_SEARCH_RESULTS, initializing `File file` with the first file in `pending`
-     * and if it is a directory we add the array of abstract path names of the files in the directory to
-     * `pending` (its children). If it is a File and the filename contains our search string `query`
+     * is less than [MAX_SEARCH_RESULTS], initializing [File] variable `val file` with the first
+     * file in `pending` and if it is a directory we add the array of abstract path names of the
+     * files in the directory that is returned by its [File.listFiles] method to `pending` (its
+     * children). If it is a [File] and the filename contains our search [String] parameter [query]
      * we add it to `result`.
-     *
      *
      * When we are done processing all the files in `pending` we return `result` to the caller.
      *
      * @param rootId the root to search under.
      * @param query string to match documents against.
-     * @param projection list of [ Document ] columns to put into the
-     * cursor. If `null` all supported columns should be
-     * included.
-     * @return `Cursor` containing the filenames that match the query
+     * @param projection list of `Document` columns to put into the cursor. If `null` all supported
+     * columns should be included.
+     * @return [Cursor] containing the filenames that match the query
      * @throws FileNotFoundException if our `getFileForDocId` is unable to access the root
      */
     @Throws(FileNotFoundException::class)
-    override fun querySearchDocuments(rootId: String, query: String, projection: Array<String>?): Cursor {
+    override fun querySearchDocuments(
+        rootId: String,
+        query: String,
+        projection: Array<String>?
+    ): Cursor {
         Log.v(TAG, "querySearchDocuments")
 
         // Create a cursor with the requested projection, or the default projection.
@@ -286,7 +290,7 @@ class MyCloudProvider : DocumentsProvider() {
         // Do while we still have unexamined files, and fewer than the max search results
         while (!pending.isEmpty() && result.count < MAX_SEARCH_RESULTS) {
             // Take a file from the list of unprocessed files
-            val file = pending.removeFirst()
+            val file: File? = pending.removeFirst()
             if (file!!.isDirectory) {
                 // If it's a directory, add all its children to the unprocessed list
                 Collections.addAll(pending, *file.listFiles()!!)
@@ -302,103 +306,119 @@ class MyCloudProvider : DocumentsProvider() {
 
     /**
      * Open and return a thumbnail of the requested document. First we log the fact that we were
-     * called. We next initialize `File file` with the File that our method `getFileForDocId`
-     * locates when given `documentId` for the document ID representing the desired file. We
-     * initialize `ParcelFileDescriptor pfd` by opening `file` in MODE_READ_ONLY. Finally
-     * we return a new instance of `AssetFileDescriptor` constructed from `pfd` with 0 for
-     * the starting offset and UNKNOWN_LENGTH as the length.
+     * called. We next initialize [File] variable `val file` with the File that our method
+     * [getFileForDocId] locates when given [String] parameter [documentId] for the document ID
+     * representing the desired file. We initialize [ParcelFileDescriptor] variable `val pfd` by
+     * opening `file` in [ParcelFileDescriptor.MODE_READ_ONLY] (open the file with read-only access).
+     * Finally we return a new instance of [AssetFileDescriptor] constructed from `pfd` with 0 for
+     * the starting offset and [AssetFileDescriptor.UNKNOWN_LENGTH] as the length.
      *
      * @param documentId the document to return.
      * @param sizeHint hint of the optimal thumbnail dimensions.
-     * @param signal used by the caller to signal if the request should be
-     * cancelled. May be null
-     * @return `AssetFileDescriptor`
-     * @throws FileNotFoundException if our `getFileForDocId` is unable to find the document
+     * @param signal used by the caller to signal if the request should be cancelled. May be `null`
+     * @return [AssetFileDescriptor] created to use the [ParcelFileDescriptor] we open.
+     * @throws FileNotFoundException if our [getFileForDocId] method is unable to find the document
      */
     @Throws(FileNotFoundException::class)
-    override fun openDocumentThumbnail(documentId: String, sizeHint: Point,
-                                       signal: CancellationSignal): AssetFileDescriptor {
+    override fun openDocumentThumbnail(
+        documentId: String,
+        sizeHint: Point,
+        signal: CancellationSignal
+    ): AssetFileDescriptor {
         Log.v(TAG, "openDocumentThumbnail")
-        val file = getFileForDocId(documentId)
-        val pfd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-        return AssetFileDescriptor(pfd, 0, AssetFileDescriptor.UNKNOWN_LENGTH)
+        val file: File? = getFileForDocId(documentId)
+        val pfd: ParcelFileDescriptor = ParcelFileDescriptor.open(
+            /* file = */ file,
+            /* mode = */ ParcelFileDescriptor.MODE_READ_ONLY
+        )
+        return AssetFileDescriptor(
+            /* fd = */ pfd,
+            /* startOffset = */ 0,
+            /* length = */ AssetFileDescriptor.UNKNOWN_LENGTH
+        )
     }
 
     /**
      * Return metadata for the single requested document. First we log the fact that we were called.
-     * We initialize `MatrixCursor result` with a new instance using our parameter
-     * `projection` for the column names if it is not null or DEFAULT_DOCUMENT_PROJECTION if it
-     * is null. We then call our `includeFile` method to locate the `documentId` file and
+     * We initialize [MatrixCursor] variable `val result` with a new instance using our
+     * [resolveDocumentProjection] method to decide to use [Array] of [String] parameter [projection]
+     * for the column names if it is not `null` or [DEFAULT_DOCUMENT_PROJECTION] if it is `null`.
+     * We then call our [includeFile] method to locate the [String] parameter [documentId] file and
      * add the metadata for that file to `result`. Finally we return result to the caller.
      *
      * @param documentId the document to return.
-     * @param projection list of [ Document ] columns to put into the
-     * cursor. If `null` all supported columns should be
-     * included.
-     * @return `Cursor` containing the metadata for the requested document.
-     * @throws FileNotFoundException if the `getFileForDocId` method called by `includeFile`
-     * is unable to find the `documentId` file.
+     * @param projection list of `Document` columns to put into the cursor. If `null` all supported
+     * columns should be included.
+     * @return [Cursor] containing the metadata for the requested document.
+     * @throws FileNotFoundException if the [getFileForDocId] method called by [includeFile]
+     * is unable to find the [documentId] file.
      */
     @Throws(FileNotFoundException::class)
-    override fun queryDocument(documentId: String, projection: Array<String>?): Cursor {
+    override fun queryDocument(
+        documentId: String,
+        projection: Array<String>?
+    ): Cursor {
         Log.v(TAG, "queryDocument")
 
         // Create a cursor with the requested projection, or the default projection.
         val result = MatrixCursor(resolveDocumentProjection(projection))
-        includeFile(result, documentId, null)
+        includeFile(result = result, docId = documentId, file = null)
         return result
     }
 
     /**
      * Return the children documents contained in the requested directory. This must only return
      * immediate descendants, as additional queries will be issued to recursively explore the tree.
-     * First we log the fact that we were called. We initialize `MatrixCursor result` with a
-     * new instance using our parameter `projection` for the column names if it is not null or
-     * DEFAULT_DOCUMENT_PROJECTION if it is null. We initialize `File parent` by using the
-     * `getFileForDocId` to find the directory with document id `parentDocumentId`. We
-     * loop through all the `File file` in the array returned by the `listFiles` method
-     * of `parent` calling our `includeFile` method for each to add it to `result`.
-     * Finally we return `result` to the caller.
+     * First we log the fact that we were called. We initialize [MatrixCursor] variable `val result`
+     * with a new instance using our [resolveDocumentProjection] method to decide to use [Array] of
+     * [String] parameter [projection] for the column names if it is not `null` or
+     * [DEFAULT_DOCUMENT_PROJECTION] if it is `null`. We initialize `File parent` by using our
+     * [getFileForDocId] method to find the directory with document id [String] parameter
+     * [parentDocumentId]. We loop through all the [File] variable `val file` in the array returned
+     * by the [File.listFiles] method of `parent` calling our [includeFile] method for each to add
+     * it to `result`. Finally we return `result` to the caller.
      *
      * @param parentDocumentId the directory to return children for.
-     * @param projection list of [ Document ] columns to put into the
-     * cursor. If `null` all supported columns should be
-     * included.
-     * @param sortOrder how to order the rows, formatted as an SQL
-     * `ORDER BY` clause (excluding the ORDER BY itself).
-     * Passing `null` will use the default sort order, which
-     * may be unordered. This ordering is a hint that can be used to
-     * prioritize how data is fetched from the network, but UI may
-     * always enforce a specific ordering.
-     * @return `Cursor` containing all the child files of the `parentDocumentId` directory
+     * @param projection list of `Document` columns to put into the cursor. If `null` all supported
+     * columns should be included.
+     * @param sortOrder how to order the rows, formatted as an SQL `ORDER BY` clause (excluding the
+     * ORDER BY itself). Passing `null` will use the default sort order, which may be unordered.
+     * This ordering is a hint that can be used to prioritize how data is fetched from the network,
+     * but UI may always enforce a specific ordering.
+     * @return [Cursor] containing all the child files of the [parentDocumentId] directory
      * @throws FileNotFoundException if the `getFileForDocId` method is unable to find any of
      * the files.
      */
     @Throws(FileNotFoundException::class)
-    override fun queryChildDocuments(parentDocumentId: String, projection: Array<String>?,
-                                     sortOrder: String): Cursor {
+    override fun queryChildDocuments(
+        parentDocumentId: String,
+        projection: Array<String>?,
+        sortOrder: String
+    ): Cursor {
         Log.v(TAG, "queryChildDocuments, parentDocumentId: " +
             parentDocumentId +
             " sortOrder: " +
-            sortOrder)
+            sortOrder
+        )
         val result = MatrixCursor(resolveDocumentProjection(projection))
-        val parent = getFileForDocId(parentDocumentId)
+        val parent: File? = getFileForDocId(parentDocumentId)
         for (file in parent!!.listFiles()!!) {
-            includeFile(result, null, file)
+            includeFile(result = result, docId = null, file = file)
         }
         return result
     }
 
     /**
      * Open and return the requested document. First we log the fact that we were called. We next
-     * initialize `File file` with the File that our method `getFileForDocId` locates
-     * when given `documentId` for the document ID representing the desired file. We initialize
-     * `int accessMode` by using the `ParcelFileDescriptor.parseMode` to parse our parameter
-     * `String mode`. We initialize `boolean isWrite` to true if `mode` contains
-     * the character 'w'. We then branch on the value of `isWrite`:
+     * initialize [File] variable `val file` with the [File] that our method [getFileForDocId]
+     * locates when given [String] parameter [documentId] for the document ID representing the
+     * desired file. We initialize [Int] variable `val accessMode` by using the
+     * [ParcelFileDescriptor.parseMode] method to parse our [String] parameter [mode].
+     * We initialize [Boolean] variable `val isWrite` to `true` if [String] parameter [mode]
+     * contains the character 'w'. We then branch on the value of `isWrite`:
      *
-     *  *
-     * true: Wrapped in a try block intended to catch IOException in order to throw FileNotFoundException
+     *  * `true`: Wrapped in a try block intended to catch [IOException] in order to throw
+     *  [FileNotFoundException]
      * we initialize `Handler handler` with an instance which uses the Looper for the main thread
      * of the current process, then return the `ParcelFileDescriptor` that its static `open`
      * method returns when opening `file` in `accessMode` mode, using `handler` as the
@@ -420,16 +440,19 @@ class MyCloudProvider : DocumentsProvider() {
      * or if `getFileForDocId` is unable to find the file with document id `documentId`.
      */
     @Throws(FileNotFoundException::class)
-    override fun openDocument(documentId: String, mode: String,
-                              signal: CancellationSignal?): ParcelFileDescriptor {
+    override fun openDocument(
+        documentId: String,
+        mode: String,
+        signal: CancellationSignal?
+    ): ParcelFileDescriptor {
         Log.v(TAG, "openDocument, mode: $mode")
         // It's OK to do network operations in this method to download the document, as long as you
         // periodically check the CancellationSignal.  If you have an extremely large file to
         // transfer from the network, a better solution may be pipes or sockets
         // (see ParcelFileDescriptor for helper methods).
-        val file = getFileForDocId(documentId)
-        val accessMode = ParcelFileDescriptor.parseMode(mode)
-        val isWrite = mode.indexOf('w') != -1
+        val file: File? = getFileForDocId(documentId)
+        val accessMode: Int = ParcelFileDescriptor.parseMode(mode)
+        val isWrite: Boolean = mode.indexOf('w') != -1
         return if (isWrite) {
             // Attach a close listener if the document is opened in write mode.
             try {
