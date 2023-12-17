@@ -551,12 +551,12 @@ class MyCloudProvider : DocumentsProvider() {
 
     /**
      * Gets a string of unique MIME data types a directory supports, separated by newlines. This
-     * should not change. We initialize `Set<String> mimeTypes` with a new instance of
-     * `HashSet`, and add the strings "image/ *", "text/ *", and
+     * should not change. We initialize [Set] of [String] variable `val mimeTypes` with a new
+     * instance of [HashSet], and add the strings "image/ *", "text/ *", and
      * "application/vnd.openxmlformats-officedocument.wordprocessingml.document" to it. We then
-     * initialize `StringBuilder mimeTypesString` with a new instance then loop for all the
-     * `String mimeType` in `mimeTypes` appending `mimeType` followed by a newline
-     * character to `mimeTypesString`. When done looping we return the string version of
+     * initialize [StringBuilder] variable `val mimeTypesString` with a new instance then loop for
+     * all the [String] variable `var mimeType` in `mimeTypes` appending `mimeType` followed by a
+     * newline character to `mimeTypesString`. When done looping we return the string version of
      * `mimeTypesString` to the caller.
      *
      * @return a [String] of the unique MIME data types the parent directory supports
@@ -577,24 +577,21 @@ class MyCloudProvider : DocumentsProvider() {
         }
 
     /**
-     * Get the document ID given a File. The document id must be consistent across time. Other
+     * Get the document ID given a [File]. The document id must be consistent across time. Other
      * applications may save the ID and use it to reference documents later.
-     *
      *
      * This implementation is specific to this demo. It assumes only one root and is built
      * directly from the file structure. However, it is possible for a document to be a child of
      * multiple directories (for example "android" and "images"), in which case the file must have
      * the same consistent, unique document ID in both cases.
      *
-     *
-     * We initialize `String path` with the absolute path of our parameter `File file`,
-     * and initialize `String rootPath` with the string form of the abstract pathname of our
-     * field `File mBaseDir`. If `rootPath` is equal to `path` we set `path`
-     * to the empty string, else if `rootPath` ends with the "/" character we set `path`
-     * to the substring of `path` which follows the end of `rootPath`, if it does not end
-     * with "/" we add 1 to the length of `rootPath` to skip the "/" in `path` and set
-     * `path` to the substring of `path` which follows that "/".
-     *
+     * We initialize [String] variable `var path` with the absolute path of our [File] parameter
+     * [file], and initialize [String] variable `val rootPath` with the string form of the abstract
+     * pathname of our [File] field [mBaseDir]. If `rootPath` is equal to `path` we set `path` to
+     * the empty string, else if `rootPath` ends with the "/" character we set `path` to the
+     * substring of `path` which follows the end of `rootPath`, if it does not end with "/" we
+     * add 1 to the length of `rootPath` to skip the "/" in `path` and set `path` to the substring
+     * of `path` which follows that "/".
      *
      * Finally we return the string formed by concatenating the string "root" followed by the ":"
      * character followed by `path`.
@@ -618,29 +615,33 @@ class MyCloudProvider : DocumentsProvider() {
     }
 
     /**
-     * Add a representation of a file to a cursor. If our parameter `docId` is null we set it
-     * to the document id returned by our method `getDocIdForFile` when passed our parameter
-     * `File file`, otherwise we set `file` to the file that our method `getFileForDocId`
-     * finds when passed the document id `docId`.
+     * Add a representation of a file to a cursor. We copy our [String] parameter [docId] to our
+     * [String] variable `var docIdLocal` and our [File] parameter [file] to our [File] variable
+     * `var fileLocal`. If `docIdLocal` is `null` we set it to the document id returned by our
+     * method [getDocIdForFile] when passed our [File] variable `fileLocal`, otherwise we set
+     * `fileLocal` to the file that our method [getFileForDocId] finds when passed the document id
+     * `docIdLocal`.
      *
+     * We initialize [Int] variable `var flags` to 0. If `fileLocal` is a directory, then if we can
+     * write to that directory we add the [DocumentsContract.Document.FLAG_DIR_SUPPORTS_CREATE] flag
+     * to `flags`. If it is not a directory and we can write to it we add the flags
+     * [DocumentsContract.Document.FLAG_SUPPORTS_WRITE] and
+     * [DocumentsContract.Document.FLAG_SUPPORTS_DELETE] to it.
      *
-     * We initialize `int flags` to 0. If `file` is a directory, then if we can write to
-     * that directory we add the FLAG_DIR_SUPPORTS_CREATE flag to `flags`. If it is not a directory
-     * and we can write to it we add the flags FLAG_SUPPORTS_WRITE and FLAG_SUPPORTS_DELETE to it.
+     * We initialize [String] variable `val displayName` with the name of the file or directory
+     * `fileLocal`, then initialize [String] variable `val mimeType` with the mimetype that our
+     * method [getTypeForFile] guesses for `fileLocal`. If `mimeType` starts with the string
+     * "image/" we set the [DocumentsContract.Document.FLAG_SUPPORTS_THUMBNAIL] flag of `flags`.
      *
-     *
-     * We initialize `String displayName` with the name of the file or directory `file`,
-     * then initialize `String mimeType` with the mimetype that our method `getTypeForFile`
-     * guesses for `file`. If `mimeType` starts with the string "image/" we set the
-     * FLAG_SUPPORTS_THUMBNAIL flag of `flags`.
-     *
-     *
-     * WE initialize `MatrixCursor.RowBuilder row` with a new row added to `result`. We
-     * add to it `docId` in the column COLUMN_DOCUMENT_ID, `displayName` in the column
-     * COLUMN_DISPLAY_NAME, the length of `file` in column COLUMN_SIZE, `mimeType` in
-     * column COLUMN_MIME_TYPE, the time that `file` was last modified in column COLUMN_LAST_MODIFIED,
-     * `flags` in column COLUMN_FLAGS, and the resource id R.drawable.ic_launcher in column
-     * COLUMN_ICON.
+     * WE initialize [MatrixCursor.RowBuilder] variable `val row` with a new row added to
+     * [MatrixCursor] parameter [result]. We add to it `docIdLocal` in the column
+     * [DocumentsContract.Document.COLUMN_DOCUMENT_ID], `displayName` in the column
+     * [DocumentsContract.Document.COLUMN_DISPLAY_NAME], the length of `fileLocal` in column
+     * [DocumentsContract.Document.COLUMN_SIZE], `mimeType` in column
+     * [DocumentsContract.Document.COLUMN_MIME_TYPE], the time that `fileLocal` was last modified in
+     * column [DocumentsContract.Document.COLUMN_LAST_MODIFIED], `flags` in column
+     * [DocumentsContract.Document.COLUMN_FLAGS], and the resource id [R.drawable.ic_launcher] in
+     * column [DocumentsContract.Document.COLUMN_ICON].
      *
      * @param result the cursor to modify
      * @param docId  the document ID representing the desired file (may be null if given file)
@@ -649,8 +650,8 @@ class MyCloudProvider : DocumentsProvider() {
      */
     @Throws(FileNotFoundException::class)
     private fun includeFile(result: MatrixCursor, docId: String?, file: File?) {
-        var docIdLocal = docId
-        var fileLocal = file
+        var docIdLocal: String? = docId
+        var fileLocal: File? = file
         if (docIdLocal == null) {
             docIdLocal = getDocIdForFile(fileLocal)
         } else {
@@ -674,13 +675,13 @@ class MyCloudProvider : DocumentsProvider() {
             flags = flags or DocumentsContract.Document.FLAG_SUPPORTS_WRITE
             flags = flags or DocumentsContract.Document.FLAG_SUPPORTS_DELETE
         }
-        val displayName = fileLocal.name
-        val mimeType = getTypeForFile(fileLocal)
+        val displayName: String = fileLocal.name
+        val mimeType: String = getTypeForFile(fileLocal)
         if (mimeType.startsWith("image/")) {
             // Allow the image to be represented by a thumbnail rather than an icon
             flags = flags or DocumentsContract.Document.FLAG_SUPPORTS_THUMBNAIL
         }
-        val row = result.newRow()
+        val row: MatrixCursor.RowBuilder = result.newRow()
         row.add(DocumentsContract.Document.COLUMN_DOCUMENT_ID, docIdLocal)
         row.add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, displayName)
         row.add(DocumentsContract.Document.COLUMN_SIZE, fileLocal.length())
