@@ -31,16 +31,16 @@ class StorageProviderFragment : Fragment() {
     /**
      * Flag to indicate whether the user is "logged in" to our document provider or not
      */
-    private var mLoggedIn = false
+    private var mLoggedIn: Boolean = false
 
     /**
      * Called when the fragment is starting. First we call through to our super's implementation of
-     * `onCreate` then we set our flag `mLoggedIn` to the value that our method `readLoginValue`
-     * reads from our shared preferences file. Finally we call the method `setHasOptionsMenu` to
+     * `onCreate` then we set our [Boolean] flag [mLoggedIn] to the value that our method [readLoginValue]
+     * reads from our shared preferences file. Finally we call the method [setHasOptionsMenu] to
      * report that this fragment would like to participate in populating the options menu by receiving
-     * a call to [.onCreateOptionsMenu] and related methods.
+     * a call to [onCreateOptionsMenu] and related methods.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,25 +50,24 @@ class StorageProviderFragment : Fragment() {
 
     /**
      * Prepare the Fragment host's standard options menu to be displayed. First we call our super's
-     * implementation of `onPrepareOptionsMenu`. Then we locate the `MenuItem item` in
-     * our parameter `Menu menu` (already inflated by `MainActivity`) with the id
-     * R.id.sample_action, and if our flag `mLoggedIn` is true we set its title to the string
-     * with id R.string.log_out ("Log out"), otherwise we set it to the string with id R.string.log_in
-     * ("Log in").
+     * implementation of `onPrepareOptionsMenu`. Then we locate the [MenuItem] variable `val item`
+     * in our [Menu] parameter [menu] (already inflated by [MainActivity]) with the id
+     * [R.id.sample_action], and if our [Boolean] flag field [mLoggedIn] is `true` we set its title
+     * to the string with id [R.string.log_out] ("Log out"), otherwise we set it to the string with
+     * id [R.string.log_in] ("Log in").
      *
-     * @param menu The options menu as last shown or first initialized by
-     * onCreateOptionsMenu().
+     * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu].
      */
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        val item = menu.findItem(R.id.sample_action)
+        val item: MenuItem = menu.findItem(R.id.sample_action)
         item.setTitle(if (mLoggedIn) R.string.log_out else R.string.log_in)
     }
 
     /**
-     * This hook is called whenever an item in your options menu is selected. If the id of our parameter
-     * `MenuItem item` is R.id.sample_action, we call our method `toggleLogin` to toggle
-     * whether we are logged in or not, and if our flag `mLoggedIn` is now true we set the title
+     * This hook is called whenever an item in your options menu is selected. If the id of our
+     * [MenuItem] parameter [item] is [R.id.sample_action], we call our method [toggleLogin] to
+     * toggle whether we are logged in or not, and if our flag `mLoggedIn` is now true we set the title
      * of `item` to the string with id R.string.log_out ("Log out") otherwise we set it to the
      * string with id R.string.log_in ("Log in"). We then retrieve a ContentResolver instance for our
      * application's package and call its `notifyChange` method to notify registered observers

@@ -836,13 +836,12 @@ class MyCloudProvider : DocumentsProvider() {
     }
 
     /**
-     * Dummy function to determine whether the user is logged in. We initialize our variable
-     * `SharedPreferences sharedPreferences` with the `SharedPreferences` instance for
-     * the name with resource id R.string.app_name ("StorageProvider"). Then we return the boolean
-     * value stored under the key with resource id R.string.key_logged_in ("logged_in") defaulting to
-     * false.
+     * Dummy function to determine whether the user is logged in. We initialize our [SharedPreferences]
+     * variable `val sharedPreferences` with the [SharedPreferences] instance for the name with
+     * resource id [R.string.app_name] ("StorageProvider"). Then we return the [Boolean] value stored
+     * under the key with resource id [R.string.key_logged_in] ("logged_in") defaulting to `false`.
      *
-     * @return true if the user is "logged in".
+     * @return `true` if the user is "logged in".
      */
     private val isUserLoggedIn: Boolean
         get() {
@@ -878,7 +877,7 @@ class MyCloudProvider : DocumentsProvider() {
          * Use these as the default columns to return information about a document if no specific
          * columns are requested in a query.
          */
-        private val DEFAULT_DOCUMENT_PROJECTION = arrayOf(
+        private val DEFAULT_DOCUMENT_PROJECTION: Array<String> = arrayOf(
             DocumentsContract.Document.COLUMN_DOCUMENT_ID,
             DocumentsContract.Document.COLUMN_MIME_TYPE,
             DocumentsContract.Document.COLUMN_DISPLAY_NAME,
@@ -901,33 +900,37 @@ class MyCloudProvider : DocumentsProvider() {
         /**
          * Unique ID of our root.
          */
-        private const val ROOT = "root"
+        private const val ROOT: String = "root"
 
         /**
-         * Decides whether to use the DEFAULT_ROOT_PROJECTION instead of the `projection` passed us.
+         * Decides whether to use the [DEFAULT_ROOT_PROJECTION] instead of the [Array] of [String]
+         * [projection] passed us.
          *
          * @param projection the requested root column projection
          * @return either the requested root column projection, or the default projection if the
-         * requested projection is null.
+         * requested projection is `null`.
          */
         private fun resolveRootProjection(projection: Array<String>?): Array<String> {
             return projection ?: DEFAULT_ROOT_PROJECTION
         }
 
         /**
-         * Decides whether to use the DEFAULT_DOCUMENT_PROJECTION instead of the `projection` passed us.
+         * Decides whether to use the [DEFAULT_DOCUMENT_PROJECTION] instead of the [Array] of [String]
+         * [projection] passed us.
          *
          * @param projection the requested document column projection
          * @return either the requested document column projection, or the default projection if the
-         * requested projection is null.
+         * requested projection is `null`.
          */
         private fun resolveDocumentProjection(projection: Array<String>?): Array<String> {
             return projection ?: DEFAULT_DOCUMENT_PROJECTION
         }
 
         /**
-         * Get a file's MIME type. If the file is a directory we return MIME_TYPE_DIR, otherwise we return
-         * the mimetype guessed by our method `getTypeForName` for the name of the file.
+         * Get a file's MIME type. If the file is a directory we return
+         * [DocumentsContract.Document.MIME_TYPE_DIR], otherwise we return
+         * the mimetype guessed by our method [getTypeForName] for the name
+         * of the file.
          *
          * @param file the File object whose type we want
          * @return the MIME type of the file
@@ -941,22 +944,23 @@ class MyCloudProvider : DocumentsProvider() {
         }
 
         /**
-         * Get the MIME data type of a document, given its filename. We initialize `int lastDot` by
-         * finding the index of the last '.' character in our parameter `String name`. If `lastDot`
-         * is greater than or equal to 0 (a '.' was found) we initialize `String extension` to the
-         * substring in `name` that follows the '.'. We then initialize `String mime` to the
-         * value returned by the `getMimeTypeFromExtension` method of `MimeTypeMap` for the
-         * `extension`. If this is not null we return it to the caller. If we were unable to guess
-         * the mimetype from the extension we return "application/octet-stream" to the caller.
+         * Get the MIME data type of a document, given its filename. We initialize [Int] variable
+         * `val lastDot` by finding the index of the last '.' character in our [String] parameter
+         * [name]. If `lastDot` is greater than or equal to 0 (a '.' was found) we initialize [String]
+         * variable `val extension` to the substring in `name` that follows the '.'. We then initialize
+         * [String] variable `val mime` to the value returned by the [MimeTypeMap.getMimeTypeFromExtension]
+         * method of the singleton instance of [MimeTypeMap] for the `extension`. If this is not `null`
+         * we return it to the caller. If we were unable to guess the mimetype from the extension we
+         * return "application/octet-stream" to the caller.
          *
          * @param name the filename of the document
          * @return the MIME data type of a document
          */
         private fun getTypeForName(name: String): String {
-            val lastDot = name.lastIndexOf('.')
+            val lastDot: Int = name.lastIndexOf('.')
             if (lastDot >= 0) {
-                val extension = name.substring(lastDot + 1)
-                val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+                val extension: String = name.substring(lastDot + 1)
+                val mime: String? = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
                 if (mime != null) {
                     return mime
                 }
