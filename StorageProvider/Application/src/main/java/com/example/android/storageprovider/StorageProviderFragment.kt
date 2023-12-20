@@ -15,7 +15,9 @@
 */
 package com.example.android.storageprovider
 
+import android.content.ContentResolver
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.view.Menu
@@ -67,16 +69,17 @@ class StorageProviderFragment : Fragment() {
     /**
      * This hook is called whenever an item in your options menu is selected. If the id of our
      * [MenuItem] parameter [item] is [R.id.sample_action], we call our method [toggleLogin] to
-     * toggle whether we are logged in or not, and if our flag `mLoggedIn` is now true we set the title
-     * of `item` to the string with id R.string.log_out ("Log out") otherwise we set it to the
-     * string with id R.string.log_in ("Log in"). We then retrieve a ContentResolver instance for our
-     * application's package and call its `notifyChange` method to notify registered observers
-     * that a row was updated in the URI representing the roots of our document provider AUTHORITY
-     * ("com.example.android.storageprovider.documents").
+     * toggle whether we are logged in or not, and if our [Boolean] flag field [mLoggedIn] is now
+     * `true` we set the title of [item] to the string with id [R.string.log_out] ("Log out")
+     * otherwise we set it to thestring with id [R.string.log_in] ("Log in"). We then retrieve a
+     * [ContentResolver] instance for our application's package and call its [ContentResolver.notifyChange]
+     * method to notify registered observers that a row was updated in the URI representing the
+     * roots of our document provider [AUTHORITY] ("com.example.android.storageprovider.documents").
+     * In any case we return `true` to our caller to consume the event here.
      *
      * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
+     * @return [Boolean] Return `false` to allow normal menu processing to
+     * proceed, `true` to consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.sample_action) {
@@ -102,41 +105,56 @@ class StorageProviderFragment : Fragment() {
 
     /**
      * Dummy function to change the user's authorization status. First we toggle the value of our
-     * flag `mLoggedIn`, then we call our method `writeLoginValue` to write the new value
-     * to our shared preferences. Finally we log the new authorization status.
+     * [Boolean] flag field [mLoggedIn], then we call our method [writeLoginValue] to write the new
+     * value to our shared preferences. Finally we log the new authorization status.
      */
     private fun toggleLogin() {
         // Replace this with your standard method of authentication to determine if your app
         // should make the user's documents available.
         mLoggedIn = !mLoggedIn
         writeLoginValue(mLoggedIn)
-        Log.i(TAG, getString(if (mLoggedIn) R.string.logged_in_info else R.string.logged_out_info))
+        Log.i(
+            TAG,
+            getString(
+                if (mLoggedIn) {
+                    R.string.logged_in_info
+                } else {
+                    R.string.logged_out_info
+                }
+            )
+        )
     }
 
     /**
-     * Dummy function to save whether the user is logged in. We initialize `SharedPreferences sharedPreferences`
-     * with the preferences file with the name whose resource id is R.string.app_name ("StorageProvider").
-     * We then use `sharedPreferences` to create an `Editor` which we use to store the value
-     * of our parameter `loggedIn` under the key with resource id R.string.key_logged_in ("logged_in")
+     * Dummy function to save whether the user is logged in. We initialize [SharedPreferences]
+     * variable `val sharedPreferences` with the preferences file with the name whose resource id
+     * is [R.string.app_name] ("StorageProvider"). We then use `sharedPreferences` to create an
+     * [SharedPreferences.Editor] which we use to store the value of our [Boolean] parameter
+     * [loggedIn] under the key with resource id [R.string.key_logged_in] ("logged_in")
      * and then apply the change.
      */
     private fun writeLoginValue(loggedIn: Boolean) {
-        val sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.app_name),
-            Context.MODE_PRIVATE)
+        val sharedPreferences: SharedPreferences = requireActivity().getSharedPreferences(
+            /* name = */ getString(R.string.app_name),
+            /* mode = */ Context.MODE_PRIVATE
+        )
         sharedPreferences.edit().putBoolean(getString(R.string.key_logged_in), loggedIn).apply()
     }
 
     /**
-     * Dummy function to determine whether the user is logged in. We initialize `SharedPreferences sharedPreferences`
-     * with the preferences file with the name whose resource id is R.string.app_name ("StorageProvider").
-     * We then use `sharedPreferences` to fetch the boolean stored under the key with resource id R.string.key_logged_in
-     * ("logged_in") defaulting to false, which we return to the caller.
+     * Dummy function to determine whether the user is logged in. We initialize [SharedPreferences]
+     * variable `val sharedPreferences` with the preferences file with the name whose resource id is
+     * [R.string.app_name] ("StorageProvider"). We then use `sharedPreferences` to fetch the boolean
+     * stored under the key with resource id [R.string.key_logged_in] ("logged_in") defaulting to
+     * `false`, which we return to the caller.
      *
      * @return value stored in shared preferences file under the key "logged_in".
      */
     private fun readLoginValue(): Boolean {
-        val sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.app_name),
-            Context.MODE_PRIVATE)
+        val sharedPreferences: SharedPreferences = requireActivity().getSharedPreferences(
+            getString(R.string.app_name),
+            Context.MODE_PRIVATE
+        )
         return sharedPreferences.getBoolean(getString(R.string.key_logged_in), false)
     }
 
