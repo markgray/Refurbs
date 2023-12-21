@@ -34,16 +34,11 @@ import com.example.android.common.dummydata.Cheeses
 import com.example.android.common.logger.Log
 
 /**
- * A basic sample that shows how to use [SwipeRefreshLayout] to add
- * the 'swipe-to-refresh' gesture to a layout. In this sample, SwipeRefreshLayout contains a
- * scrollable [android.widget.ListView] as its only child.
- *
- *
- * To provide an accessible way to trigger the refresh, this app also provides a refresh
- * action item.
- *
- *
- * In this sample app, the refresh updates the ListView with a random set of new items.
+ * A basic sample that shows how to use [SwipeRefreshLayout] to add the 'swipe-to-refresh' gesture
+ * to a layout. In this sample, [SwipeRefreshLayout] contains a scrollable [android.widget.ListView]
+ * as its only child. To provide an accessible way to trigger the refresh, this app also provides a
+ * refresh action item. In this sample app, the refresh updates the ListView with a random set of
+ * new items.
  */
 class SwipeRefreshLayoutBasicFragment : Fragment() {
     /**
