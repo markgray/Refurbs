@@ -18,6 +18,7 @@
 package com.example.android.swiperefreshlayoutbasic
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,7 +29,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.android.common.dummydata.Cheeses
 import com.example.android.common.logger.Log
@@ -37,7 +40,7 @@ import com.example.android.common.logger.Log
  * A basic sample that shows how to use [SwipeRefreshLayout] to add the 'swipe-to-refresh' gesture
  * to a layout. In this sample, [SwipeRefreshLayout] contains a scrollable [android.widget.ListView]
  * as its only child. To provide an accessible way to trigger the refresh, this app also provides a
- * refresh action item. In this sample app, the refresh updates the ListView with a random set of
+ * refresh action item. In this sample app, the refresh updates the [ListView] with a random set of
  * new items.
  */
 class SwipeRefreshLayoutBasicFragment : Fragment() {
@@ -59,11 +62,11 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
     private var mListAdapter: ArrayAdapter<String?>? = null
 
     /**
-     * Called when the `Fragment` is starting. First we call through to our super's implementation
-     * of `onCreate`, then we call the `setHasOptionsMenu(true)` method to notify the system
+     * Called when the [Fragment] is starting. First we call through to our super's implementation
+     * of `onCreate`, then we call the [setHasOptionsMenu] method with `true` to notify the system
      * to allow an options menu for this fragment.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,31 +76,35 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
     }
 
     /**
-     * Inflates the [View] which will be displayed by this [Fragment], from the app's
-     * resources. We initialize `View view` with the `View` inflated by our parameter
-     * `LayoutInflater inflater` from our layout file R.layout.fragment_sample using our parameter
-     * `ViewGroup container` for the LayoutParams without attaching to it. We initialize our
-     * field `SwipeRefreshLayout mSwipeRefreshLayout` by finding the view in `view` with
-     * id R.id.swipe_refresh, and then set the color resources used in its progress animation from
-     * the color resource id's R.color.swipe_color_1, R.color.swipe_color_2, R.color.swipe_color_3,
-     * and R.color.swipe_color_4. We initialize our field `ListView mListView` by finding the
-     * view in `view` with id android.R.id.list then return `view` tp the caller.
+     * Inflates the [View] which will be displayed by this [Fragment], from the app's resources.
+     * We initialize [View] variable `val view` with the [View] inflated by our [LayoutInflater]
+     * parameter [inflater] from our layout file [R.layout.fragment_sample] using our [ViewGroup]
+     * parameter [container] for the LayoutParams without attaching to it. We initialize our
+     * [SwipeRefreshLayout] field [mSwipeRefreshLayout] by finding the [View] in `view` with id
+     * [R.id.swipe_refresh], and then set the color resources used in its progress animation from the
+     * color resource id's [R.color.swipe_color_1], [R.color.swipe_color_2], [R.color.swipe_color_3],
+     * and [R.color.swipe_color_4]. We initialize our [ListView] field [mListView] by finding the
+     * [View] in `view` with id [android.R.id.list] then return `view` to the caller.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here, we do not use.
-     * @return Return the View for the fragment's UI
+     * @return Return the [View] for the fragment's UI
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_sample, container, false)
+    @Suppress("RedundantNullableReturnType")
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view: View = inflater.inflate(R.layout.fragment_sample, container, false)
 
         // Retrieve the SwipeRefreshLayout and ListView instances
         mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
-
 
         // Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
         mSwipeRefreshLayout!!.setColorSchemeResources(
@@ -110,19 +117,19 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
     }
 
     /**
-     * This is called after the [.onCreateView] has finished.
-     * Here we can pick out the [View]s we need to configure from the content view. First we call
-     * our super's implementation of `onViewCreated`. We initialize our field `mListAdapter`
-     * with a new instance which uses the `Context` of the `FragmentActivity` this fragment
-     * is currently associated with, layout file android.R.layout.simple_list_item_1 as the layout file
-     * to use when instantiating views, android.R.id.text1 as the id of the TextView within that layout
-     * that is to be populated, and the `ArrayList<String>` of LIST_ITEM_COUNT (20) random cheeses
-     * returned by the `randomList` method of `Cheeses` for the objects to represent in the
-     * ListView. We then set the adapter of our field `ListView mListView` to `mListAdapter`.
-     * Finally we set the `OnRefreshListener` of our field `SwipeRefreshLayout mSwipeRefreshLayout`
-     * to an anonymous class whose `onRefresh` override logs that it was called and calls our method
-     * `initiateRefresh` to replace the dataset of `mListAdapter` with a new list of LIST_ITEM_COUNT
-     * (20) random cheeses.
+     * This is called after the [onCreateView] has finished. Here we can pick out the [View]s we
+     * need to configure from the content view. First we call our super's implementation of
+     * `onViewCreated`. We initialize our [ArrayAdapter] field [mListAdapter] with a new instance
+     * which uses the [Context] of the [FragmentActivity] this fragment is currently associated
+     * with, layout file [android.R.layout.simple_list_item_1] as the layout file to use when
+     * instantiating views, [android.R.id.text1] as the id of the [TextView] within that layout
+     * that is to be populated, and the [ArrayList] of [String] of [LIST_ITEM_COUNT] (20) random
+     * cheeses returned by the [Cheeses.randomList] method of [Cheeses] for the objects to represent
+     * in the [ListView]. We then set the adapter of our [ListView] field [mListView] to [mListAdapter].
+     * Finally we set the [SwipeRefreshLayout.OnRefreshListener] of our [SwipeRefreshLayout] field
+     * [mSwipeRefreshLayout] to a lambda whose `onRefresh` override logs that it was called and calls
+     * our method [initiateRefresh] method to replace the dataset of [mListAdapter] with a new list
+     * of [LIST_ITEM_COUNT] (20) random cheeses.
      *
      * @param view View created in [.onCreateView]
      * @param savedInstanceState If non-null, this fragment is being re-constructed
@@ -144,14 +151,15 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
         // Set the adapter between the ListView and its backing data.
         mListView!!.adapter = mListAdapter
 
-        /*
-         * Implement {@link SwipeRefreshLayout.OnRefreshListener}. When users do the "swipe to
-         * refresh" gesture, SwipeRefreshLayout invokes
+        /**
+         * Implement [SwipeRefreshLayout.OnRefreshListener]. When users do the "swipe to refresh"
+         * gesture, [SwipeRefreshLayout] invokes
          * {@link SwipeRefreshLayout.OnRefreshListener#onRefresh onRefresh()}. In
          * {@link SwipeRefreshLayout.OnRefreshListener#onRefresh onRefresh()}, call a method that
          * refreshes the content. Call the same method in response to the Refresh action from the
          * action bar.
-         */mSwipeRefreshLayout!!.setOnRefreshListener {
+         */
+        mSwipeRefreshLayout!!.setOnRefreshListener {
             Log.i(LOG_TAG, "onRefresh called from SwipeRefreshLayout")
             initiateRefresh()
         }
