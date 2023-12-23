@@ -33,6 +33,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.example.android.common.dummydata.Cheeses
 import com.example.android.common.logger.Log
 
@@ -153,11 +154,9 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
 
         /**
          * Implement [SwipeRefreshLayout.OnRefreshListener]. When users do the "swipe to refresh"
-         * gesture, [SwipeRefreshLayout] invokes
-         * {@link SwipeRefreshLayout.OnRefreshListener#onRefresh onRefresh()}. In
-         * {@link SwipeRefreshLayout.OnRefreshListener#onRefresh onRefresh()}, call a method that
-         * refreshes the content. Call the same method in response to the Refresh action from the
-         * action bar.
+         * gesture, [SwipeRefreshLayout] invokes [OnRefreshListener.onRefresh]. In
+         * [OnRefreshListener.onRefresh] call a method that refreshes the content. Call the same
+         * method in response to the Refresh action from the action bar.
          */
         mSwipeRefreshLayout!!.setOnRefreshListener {
             Log.i(LOG_TAG, "onRefresh called from SwipeRefreshLayout")
@@ -166,32 +165,33 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
     }
 
     /**
-     * Create the ActionBar. We use our parameter `MenuInflater inflater` to inflate our menu
-     * layout file R.menu.main into our parameter `Menu menu`.
+     * Create the ActionBar. We use our [MenuInflater] parameter [inflater] to inflate our menu
+     * layout file [R.menu.main] into our [Menu] parameter [menu].
      *
      * @param menu     The options menu in which you place our items.
-     * @param inflater `MenuInflater` to use to instantiate menu XML files into Menu objects
+     * @param inflater [MenuInflater] to use to instantiate menu XML files into Menu objects
      */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
     }
 
     /**
-     * Respond to the user's selection of the Refresh action item. Start the SwipeRefreshLayout
-     * progress bar, then initiate the background task that refreshes the content. We switch on the
-     * id of our parameter `MenuItem item` catching only R.id.menu_refresh. If it is our menu
-     * item we log the fact it was selected, and if our field `SwipeRefreshLayout mSwipeRefreshLayout`
-     * is not currently refreshing we set it to be refreshing, call our method `initiateRefresh`
-     * to replace the dataset of `mListAdapter` with a new list of LIST_ITEM_COUNT (20) random
-     * cheeses, and return true to the caller to consume the event here.
+     * Respond to the user's selection of the Refresh action item. Start the [SwipeRefreshLayout]
+     * progress bar, then initiate the background task that refreshes the content. If the method
+     * [MenuItem.getItemId] (kotlin `itemId` property) of our [MenuItem] parameter [item] returns
+     * [R.id.menu_refresh], we log the fact it was selected, and if our [SwipeRefreshLayout] field
+     * [mSwipeRefreshLayout] is not currently refreshing we set it to be refreshing, call our method
+     * [initiateRefresh] which launches a delaying task which when finished returns a new list of
+     * [LIST_ITEM_COUNT] (20) random cheese names to [onRefreshComplete] which it uses to to replace
+     * the dataset of [ArrayAdapter] of [String] field [mListAdapter]. Having started the refresh
+     * we return `true` to the caller to consume the event here.
      *
-     *
-     * If the MenuItem id of item is not R.id.menu_refresh, we return the value returned by calling
+     * If the [MenuItem] id of [item] is not [R.id.menu_refresh], we return the value returned by
      * our super's implementation of `onOptionsItemSelected`.
      *
      * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
+     * @return [Boolean] Return `false` to allow normal menu processing to proceed,
+     * `true` to consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_refresh) {
@@ -211,27 +211,28 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
 
     /**
      * By abstracting the refresh process to a single method, the app allows both the
-     * SwipeGestureLayout onRefresh() method and the Refresh action item to refresh the content.
+     * [OnRefreshListener.onRefresh] method and the Refresh action item to refresh the content.
      *
-     *
-     * First we log that we were called, then we create a new instance of the `AsyncTask`
-     * `DummyBackgroundTask` and immediately execute it in the background.
+     * First we log that we were called, then we create a new instance of [DummyBackgroundTask]
+     * (custom [AsyncTask]) and immediately execute it in the background.
      */
     private fun initiateRefresh() {
         Log.i(LOG_TAG, "initiateRefresh")
 
-        /*
-         * Execute the background task, which uses {@link android.os.AsyncTask} to load the data.
-         */DummyBackgroundTask().execute()
+        /**
+         * Execute the background task, which uses [AsyncTask] to load the data.
+         */
+        DummyBackgroundTask().execute()
     }
 
     /**
-     * When the `DummyBackgroundTask` AsyncTask finishes, it calls onRefreshComplete(), which
-     * updates the data in the ListAdapter and turns off the progress bar. First we log the fact that
-     * we were called. Then we remove all items from our field `ArrayAdapter<String> mListAdapter`,
-     * and looping through all the `String cheese` objects in our parameter `List<String> result`
-     * we add each `cheese` in turn to `mListAdapter`. Finally we call the `setRefreshing(false)`
-     * method of `SwipeRefreshLayout mSwipeRefreshLayout` to stop the refreshing indicator.
+     * When the [DummyBackgroundTask] custom [AsyncTask] finishes, it calls [onRefreshComplete],
+     * which updates the data in the ListAdapter and turns off the progress bar. First we log the
+     * fact that we were called. Then we remove all items from our [ArrayAdapter] of [String] field
+     * [mListAdapter], and looping through all the [String] variable `var cheese` objects in our
+     * [List] of [String] parameter [result] we add each `cheese` in turn to [mListAdapter]. Finally
+     * we call the [SwipeRefreshLayout.setRefreshing] method (kotlin `isRefreshing` property) of
+     * [SwipeRefreshLayout] field [mSwipeRefreshLayout] to stop the refreshing indicator.
      *
      * @param result new list of random cheeses.
      */
@@ -255,13 +256,13 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
     private inner class DummyBackgroundTask : AsyncTask<Void?, Void?, List<String?>?>() {
         /**
          * We override this method to perform our computation on a background thread. Wrapped in try
-         * block intended to catch and log InterruptedException we sleep for TASK_DURATION (3000)
-         * milliseconds in order to simulate a background-task, then we return the list of LIST_ITEM_COUNT
-         * (20) random cheeses returned by the `randomList` method of `Cheeses` to the caller.
-         * (This list will be passed to our `onPostExecute` method which will execute on the UI
-         * thread).
+         * block intended to catch and log [InterruptedException] we sleep for [TASK_DURATION] (3000)
+         * milliseconds in order to simulate a background-task, then we return the list of
+         * [LIST_ITEM_COUNT] (20) random cheeses returned by the [Cheeses.randomList] method of
+         * [Cheeses] to the caller. (This list will be passed to our [onPostExecute] method which
+         * will execute on the UI thread).
          *
-         * @param params The parameters of the task, Void because we use none.
+         * @param params The parameters of the task, [Void] because we use none.
          * @return A result, defined by the subclass of this task.
          */
         @Deprecated("Deprecated in Java")
@@ -278,11 +279,11 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
         }
 
         /**
-         * Runs on the UI thread after [.doInBackground]. The specified result is the value
-         * returned by [.doInBackground]. First we call our super's implementation of
-         * `onPostExecute` then we call the `onRefreshComplete` method of
-         * `SwipeRefreshLayoutBasicFragment` with our parameter `result` in order for
-         * it to replace the list of cheeses currently displayed with the new list.
+         * Runs on the UI thread after [doInBackground]. The specified [result] parameter is the
+         * value returned by [doInBackground]. First we call our super's implementation of
+         * `onPostExecute` then we call the [SwipeRefreshLayoutBasicFragment.onRefreshComplete]
+         * method of [SwipeRefreshLayoutBasicFragment] with our [List] of [String] parameter [result]
+         * to have it replace the list of cheeses currently displayed with the new list.
          *
          * @param result The result of the operation computed by [.doInBackground].
          */
