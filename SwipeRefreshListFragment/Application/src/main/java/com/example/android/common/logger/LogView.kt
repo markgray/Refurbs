@@ -82,11 +82,11 @@ class LogView : AppCompatTextView, LogNode {
      * the logger takes so many arguments that might be null, this method helps cut out some of the
      * agonizing tedium of writing the same 3 lines over and over.
      *
-     * @param source StringBuilder containing the text to append to.
-     * @param addStr The String to append
-     * @param delimiter The String to separate the source and appended strings. A tab or comma,
+     * @param source [StringBuilder] containing the text to append to.
+     * @param addStr The [String] to append
+     * @param delimiter The [String] to separate the source and appended strings. A tab or comma,
      * for instance.
-     * @return The fully concatenated String as a StringBuilder
+     * @return The fully concatenated [String] as a [StringBuilder]
      */
     @Suppress("SameParameterValue")
     private fun appendIfNotNull(source: StringBuilder, addStr: String?, delimiter: String): StringBuilder {
@@ -101,12 +101,12 @@ class LogView : AppCompatTextView, LogNode {
     }
 
     /**
-     * The next LogNode in the chain.
+     * The next [LogNode] in the chain.
      */
     var next: LogNode? = null
 
     /**
-     * Outputs the string as a new line of log data in the LogView.
+     * Outputs the string as a new line of log data in the [LogView].
      */
     fun appendToLog(s: String) {
         append("\n$s")

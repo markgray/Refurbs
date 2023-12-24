@@ -162,12 +162,13 @@ object Cheeses {
     )
 
     /**
-     * Creates and returns an `ArrayList<String>` containing all of the cheeses in our field
-     * `String[] CHEESES`. We initialize `ArrayList<String> items` with a new instance,
-     * then add all of the entries in our array `String[] CHEESES` to it. Finally we return
-     * `items` to the caller.
+     * Creates and returns an [ArrayList] of [String] containing all of the cheeses in our [Array]
+     * of [String] field [CHEESES]. We initialize [ArrayList] of [String] variable `val items` with
+     * a new instance, then add all of the entries in our [Array] of [String] field [CHEESES] to it.
+     * Finally we return `items` to the caller.
      *
-     * @return an `ArrayList<String>` containing the cheeses in our field `String[] CHEESES`
+     * @return an [ArrayList] of [String] containing the cheeses in our [Array] of [String] field
+     * [CHEESES].
      */
     fun asList(): ArrayList<String> {
         val items = ArrayList<String>()
@@ -176,17 +177,18 @@ object Cheeses {
     }
 
     /**
-     * Return a list of random cheeses. We initialize our variables `Random random` and
-     * `HashSet<String> items` with new instances. We then set `count` to the minimum
-     * of `count` and the length of `String[] CHEESES`. Then we loop while the size of
-     * `items` is less than `count` adding the cheese name in `CHEESES` whose index
-     * is the next random integer of `random` using the length of `CHEESES` as the upper
-     * bound (exclusive). Finally we return an `ArrayList` constructed from `items`.
+     * Return a list of random cheeses. We initialize our [Int] variable `var countLocal` to our
+     * [Int] parameter [count], our [Random] variable `val random` to a new instance, and our
+     * [HashSet] of [String] variable `val items` to a new instance. We then set `countLocal` to
+     * the minimum of `count` and the length of [Array] of [String] field [CHEESES]. Then we loop
+     * while the size of `items` is less than `countLocal` adding the cheese name in [CHEESES] whose
+     * index is the next random integer of `random` using the length of [CHEESES] as the upper bound
+     * (exclusive). Finally we return an [ArrayList] constructed from `items`.
      *
      * @param count the amount of cheeses to return.
      */
     fun randomList(count: Int): ArrayList<String> {
-        var countLocal = count
+        var countLocal: Int = count
         val random = Random()
         val items = HashSet<String>()
 

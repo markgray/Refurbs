@@ -23,6 +23,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ViewAnimator
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.example.android.common.activities.SampleActivityBase
 import com.example.android.common.logger.Log
 import com.example.android.common.logger.LogFragment
@@ -31,11 +33,9 @@ import com.example.android.common.logger.MessageOnlyLogFilter
 
 /**
  * A simple launcher activity containing a summary sample description, sample log and a custom
- * [Fragment] which can display a view.
- *
- *
- * For devices with displays with a width of 720dp or greater, the sample log is always visible,
- * on other devices it's visibility is controlled by an item on the Action Bar.
+ * [Fragment] which can display a view. For devices with displays with a width of 720dp or
+ * greater, the sample log is always visible, on other devices it's visibility is controlled
+ * by an item on the Action Bar.
  */
 class MainActivity : SampleActivityBase() {
     /**
@@ -45,22 +45,23 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * Called when the activity is starting. We first call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file R.layout.activity_main. If
-     * our parameter `savedInstanceState` is null, this is the first time we were called so we
-     * use the FragmentManager for interacting with fragments associated with this activity to begin
-     * `FragmentTransaction transaction`, initialize `SwipeRefreshListFragmentFragment fragment`
-     * with a new instance and use `transaction` to replace (add) `fragment` to the container
-     * view with ID R.id.sample_content_fragment in our layout. We then commit `transaction`.
+     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. If
+     * our [Bundle] parameter [savedInstanceState] is `null`, this is the first time we were called
+     * so we use the [FragmentManager] for interacting with fragments associated with this activity
+     * to begin [FragmentTransaction] variable `val transaction`, initialize
+     * [SwipeRefreshListFragmentFragment] variable `val fragment` with a new instance and use
+     * `transaction` to replace (add) `fragment` to the container view with resource ID
+     * [R.id.sample_content_fragment] in our layout. We then commit `transaction`.
      *
-     * @param savedInstanceState If this is null we need to create and add our `SwipeRefreshListFragmentFragment`
-     * fragment, if not null we are being recreated after a configuration
-     * change so the fragment already exists
+     * @param savedInstanceState If this is `null` we need to create and add our [SwipeRefreshListFragmentFragment]
+     * fragment, if not `null` we are being recreated after a configuration change so the system will
+     * take care of restoring it.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         if (savedInstanceState == null) {
-            val transaction = supportFragmentManager.beginTransaction()
+            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
             val fragment = SwipeRefreshListFragmentFragment()
             transaction.replace(R.id.sample_content_fragment, fragment)
             transaction.commit()
