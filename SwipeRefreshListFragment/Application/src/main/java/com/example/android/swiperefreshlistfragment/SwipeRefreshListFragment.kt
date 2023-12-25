@@ -28,44 +28,42 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 
 /**
- * Subclass of [ListFragment] which provides automatic support for
- * providing the 'swipe-to-refresh' UX gesture by wrapping the the content view in a
- * [SwipeRefreshLayout].
+ * Subclass of [ListFragment] which provides automatic support for providing the 'swipe-to-refresh'
+ * UX gesture by wrapping the the content view in a [SwipeRefreshLayout].
  */
 open class SwipeRefreshListFragment : ListFragment() {
     /**
-     * Getter for our field `SwipeRefreshLayout mSwipeRefreshLayout`.
-     *
-     * @return the fragment's [SwipeRefreshLayout] widget.
-     */
-    /**
-     * An instance of our `ListFragmentSwipeRefreshLayout` class which is a sub-class of
-     * `SwipeRefreshLayout` designed to hold a ListFragment.
+     * Our instance of our [ListFragmentSwipeRefreshLayout] class which is a sub-class of
+     * [SwipeRefreshLayout] designed to hold a [ListFragment].
      */
     var swipeRefreshLayout: SwipeRefreshLayout? = null
         private set
 
     /**
      * Called to have the fragment instantiate its user interface view. First we initialize our
-     * variable `View listFragmentView` the view our super's implementation of `onCreateView`
-     * returns. We initialize our field `SwipeRefreshLayout mSwipeRefreshLayout` with a new
-     * instance using the `Context` of our parameter `ViewGroup container` for the
-     * LayoutParams. We add the view `listFragmentView` to `mSwipeRefreshLayout` using
-     * MATCH_PARENT for both the width and the height. We set the LayoutParams of `mSwipeRefreshLayout`
-     * to a new instance of `LayoutParams` whose width and height our MATCH_PARENT to make sure
-     * that the SwipeRefreshLayout will fill our fragment and return `mSwipeRefreshLayout` to
-     * the caller to have it use it for our fragments UI.
+     * [View] variable `val listFragmentView` to the view our super's implementation of `onCreateView`
+     * returns. We initialize our [SwipeRefreshLayout] field [swipeRefreshLayout] with a new instance
+     * using the [Context] of our [ViewGroup] parameter [container] for the LayoutParams. We add the
+     * view `listFragmentView` to [swipeRefreshLayout] using `MATCH_PARENT` for both the width and
+     * the height. We set the LayoutParams of [swipeRefreshLayout] to a new instance of
+     * [ViewGroup.LayoutParams] whose width and height are both `MATCH_PARENT` to make sure that
+     * the [SwipeRefreshLayout] will fill our fragment and return `[swipeRefreshLayout] to the
+     * caller to have it use it for our fragments UI.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
+     * @param container If non-`null`, this is the parent view that the fragment's
+     * UI will be attached to. The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
-     * @return Return the View for the fragment's UI, or null.
+     * @return Return the [View] for the fragment's UI, or null.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         // Create the list fragment's content view by calling the super method
         val listFragmentView = super.onCreateView(inflater, container, savedInstanceState)
@@ -75,21 +73,25 @@ open class SwipeRefreshListFragment : ListFragment() {
 
         // Add the list fragment's content view to the SwipeRefreshLayout, making sure that it fills
         // the SwipeRefreshLayout
-        swipeRefreshLayout!!.addView(listFragmentView,
-            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        swipeRefreshLayout!!.addView(
+            listFragmentView,
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
 
         // Make sure that the SwipeRefreshLayout will fill the fragment
         swipeRefreshLayout!!.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT)
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
 
         // Now return the SwipeRefreshLayout as this fragment's content view
         return swipeRefreshLayout
     }
 
     /**
-     * Set the [SwipeRefreshLayout.OnRefreshListener] of our field
-     * `mSwipeRefreshLayout` that will listen for initiated refreshes.
+     * Set the [SwipeRefreshLayout.OnRefreshListener] of our [SwipeRefreshLayout] field
+     * [swipeRefreshLayout] that will listen for initiated refreshes.
      *
      * @param listener `OnRefreshListener` to use when a refresh gesture is detected.
      */
@@ -117,9 +119,10 @@ open class SwipeRefreshListFragment : ListFragment() {
         }
 
     /**
-     * Set the color scheme for the [SwipeRefreshLayout]. We just call
-     * the `setColorSchemeResources` method of `SwipeRefreshLayout mSwipeRefreshLayout`
-     * with our parameters. The four colors will be used round robin to color the rotating circle.
+     * Set the color scheme for the [SwipeRefreshLayout]. We just call the
+     * [SwipeRefreshLayout.setColorSchemeResources] method of [SwipeRefreshLayout] field
+     * [swipeRefreshLayout] with our parameters. The four colors will be used round robin to
+     * color the rotating circle.
      *
      * @param colorRes1 First color to use for indeterminate progress animation
      * @param colorRes2 Second color to use for indeterminate progress animation
@@ -131,24 +134,20 @@ open class SwipeRefreshListFragment : ListFragment() {
     }
 
     /**
-     * Sub-class of [SwipeRefreshLayout] for use in this
-     * [ListFragment]. The reason that this is needed is because
-     * [SwipeRefreshLayout] only supports a single child, which it
-     * expects to be the one which triggers refreshes. In our case the layout's child is the content
-     * view returned from
-     * [ListFragment.onCreateView]
-     * which is a [android.view.ViewGroup].
+     * Sub-class of [SwipeRefreshLayout] for use in this [ListFragment]. The reason that this is
+     * needed is because [SwipeRefreshLayout] only supports a single child, which it expects to be
+     * the one which triggers refreshes. In our case the layout's child is the content view returned
+     * from [ListFragment.onCreateView] which is a [android.view.ViewGroup].
      *
-     *
-     * To enable 'swipe-to-refresh' support via the [android.widget.ListView] we need to
-     * override the default behavior and properly signal when a gesture is possible. This is done by
-     * overriding [.canChildScrollUp].
+     * To enable 'swipe-to-refresh' support via the [android.widget.ListView] we need to override
+     * the default behavior and properly signal when a gesture is possible. This is done by
+     * overriding [canChildScrollUp].
      */
     private inner class ListFragmentSwipeRefreshLayout
     /**
      * Our constructor, we just call our super's constructor.
      *
-     * @param context `Context` of the container we are to be attached to.
+     * @param context the [Context] of the container we are to be attached to.
      */
     (context: Context?) : SwipeRefreshLayout(context!!) {
         /**
