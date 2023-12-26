@@ -152,9 +152,10 @@ open class SwipeRefreshListFragment : ListFragment() {
     (context: Context?) : SwipeRefreshLayout(context!!) {
         /**
          * As mentioned above, we need to override this method to properly signal when a
-         * 'swipe-to-refresh' is possible. We initialize `ListView listView` by retrieving
-         * a reference to our fragment's list view widget. We return true if `listView` is
-         * visible and our `canListViewScrollUp` determines that it can scroll up.
+         * 'swipe-to-refresh' is possible. We initialize [ListView] variable `val listView` by
+         * retrieving a reference to our fragment's list view widget. We return `true` if
+         * `listView` is visible and our [canListViewScrollUp] method determines that it can
+         * scroll up.
          *
          * @return true if the [android.widget.ListView] is visible and can scroll up.
          */
@@ -167,14 +168,14 @@ open class SwipeRefreshListFragment : ListFragment() {
     companion object {
         /**
          * Utility method to check whether a [ListView] can scroll up from it's current position.
-         * We just return the value returned by the `canScrollVertically(-1)` method of our parameter
-         * `ListView listView`.
+         * We just return the value returned by the [ListView.canScrollVertically] method of our
+         * [ListView] parameter [listView] when passed the `direction` argument of -1.
          *
          * @param listView `ListView` we are to check to see if it can scroll up.
          * @return true is our parameter `ListView listView` can scroll up
          */
         private fun canListViewScrollUp(listView: ListView): Boolean {
-            return listView.canScrollVertically(-1)
+            return listView.canScrollVertically(/* direction = */ -1)
         }
     }
 }
