@@ -28,23 +28,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.GridView
+import android.widget.ListAdapter
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.android.common.dummydata.Cheeses
 import com.example.android.common.logger.Log
 
 /**
- * A sample which shows how to use [SwipeRefreshLayout] to add
- * the 'swipe-to-refresh' gesture to a layout with multiple children. In this sample,
- * SwipeRefreshLayout contains a scrollable [android.widget.GridView], along with a
- * [android.widget.TextView] empty view.
- *
- *
- * To provide an accessible way to trigger the refresh, this app also provides a refresh
- * action item.
- *
- *
- * In this sample app, the refresh updates the GridView with a random set of new items.
+ * A sample which shows how to use [SwipeRefreshLayout] to add the 'swipe-to-refresh' gesture to a
+ * layout with multiple children. In this sample, [SwipeRefreshLayout] contains a scrollable
+ * [GridView], along with a [TextView] empty view. To provide an accessible way to trigger the
+ * refresh, this app also provides a refresh action item. In this sample app, the refresh updates
+ * the [GridView] with a random set of new items.
  */
 class SwipeRefreshMultipleViewsFragment : Fragment() {
     /**
@@ -54,27 +50,26 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
     private var mSwipeRefreshLayout: MultiSwipeRefreshLayout? = null
 
     /**
-     * The [android.widget.GridView] that displays the content that should be refreshed.
+     * The [GridView] that displays the content that should be refreshed.
      */
     private var mGridView: GridView? = null
 
     /**
-     * The [android.widget.ListAdapter] used to populate the [android.widget.GridView]
-     * defined in the previous statement.
+     * The [ListAdapter] used to populate the [GridView] defined in the previous statement.
      */
     private var mListAdapter: ArrayAdapter<String>? = null
 
     /**
-     * The [View] which is displayed when the GridView is empty.
+     * The [View] which is displayed when the [GridView] is empty.
      */
     private var mEmptyView: View? = null
 
     /**
-     * Called when the `Fragment` is starting. First we call through to our super's implementation
-     * of `onCreate`, then we call the `setHasOptionsMenu(true)` method to notify the system
+     * Called when the [Fragment] is starting. First we call through to our super's implementation
+     * of `onCreate`, then we call the [setHasOptionsMenu] method with `true` to notify the system
      * to allow an options menu for this fragment.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,29 +79,34 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
     }
 
     /**
-     * Inflates the [View] which will be displayed by this [Fragment], from the app's
-     * resources. We initialize `View view` with the `View` inflated by our parameter
-     * `LayoutInflater inflater` from our layout file R.layout.fragment_sample using our parameter
-     * `ViewGroup container` for the LayoutParams without attaching to it. We initialize our
-     * field `SwipeRefreshLayout mSwipeRefreshLayout` by finding the view in `view` with
-     * id R.id.swipe_refresh, and then set the color resources used in its progress animation from
-     * the color resource id's R.color.swipe_color_1, R.color.swipe_color_2, R.color.swipe_color_3,
-     * and R.color.swipe_color_4. We initialize our field `GridView mGridView` by finding the
-     * view in `view` with id android.R.id.list, and initialize our field `View mEmptyView`
-     * by finding the view in `view` with id android.R.id.empty then return `view` to the
+     * Inflates the [View] which will be displayed by this [Fragment] from the app's resources. We
+     * initialize [View] variable `val view` with the [View] inflated by our [LayoutInflater]
+     * parameter [inflater] from our layout file [R.layout.fragment_sample] using our [ViewGroup]
+     * parameter [container] for the LayoutParams without attaching to it. We initialize our
+     * [SwipeRefreshLayout] field [mSwipeRefreshLayout] by finding the [View] in `view` with
+     * id [R.id.swiperefresh], and then set the color resources used in its progress animation from
+     * the color resource id's [R.color.swipe_color_1], [R.color.swipe_color_2], [R.color.swipe_color_3],
+     * and [R.color.swipe_color_4]. We initialize our [GridView] field [mGridView] by finding the
+     * [View] in `view` with id [android.R.id.list], and initialize our [View] field [mEmptyView]
+     * by finding the [View] in `view` with id [android.R.id.empty] then return `view` to the
      * caller.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
+     * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
+     * @param container If non-`null`, this is the parent view that the fragment's
      * UI should be attached to.  The fragment should not add the view itself,
      * but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
      * from a previous saved state as given here, we do not use.
      * @return Return the View for the fragment's UI
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_sample, container, false)
+    @Suppress("RedundantNullableReturnType")
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view: View = inflater.inflate(R.layout.fragment_sample, container, false)
         mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
 
         // Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
@@ -119,9 +119,9 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
     }
 
     /**
-     * This is called after the [.onCreateView] has finished.
-     * Here we can pick out the [View]s we need to configure from the content view. First we call
-     * our super's implementation of `onViewCreated`. We initialize our field `mListAdapter`
+     * This is called after the [onCreateView] has finished. Here we can pick out the [View]'s we
+     * need to configure from the content view. First we call our super's implementation of
+     * `onViewCreated`. We initialize our field `mListAdapter`
      * with a new instance which uses the `Context` of the `FragmentActivity` this fragment
      * is currently associated with, layout file android.R.layout.simple_list_item_1 as the layout file
      * to use when instantiating views, android.R.id.text1 as the id of the TextView within that layout
@@ -134,17 +134,18 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
      * `initiateRefresh` to replace the dataset of `mListAdapter` with a new list of LIST_ITEM_COUNT
      * (20) random cheeses.
      *
-     * @param view View created in [.onCreateView]
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param view View created in [onCreateView]
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*
+        /**
          * Create an ArrayAdapter to contain the data for the GridView. Each item in the GridView
          * uses the system-defined simple_list_item_1 layout that contains one TextView. Initially
-         */mListAdapter = ArrayAdapter(
+         */
+        mListAdapter = ArrayAdapter(
             requireActivity(),
             android.R.layout.simple_list_item_1,
             android.R.id.text1)

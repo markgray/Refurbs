@@ -29,6 +29,8 @@ import androidx.fragment.app.FragmentTransaction
 import com.example.android.common.activities.SampleActivityBase
 import com.example.android.common.logger.Log
 import com.example.android.common.logger.LogFragment
+import com.example.android.common.logger.LogNode
+import com.example.android.common.logger.LogView
 import com.example.android.common.logger.LogWrapper
 import com.example.android.common.logger.MessageOnlyLogFilter
 
@@ -106,24 +108,24 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * This hook is called whenever an item in your options menu is selected. We use a `when` switch
-     * to handle only the [MenuItem] with id R.id.menu_toggle_log. If it is that item we toggle the value
-     * of `mLogShown`, then initialize `ViewAnimator output` by finding the view with
-     * ID R.id.sample_output. If `mLogShown` is true we set the displayed child of `output`
-     * to 1, if it is false we we set the displayed child of `output` to 0. We then call the
-     * method `invalidateOptionsMenu` to declare that the options menu has changed, so should
-     * be recreated, and return true to the caller to consume the event here. If the item id is not
-     * R.id.menu_toggle_log we return the value returned by our super's implementation of
-     * `onOptionsItemSelected`.
+     * to handle only the [MenuItem] with id [R.id.menu_toggle_log]. If it is that item we toggle
+     * the value of [Boolean] flag field [mLogShown], then initialize [ViewAnimator] variable
+     * `val output` by finding the view with ID [R.id.sample_output]. If [mLogShown] is now `true`
+     * we set the displayed child of `output` to 1, if it is `false` we we set the displayed child
+     * of `output` to 0. We then call the method [invalidateOptionsMenu] to declare that the options
+     * menu has changed, so should be recreated, and return true to the caller to consume the event
+     * here. If the item id is not [R.id.menu_toggle_log] we return the value returned by our super's
+     * implementation of `onOptionsItemSelected`.
      *
      * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
+     * @return [Boolean] Return `false` to allow normal menu processing to
+     * proceed, `true` to consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_toggle_log -> {
                 mLogShown = !mLogShown
-                val output = findViewById<ViewAnimator>(R.id.sample_output)
+                val output: ViewAnimator = findViewById(R.id.sample_output)
                 if (mLogShown) {
                     output.displayedChild = 1
                 } else {
@@ -137,14 +139,14 @@ class MainActivity : SampleActivityBase() {
     }
 
     /**
-     * Create a chain of targets that will receive log data. We initialize `LogWrapper logWrapper`
-     * with a new instance, and set it as the LogNode that log data will be sent to. We create a new
-     * instance for `MessageOnlyLogFilter msgFilter` (strips out everything except the message
-     * text) and set it as the LogNode that `logWrapper` will next send data to. We then initialize
-     * `LogFragment logFragment` by using the FragmentManager for interacting with fragments
-     * associated with this activity to find the fragment with the resource id R.id.log_fragment,
-     * then set its `LogView` as the LogNode that `msgFilter` will send data to. Finally
-     * we log the message "Ready".
+     * Create a chain of targets that will receive log data. We initialize [LogWrapper] variable
+     * `val logWrapper` with a new instance, and set it as the [LogNode] that log data will be sent
+     * to. We create a new instance for [MessageOnlyLogFilter] variable `val msgFilter` (strips out
+     * everything except the message text) and set it as the [LogNode] that `logWrapper` will next
+     * send data to. We then initialize [LogFragment] variable `val logFragment` by using the
+     * [FragmentManager] for interacting with fragments associated with this activity to find the
+     * fragment with the resource id [R.id.log_fragment], then set its [LogView] as the [LogNode]
+     * that `msgFilter` will send data to. Finally we log the message "Ready".
      */
     override fun initializeLogging() {
         // Wraps Android's native log framework.
@@ -157,8 +159,7 @@ class MainActivity : SampleActivityBase() {
         logWrapper.next = msgFilter
 
         // On screen logging via a fragment with a TextView.
-        val logFragment = supportFragmentManager
-            .findFragmentById(R.id.log_fragment) as LogFragment?
+        val logFragment = supportFragmentManager.findFragmentById(R.id.log_fragment) as LogFragment?
         msgFilter.next = logFragment!!.logView
         Log.i(TAG, "Ready")
     }
