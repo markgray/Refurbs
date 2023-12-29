@@ -18,6 +18,7 @@
 package com.example.android.swiperefreshmultipleviews
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -31,6 +32,7 @@ import android.widget.GridView
 import android.widget.ListAdapter
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.android.common.dummydata.Cheeses
 import com.example.android.common.logger.Log
@@ -121,20 +123,21 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
     /**
      * This is called after the [onCreateView] has finished. Here we can pick out the [View]'s we
      * need to configure from the content view. First we call our super's implementation of
-     * `onViewCreated`. We initialize our field `mListAdapter`
-     * with a new instance which uses the `Context` of the `FragmentActivity` this fragment
-     * is currently associated with, layout file android.R.layout.simple_list_item_1 as the layout file
-     * to use when instantiating views, android.R.id.text1 as the id of the TextView within that layout
-     * that is to be populated. We then set the adapter of our field `GridView mGridView` to
-     * `mListAdapter`, set its empty view to our field `View mEmptyView`. We then call the
-     * `setSwipeableChildren` method of our field `MultiSwipeRefreshLayout mSwipeRefreshLayout`
-     * to set its swipeable children to the views in its `View` with resource id's android.R.id.list
-     * and android.R.id.empty. Finally we set the `OnRefreshListener` of our field `mSwipeRefreshLayout`
-     * to an anonymous class whose `onRefresh` override logs that it was called and calls our method
-     * `initiateRefresh` to replace the dataset of `mListAdapter` with a new list of LIST_ITEM_COUNT
-     * (20) random cheeses.
+     * `onViewCreated`. We initialize our [ArrayAdapter] of [String] field [mListAdapter] with a new
+     * instance which uses the [Context] of the [FragmentActivity] this fragment is currently
+     * associated with, layout file [android.R.layout.simple_list_item_1] as the layout file to use
+     * when instantiating views, [android.R.id.text1] as the id of the [TextView] within that layout
+     * that is to be populated. We then set the adapter of our [GridView] field [mGridView] to
+     * [mListAdapter], and set its empty view to our [View] field [mEmptyView]. We then call the
+     * [MultiSwipeRefreshLayout.setSwipeableChildren] method of our [MultiSwipeRefreshLayout] field
+     * [mSwipeRefreshLayout] to set its swipeable children to the views in its [View] with resource
+     * id's [android.R.id.list] and [android.R.id.empty]. Finally we set the
+     * [SwipeRefreshLayout.OnRefreshListener] of our [SwipeRefreshLayout] field [mSwipeRefreshLayout]
+     * to an anonymous class whose [SwipeRefreshLayout.OnRefreshListener.onRefresh] override logs
+     * that it was called and calls our method [initiateRefresh] to replace the dataset of [mListAdapter]
+     * with a new list of [LIST_ITEM_COUNT] (20) random cheeses.
      *
-     * @param view View created in [onCreateView]
+     * @param view the [View] created in [onCreateView]
      * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
      */
@@ -148,7 +151,8 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
         mListAdapter = ArrayAdapter(
             requireActivity(),
             android.R.layout.simple_list_item_1,
-            android.R.id.text1)
+            android.R.id.text1
+        )
 
         // Set the adapter between the GridView and its backing data.
         mGridView!!.adapter = mListAdapter
@@ -160,53 +164,52 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
         // and empty view.
         mSwipeRefreshLayout!!.setSwipeableChildren(android.R.id.list, android.R.id.empty)
 
-        /*
-         * Implement {@link SwipeRefreshLayout.OnRefreshListener}. When users do the "swipe to
+        /**
+         * Implement [SwipeRefreshLayout.OnRefreshListener]. When users do the "swipe to
          * refresh" gesture, SwipeRefreshLayout invokes
          * {@link SwipeRefreshLayout.OnRefreshListener#onRefresh onRefresh()}. In
          * {@link SwipeRefreshLayout.OnRefreshListener#onRefresh onRefresh()}, call a method that
          * refreshes the content. Call the same method in response to the Refresh action from the
          * action bar.
-         */mSwipeRefreshLayout!!.setOnRefreshListener {
+         */
+        mSwipeRefreshLayout!!.setOnRefreshListener {
             Log.i(LOG_TAG, "onRefresh called from SwipeRefreshLayout")
             initiateRefresh()
         }
     }
 
     /**
-     * Create the ActionBar. We use our parameter `MenuInflater inflater` to inflate our menu
-     * layout file R.menu.main into our parameter `Menu menu`.
+     * Create the ActionBar. We use our [MenuInflater] parameter [inflater] to inflate our menu
+     * layout file [R.menu.main] into our [Menu] parameter [menu].
      *
      * @param menu     The options menu in which you place our items.
-     * @param inflater `MenuInflater` to use to instantiate menu XML files into Menu objects
+     * @param inflater [MenuInflater] to use to instantiate menu XML files into Menu objects
      */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
     }
 
     /**
-     * Respond to the user's selection of the Refresh action item. Start the SwipeRefreshLayout
+     * Respond to the user's selection of the Refresh action item. Start the [SwipeRefreshLayout]
      * progress bar, then initiate the background task that refreshes the content. We switch on the
-     * id of our parameter `MenuItem item`:
+     * id of our [MenuItem] parameter [item]:
      *
-     *  *
-     * R.id.menu_clear: we log that we were selected, call the `clear` method of our
-     * field `ArrayAdapter<String> mListAdapter` to remove all items and return true
-     * to consume the event here.
+     *  * [R.id.menu_clear] "Clear items": we log that we were selected, call the [ArrayAdapter.clear]
+     *  method of our [ArrayAdapter] of [String] field [mListAdapter] to remove all items and
+     *  `true` to consume the event here.
      *
-     *  *
-     * R.id.menu_refresh: we log that we were selected, and if our field `mSwipeRefreshLayout`
-     * is not currently refreshing we set it to be refreshing, call our method `initiateRefresh`
-     * to replace the dataset of `mListAdapter` with a new list of LIST_ITEM_COUNT (20) random
-     * cheeses, and return true to the caller to consume the event here.
+     *  * [R.id.menu_refresh] "Refresh": we log that we were selected, and if our [MultiSwipeRefreshLayout]
+     *  field [mSwipeRefreshLayout] is not currently refreshing we set it to be refreshing, call our
+     *  method [initiateRefresh] to replace the dataset of [mListAdapter] with a new list of
+     *  [LIST_ITEM_COUNT] (20) random cheeses, and return `true` to the caller to consume the event
+     *  here.
      *
-     *
-     * If the MenuItem id of item is not one of ours, we return the value returned by calling our
+     * If the [MenuItem] id of item is not one of ours, we return the value returned by calling our
      * super's implementation of `onOptionsItemSelected`.
      *
      * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to
-     * proceed, true to consume it here.
+     * @return [Boolean] Return `false` to allow normal menu processing to
+     * proceed, `true` to consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -234,18 +237,17 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
 
     /**
      * By abstracting the refresh process to a single method, the app allows both the
-     * SwipeGestureLayout onRefresh() method and the Refresh action item to refresh the content.
-     *
-     *
-     * First we log that we were called, then we create a new instance of the `AsyncTask`
-     * `DummyBackgroundTask` and immediately execute it in the background.
+     * [SwipeRefreshLayout.OnRefreshListener.onRefresh]  method and the "Refresh" action item to
+     * refresh the content. First we log that we were called, then we create a new instance of the
+     * [AsyncTask] of ours [DummyBackgroundTask] and immediately execute it in the background.
      */
     private fun initiateRefresh() {
         Log.i(LOG_TAG, "initiateRefresh")
 
-        /*
-         * Execute the background task, which uses {@link android.os.AsyncTask} to load the data.
-         */DummyBackgroundTask().execute()
+        /**
+         * Execute the background task, which uses [AsyncTask] to load the data.
+         */
+        DummyBackgroundTask().execute()
     }
 
     /**
