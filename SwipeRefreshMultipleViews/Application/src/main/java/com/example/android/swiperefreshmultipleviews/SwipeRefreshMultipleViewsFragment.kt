@@ -251,12 +251,14 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
     }
 
     /**
-     * When the `DummyBackgroundTask` AsyncTask finishes, it calls onRefreshComplete(), which
-     * updates the data in the ListAdapter and turns off the progress bar. First we log the fact that
-     * we were called. Then we remove all items from our field `ArrayAdapter<String> mListAdapter`,
-     * and looping through all the `String cheese` objects in our parameter `List<String> result`
-     * we add each `cheese` in turn to `mListAdapter`. Finally we call the `setRefreshing(false)`
-     * method of `SwipeRefreshLayout mSwipeRefreshLayout` to stop the refreshing indicator.
+     * When the [DummyBackgroundTask] custom [AsyncTask] finishes, it calls [onRefreshComplete], which
+     * updates the data in the [ListAdapter] and turns off the progress bar. First we log the fact
+     * that we were called. Then we remove all items from our [ArrayAdapter] of [String] field
+     * [mListAdapter], and looping through all the [String] variable `var cheese` objects in our
+     * [List] of [String] parameter [result] we add each `cheese` in turn to [mListAdapter]. Finally
+     * we call the [SwipeRefreshLayout.setRefreshing] method of [SwipeRefreshLayout] field
+     * [mSwipeRefreshLayout] (kotlin `isRefreshing` property) with `false` to stop the refreshing
+     * indicator.
      *
      * @param result new list of random cheeses.
      */
@@ -280,10 +282,10 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
     private inner class DummyBackgroundTask : AsyncTask<Void?, Void?, List<String?>?>() {
         /**
          * We override this method to perform our computation on a background thread. Wrapped in try
-         * block intended to catch and log InterruptedException we sleep for TASK_DURATION (3000)
-         * milliseconds in order to simulate a background-task, then we return the list of LIST_ITEM_COUNT
-         * (20) random cheeses returned by the `randomList` method of `Cheeses` to the caller.
-         * (This list will be passed to our `onPostExecute` method which will execute on the UI
+         * block intended to catch and log [InterruptedException] we sleep for [TASK_DURATION] (3000)
+         * milliseconds in order to simulate a background-task, then we return the list of [LIST_ITEM_COUNT]
+         * (20) random cheeses returned by the [Cheeses.randomList] method of [Cheeses] to the caller.
+         * (This list will be passed to our [onPostExecute] method which will execute on the UI
          * thread).
          *
          * @param params The parameters of the task, Void because we use none.
@@ -303,11 +305,11 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
         }
 
         /**
-         * Runs on the UI thread after [.doInBackground]. The specified result is the value
-         * returned by [.doInBackground]. First we call our super's implementation of
-         * `onPostExecute` then we call the `onRefreshComplete` method of
-         * `SwipeRefreshLayoutBasicFragment` with our parameter `result` in order for
-         * it to replace the list of cheeses currently displayed with the new list.
+         * Runs on the UI thread after [doInBackground]. The specified result is the value
+         * returned by [doInBackground]. First we call our super's implementation of
+         * `onPostExecute` then we call the [onRefreshComplete] method of
+         * [SwipeRefreshMultipleViewsFragment] with our [List] of [String] parameter [result] in
+         * order for it to replace the list of cheeses currently displayed with the new list.
          *
          * @param result The result of the operation computed by [.doInBackground].
          */
@@ -327,7 +329,7 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
         private val LOG_TAG = SwipeRefreshMultipleViewsFragment::class.java.simpleName
 
         /**
-         * Number of items in our `GridView` of random cheeses.
+         * Number of items in our [GridView] of random cheeses.
          */
         private const val LIST_ITEM_COUNT = 40
 
