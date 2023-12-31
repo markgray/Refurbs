@@ -37,6 +37,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
@@ -44,118 +45,119 @@ import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 
 /**
- * This activity, launched from the ToonGame activity, takes the user between three
+ * This activity, launched from the [ToonGame] activity, takes the user between three
  * different setup screens where they choose a name, choose a difficulty rating, and
  * enter important financial information. All of the screens are meant to be
  * simple, engaging, and fun.
  */
 class PlayerSetupActivity : Activity() {
     /**
-     * The `RelativeLayout` with id R.id.container which contains our UI widgets.
+     * The [RelativeLayout] with id [R.id.container] which contains our UI widgets.
      */
     var mContainer: ViewGroup? = null
 
     /**
-     * TODO: Add kdoc
+     * No idea why this is here. UNUSED
      */
     @Suppress("unused")
     var mEditText: EditText? = null
 
     /**
-     * Current state of the UI, used in the `onDraw` override of our `OnPreDrawListener`
-     * to decide which views should be visible to the user.
+     * Current state of the UI, used in the [OnPreDrawListener.onPreDraw] override of our
+     * [OnPreDrawListener] field [mPreDrawListener] to decide which views should be visible
+     * to the user.
      */
-    private var mEntryState = NAME_STATE
+    private var mEntryState: Int = NAME_STATE
 
     /**
-     * `SkewableTextView` in our layout file with id R.id.nameTV, used to have the user select
+     * [SkewableTextView] in our layout file with id [R.id.nameTV], used to have the user select
      * a name to use.
      */
     var mNameTV: SkewableTextView? = null
 
     /**
-     * `SkewableTextView` in our layout file with id R.id.ageTV, used to have the user select
+     * [SkewableTextView] in our layout file with id [R.id.ageTV], used to have the user select
      * a difficulty level to use.
      */
     var mDifficultyTV: SkewableTextView? = null
 
     /**
-     * `SkewableTextView` in our layout file with id R.id.creditTV, used to have the user enter
+     * [SkewableTextView] in our layout file with id [R.id.creditTV], used to have the user enter
      * a credit card to use.
      */
     var mCreditTV: SkewableTextView? = null
 
     /**
-     * `LinearLayout` in our layout file with id R.id.nameButtons, contains the buttons for
+     * [LinearLayout] in our layout file with id [R.id.nameButtons], contains the buttons for
      * selecting a name.
      */
     var mNameButtons: ViewGroup? = null
 
     /**
-     * `LinearLayout` in our layout file with id R.id.difficultyButtons, contains the buttons
+     * [LinearLayout] in our layout file with id [R.id.difficultyButtons], contains the buttons
      * for selecting the difficulty level.
      */
     var mDifficultyButtons: ViewGroup? = null
 
     /**
-     * `LinearLayout` in our layout file with id R.id.creditButtons1, contains the buttons for
+     * [LinearLayout] in our layout file with id [R.id.creditButtons1], contains the buttons for
      * entering the numbers 0 to 4 when entering the credit card number.
      */
     var mCreditButtons1: ViewGroup? = null
 
     /**
-     * `LinearLayout` in our layout file with id R.id.creditButtons2, contains the buttons for
+     * [LinearLayout] in our layout file with id [R.id.creditButtons2], contains the buttons for
      * entering the numbers 5 to 9 when entering the credit card number.
      */
     var mCreditButtons2: ViewGroup? = null
 
     /**
-     * `Button` in `ViewGroup mNameButtons` with id R.id.bobButton, used for selecting
+     * [Button] in [ViewGroup] field [mNameButtons] with id [R.id.bobButton], used for selecting
      * the name "Bob"
      */
     var mBobButton: Button? = null
 
     /**
-     * `Button` in `ViewGroup mNameButtons` with id R.id.janeButton, used for selecting
+     * [Button] in [ViewGroup] field [mNameButtons] with id [R.id.janeButton], used for selecting
      * the name "Jane"
      */
     var mJaneButton: Button? = null
 
     /**
-     * `Button` in `ViewGroup mNameButtons` with id R.id.patButton, used for selecting
+     * [Button] in [ViewGroup] field [mNameButtons] with id [R.id.patButton], used for selecting
      * the name "Pat"
      */
     var mPatButton: Button? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.player_setup_layout and cancel any
-     * pending transition animations. We initialize our field `ViewGroup mContainer` by finding
-     * the view with id R.id.container, fetch the `ViewTreeObserver` for its hierarchy and add
-     * our field `ViewTreeObserver.OnPreDrawListener mPreDrawListener` as a callback to be
-     * invoked when its view tree is about to be drawn.
+     * then we set our content view to our layout file [R.layout.player_setup_layout] and cancel any
+     * pending transition animations. We initialize our [ViewGroup] field [mContainer] by finding
+     * the view with id [R.id.container], fetch the [ViewTreeObserver] for its hierarchy and add
+     * our field [OnPreDrawListener] field [mPreDrawListener] as a callback to be invoked when
+     * its view tree is about to be drawn.
      *
-     * We initialize `SkewableTextView mNameTV` by finding the view with id R.id.nameTV,
-     * `SkewableTextView mDifficultyTV` by finding the view with id R.id.ageTV, and
-     * `SkewableTextView mCreditTV` by finding the view with id R.id.creditTV. We initialise
-     * `Button mBobButton` to the button our method `setupButton` returns after setting
-     * up the button with id R.id.bobButton ("Bob"), `Button mJaneButton` to the button our
-     * method `setupButton` returns after setting up the button with id R.id.janeButton ("Jane"),
-     * and `Button mPatButton` to the button our method `setupButton` returns after setting
-     * up the button with id R.id.patButton ("Pat"). We then call `setupButton` to set up the
-     * button with id R.id.easyButton ("Easy"), the button with id R.id.hardButton ("Hard"), and
-     * the button with id R.id.megaHardButton ("Mega Hard").
+     * We initialize [SkewableTextView] field [mNameTV] by finding the view with id [R.id.nameTV],
+     * [SkewableTextView] field [mDifficultyTV] by finding the view with id [R.id.ageTV], and
+     * [SkewableTextView] field [mCreditTV] by finding the view with id [R.id.creditTV]. We
+     * initialise [Button] field [mBobButton] to the button our method [setupButton] returns after
+     * setting up the button with id [R.id.bobButton] ("Bob"), [Button] field [mJaneButton]` to the
+     * button our method [setupButton] returns after setting up the button with id [R.id.janeButton]
+     * ("Jane"), and [Button] field [mPatButton] to the button our method [setupButton] returns after
+     * setting up the button with id [R.id.patButton] ("Pat"). We then call [setupButton] to set up
+     * the button with id [R.id.easyButton] ("Easy"), the button with id [R.id.hardButton] ("Hard"),
+     * and the button with id [R.id.megaHardButton] ("Mega Hard").
      *
+     * We initialize our [ViewGroup] field [mNameButtons] by finding the view with id [R.id.nameButtons],
+     * our [ViewGroup] field [mDifficultyButtons] by finding the view with id [R.id.difficultyButtons],
+     * our [ViewGroup] field [mCreditButtons1] by finding the view with id [R.id.creditButtons1],
+     * and our [ViewGroup] field [mCreditButtons2] by finding the view with id [R.id.creditButtons2].
      *
-     * We initialize our field `ViewGroup mNameButtons` by finding the view with id R.id.nameButtons,
-     * our field `ViewGroup mDifficultyButtons` by finding the view with id R.id.difficultyButtons,
-     * our field `ViewGroup mCreditButtons1` by finding the view with id R.id.creditButtons1,
-     * and our field `ViewGroup mCreditButtons2` by finding the view with id R.id.creditButtons2.
-     *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -198,12 +200,12 @@ class PlayerSetupActivity : Activity() {
     }
 
     /**
-     * Finds the `Button` whose resource id is our parameter `int resourceId`, sets its
-     * `OnTouchListener` to our field `mButtonPressListener` and returns the button found
+     * Finds the [Button] whose resource id is our [Int] parameter [resourceId], sets its
+     * [OnTouchListener] to our field [mButtonPressListener] and returns the button found
      * to our caller.
      *
      * @param resourceId resource id of the button we are to set up.
-     * @return the `Button` with resource id `int resourceId`
+     * @return the [Button] whose resource ID is our [Int] parameter [resourceId]
      */
     @SuppressLint("ClickableViewAccessibility")
     private fun setupButton(resourceId: Int): Button {
