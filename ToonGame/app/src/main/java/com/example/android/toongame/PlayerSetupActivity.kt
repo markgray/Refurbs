@@ -26,6 +26,7 @@ import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ShapeDrawable
@@ -37,6 +38,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.view.animation.AccelerateInterpolator
@@ -216,102 +218,79 @@ class PlayerSetupActivity : Activity() {
     }
 
     /**
-     * `OnTouchListener` we use for all our buttons, used only to animate the size of the
+     * [OnTouchListener] we use for all our [Button]'s, used only to animate the size of the
      * button when it is pressed and released.
      */
     @SuppressLint("ClickableViewAccessibility")
-    private val mButtonPressListener = OnTouchListener { v, event ->
-
+    private val mButtonPressListener = OnTouchListener { v: View, event: MotionEvent ->
         /**
-         * Called when a touch event is dispatched to a view. This allows listeners to get a
-         * chance to respond before the target view. We switch on the action of our parameter
-         * `MotionEvent event`:
+         * Called when a touch event is dispatched to a view. This allows listeners to get a chance
+         * to respond before the target view. We switch on the action of our [MotionEvent] parameter
+         * `event`:
          *
-         *  *
-         * ACTION_DOWN: we retrieve a `ViewPropertyAnimator` object for our
-         * parameter `View v`, set its duration to ToonGame.SHORT_DURATION, have
-         * it animate the "scaleX" property of the view from 1 to .8 and the "scaleY"
-         * property of the view from 1 to .8 using `DecelerateInterpolator sDecelerator`
-         * as its `TimeInterpolator`. We then break.
+         *  * [MotionEvent.ACTION_DOWN]: we retrieve a [ViewPropertyAnimator] object for our [View]
+         *  parameter `v`, set its duration to [ToonGame.SHORT_DURATION], have it animate the
+         *  "scaleX" property of the view from 1 to .8 and the "scaleY" property of the view from
+         *  1 to .8 using [DecelerateInterpolator] field [sDecelerator] as its [TimeInterpolator].
          *
-         *  *
-         * ACTION_UP: we retrieve a `ViewPropertyAnimator` object for our
-         * parameter `View v`, set its duration to ToonGame.SHORT_DURATION, have
-         * it animate the "scaleX" property of the view to 1 and the "scaleY"
-         * property of the view to 1 using `DecelerateInterpolator sDecelerator`
-         * as its `TimeInterpolator`. We then break.
+         *  * [MotionEvent.ACTION_UP]: we retrieve a [ViewPropertyAnimator] object for our [View]
+         *  parameter `v`, set its duration to [ToonGame.SHORT_DURATION], have it animate the
+         *  "scaleX" property of the view to 1 and the "scaleY" property of the view to 1 using
+         *  [DecelerateInterpolator] field [sDecelerator] as its [TimeInterpolator].
          *
-         *  *
-         * default: we just break.
+         *  * `else`: we do nothing
          *
-         *
-         * We then return false so that the event will be passed on to `View v`.
+         * We then return `false` so that the event will be passed on to [View] parameter `v`.
          *
          * @param v     The view the touch event has been dispatched to.
-         * @param event The MotionEvent object containing full information about the event.
-         * @return True if the listener has consumed the event, false otherwise.
-         */
-        /**
-         * Called when a touch event is dispatched to a view. This allows listeners to get a
-         * chance to respond before the target view. We switch on the action of our parameter
-         * `MotionEvent event`:
-         *
-         *  *
-         * ACTION_DOWN: we retrieve a `ViewPropertyAnimator` object for our
-         * parameter `View v`, set its duration to ToonGame.SHORT_DURATION, have
-         * it animate the "scaleX" property of the view from 1 to .8 and the "scaleY"
-         * property of the view from 1 to .8 using `DecelerateInterpolator sDecelerator`
-         * as its `TimeInterpolator`. We then break.
-         *
-         *  *
-         * ACTION_UP: we retrieve a `ViewPropertyAnimator` object for our
-         * parameter `View v`, set its duration to ToonGame.SHORT_DURATION, have
-         * it animate the "scaleX" property of the view to 1 and the "scaleY"
-         * property of the view to 1 using `DecelerateInterpolator sDecelerator`
-         * as its `TimeInterpolator`. We then break.
-         *
-         *  *
-         * default: we just break.
-         *
-         *
-         * We then return false so that the event will be passed on to `View v`.
-         *
-         * @param v     The view the touch event has been dispatched to.
-         * @param event The MotionEvent object containing full information about the event.
-         * @return True if the listener has consumed the event, false otherwise.
+         * @param event The [MotionEvent] object containing full information about the event.
+         * @return `true` if the listener has consumed the event, `false` otherwise.
          */
         when (event.action) {
-            MotionEvent.ACTION_DOWN -> v.animate().setDuration(ToonGame.SHORT_DURATION).scaleX(.8f).scaleY(.8f).setInterpolator(sDecelerator)
-            MotionEvent.ACTION_UP -> v.animate().setDuration(ToonGame.SHORT_DURATION).scaleX(1f).scaleY(1f).setInterpolator(sAccelerator)
+            MotionEvent.ACTION_DOWN -> {
+                v.animate()
+                    .setDuration(/* duration = */ ToonGame.SHORT_DURATION)
+                    .scaleX(/* value = */ .8f)
+                    .scaleY(/* value = */ .8f)
+                    .setInterpolator(/* interpolator = */ sDecelerator)
+            }
+            MotionEvent.ACTION_UP -> {
+                v.animate()
+                    .setDuration(/* duration = */ ToonGame.SHORT_DURATION)
+                    .scaleX(/* value = */ 1f)
+                    .scaleY(/* value = */ 1f)
+                    .setInterpolator(/* interpolator = */ sAccelerator)
+            }
             else -> {}
         }
         false
     }
 
     /**
-     * Called when the user has selected a name button or a difficulty button, we animate the movement
-     * of a copy of the button to the proper place at the top of the container. We initialize our
-     * variable `ViewGroup parent` by retrieving the `ViewParent` of our parameter
-     * `View clickedView`. Then we loop over `int i` for the number of children in the
-     * `parent` view group, initializing `Button child` with the child view at position
-     * `i` in `parent`. If that `child` is not equal to `clickedView` we
-     * fetch a `ViewPropertyAnimator` from `child` and animate its alpha to 0. If it is
-     * the button that was clicked we initialize `Button buttonCopy` with a new instance and
-     * set the visibility of `child` to INVISIBLE. We set the background of `buttonCopy`
-     * to the background of `child` and the text of `buttonCopy` to the text of
-     * `child`. We initialize `RelativeLayout.LayoutParams params` with a new instance
-     * whose width and height are both WRAP_CONTENT, add the layout rule ALIGN_PARENT_TOP to it, and
-     * add the alignment rule contained in our parameter `int alignmentRule` (this will be
-     * ALIGN_PARENT_RIGHT when a difficulty button has been selected or ALIGN_PARENT_LEFT when a name
-     * button has been selected). We set the margins of `params` to 25 left, 50 top, 25 right,
-     * and 50 bottom then set the layout params of `buttonCopy` to `params`. We set the
-     * padding of `buttonCopy` to the padding of `child` (on all size) then set the text
-     * size to the same size as well. We set the type face of `buttonCopy` to the same as
-     * `child` with a BOLD style. We initialize `ColorStateList colors` with the text
-     * colors of `child` and set the text color of `buttonCopy` to the default color of
-     * `colors`. We allocate 2 ints for `int[] oldLocationInWindow` and load it with the
-     * (x,y) location of `child`. We then add the view `buttonCopy` to `mContainer`.
-     *
+     * Called when the user has selected a name [Button] or a difficulty [Button], we animate the
+     * movement of a copy of the [Button] to the proper place at the top of the container. We
+     * initialize our [ViewGroup] variable `val parent` by retrieving the [View.getParent] value
+     * (kotlin `parent` property) of our [View] parameter [clickedView]. Then we loop over [Int]
+     * variable `var i` for the number of children in the `parent` view group, initializing [Button]
+     * variable `val child` with the child view at position `i` in `parent`. If that `child` is not
+     * equal to `clickedView` we fetch a [ViewPropertyAnimator] from `child` and animate its alpha
+     * to 0. If it is the [Button] that was clicked we initialize [Button] variable `val buttonCopy`
+     * with a new instance and set the visibility of `child` to INVISIBLE. We set the background of
+     * `buttonCopy` to the background of `child` and the text of `buttonCopy` to the text of
+     * `child`. We initialize [RelativeLayout.LayoutParams] variable `val params` with a new instance
+     * whose width and height are both [RelativeLayout.LayoutParams.WRAP_CONTENT], add the layout
+     * rule [RelativeLayout.ALIGN_PARENT_TOP] to it, and add the alignment rule contained in our
+     * [Int] parameter [alignmentRule] (this will be [RelativeLayout.ALIGN_PARENT_RIGHT] when a
+     * difficulty [Button] has been selected or [RelativeLayout.ALIGN_PARENT_LEFT] when a name
+     * [Button] has been selected). We set the margins of `params` to 25 left, 50 top, 25 right,
+     * and 50 bottom then set the layout params of `buttonCopy` to `params`. We set the padding of
+     * `buttonCopy` to the padding of `child` (on all sides) then set the text size to the same
+     * size as well. We set the type face of `buttonCopy` to the same as `child` with a
+     * [Typeface.BOLD] style. We initialize [ColorStateList] variable `val colors` with the text
+     * colors of `child` and set the text color of `buttonCopy` to the [ColorStateList.getDefaultColor]
+     * (kotlin `default` property) color of `colors`. We allocate 2 [Int]'s for [IntArray] variable
+     * `val oldLocationInWindow` and load it with the (x,y) location of `child`. We then add the view
+     * `buttonCopy` to [ViewGroup] field [mContainer].
      *
      * We retrieve the `ViewTreeObserver` for the hierarchy of `buttonCopy` and call its
      * `addOnPreDrawListener` to add an anonymous `ViewTreeObserver.OnPreDrawListener`
@@ -362,16 +341,21 @@ class PlayerSetupActivity : Activity() {
                 buttonCopy.text = child.text
                 val params = RelativeLayout.LayoutParams(
                     RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT)
+                    RelativeLayout.LayoutParams.WRAP_CONTENT
+                )
                 params.addRule(RelativeLayout.ALIGN_PARENT_TOP)
                 params.addRule(alignmentRule)
                 params.setMargins(25, 50, 25, 50)
                 buttonCopy.layoutParams = params
-                buttonCopy.setPadding(child.paddingLeft, child.paddingTop,
-                    child.paddingRight, child.paddingBottom)
+                buttonCopy.setPadding(
+                    /* left = */ child.paddingLeft,
+                    /* top = */ child.paddingTop,
+                    /* right = */ child.paddingRight,
+                    /* bottom = */ child.paddingBottom
+                )
                 buttonCopy.setTextSize(TypedValue.COMPLEX_UNIT_PX, child.textSize)
                 buttonCopy.setTypeface(child.typeface, Typeface.BOLD)
-                val colors = child.textColors
+                val colors: ColorStateList = child.textColors
                 buttonCopy.setTextColor(colors.defaultColor)
                 val oldLocationInWindow = IntArray(2)
                 child.getLocationInWindow(oldLocationInWindow)
