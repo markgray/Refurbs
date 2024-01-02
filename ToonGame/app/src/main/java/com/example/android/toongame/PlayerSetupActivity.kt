@@ -18,6 +18,7 @@
 package com.example.android.toongame
 
 import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -292,40 +293,40 @@ class PlayerSetupActivity : Activity() {
      * `val oldLocationInWindow` and load it with the (x,y) location of `child`. We then add the view
      * `buttonCopy` to [ViewGroup] field [mContainer].
      *
-     * We retrieve the `ViewTreeObserver` for the hierarchy of `buttonCopy` and call its
-     * `addOnPreDrawListener` to add an anonymous `ViewTreeObserver.OnPreDrawListener`
-     * instance `onPreDraw` override first removes itself as a `OnPreDrawListener`, then
-     * allocates 2 ints for `int[] locationInWindow` and loads it with the (x,y) location of
-     * `buttonCopy`. We initialize `float deltaX` with the difference between the old
-     * X coordinate of `child` in `oldLocationInWindow[0]` and the X coordinate of
-     * `buttonCopy` in `locationInWindow[0]`, and initialize `float deltaY` with
-     * the old Y coordinate of `child` in `oldLocationInWindow[1]` and the Y coordinate of
-     * `buttonCopy` in `locationInWindow[1]`. We then translate the horizontal location of
-     * of `buttonCopy` by `deltaX` and the vertical location by `deltaY` (move the
-     * `buttonCopy` to the same location occupied by `child`).
-     *
+     * We retrieve the [ViewTreeObserver] for the hierarchy of `buttonCopy` and call its
+     * [ViewTreeObserver.addOnPreDrawListener] method to add an anonymous [OnPreDrawListener]
+     * instance whose [OnPreDrawListener.onPreDraw] override first removes itself as a
+     * [OnPreDrawListener], then allocates 2 ints for [IntArray] variable `val locationInWindow`
+     * and loads it with the (x,y) location of `buttonCopy`. We initialize [Float] variable
+     * `val deltaX` with the difference between the old X coordinate of `child` in
+     * `oldLocationInWindow[0]` and the X coordinate of `buttonCopy` in `locationInWindow[0]`, and
+     * initialize [Float] variable `val deltaY` with the difference between the old Y coordinate of
+     * `child` in `oldLocationInWindow[1]` and the Y coordinate of `buttonCopy` in `locationInWindow[1]`.
+     * We then translate the horizontal location of of `buttonCopy` by `deltaX` and the vertical
+     * location by `deltaY` (move the `buttonCopy` to the same location occupied by `child`).
      *
      * We now start to construct the animation that will occur when we move the button back to the
-     * top of `container`. We initialize `PropertyValuesHolder pvhSX` to an instance
-     * which will animate the SCALE_X property to 3, `PropertyValuesHolder pvhSY` to an instance
-     * which will animate the SCALE_Y property to 3, then initialize `ObjectAnimator bounceAnim`
-     * to an animator which will animate these properties of `buttonCopy`. We set the repeat
-     * count of `bounceAnim` to 1, the repeat mode to REVERSE, the `TimeInterpolator` to
-     * our field `DecelerateInterpolator sDecelerator` and the duration to 300ms. We initialize
-     * `PropertyValuesHolder pvhTX` to an instance which will animate the TRANSLATION_X property
-     * to 0, and `PropertyValuesHolder pvhTY` to an instance which will animate the TRANSLATION_Y
-     * property to 0, then initialize `ObjectAnimator moveAnim` to an animator which will animate
-     * these properties of `buttonCopy`. We set the duration of `moveAnim` to 600ms, then
-     * start both `bounceAnim` and `moveAnim` running. We then add to `moveAnim` an
-     * anonymous `AnimatorListener` (actually an `AnimatorListenerAdapter` which supplies
-     * empty implementations of the abstract methods so we need only implement the `onAnimationEnd`
-     * method we are interested in) whose `onAnimationEnd` override switches on our parameter
-     * `mEntryState` which allows it to transition the activity to the next stage. Finally our
-     * `onPreDraw` override returns true to to proceed with the current drawing pass.
+     * top of `container`. We initialize [PropertyValuesHolder] variable `val pvhSX` to an instance
+     * which will animate the SCALE_X property to 3, [PropertyValuesHolder] variable `val pvhSY` to
+     * an instance which will animate the SCALE_Y property to 3, then initialize [ObjectAnimator]
+     * variable `val bounceAnim` to an animator which will animate these properties of `buttonCopy`.
+     * We set the repeat count of `bounceAnim` to 1, the repeat mode to REVERSE, the [TimeInterpolator]
+     * to our [DecelerateInterpolator] field [sDecelerator] and the duration to 300ms. We initialize
+     * [PropertyValuesHolder] variable `val pvhTX` to an instance which will animate the TRANSLATION_X
+     * property to 0, and [PropertyValuesHolder] variable `val pvhTY` to an instance which will
+     * animate the TRANSLATION_Y property to 0, then initialize [ObjectAnimator] variable `val moveAnim`
+     * to an animator which will animate these properties of `buttonCopy`. We set the duration of
+     * `moveAnim` to 600ms, then start both `bounceAnim` and `moveAnim` running. We then add to
+     * `moveAnim` an anonymous [AnimatorListener] (actually an [AnimatorListenerAdapter] which
+     * supplies empty implementations of the abstract methods so we need only implement the
+     * [AnimatorListener.onAnimationEnd] method we are interested in) whose [AnimatorListener.onAnimationEnd]
+     * override switches on our [Int] field [mEntryState] which allows it to transition the activity
+     * to the next stage. Finally our [OnPreDrawListener.onPreDraw] override returns `true` to proceed
+     * with the current drawing pass.
      *
-     * @param clickedView   `View` that was clicked.
-     * @param alignmentRule either ALIGN_PARENT_RIGHT for the difficulty buttons or ALIGN_PARENT_LEFT
-     * for the name buttons, used for the `RelativeLayout.LayoutParams`
+     * @param clickedView the [View] that was clicked.
+     * @param alignmentRule either [RelativeLayout.ALIGN_PARENT_RIGHT] for the difficulty buttons or
+     * [RelativeLayout.ALIGN_PARENT_LEFT] for the name buttons, used for the [RelativeLayout.LayoutParams]
      * used when placing the selected button at the top of the container.
      */
     fun buttonClick(clickedView: View, alignmentRule: Int) {
@@ -367,40 +368,40 @@ class PlayerSetupActivity : Activity() {
                      * use this to adjust their scroll bounds or even to request a new layout before
                      * drawing occurs.
                      *
-                     *
-                     * First we remove ourselves as a `OnPreDrawListener`, then we allocate 2 ints
-                     * for `int[] locationInWindow` and load it with the (x,y) location of
-                     * `buttonCopy`. We initialize `float deltaX` with the difference between
-                     * the old X coordinate of `child` in `oldLocationInWindow[0]` and the X
-                     * coordinate of `buttonCopy` in `locationInWindow[0]`, and initialize
-                     * `float deltaY` with the old Y coordinate of `child` in `oldLocationInWindow[1]`
-                     * and the Y coordinate of `buttonCopy` in `locationInWindow[1]`. We then
-                     * translate the horizontal location of of `buttonCopy` by `deltaX` and
-                     * the vertical location by `deltaY` (move the `buttonCopy` to the same
-                     * location occupied by `child`).
-                     *
+                     * First we remove ourselves as a [OnPreDrawListener], then we allocate 2 ints
+                     * for [IntArray] variable `val locationInWindow` and load it with the (x,y)
+                     * location of `buttonCopy`. We initialize [Float] varialbe `val deltaX` with
+                     * the difference between the old X coordinate of `child` in `oldLocationInWindow[0]`
+                     * and the X coordinate of `buttonCopy` in `locationInWindow[0]`, and initialize
+                     * [Float] variable `val deltaY` with the old Y coordinate of `child` in
+                     * `oldLocationInWindow[1]` and the Y coordinate of `buttonCopy` in `locationInWindow[1]`.
+                     * We then translate the horizontal location of `buttonCopy` by `deltaX` and the
+                     * vertical location by `deltaY` (move the `buttonCopy` to the same location
+                     * occupied by `child`).
                      *
                      * We now start to construct the animation that will occur when we move the button
-                     * back to the top of `container`. We initialize `PropertyValuesHolder pvhSX`
-                     * to an instance which will animate the SCALE_X property to 3, `PropertyValuesHolder pvhSY`
-                     * to an instance which will animate the SCALE_Y property to 3, then initialize
-                     * `ObjectAnimator bounceAnim` to an animator which will animate these properties
-                     * of `buttonCopy`. We set the repeat count of `bounceAnim` to 1, the repeat
-                     * mode to REVERSE, the `TimeInterpolator` to our field `DecelerateInterpolator sDecelerator`
-                     * and the duration to 300ms. We initialize `PropertyValuesHolder pvhTX` to an instance
-                     * which will animate the TRANSLATION_X property to 0, and `PropertyValuesHolder pvhTY`
-                     * to an instance which will animate the TRANSLATION_Y property to 0, then initialize
-                     * `ObjectAnimator moveAnim` to an animator which will animate these properties of
-                     * `buttonCopy`. We set the duration of `moveAnim` to 600ms, then start both
-                     * `bounceAnim` and `moveAnim` running. We then add to `moveAnim` an
-                     * anonymous `AnimatorListener` (actually an `AnimatorListenerAdapter` which
-                     * supplies empty implementations of the abstract methods so we need only implement the
-                     * `onAnimationEnd` method we are interested in) whose `onAnimationEnd`
-                     * override switches on our parameter `mEntryState` which allows it to transition
-                     * the activity to the next stage. Finally we return true to to proceed with the current
-                     * drawing pass.
+                     * back to the top of `container`. We initialize [PropertyValuesHolder] variable
+                     * `val pvhSX` to an instance which will animate the SCALE_X property to 3,
+                     * [PropertyValuesHolder] variable `val pvhSY` to an instance which will animate
+                     * the SCALE_Y property to 3, then initialize [ObjectAnimator] variable
+                     * `val bounceAnim` to an animator which will animate these properties of
+                     * `buttonCopy`. We set the repeat count of `bounceAnim` to 1, the repeat mode
+                     * to REVERSE, the [TimeInterpolator] to our [DecelerateInterpolator] field
+                     * [sDecelerator] and the duration to 300ms. We initialize [PropertyValuesHolder]
+                     * variable `val pvhTX` to an instance which will animate the TRANSLATION_X
+                     * property to 0, and [PropertyValuesHolder] variable `val pvhTY` to an instance
+                     * which will animate the TRANSLATION_Y property to 0, then initialize
+                     * [ObjectAnimator]` moveAnim` to an animator which will animate these properties
+                     * of `buttonCopy`. We set the duration of `moveAnim` to 600ms, then start both
+                     * `bounceAnim` and `moveAnim` running. We then add to `moveAnim` an anonymous
+                     * [AnimatorListener] (actually an [AnimatorListenerAdapter] which supplies empty
+                     * implementations of the abstract methods so we need only implement the
+                     * [AnimatorListener.onAnimationEnd] method we are interested in) whose
+                     * [AnimatorListener.onAnimationEnd] override switches on our [Int] field
+                     * [mEntryState] which allows it to transition the activity to the next stage.
+                     * Finally we return `true` to to proceed with the current drawing pass.
                      *
-                     * @return Return true to proceed with the current drawing pass, or false to cancel.
+                     * @return Return `true` to proceed with the current drawing pass, or `false` to cancel.
                      */
                     override fun onPreDraw(): Boolean {
                         buttonCopy.viewTreeObserver.removeOnPreDrawListener(this)
@@ -413,7 +414,10 @@ class PlayerSetupActivity : Activity() {
                         val pvhSX = PropertyValuesHolder.ofFloat(View.SCALE_X, 3f)
                         val pvhSY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 3f)
                         val bounceAnim = ObjectAnimator.ofPropertyValuesHolder(
-                            buttonCopy, pvhSX, pvhSY)
+                            buttonCopy,
+                            pvhSX,
+                            pvhSY
+                        )
                         bounceAnim.repeatCount = 1
                         bounceAnim.repeatMode = ValueAnimator.REVERSE
                         bounceAnim.interpolator = sDecelerator
@@ -421,45 +425,39 @@ class PlayerSetupActivity : Activity() {
                         val pvhTX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0f)
                         val pvhTY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f)
                         val moveAnim = ObjectAnimator.ofPropertyValuesHolder(
-                            buttonCopy, pvhTX, pvhTY)
+                            buttonCopy,
+                            pvhTX,
+                            pvhTY
+                        )
                         moveAnim.duration = 600
                         bounceAnim.start()
                         moveAnim.start()
                         moveAnim.addListener(object : AnimatorListenerAdapter() {
                             /**
                              * Notifies the end of the `moveAnim` animation. We switch on the value
-                             * of `mEntryState`:
+                             * of [Int] field [mEntryState]:
                              *
-                             *  *
-                             * NAME_STATE: We initialize `Runnable runnable` with a new
-                             * instance whose `run` override sets the visibility of our
-                             * field `ViewGroup mDifficultyButtons` to VISIBLE, the visibility
-                             * of `ViewGroup mNameButtons` to GONE, then calls our `popChildrenIn`
-                             * method to animate the appearance of the children of `mDifficultyButtons`.
+                             *  * [NAME_STATE]: We initialize [Runnable] variable `val runnable` with
+                             *  a new instance whose [Runnable.run] override sets the visibility of
+                             *  our [ViewGroup] field [mDifficultyButtons] to VISIBLE, the visibility
+                             *  of [ViewGroup] field [mNameButtons] to GONE, then calls our [popChildrenIn]
+                             *  method to animate the appearance of the children of [mDifficultyButtons].
+                             *  We then call our `slideToNext` method which animates the change from
+                             *  [SkewableTextView] field [mNameTV] to [SkewableTextView] field
+                             *  [mDifficultyTV] then runs [Runnable] `runnable`.
                              *
-                             *
-                             * We then call our `slideToNext` method which animates the change
-                             * from `SkewableTextView mNameTV` to `SkewableTextView mDifficultyTV`
-                             * then runs `Runnable runnable`. We then break.
-                             *
-                             *  *
-                             * DIFFICULTY_STATE: We set the visibility of `ViewGroup mDifficultyButtons`
-                             * to GONE, loop over `int i` from 0 to 4 adding the view returned by our
-                             * method `setupNumberButton` for `i` to `ViewGroup mCreditButtons1`
-                             * then loop from 5 to 9 adding the view returned by our method `setupNumberButton`
-                             * for `i` to `ViewGroup mCreditButtons2`.
-                             *
-                             *
-                             * We initialize `Runnable runnable` with a new instance whose `run`
-                             * override animates the appearance of `ViewGroup mCreditButtons1` and
-                             * `ViewGroup mCreditButtons2` using our `popChildrenIn` method.
-                             *
-                             *
-                             * We then call our `slideToNext` method which animates the change from
-                             * `SkewableTextView mDifficultyTV` to `SkewableTextView mCreditTV`
-                             * then runs `Runnable runnable`. We then break.
-                             *
-                             *
+                             *  * [DIFFICULTY_STATE]: We set the visibility of [ViewGroup] field
+                             *  [mDifficultyButtons] to GONE, loop over [Int] variable `var i` from
+                             *  0 to 4 adding the view returned by our method [setupNumberButton] for
+                             *  `i` to [ViewGroup] vield [mCreditButtons1], then loop from 5 to 9
+                             *  adding the view returned by our method [setupNumberButton] for `i`
+                             *  to [ViewGroup] field [mCreditButtons2]. We initialize [Runnable]
+                             *  variable `val runnable` with a new instance whose [Runnable.run]
+                             *  override animates the appearance of [ViewGroup] field [mCreditButtons1]
+                             *  and [ViewGroup] field [mCreditButtons2] using our [popChildrenIn]
+                             *  method. We then call our [slideToNext] method which animates the
+                             *  change from [SkewableTextView] field [mDifficultyTV] to [SkewableTextView]
+                             *  field [mCreditTV] then runs [Runnable] `runnable`.
                              *
                              * @param animation The animation which reached its end.
                              */
