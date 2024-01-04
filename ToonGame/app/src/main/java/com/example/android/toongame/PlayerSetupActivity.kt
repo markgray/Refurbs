@@ -29,6 +29,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
@@ -255,6 +256,7 @@ class PlayerSetupActivity : Activity() {
                     .scaleY(/* value = */ .8f)
                     .setInterpolator(/* interpolator = */ sDecelerator)
             }
+
             MotionEvent.ACTION_UP -> {
                 v.animate()
                     .setDuration(/* duration = */ ToonGame.SHORT_DURATION)
@@ -262,6 +264,7 @@ class PlayerSetupActivity : Activity() {
                     .scaleY(/* value = */ 1f)
                     .setInterpolator(/* interpolator = */ sAccelerator)
             }
+
             else -> {}
         }
         false
@@ -522,9 +525,9 @@ class PlayerSetupActivity : Activity() {
     /**
      * Called when one of the difficulty selection buttons has been clicked (thanks to the attribute
      * android:onClick="selectDifficulty" for each of the buttons in our layout file). We just call
-     * our method `buttonClick` with our parameter `View clickedView` and the alignment
-     * rule ALIGN_PARENT_RIGHT (used to move a copy of the selected button to the top right of the
-     * container).
+     * our method [buttonClick] with our [View] parameter [clickedView] and the alignment rule
+     * [RelativeLayout.ALIGN_PARENT_RIGHT] (used to move a copy of the selected button to the top
+     * right of the container).
      *
      * @param clickedView the button which has been clicked.
      */
@@ -534,10 +537,10 @@ class PlayerSetupActivity : Activity() {
 
     /**
      * Called when one of the name selection buttons has been clicked (thanks to the attribute
-     * android:onClick="selectDifficulty" for each of the buttons in our layout file). We just call
-     * our method `buttonClick` with our parameter `View clickedView` and the alignment
-     * rule ALIGN_PARENT_LEFT (used to move a copy of the selected button to the top left of the
-     * container).
+     * android:onClick="selectName" for each of the buttons in our layout file). We just call
+     * our method [buttonClick] with our [View] parameter [clickedView] and the alignment rule
+     * [RelativeLayout.ALIGN_PARENT_LEFT] (used to move a copy of the selected button to the top
+     * left of the container).
      *
      * @param clickedView the button which has been clicked.
      */
@@ -546,19 +549,19 @@ class PlayerSetupActivity : Activity() {
     }
 
     /**
-     * Called to create a number button displaying the number `int number`. First we initialize
-     * `Button button` with a new instance. We set its text size to 36sp, set its text color to
-     * white, its type face to the same as `Button mBobButton` in BOLD style, set its text to
-     * the string value of our parameter `int number`, and its padding to 0 on all sides. We
-     * initialize `OvalShape oval` with a new instance, and create `ShapeDrawable drawable`
-     * from it. We fetch the `Paint` used to draw `drawable` and set its color to a random
-     * int with a 0xFF alpha. We then set the background of `button` to `drawable` and its
-     * `OnTouchListener` to `mButtonPressListener`. Finally we return `button` to the
-     * caller.
+     * Called to create a number button displaying the number of our [Int] parameter [number]. First
+     * we initialize [Button] variable `val button` with a new instance. We set its text size to 36sp,
+     * set its text color to white, its type face to the same as [Button] field [mBobButton] in BOLD
+     * style, set its text to the string value of our [Int] parameter [number], and its padding to 0
+     * on all sides. We initialize [OvalShape] variable `val oval` with a new instance, and create
+     * [ShapeDrawable] variable `val drawable` from it. We fetch the [Paint] used to draw `drawable`
+     * and set its color to a random [Int] with a 0xFF alpha. We then set the background of `button`
+     * to `drawable` and its [OnTouchListener] to our field [mButtonPressListener]. Finally we return
+     * `button` to the caller.
      *
      * @param number number to display as the text of the button.
-     * @return an oval button with a random background color displaying our parameter `int number`
-     * as its text, whose `OnTouchListener` is set to our field `mButtonPressListener`
+     * @return an oval button with a random background color displaying our [Int] parameter [number]
+     * as its text, whose [OnTouchListener] is set to our field [mButtonPressListener]
      */
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     private fun setupNumberButton(number: Int): Button {
@@ -570,57 +573,61 @@ class PlayerSetupActivity : Activity() {
         button.setPadding(0, 0, 0, 0)
         val oval = OvalShape()
         val drawable = ShapeDrawable(oval)
-        drawable.paint.color = 0xFF shl 24 or ((50 + 150 * Math.random()).toInt() shl 16) or (
-            (50 + 150 * Math.random()).toInt() shl 8) or (50 + 150 * Math.random()).toInt()
+        drawable.paint.color = 0xFF shl 24 or ((50 + 150 * Math.random()).toInt() shl 16) or
+            ((50 + 150 * Math.random()).toInt() shl 8) or (50 + 150 * Math.random()).toInt()
         button.background = drawable
         button.setOnTouchListener(mButtonPressListener)
         return button
     }
 
     /**
-     * `OnPreDrawListener` we use to animate the appearance of `ViewGroup mContainer`
-     * (it scales in from 0 to 1 using an `OvershootInterpolator`, then as the end action of
+     * [OnPreDrawListener] we use to animate the appearance of [ViewGroup] field [mContainer]
+     * (it scales in from 0 to 1 using an [OvershootInterpolator], then as the end action of
      * that animation it pops in the name buttons).
      */
     var mPreDrawListener: OnPreDrawListener = object : OnPreDrawListener {
         /**
          * Callback method to be invoked when the view tree is about to be drawn. At this point, all
          * views in the tree have been measured and given a frame. First we remove ourselves as a
-         * `OnPreDrawListener` of `mContainer`. We then set the X and Y scale both to
-         * 0. We use a `ViewPropertyAnimator` object of `mContainer` to animate its
-         * "scaleX" and "scaleY" to 1 using a new instance of `OvershootInterpolator`. We set
-         * the duration of the animation to LONG_DURATION with an end action consisting of an anonymous
-         * `Runnable` whose `run` override finds the view with id R.id.nameButtons, sets
-         * it to be visible, then calls our `popChildrenIn` method to animate the appearance
-         * of the buttons in that view.
+         * [OnPreDrawListener] of [mContainer]. We then set the X and Y scale both to 0. We use a
+         * [ViewPropertyAnimator] object of [mContainer] to animate its "scaleX" and "scaleY" to 1
+         * using a new instance of [OvershootInterpolator]. We set the duration of the animation to
+         * [ToonGame.LONG_DURATION] with an end action consisting of an anonymous [Runnable] whose
+         * [Runnable.run] override finds the view with id [R.id.nameButtons], sets it to be visible,
+         * then calls our [popChildrenIn] method to animate the appearance of the buttons in that
+         * [View].
          *
+         * Having done all this, we return `false` to cancel the current drawing pass.
          *
-         * Having done all this, we return true to proceed with the current drawing pass.
-         *
-         * @return Return true to proceed with the current drawing pass, or false to cancel.
+         * @return Return `true` to proceed with the current drawing pass, or `false` to cancel.
          */
         override fun onPreDraw(): Boolean {
             mContainer!!.viewTreeObserver.removeOnPreDrawListener(this)
             mContainer!!.scaleX = 0f
             mContainer!!.scaleY = 0f
-            mContainer!!.animate().scaleX(1f).scaleY(1f).interpolator = OvershootInterpolator()
-            mContainer!!.animate().setDuration(ToonGame.LONG_DURATION).withEndAction {
-                val buttonsParent = findViewById<ViewGroup>(R.id.nameButtons)
-                buttonsParent.visibility = View.VISIBLE
-                popChildrenIn(buttonsParent, null)
-            }
+            mContainer!!.animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .interpolator = OvershootInterpolator()
+            mContainer!!.animate()
+                .setDuration(ToonGame.LONG_DURATION)
+                .withEndAction {
+                    val buttonsParent = findViewById<ViewGroup>(R.id.nameButtons)
+                    buttonsParent.visibility = View.VISIBLE
+                    popChildrenIn(buttonsParent, null)
+                }
             return false
         }
     }
 
     /**
-     * Animates the appearance of the child views of our parameter `ViewGroup parent` and has
-     * `Runnable endAction` run when the animations end if it is not null. First we initialize
-     * `TimeInterpolator overshooter` with a new instance of `OvershootInterpolator`. We
-     * initialize `int childCount` with the number of children views contained in our parameter
-     * `ViewGroup parent`, and allocate `childCount` `ObjectAnimator` instances to
-     * initialize `ObjectAnimator[] childAnims`. We now loop over `int i` for the children
-     * in `parent`:
+     * Animates the appearance of the child views of our [ViewGroup] parameter [parent] and has
+     * [Runnable] parameter [endAction] run when the animations end if it is not `null`. First we
+     * initialize [TimeInterpolator] variable `val overshooter` with a new instance of
+     * [OvershootInterpolator]. We initialize [Int] variable `val childCount` with the number of
+     * children views contained in our [ViewGroup] parameter [parent], and allocate `childCount`
+     * [ObjectAnimator] instances to initialize [Array] of [ObjectAnimator] variable `val childAnims`.
+     * We now loop over [Int] variable `var i` for all the children in `parent`:
      *
      *  *
      * We initialize `View child` by fetching a reference to the `i`'th child of
@@ -653,8 +660,8 @@ class PlayerSetupActivity : Activity() {
     private fun popChildrenIn(parent: ViewGroup?, endAction: Runnable?) {
         // for all children, scale in one at a time
         val overshooter: TimeInterpolator = OvershootInterpolator()
-        val childCount = parent!!.childCount
-        val childAnims = arrayOfNulls<ObjectAnimator>(childCount)
+        val childCount: Int = parent!!.childCount
+        val childAnims: Array<ObjectAnimator?> = arrayOfNulls(childCount)
         for (i in 0 until childCount) {
             val child = parent.getChildAt(i)
             child.scaleX = 0f
