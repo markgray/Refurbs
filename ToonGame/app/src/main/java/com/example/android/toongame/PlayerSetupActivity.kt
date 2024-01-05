@@ -627,31 +627,27 @@ class PlayerSetupActivity : Activity() {
      * [OvershootInterpolator]. We initialize [Int] variable `val childCount` with the number of
      * children views contained in our [ViewGroup] parameter [parent], and allocate `childCount`
      * [ObjectAnimator] instances to initialize [Array] of [ObjectAnimator] variable `val childAnims`.
-     * We now loop over [Int] variable `var i` for all the children in `parent`:
+     * We now loop over [Int] variable `var i` for all the children in [parent]:
      *
-     *  *
-     * We initialize `View child` by fetching a reference to the `i`'th child of
-     * `parent`, then scale both its X and Y dimensions to 0.
+     *  * We initialize [View] variable `val child` by fetching a reference to the `i`'th child of
+     *  [parent], then scale both its X and Y dimensions to 0.
      *
-     *  *
-     * We initialize `PropertyValuesHolder pvhSX` with an instance which will animate
-     * the SCALE_X property to 1, and `PropertyValuesHolder pvhSY` with an instance
-     * which will animate the SCALE_Y property to 1.
+     *  * We initialize [PropertyValuesHolder] variable `val pvhSX` with an instance which will
+     *  animate the [View.SCALE_X] property to 1, and [PropertyValuesHolder] variable `val pvhSY`
+     *  with an instance which will animate the [View.SCALE_Y] property to 1.
      *
-     *  *
-     * We initialize `ObjectAnimator anim` with an instance which will apply both
-     * `pvhSX` and `pvhSY` to `child`, set its duration to 150ms, and set
-     * its `TimeInterpolator` to `overshooter`.
+     *  * We initialize [ObjectAnimator] variable `val anim` with an instance which will apply both
+     *  `pvhSX` and `pvhSY` to `child`, set its duration to 150ms, and set its [TimeInterpolator] to
+     *  `overshooter`.
      *
-     *  *
-     * We then save `anim` in `childAnims[ i ]` and loop around for the next child.
+     *  * We then save `anim` in `childAnims[ i ]` and loop around for the next child.
      *
-     *
-     * When done creating animations for each of the children of `parent` we initialize
-     * `AnimatorSet set` with a new instance, set it up to play each of the animations in the
-     * array `childAnims` sequentially, and start it running. Finally if our parameter
-     * `Runnable endAction` is not null, we add an `AnimatorListenerAdapter` to `set`
-     * whose `onAnimationEnd` calls the `run` method of `endAction`.
+     * When done creating animations for each of the children of [parent] we initialize
+     * [AnimatorSet] variable `val set` with a new instance, set it up to play each of the animations
+     * in the array `childAnims` sequentially, and start it running. Finally if our [Runnable]
+     * parameter [endAction] is not `null`, we add an [AnimatorListenerAdapter] to `set`
+     * whose [AnimatorListenerAdapter.onAnimationEnd] override calls the [Runnable.run] method of
+     * `endAction`.
      *
      * @param parent `ViewGroup` containing the views whose appearance we want to animate.
      * @param endAction a `Runnable` which if not null we are to run when our animations end.
@@ -663,7 +659,7 @@ class PlayerSetupActivity : Activity() {
         val childCount: Int = parent!!.childCount
         val childAnims: Array<ObjectAnimator?> = arrayOfNulls(childCount)
         for (i in 0 until childCount) {
-            val child = parent.getChildAt(i)
+            val child: View = parent.getChildAt(i)
             child.scaleX = 0f
             child.scaleY = 0f
             val pvhSX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f)
@@ -692,20 +688,19 @@ class PlayerSetupActivity : Activity() {
     }
 
     /**
-     * Called to animate the transition between two UI states, optionally running a `Runnable`
-     * when the animation is done (if it is not null). We initialize `ObjectAnimator currentSkewer`
-     * with a new instance which will animate the "skewX" property of our parameter `currentView`
-     * to -.5, and set its `TimeInterpolator` to `DecelerateInterpolator sDecelerator`.
-     * We initialize `ObjectAnimator currentMover` with a new instance which will animate the
-     * TRANSLATION_X property of our parameter `currentView` to minus the width of our container
-     * `ViewGroup mContainer`, set its `TimeInterpolator` to our field
-     * `LinearInterpolator sLinearInterpolator`, and set its duration to MEDIUM_DURATION.
+     * Called to animate the transition between two UI states, optionally running a [Runnable] when
+     * the animation is done (if it is not `null`). We initialize [ObjectAnimator] variable
+     * `val currentSkewer` with a new instance which will animate the "skewX" property of our
+     * [SkewableTextView] parameter [currentView] to -.5, and set its [TimeInterpolator] to
+     * [DecelerateInterpolator] field [sDecelerator]. We initialize [ObjectAnimator] variable
+     * `val currentMover` with a new instance which will animate the [View.TRANSLATION_X] property
+     * of our [SkewableTextView] parameter [currentView] to minus the width of our container
+     * [ViewGroup] field [mContainer], set its [TimeInterpolator] to our [LinearInterpolator] field
+     * [sLinearInterpolator], and set its duration to [ToonGame.MEDIUM_DURATION] (200ms).
      *
-     *
-     * We set the visibility of our parameter `SkewableTextView nextView` to VISIBLE, set its
-     * "skewX" property to -.5, and set its TRANSLATION_X property to the width of our container
-     * `ViewGroup mContainer` (off the right side of the screen).
-     *
+     * We set the visibility of our [SkewableTextView] parameter [nextView] to [View.VISIBLE], set
+     * its "skewX" property to -.5, and set its TRANSLATION_X property to the width of our container
+     * [ViewGroup] field [mContainer] (off the right side of the screen).
      *
      * We then initialize `ObjectAnimator nextMover` with a new instance which will animate the
      * TRANSLATION_X property of our parameter `currentView` to 0, set its `TimeInterpolator`
@@ -731,13 +726,19 @@ class PlayerSetupActivity : Activity() {
      * @param endAction the `Runnable` to run (if not null) when the animation between the two
      * `SkewableTextView` parameters has finished.
      */
-    private fun slideToNext(currentView: SkewableTextView?,
-                            nextView: SkewableTextView?, endAction: Runnable?) {
+    private fun slideToNext(
+        currentView: SkewableTextView?,
+        nextView: SkewableTextView?,
+        endAction: Runnable?
+    ) {
         // skew/anticipate current view, slide off, set GONE, restore translation
         val currentSkewer = ObjectAnimator.ofFloat(currentView, "skewX", -.5f)
         currentSkewer.interpolator = sDecelerator
-        val currentMover = ObjectAnimator.ofFloat(currentView, View.TRANSLATION_X,
-            -mContainer!!.width.toFloat())
+        val currentMover = ObjectAnimator.ofFloat(
+            /* target = */ currentView,
+            /* property = */ View.TRANSLATION_X,
+            /* ...values = */ -mContainer!!.width.toFloat()
+        )
         currentMover.interpolator = sLinearInterpolator
         currentMover.duration = ToonGame.MEDIUM_DURATION
 
