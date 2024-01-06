@@ -31,12 +31,12 @@ import android.widget.TextView
  */
 class SkewableTextView : TextView {
     /**
-     * Our "skewX" property, we use it in our `onDraw` override to skew the canvas.
+     * Our "skewX" property, we use it in our [onDraw] override to skew the canvas.
      */
     private var mSkewX = 0f
 
     /**
-     * `RectF` used by our `invalidateSkewedBounds` method to calculate the proper area
+     * [RectF] used by our [invalidateSkewedBounds] method to calculate the proper area
      * of our parent to invalidate given our skewed bounds.
      */
     var mTempRect: RectF = RectF()
@@ -45,20 +45,24 @@ class SkewableTextView : TextView {
      * Perform inflation from XML and apply a class-specific base style from a theme attribute or
      * style resource. We just call our super's constructor.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      * @param defStyle An attribute in the current theme that contains a
      * reference to a style resource that supplies default values for
      * the view. Can be 0 to not look for defaults.
      */
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyle: Int
+    ) : super(context, attrs, defStyle)
 
     /**
      * Perform inflation from XML and apply a class-specific base style from a theme attribute or
      * style resource. We just call our super's constructor.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
@@ -67,16 +71,16 @@ class SkewableTextView : TextView {
     /**
      * Our one argument constructor. We just call our super's constructor.
      *
-     * @param context The Context the view is running in, through which it can
+     * @param context The [Context] the view is running in, through which it can
      * access the current theme, resources, etc.
      */
     constructor(context: Context?) : super(context)
 
     /**
-     * We implement this to do our drawing. If our field `float mSkewX` is not 0 we pre-concat
+     * We implement this to do our drawing. If our [Float] field [mSkewX] is not 0 we pre-concat
      * the current matrix with a translation by our height in the Y direction, pre-concat a matrix
      * which skews X by `mSkewX` and then translate the canvas by minus our height. When our
-     * field `mSkewX` is 0 or non-zero we then call our super;s implementation of `onDraw`.
+     * field `mSkewX` is 0 or non-zero we then call our super's implementation of `onDraw`.
      *
      * @param canvas the canvas on which the background will be drawn
      */
@@ -88,20 +92,20 @@ class SkewableTextView : TextView {
         }
         super.onDraw(canvas)
     }
+
     /**
-     * Getter for our field `float mSkewX`.
+     * Getter for our [Float] field [mSkewX].
      *
-     * @return current value of our field `float mSkewX`.
+     * @return current value of our [Float] field [mSkewX].
      */
     var skewX: Float
         get() = mSkewX
         /**
-         * Setter for our field `float mSkewX`. If our parameter `float value` is not equal
-         * to our field `float mSkewX` we set `mSkewX` to `value`, invalidate our view,
-         * then call our method `invalidateSkewedBounds` to invalidate the appropriate area of our
-         * parent.
+         * Setter for our [Float] field [mSkewX]. If our [Float] parameter [value] is not equal to
+         * our [Float] field [mSkewX] we set [mSkewX] to [value], invalidate our view, then call our
+         * method [invalidateSkewedBounds] to invalidate the appropriate area of our parent.
          *
-         * @param value new value for our field `float mSkewX`.
+         * @param value new value for our [Float] field [mSkewX].
          */
         set(value) {
             if (value != mSkewX) {
@@ -112,28 +116,33 @@ class SkewableTextView : TextView {
         }
 
     /**
-     * Need to invalidate proper area of parent for skewed bounds. If our field `float mSkewX`
-     * is not 0, we initialize `Matrix matrix` with a new instance, and set it to skew by
-     * `mSkewX` in the X dimension and 0 in the Y. We then set `RectF mTempRect` to
-     * the dimensions of our view. We apply then `matrix` to `mTempRect`. We then offset
-     * `mTempRect` to our left side plus our translationX property in the X direction, and
-     * our top size plus our translationY property in the X direction. We then fetch our parent view
-     * and call its `invalidate` method to invalidate the area from the left top corner of
-     * `mTempRect` to the right bottom of `mTempRect` (after adding .5 to round it up).
+     * Need to invalidate proper area of parent for skewed bounds. If our [Float] field [mSkewX]
+     * is not 0, we initialize [Matrix] variable `val matrix` with a new instance, and set it to
+     * skew by [mSkewX] in the X dimension and 0 in the Y. We then set [RectF] field [mTempRect] to
+     * the dimensions of our view. We apply `matrix` to [mTempRect], then offset [mTempRect] to our
+     * left side plus our [View.TRANSLATION_X] property in the X direction, and our top size plus
+     * our [View.TRANSLATION_Y] property in the Y direction. We then fetch our parent [View] and
+     * call its [View.invalidate] method to invalidate the area from the left top corner of
+     * [mTempRect] to the right bottom of [mTempRect] (after adding .5 to round it up).
      */
     private fun invalidateSkewedBounds() {
         if (mSkewX != 0f) {
             val matrix = Matrix()
-            matrix.setSkew(-mSkewX, 0f)
-            mTempRect[0f, 0f, right.toFloat()] = bottom.toFloat()
+            matrix.setSkew(/* kx = */ -mSkewX, /* ky = */ 0f)
+            mTempRect.set(
+                /* left = */ 0f,
+                /* top = */ 0f,
+                /* right = */ right.toFloat(),
+                /* bottom = */ bottom.toFloat()
+            )
             matrix.mapRect(mTempRect)
-            mTempRect.offset(left + translationX, top + translationY)
+            mTempRect.offset(/* dx = */ left + translationX, /* dy = */ top + translationY)
             @Suppress("DEPRECATION") // Should just call invalidate() here, but WTH
             (parent as View).invalidate(
-                mTempRect.left.toInt(),
-                mTempRect.top.toInt(),
-                (mTempRect.right + .5f).toInt(),
-                (mTempRect.bottom + .5f).toInt()
+                /* l = */ mTempRect.left.toInt(),
+                /* t = */ mTempRect.top.toInt(),
+                /* r = */ (mTempRect.right + .5f).toInt(),
+                /* b = */ (mTempRect.bottom + .5f).toInt()
             )
         }
     }

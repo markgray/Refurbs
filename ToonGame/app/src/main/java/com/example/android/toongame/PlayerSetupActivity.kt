@@ -702,29 +702,29 @@ class PlayerSetupActivity : Activity() {
      * its "skewX" property to -.5, and set its TRANSLATION_X property to the width of our container
      * [ViewGroup] field [mContainer] (off the right side of the screen).
      *
-     * We then initialize `ObjectAnimator nextMover` with a new instance which will animate the
-     * TRANSLATION_X property of our parameter `currentView` to 0, set its `TimeInterpolator`
-     * to our field `AccelerateInterpolator sAccelerator`, and set its duration to MEDIUM_DURATION.
-     * We initialize `ObjectAnimator nextSkewer` with a new instance which will animate the "skewX"
-     * property of our parameter `nextView` to 0, and set its `TimeInterpolator` to our
-     * field `sOvershooter` (an `OvershootInterpolator` under the hood).
+     * We then initialize [ObjectAnimator] variable `val nextMover` with a new instance which will
+     * animate the [View.TRANSLATION_X] property of our [SkewableTextView] parameter [nextView] to 0,
+     * set its [TimeInterpolator] to our [AccelerateInterpolator] field [sAccelerator], and set its
+     * duration to [ToonGame.MEDIUM_DURATION] (200ms). We initialize [ObjectAnimator] variable
+     * `val nextSkewer` with a new instance which will animate the "skewX" property of our
+     * [SkewableTextView] parameter [nextView] to 0, and set its [TimeInterpolator] to our
+     * field [sOvershooter] (an [OvershootInterpolator] under the hood).
      *
+     * We initialize [AnimatorSet] variable `val moverSet` with a new instance, and set it up to
+     * play both `currentMover` and `nextMover` at the same time. We initialize [AnimatorSet]
+     * variable `val fullSet` with a new instance and set it up to play `currentSkewer`, `moverSet`,
+     * and `nextSkewer` sequentially. We then add an [AnimatorListenerAdapter] listener to `fullSet`
+     * which overrides the [AnimatorListenerAdapter.onAnimationEnd] method to set the "skewX"
+     * property of `currentView` to 0, set its visibility to [View.GONE], and set its
+     * [View.TRANSLATION_X] property to 0. Then if our [Runnable] parameter [endAction] is not
+     * `null` we call its [Runnable.run] method.
      *
-     * We initialize `AnimatorSet moverSet` with a new instance, and set it up to play both
-     * `currentMover` and `nextMover` at the same time. We initialize `AnimatorSet fullSet`
-     * with a new instance and set it up to play `currentSkewer`, `moverSet`, and `nextSkewer`
-     * sequentially. We then add an `AnimatorListenerAdapter` listener to `fullSet` which overrides
-     * the `onAnimationEnd` method to set the "skewX" property of `currentView` to 0, set its
-     * visibility to GONE, and set its TRANSLATION_X property to 0. Then if our parameter `endAction`
-     * is not null we call its `run` method.
+     * When done setting things up we start [AnimatorSet] variable `fullSet` running.
      *
-     *
-     * When done setting things up we start `AnimatorSet fullSet` running.
-     *
-     * @param currentView the `SkewableTextView` which is currently being displayed
-     * @param nextView the next `SkewableTextView` to display
-     * @param endAction the `Runnable` to run (if not null) when the animation between the two
-     * `SkewableTextView` parameters has finished.
+     * @param currentView the [SkewableTextView] which is currently being displayed
+     * @param nextView the next [SkewableTextView] to display
+     * @param endAction the [Runnable] to run (if not `null`) when the animation between the two
+     * [SkewableTextView] parameters has finished.
      */
     private fun slideToNext(
         currentView: SkewableTextView?,
@@ -732,7 +732,11 @@ class PlayerSetupActivity : Activity() {
         endAction: Runnable?
     ) {
         // skew/anticipate current view, slide off, set GONE, restore translation
-        val currentSkewer = ObjectAnimator.ofFloat(currentView, "skewX", -.5f)
+        val currentSkewer = ObjectAnimator.ofFloat(
+            /* target = */ currentView,
+            /* propertyName = */ "skewX",
+            /* ...values = */ -.5f
+        )
         currentSkewer.interpolator = sDecelerator
         val currentMover = ObjectAnimator.ofFloat(
             /* target = */ currentView,
@@ -747,10 +751,18 @@ class PlayerSetupActivity : Activity() {
         nextView!!.visibility = View.VISIBLE
         nextView.skewX = -.5f
         nextView.translationX = mContainer!!.width.toFloat()
-        val nextMover = ObjectAnimator.ofFloat(nextView, View.TRANSLATION_X, 0f)
+        val nextMover = ObjectAnimator.ofFloat(
+            /* target = */ nextView,
+            /* property = */ View.TRANSLATION_X,
+            /* ...values = */ 0f
+        )
         nextMover.interpolator = sAccelerator
         nextMover.duration = ToonGame.MEDIUM_DURATION
-        val nextSkewer = ObjectAnimator.ofFloat(nextView, "skewX", 0f)
+        val nextSkewer = ObjectAnimator.ofFloat(
+            /* target = */ nextView,
+            /* propertyName = */ "skewX",
+            /* ...values = */ 0f
+        )
         nextSkewer.interpolator = sOvershooter
         val moverSet = AnimatorSet()
         moverSet.playTogether(currentMover, nextMover)
@@ -758,9 +770,10 @@ class PlayerSetupActivity : Activity() {
         fullSet.playSequentially(currentSkewer, moverSet, nextSkewer)
         fullSet.addListener(object : AnimatorListenerAdapter() {
             /**
-             * Notifies the end of the animation. First we set the "skewX" property of `currentView`
-             * to 0, set its visibility to GONE, and set its TRANSLATION_X property to 0. Then if our
-             * parameter `endAction` is not null we call its `run` method.
+             * Notifies the end of the animation. First we set the "skewX" property of [currentView]
+             * to 0, set its visibility to [View.GONE], and set its [View.TRANSLATION_X] property
+             * to 0. Then if our [Runnable] parameter [endAction] is not `null` we call its
+             * [Runnable.run] method.
              *
              * @param animation The animation which reached its end.
              */
@@ -776,12 +789,12 @@ class PlayerSetupActivity : Activity() {
 
     companion object {
         /**
-         * The instance of `AccelerateInterpolator` we use.
+         * The instance of [AccelerateInterpolator] we use.
          */
         private val sAccelerator = AccelerateInterpolator()
 
         /**
-         * The instance of `LinearInterpolator` we use.
+         * The instance of [LinearInterpolator] we use.
          */
         private val sLinearInterpolator = LinearInterpolator()
 
@@ -801,13 +814,13 @@ class PlayerSetupActivity : Activity() {
         private const val CREDIT_STATE = 2
 
         /**
-         * The `OvershootInterpolator` we use to animate the "skewX" property when skewing between
-         * the current and new `SkewableTextView` in our `slideToNext` method.
+         * The [OvershootInterpolator] we use to animate the "skewX" property when skewing between
+         * the current and new [SkewableTextView] in our [slideToNext] method.
          */
         private val sOvershooter: TimeInterpolator = OvershootInterpolator()
 
         /**
-         * `DecelerateInterpolator` we use for several different animations.
+         * [DecelerateInterpolator] we use for several different animations.
          */
         private val sDecelerator = DecelerateInterpolator()
     }
