@@ -33,11 +33,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
+import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.Button
+import android.widget.RelativeLayout
 
 /**
  * This application shows various cartoon animation techniques in the context of
@@ -55,29 +58,29 @@ import android.widget.Button
  */
 class ToonGame : Activity() {
     /**
-     * `Button` in our layout with id R.id.startButton ("Play!"), launches `PlayerSetupActivity`
-     * when clicked (activity is launched by a `Runnable` when the animation of the button release
+     * [Button] in our layout with id [R.id.startButton] ("Play!"), launches [PlayerSetupActivity]
+     * when clicked (activity is launched by a [Runnable] when the animation of the button release
      * finishes).
      */
     var mStarter: Button? = null
 
     /**
-     * The `RelativeLayout` in our layout file with id R.id.container, we use it to animate our
-     * transition to `PlayerSetupActivity`
+     * The [RelativeLayout] in our layout file with id [R.id.container], we use it to animate our
+     * transition to [PlayerSetupActivity]
      */
     var mContainer: ViewGroup? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we call the `overridePendingTransition` to cancel any pending incoming or outgoing
+     * then we call the [overridePendingTransition] method to cancel any pending incoming or outgoing
      * animation (by using 0 as the resource id for both `enterAnim` and `exitAnim`). Then
-     * we set our content view to our layout file R.layout.activity_toon_game. We initialize our field
-     * `Button mStarter` by finding the view with id R.id.startButton ("Play!"), initialize our
-     * field `ViewGroup mContainer` by finding `RelativeLayout` in our layout file with
-     * id R.id.container, set the `OnTouchListener` of `mStarter` to `funButtonListener`
-     * and set the duration of its `ViewPropertyAnimator` to 100ms.
+     * we set our content view to our layout file [R.layout.activity_toon_game]. We initialize our
+     * [Button] field [mStarter] by finding the view with id [R.id.startButton] ("Play!"), initialize
+     * our [ViewGroup] field [mContainer] by finding the [RelativeLayout] in our layout file with
+     * id [R.id.container], set the [OnTouchListener] of [mStarter] to [funButtonListener] and set
+     * the duration of its [ViewPropertyAnimator] to 100ms.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,13 +99,13 @@ class ToonGame : Activity() {
     }
 
     /**
-     * Called after [.onRestoreInstanceState], [.onRestart], or [.onPause], for our
-     * activity to start interacting with the user. First we call our super's implementation of
-     * `onResume`. We set the X scaling of `ViewGroup mContainer` around the pivot point
-     * to 1, the Y scaling to 1, and its alpha to 1. We set the visibility of `Button mStarter`
-     * to INVISIBLE. We fetch the `ViewTreeObserver` of `mContainer` (the view tree observer
-     * can be used to get notifications when global events, like layout, happen) and add as an
-     * `OnPreDrawListener` our field `ViewTreeObserver.OnPreDrawListener mOnPreDrawListener`.
+     * Called after [onRestoreInstanceState], [onRestart], or [onPause], for our activity to start
+     * interacting with the user. First we call our super's implementation of `onResume`. We set the
+     * X scaling of [ViewGroup] field [mContainer] around the pivot point to 1f, the Y scaling to 1f,
+     * and its alpha to 1f. We set the visibility of [Button] field [mStarter] to [View.INVISIBLE].
+     * We fetch the [ViewTreeObserver] of [mContainer] (the view tree observer can be used to get
+     * notifications when global events, like layout, happen) and add as an [OnPreDrawListener] our
+     * [OnPreDrawListener] field [mOnPreDrawListener].
      */
     override fun onResume() {
         super.onResume()
@@ -115,9 +118,9 @@ class ToonGame : Activity() {
 
     /**
      * Called as part of the activity lifecycle when an activity is going into the background, but
-     * has not (yet) been killed. First we call our super's implementation of `onPause`, then
-     * we call the `removeCallbacks` method of our field `Button mStarter` to remove
-     * `Runnable mSquishRunnable` from the message queue.
+     * has not (yet) been killed. First we call our super's implementation of `onPause`, then we
+     * call the [View.removeCallbacks] method of our [Button] field [mStarter] to remove [Runnable]
+     * field [mSquishRunnable] from the message queue.
      */
     override fun onPause() {
         super.onPause()
@@ -125,55 +128,15 @@ class ToonGame : Activity() {
     }
 
     /**
-     * `OnTouchListener` for our field `Button mStarter` ("Play!"), performs animation
-     * of the button when the event is ACTION_DOWN, resets the pressed state of the button when
-     * an ACTION_MOVE event moves outside of the button, and performs animation if an ACTION_UP
-     * event occurs while the button is in the pressed state.
+     * [OnTouchListener] for our [Button] field [mStarter] ("Play!"), it performs animation of the
+     * button when the event is [MotionEvent.ACTION_DOWN], resets the pressed state of the button
+     * when an [MotionEvent.ACTION_MOVE] event moves outside of the button, and performs animation
+     * if an [MotionEvent.ACTION_UP] event occurs while the button is in the pressed state.
      */
-    private val funButtonListener = OnTouchListener { v, event ->
-
+    private val funButtonListener = OnTouchListener { v: View, event: MotionEvent ->
         /**
-         * Called when a touch event is dispatched to a view. We switch on the action of our parameter
-         * `MotionEvent event`:
-         *
-         *  *
-         * ACTION_DOWN: we fetch a `ViewPropertyAnimator` for `Button mStarter`
-         * and have it animate the scale of X to .8f, and animate the scale of Y to .8f using
-         * our field `DecelerateInterpolator sDecelerator` as its `TimeInterpolator`.
-         * We then set the text color of `mStarter` to CYAN, remove from its message
-         * queue `Runnable mSquishRunnable`, and set its pressed state to true. We then
-         * break.
-         *
-         *  *
-         * ACTION_MOVE: we initialize `float x` with the X coordinate for the first
-         * pointer index of our parameter `MotionEvent event` and `float y` with
-         * the Y coordinate. We initialize `boolean isInside` to true if `x` is
-         * greater than 0 and less than the width of `mStarter` and `y` is greater
-         * than 0 and less than the height of `mStarter` (the move event is still inside
-         * our button) and to false otherwise (the move event is outside of our button). If
-         * the pressed state of `mStarter` is not equal to the value of `isInside`
-         * we set its pressed state to `isInside`. We then break. (Note that the user
-         * has to touch the bouncing button while it is still in order for the touch to be
-         * noticed).
-         *
-         *  *
-         * ACTION_UP: If the pressed state of `Button mStarter` is true, we call its
-         * `performClick` method and set its pressed state to false, if it is not pressed
-         * we fetch a `ViewPropertyAnimator` for it and have it animate the scale of X
-         * to 1, and animate the scale of Y to 1 using our field `AccelerateInterpolator sAccelerator`
-         * as its `TimeInterpolator`. We then set the text color of `mStarter` to
-         * BLUE and break.
-         *
-         *
-         * For all actions (including those we ignore) we return true to consume the event.
-         *
-         * @param v     The view the touch event has been dispatched to.
-         * @param event The MotionEvent object containing full information about the event.
-         * @return True if the listener has consumed the event, false otherwise.
-         */
-        /**
-         * Called when a touch event is dispatched to a view. We switch on the action of our parameter
-         * `MotionEvent event`:
+         * Called when a touch event is dispatched to a view. We switch on the action of our
+         * [MotionEvent] parameter [event]:
          *
          *  *
          * ACTION_DOWN: we fetch a `ViewPropertyAnimator` for `Button mStarter`
