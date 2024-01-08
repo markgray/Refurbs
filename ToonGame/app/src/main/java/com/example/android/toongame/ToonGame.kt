@@ -22,6 +22,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
+import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -135,37 +136,31 @@ class ToonGame : Activity() {
      */
     private val funButtonListener = OnTouchListener { v: View, event: MotionEvent ->
         /**
-         * Called when a touch event is dispatched to a view. We switch on the action of our
+         * Called when a touch event is dispatched to a view. We `when` switch on the action of our
          * [MotionEvent] parameter [event]:
          *
-         *  *
-         * ACTION_DOWN: we fetch a `ViewPropertyAnimator` for `Button mStarter`
-         * and have it animate the scale of X to .8f, and animate the scale of Y to .8f using
-         * our field `DecelerateInterpolator sDecelerator` as its `TimeInterpolator`.
-         * We then set the text color of `mStarter` to CYAN, remove from its message
-         * queue `Runnable mSquishRunnable`, and set its pressed state to true. We then
-         * break.
+         *  * [MotionEvent.ACTION_DOWN]: we fetch a [ViewPropertyAnimator] for [Button] field
+         *  [mStarter] and have it animate the scale of X to .8f, and animate the scale of Y to
+         *  .8f using our [DecelerateInterpolator] field [sDecelerator] as its [TimeInterpolator].
+         *  We then set the text color of [mStarter] to [Color.CYAN], remove from its message
+         *  queue the [Runnable] field [mSquishRunnable], and set its pressed state to `true`.
          *
-         *  *
-         * ACTION_MOVE: we initialize `float x` with the X coordinate for the first
-         * pointer index of our parameter `MotionEvent event` and `float y` with
-         * the Y coordinate. We initialize `boolean isInside` to true if `x` is
-         * greater than 0 and less than the width of `mStarter` and `y` is greater
-         * than 0 and less than the height of `mStarter` (the move event is still inside
-         * our button) and to false otherwise (the move event is outside of our button). If
-         * the pressed state of `mStarter` is not equal to the value of `isInside`
-         * we set its pressed state to `isInside`. We then break. (Note that the user
-         * has to touch the bouncing button while it is still in order for the touch to be
-         * noticed).
+         *  * [MotionEvent.ACTION_MOVE]: we initialize [Float] variable `val x` with the X
+         *  coordinate for the first pointer index of our [MotionEvent] parameter `event` and
+         *  [Float] variable `val y` with the Y coordinate. We initialize [Boolean] variable
+         *  `val isInside` to `true` if `x` is greater than 0 and less than the width of [mStarter]
+         *  and `y` is greater than 0 and less than the height of [mStarter] (the move event is
+         *  still inside our button) and to `false` otherwise (the move event is outside of our
+         *  button). If the pressed state of [mStarter] is not equal to the value of `isInside`
+         * we set its pressed state to `isInside`. (Note that the user has to touch the bouncing
+         * button while it is still in order for the touch to be noticed).
          *
-         *  *
-         * ACTION_UP: If the pressed state of `Button mStarter` is true, we call its
-         * `performClick` method and set its pressed state to false, if it is not pressed
-         * we fetch a `ViewPropertyAnimator` for it and have it animate the scale of X
-         * to 1, and animate the scale of Y to 1 using our field `AccelerateInterpolator sAccelerator`
-         * as its `TimeInterpolator`. We then set the text color of `mStarter` to
-         * BLUE and break.
-         *
+         *  * [MotionEvent.ACTION_UP]: If the pressed state of [Button] field [mStarter] is `true`,
+         *  we call its [Button.performClick] method and set its pressed state to `false`, if it is
+         *  not pressed we fetch a [ViewPropertyAnimator] for it and have it animate the scale of X
+         *  to 1, and animate the scale of Y to 1 using our [AccelerateInterpolator] field
+         *  [sAccelerator] as its [TimeInterpolator]. Finally we set the text color of [mStarter]
+         *  to [Color.BLUE].
          *
          * For all actions (including those we ignore) we return true to consume the event.
          *
@@ -175,15 +170,18 @@ class ToonGame : Activity() {
          */
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                mStarter!!.animate().scaleX(.8f).scaleY(.8f).interpolator = sDecelerator
-                mStarter!!.setTextColor(Color.CYAN)
-                mStarter!!.removeCallbacks(mSquishRunnable)
+                mStarter!!.animate()
+                    .scaleX(/* value = */ .8f)
+                    .scaleY(/* value = */ .8f)
+                    .interpolator = sDecelerator
+                mStarter!!.setTextColor(/* color = */ Color.CYAN)
+                mStarter!!.removeCallbacks(/* action = */ mSquishRunnable)
                 mStarter!!.isPressed = true
             }
 
             MotionEvent.ACTION_MOVE -> {
-                val x = event.x
-                val y = event.y
+                val x: Float = event.x
+                val y: Float = event.y
                 val isInside = x > 0 && x < mStarter!!.width && y > 0 && y < mStarter!!.height
                 if (mStarter!!.isPressed != isInside) {
                     mStarter!!.isPressed = isInside
@@ -195,21 +193,21 @@ class ToonGame : Activity() {
                     mStarter!!.performClick()
                     mStarter!!.isPressed = false
                 } else {
-                    mStarter!!.animate().scaleX(1f).scaleY(1f).setInterpolator(sAccelerator)
+                    mStarter!!.animate()
+                        .scaleX(/* value = */ 1f)
+                        .scaleY(/* value = */ 1f)
+                        .interpolator =sAccelerator
                 }
-                mStarter!!.setTextColor(Color.BLUE)
+                mStarter!!.setTextColor(/* color = */ Color.BLUE)
             }
         }
         true
     }
 
     /**
-     * `Runnable` which a call to the `squishyBounce` adds to the message queue of the
-     * view it is animating to call itself again after a random delay (500ms to 2500ms) after the
-     * the animation ends.
-     */
-    /**
-     * When an object implementing interface `Runnable` is used to create a thread,
+     * [Runnable] which a call to the [squishyBounce] method adds to the message queue of the view it
+     * is animating to call itself again after a random delay (500ms to 2500ms) after the animation
+     * ends. When an object implementing interface [Runnable] is used to create a thread,
      * starting the thread causes the object's `run` method to be called in that
      * separately executing thread. We just call our method `squishyBounce` to animate
      * our button `mStarter` with a TRANSLATION_Y animation from 0 to the height of
