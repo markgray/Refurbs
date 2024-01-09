@@ -207,13 +207,13 @@ class ToonGame : Activity() {
     /**
      * [Runnable] which a call to the [squishyBounce] method adds to the message queue of the view it
      * is animating to call itself again after a random delay (500ms to 2500ms) after the animation
-     * ends. When an object implementing interface [Runnable] is used to create a thread,
-     * starting the thread causes the object's `run` method to be called in that
-     * separately executing thread. We just call our method `squishyBounce` to animate
-     * our button `mStarter` with a TRANSLATION_Y animation from 0 to the height of
-     * `ViewGroup mContainer` minus the top of `mStarter` minus the height of
-     * `mStarter`, then animate its TRANSLATION_Y back to 0. In addition SCALE_Y will
-     * be animated from 1 to 0.5 (squash) and SCALE_X will be animated from 1 to 1.5 (stretch).
+     * ends. When an object implementing interface [Runnable] is used to create a thread, starting
+     * the thread causes the object's [Runnable.run] method to be called in that separately executing
+     * thread. We just call our method [squishyBounce] to animate our button [mStarter] with a
+     * [View.TRANSLATION_Y] animation from 0 to the height of [ViewGroup] field [mContainer] minus
+     * the top of [mStarter] minus the height of [mStarter], then animate its [View.TRANSLATION_Y]
+     * back to 0. In addition [View.SCALE_Y] will be animated from 1 to 0.5 (squash) and
+     * [View.SCALE_X] will be animated from 1 to 1.5 (stretch).
      */
     private val mSquishRunnable = Runnable {
         squishyBounce(
@@ -228,18 +228,18 @@ class ToonGame : Activity() {
 
     /**
      * Specified to be called using an android:onClick="play" attribute for the button in our layout
-     * with id android:id="@+id/startButton" ("Play!"). Uses a `ViewPropertyAnimator` for our
-     * field `mContainer` to animate its X coordinate scale from 1 to .5, its Y coordinate scale
-     * from 1 to .5 and its alpha from 1 to 0. Sets the duration of this animation to LONG_DURATION
-     * and its `TimeInterpolator` to `LinearInterpolator sLinearInterpolator`. In addition
-     * it specifies an action to take place when the animation ends consisting of an anonymous
-     * `Runnable` which posts an anonymous `Runnable` to run on the next animation step
-     * of `Button mStarter` which creates an `Intent` to launch `PlayerSetupActivity`,
-     * starts it running and cancels any activity transition that would otherwise occur when that
-     * activity takes over. Finally we remove `Runnable mSquishRunnable` from the queue of
-     * our parameter `View view`.
+     * with id android:id="@+id/startButton" ("Play!"). Uses a [ViewPropertyAnimator] for our
+     * [ViewGroup] field [mContainer] to animate its X coordinate scale from 1 to .5, its Y coordinate
+     * scale from 1 to .5 and its alpha from 1 to 0. Sets the duration of this animation to
+     * [LONG_DURATION] (500 milliseconds) and its [TimeInterpolator] to [LinearInterpolator] field
+     * [sLinearInterpolator]. In addition it specifies an action to take place when the animation
+     * ends consisting of an anonymous [Runnable] which posts an anonymous [Runnable] to run on the
+     * next animation step of [Button] field [mStarter] which creates an [Intent] to launch
+     * [PlayerSetupActivity], starts it running and cancels any activity transition that would
+     * otherwise occur when that activity takes over. Finally we remove [Runnable] field
+     * [mSquishRunnable] from the queue of our [View] parameter [view].
      *
-     * @param view View that was clicked.
+     * @param view [View] that was clicked.
      */
     fun play(view: View) {
         mContainer!!.animate().scaleX(5f).scaleY(5f).alpha(0f)
@@ -262,7 +262,7 @@ class ToonGame : Activity() {
     }
 
     /**
-     * `OnPreDrawListener` for our field `ViewGroup mContainer` whose `onPreDraw`
+     * [OnPreDrawListener] for our field `ViewGroup mContainer` whose `onPreDraw`
      * override removes itself as a `OnPreDrawListener` then posts a 500ms delayed anonymous
      * `Runnable` which "drops" `Button mStarter` from off the top of the screen using
      * our method `squishyBounce`, "squishy bouncing" at the bottom of the screen before moving
