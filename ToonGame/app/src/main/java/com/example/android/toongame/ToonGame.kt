@@ -42,6 +42,7 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.Button
 import android.widget.RelativeLayout
+import android.widget.TextView
 
 /**
  * This application shows various cartoon animation techniques in the context of
@@ -262,40 +263,42 @@ class ToonGame : Activity() {
     }
 
     /**
-     * [OnPreDrawListener] for our field `ViewGroup mContainer` whose `onPreDraw`
-     * override removes itself as a `OnPreDrawListener` then posts a 500ms delayed anonymous
-     * `Runnable` which "drops" `Button mStarter` from off the top of the screen using
-     * our method `squishyBounce`, "squishy bouncing" at the bottom of the screen before moving
-     * to its at rest position below the "Welcome!" `TextView` (`squishyBounce` then posts
-     * a `Runnable` which calls itself again). The `onPreDraw` override then returns true
-     * to proceed with the current drawing pass.
+     * [OnPreDrawListener] for our [ViewGroup] field [mContainer] whose [OnPreDrawListener.onPreDraw]
+     * override removes itself as a [OnPreDrawListener] then posts a 500ms delayed anonymous
+     * [Runnable] which "drops" [Button] field [mStarter] from off the top of the screen using
+     * our method [squishyBounce], "squishy bouncing" at the bottom of the screen before moving
+     * to its at rest position below the "Welcome!" [TextView] ([squishyBounce] then posts a
+     * [Runnable] which calls itself again). The [OnPreDrawListener.onPreDraw] override then returns
+     * `true` to proceed with the current drawing pass.
      */
     private val mOnPreDrawListener: OnPreDrawListener = object : OnPreDrawListener {
         /**
          * Callback method to be invoked when the view tree is about to be drawn. At this point, all
          * views in the tree have been measured and given a frame. Clients can use this to adjust
          * their scroll bounds or even to request a new layout before drawing occurs. First we
-         * remove ourselves as a `OnPreDrawListener` for `ViewGroup mContainer` then
-         * we post a 500ms delayed anonymous `Runnable` which sets the visibility of
-         * `Button mStarter` to VISIBLE (it starts out invisible in the layout file),
-         * sets its Y coordinate to minus its height (just off the screen), then calls our
-         * method `squishyBounce` to animate `mStarter` from its current position
-         * to the bottom of `mContainer`, squashing from 1 to .5 in its Y size, stretching
-         * from 1 to 1.5 in its X size when it "hits" the bottom then moving to the 0 position
-         * specified by its layout file.
+         * remove ourselves as a [OnPreDrawListener] for [ViewGroup] field [mContainer] then we
+         * post a 500ms delayed anonymous [Runnable] which sets the visibility of [Button] field
+         * [mStarter] to [View.VISIBLE] (it starts out invisible in the layout file), sets its Y
+         * coordinate to minus its height (just off the screen), then calls our method [squishyBounce]
+         * to animate [mStarter] from its current position to the bottom of [mContainer], squashing
+         * from 1 to .5 in its Y size, stretching from 1 to 1.5 in its X size when it "hits" the
+         * bottom then moving to the 0 position specified by its layout file.
          *
-         * @return Return true to proceed with the current drawing pass, or false to cancel.
+         * @return Return `true` to proceed with the current drawing pass, or `false` to cancel.
          */
         override fun onPreDraw(): Boolean {
             mContainer!!.viewTreeObserver.removeOnPreDrawListener(this)
             mContainer!!.postDelayed({ // Drop in the button from off the top of the screen
                 mStarter!!.visibility = View.VISIBLE
                 mStarter!!.y = -mStarter!!.height.toFloat()
-                squishyBounce(mStarter,
-                    -(mStarter!!.top + mStarter!!.height).toFloat(),
-                    (mContainer!!.height - mStarter!!.top -
-                        mStarter!!.height).toFloat(),
-                    0f, .5f, 1.5f)
+                squishyBounce(
+                    view = mStarter,
+                    startTY = -(mStarter!!.top + mStarter!!.height).toFloat(),
+                    bottomTY = (mContainer!!.height - mStarter!!.top -mStarter!!.height).toFloat(),
+                    endTY = 0f,
+                    squash = .5f,
+                    stretch = 1.5f
+                )
             }, 500)
             return true
         }
