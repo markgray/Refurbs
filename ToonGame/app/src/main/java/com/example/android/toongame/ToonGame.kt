@@ -305,32 +305,30 @@ class ToonGame : Activity() {
     }
 
     /**
-     * Performs a complex animation of its parameter `View view` intended to emulate a squishy
+     * Performs a complex animation of its [View] parameter [view] intended to emulate a squishy
      * button dropping from a height before bouncing to land in its proper position. At the end of
-     * this animation it posts an anonymous `Runnable` scheduled to run at a random time in
+     * this animation it posts an anonymous [Runnable] scheduled to run at a random time in the
      * future which calls this method again.
      *
-     *
-     * First we set the x location of the point around which our parameter `View view` is
+     * First we set the x location of the point around which our [View] parameter [view] is
      * scaled to half of its width and the y location of the point around it is scaled to its
-     * height (it will scale relative to the bottom middle of the view). We initialize our variable
-     * `PropertyValuesHolder pvhTY` to animate TRANSLATION_Y between our parameters `startTY`
-     * to `bottomTY`, `PropertyValuesHolder pvhSX` to animate SCALE_X to .7, to animate
-     * SCALE_Y to 1.2, then create `ObjectAnimator downAnim` to animate `view` using
-     * `pvhTY`, `pvhSX` and `pvhSY` using `AccelerateInterpolator sAccelerator`
-     * as its `TimeInterpolator`.
+     * height (it will scale relative to the bottom middle of the view). We initialize our
+     * [PropertyValuesHolder] variable `var pvhTY` to animate [View.TRANSLATION_Y] between our
+     * [Float] parameter [startTY] to [Float] parameter [bottomTY], and [PropertyValuesHolder]
+     * `var pvhSX` to animate [View.SCALE_X] to .7, [PropertyValuesHolder] variable to animate
+     * [View.SCALE_Y] to 1.2, then create [ObjectAnimator] variable `val downAnim` to animate [view]
+     * using `pvhTY`, `pvhSX` and `pvhSY` using [AccelerateInterpolator] field [sAccelerator] as its
+     * [TimeInterpolator].
      *
+     * We then set `pvhTY` to a [PropertyValuesHolder] that will animate [View.TRANSLATION_Y] from
+     * our [Float] parameter [bottomTY] to our [Float] parameter [endTY], set `pvhSX` to a
+     * [PropertyValuesHolder] that will animate [View.SCALE_X] to 1, set `pvhSY` to a
+     * [PropertyValuesHolder] that will animate [View.SCALE_Y] to 1, then create [ObjectAnimator]
+     * variable `val upAnim` to animate [view] using `pvhTY`, `pvhSX` and `pvhSY` using
+     * [DecelerateInterpolator] field [sDecelerator] as its [TimeInterpolator].
      *
-     * We then set `pvhTY` to a `PropertyValuesHolder` that will animate TRANSLATION_Y
-     * from our parameter `bottomTY` to our parameter `endTY`, set `pvhSX` to a
-     * `PropertyValuesHolder` that will animate SCALE_X to 1, set `pvhSY` to a
-     * `PropertyValuesHolder` that will animate SCALE_Y to 1, then create `ObjectAnimator upAnim`
-     * to animate `view` using `pvhTY`, `pvhSX` and `pvhSY` using
-     * `DecelerateInterpolator sDecelerator` as its `TimeInterpolator`.
-     *
-     *
-     * We set `pvhSX` to a `PropertyValuesHolder` that will animate SCALE_X to our parameter
-     * `stretch`, and `pvhSY` to a `PropertyValuesHolder` that will animate SCALE_Y
+     * We set `pvhSX` to a [PropertyValuesHolder] that will animate [View.SCALE_X] to our [Float]
+     * parameter [stretch], and `pvhSY` to a `PropertyValuesHolder` that will animate SCALE_Y
      * to our parameter `squash`, then create `ObjectAnimator stretchAnim` to animate
      * `view` using `pvhSX` and `pvhSY`. We set its repeat count to 1, its repeat
      * mode to reverse, and its `TimeInterpolator` to `DecelerateInterpolator sDecelerator`.
@@ -352,12 +350,17 @@ class ToonGame : Activity() {
      * @param stretch SCALE_X stretching end value.
      */
     @Suppress("SameParameterValue")
-    private fun squishyBounce(view: View?, startTY: Float, bottomTY: Float,
-                              endTY: Float, squash: Float, stretch: Float) {
+    private fun squishyBounce(
+        view: View?,
+        startTY: Float,
+        bottomTY: Float,
+        endTY: Float,
+        squash: Float,
+        stretch: Float
+    ) {
         view!!.pivotX = (view.width / 2).toFloat()
         view.pivotY = view.height.toFloat()
-        var pvhTY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y,
-            startTY, bottomTY)
+        var pvhTY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, startTY, bottomTY)
         var pvhSX = PropertyValuesHolder.ofFloat(View.SCALE_X, .7f)
         var pvhSY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.2f)
         val downAnim = ObjectAnimator.ofPropertyValuesHolder(view, pvhTY, pvhSX, pvhSY)
