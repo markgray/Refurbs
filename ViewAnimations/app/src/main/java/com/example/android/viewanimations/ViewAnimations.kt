@@ -35,29 +35,30 @@ import android.widget.CheckBox
  * effects. See also the demo PropertyAnimations, which shows how this is done using the new
  * ObjectAnimator API introduced in Android 3.0.
  *
- *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [...](https://www.youtube.com/watch?v=_UWXqFBF86U)
  */
 class ViewAnimations : Activity() {
     /**
-     * `CheckBox` with id R.id.checkbox, "Use Animation Resources" switches to xml Animation
+     * [CheckBox] with id [R.id.checkbox], "Use Animation Resources" switches to xml [Animation]
      */
     var mCheckBox: CheckBox? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_view_animations. We initialize
-     * our field `CheckBox mCheckBox` by finding the view with id R.id.checkbox ("Use Animation Resources"),
-     * initialize `Button alphaButton` by finding the view with id R.id.alphaButton ("Alpha"), initialize
-     * `Button translateButton` ("Translate") by finding the view with id R.id.translateButton, initialize
-     * `Button rotateButton` ("Rotate") by finding the view with id R.id.rotateButton, initialize
-     * `Button scaleButton` ("Scale") by finding the view with id R.id.scaleButton, and initialize
-     * `Button setButton` ("Set") by finding the view with id R.id.setButton. We initialize our variable
-     * `AlphaAnimation alphaAnimation` with an instance which will animate the alpha property from 1 to
-     * 0 and set its duration to 1000ms, `TranslateAnimation translateAnimation` with an instance which will
-     * animate from an X value of an absolute number of pixels of 0, to an X value of 1 times the width of the
-     * parent view, and from a Y value of an absolute number of pixels of 0, to a Y value of an absolute number
+     * then we set our content view to our layout file [R.layout.activity_view_animations]. We
+     * initialize our [CheckBox] field [mCheckBox] by finding the view with id [R.id.checkbox]
+     * ("Use Animation Resources"), initialize [Button] variable `val alphaButton` by finding the
+     * view with id [R.id.alphaButton] ("Alpha"), initialize [Button] variable `val translateButton`
+     * ("Translate") by finding the view with id [R.id.translateButton], initialize [Button] variable
+     * `val rotateButton` ("Rotate") by finding the view with id [R.id.rotateButton], initialize
+     * [Button] variable `val scaleButton` ("Scale") by finding the view with id [R.id.scaleButton],
+     * and initialize [Button] variable `val setButton` ("Set") by finding the view with id
+     * [R.id.setButton]. We initialize our [AlphaAnimation] variable `val alphaAnimation` with an
+     * instance which will animate the alpha property from 1 to 0 and set its duration to 1000ms,
+     * [TranslateAnimation] variable `val translateAnimation` with an instance which will animate
+     * from an X value of an absolute number of pixels of 0, to an X value of 1 times the width of
+     * the parent view, and from a Y value of an absolute number of pixels of 0, to a Y value of an absolute number
      * of pixels of 100, and set its duration to 1000ms. We initialize `RotateAnimation rotateAnimation`
      * with an instance which will animate from 0 to 360 degrees, with a pivot X value relative to self of .5
      * and a pivot Y value relative to self of .5, and set its duration to 1000ms. We initialize `ScaleAnimation scaleAnimation`
@@ -77,20 +78,27 @@ class ViewAnimations : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_animations)
         mCheckBox = findViewById(R.id.checkbox)
-        val alphaButton = findViewById<Button>(R.id.alphaButton)
-        val translateButton = findViewById<Button>(R.id.translateButton)
-        val rotateButton = findViewById<Button>(R.id.rotateButton)
-        val scaleButton = findViewById<Button>(R.id.scaleButton)
-        val setButton = findViewById<Button>(R.id.setButton)
+        val alphaButton: Button = findViewById(R.id.alphaButton)
+        val translateButton: Button = findViewById(R.id.translateButton)
+        val rotateButton: Button = findViewById(R.id.rotateButton)
+        val scaleButton: Button = findViewById(R.id.scaleButton)
+        val setButton: Button = findViewById(R.id.setButton)
 
         // Fade the button out and back in
         val alphaAnimation = AlphaAnimation(1f, 0f)
         alphaAnimation.duration = 1000
 
         // Move the button over and then back
-        val translateAnimation = TranslateAnimation(Animation.ABSOLUTE, 0f,
-            Animation.RELATIVE_TO_PARENT, 1f,
-            Animation.ABSOLUTE, 0f, Animation.ABSOLUTE, 100f)
+        val translateAnimation = TranslateAnimation(
+            /* fromXType = */ Animation.ABSOLUTE,
+            /* fromXValue = */ 0f,
+            /* toXType = */ Animation.RELATIVE_TO_PARENT,
+            /* toXValue = */ 1f,
+            /* fromYType = */ Animation.ABSOLUTE,
+            /* fromYValue = */ 0f,
+            /* toYType = */ Animation.ABSOLUTE,
+            /* toYValue = */ 100f
+        )
         translateAnimation.duration = 1000
 
         // Spin the button around in a full circle
