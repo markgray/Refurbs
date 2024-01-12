@@ -18,6 +18,7 @@
 package com.example.android.toongame
 
 import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -328,26 +329,25 @@ class ToonGame : Activity() {
      * [DecelerateInterpolator] field [sDecelerator] as its [TimeInterpolator].
      *
      * We set `pvhSX` to a [PropertyValuesHolder] that will animate [View.SCALE_X] to our [Float]
-     * parameter [stretch], and `pvhSY` to a `PropertyValuesHolder` that will animate SCALE_Y
-     * to our parameter `squash`, then create `ObjectAnimator stretchAnim` to animate
-     * `view` using `pvhSX` and `pvhSY`. We set its repeat count to 1, its repeat
-     * mode to reverse, and its `TimeInterpolator` to `DecelerateInterpolator sDecelerator`.
+     * parameter [stretch], and `pvhSY` to a [PropertyValuesHolder] that will animate [View.SCALE_Y]
+     * to our parameter [squash], then create [ObjectAnimator] variable `val stretchAnim` to animate
+     * [view] using `pvhSX` and `pvhSY`. We set its repeat count to 1, its repeat mode to reverse,
+     * and its [TimeInterpolator] to [DecelerateInterpolator] field [sDecelerator].
      *
+     * We then initialize [AnimatorSet] variable `val set` with a new instance, set it to play
+     * sequentially `downAnim`, `stretchAnim` and `stretchAnim`, set its duration to the scaled
+     * duration created from [SHORT_DURATION] by our method [getDuration] and start it playing.
+     * Finally we set the [AnimatorListener] of `set` to an [AnimatorListenerAdapter] which overrides
+     * the [AnimatorListener.onAnimationEnd] method in order to post [Runnable] field [mSquishRunnable]
+     * to the queue of [view] with a random delay between 500ms and 2500ms ([mSquishRunnable] calls
+     * us again when it is run).
      *
-     * We then initialize `AnimatorSet set` with a new instance, set it to play sequentially
-     * `downAnim`, `stretchAnim` and `stretchAnim`, set its duration to the scaled
-     * duration create from SHORT_DURATION by our method `getDuration` and start it playing.
-     * Finally we set the `AnimatorListener` of `set` to an `AnimatorListenerAdapter`
-     * which overrides the `onAnimationEnd` method in order to post `Runnable mSquishRunnable`
-     * to the queue of `view` with a random delay between 500ms and 2500ms (`mSquishRunnable`
-     * calls us again when it is run).
-     *
-     * @param view `View` we are going to animate
-     * @param startTY starting TRANSLATION_Y value
-     * @param bottomTY bottom TRANSLATION_Y value
-     * @param endTY ending TRANSLATION_Y value (resting point after the bounce)
-     * @param squash SCALE_Y squashing end value
-     * @param stretch SCALE_X stretching end value.
+     * @param view the [View] we are going to animate
+     * @param startTY starting [View.TRANSLATION_Y] value
+     * @param bottomTY bottom [View.TRANSLATION_Y] value
+     * @param endTY ending [View.TRANSLATION_Y] value (resting point after the bounce)
+     * @param squash the [View.SCALE_Y] squashing end value
+     * @param stretch the [View.SCALE_X] stretching end value.
      */
     @Suppress("SameParameterValue")
     private fun squishyBounce(
@@ -382,9 +382,10 @@ class ToonGame : Activity() {
         set.start()
         set.addListener(object : AnimatorListenerAdapter() {
             /**
-             * Notifies the end of the animation. We call the `postDelayed` method of `view`
-             * to cause `Runnable mSquishRunnable` to be added to its message queue, to be run
-             * after a random time between 500ms and 2500ms (it will be run on the user interface thread).
+             * Notifies the end of the animation. We call the [View.postDelayed]  method of [view]
+             * to cause [Runnable] field [mSquishRunnable] to be added to its message queue, to be
+             * run after a random time between 500ms and 2500ms (it will be run on the user interface
+             * thread).
              *
              * @param animation The animation which reached its end.
              */
@@ -396,17 +397,17 @@ class ToonGame : Activity() {
 
     companion object {
         /**
-         * `AccelerateInterpolator` instance we use.
+         * [AccelerateInterpolator] instance we use.
          */
         private val sAccelerator = AccelerateInterpolator()
 
         /**
-         * `DecelerateInterpolator` instance we use.
+         * [DecelerateInterpolator] instance we use.
          */
         private val sDecelerator = DecelerateInterpolator()
 
         /**
-         * `LinearInterpolator` instance we use.
+         * [LinearInterpolator] instance we use.
          */
         private val sLinearInterpolator = LinearInterpolator()
 
@@ -431,15 +432,16 @@ class ToonGame : Activity() {
         var LONG_DURATION: Long = 500
 
         /**
-         * Scale factor used by our `getDuration` method to uniformly scale the duration constants.
+         * Scale factor used by our [getDuration] method to uniformly scale the duration constants.
          */
         private const val sDurationScale = 1f
 
         /**
-         * Returns our parameter `baseDuration` multiplied by our field `float sDurationScale`.
+         * Returns our [Long] parameter [baseDuration] multiplied by our [Float] field
+         * [sDurationScale].
          *
          * @param baseDuration base duration to scale.
-         * @return our parameter `baseDuration` multiplied by our field `float sDurationScale`
+         * @return our parameter [baseDuration] multiplied by our [Float] field [sDurationScale]
          */
         fun getDuration(baseDuration: Long): Long {
             return (baseDuration * sDurationScale).toLong()
