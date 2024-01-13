@@ -58,21 +58,22 @@ class ViewAnimations : Activity() {
      * instance which will animate the alpha property from 1 to 0 and set its duration to 1000ms,
      * [TranslateAnimation] variable `val translateAnimation` with an instance which will animate
      * from an X value of an absolute number of pixels of 0, to an X value of 1 times the width of
-     * the parent view, and from a Y value of an absolute number of pixels of 0, to a Y value of an absolute number
-     * of pixels of 100, and set its duration to 1000ms. We initialize `RotateAnimation rotateAnimation`
-     * with an instance which will animate from 0 to 360 degrees, with a pivot X value relative to self of .5
-     * and a pivot Y value relative to self of .5, and set its duration to 1000ms. We initialize `ScaleAnimation scaleAnimation`
-     * with an instance which will animate the scaling of X from 1 to 2 and the scaling of Y from 1 to 2 and set its
-     * duration to 1000ms. We initialize `AnimationSet setAnimation` with a new instance, and add
-     * `alphaAnimation`, `translateAnimation`, `rotateAnimation`, and `scaleAnimation`
-     * to it. Then we call our method `setupAnimation` to setup `alphaButton` with `alphaAnimation`
-     * and the resource animation R.anim.alpha_anim, setup `translateButton` with `translateAnimation`
-     * and the resource animation R.anim.translate_anim, setup `rotateButton` with `rotateAnimation`
-     * and the resource animation R.anim.rotate_anim, setup `scaleButton` with `scaleAnimation`
-     * and the resource animation R.anim.scale_anim, and setup `setButton` with `setAnimation`
-     * and the resource animation R.anim.setAnimation
+     * the parent view, and from a Y value of an absolute number of pixels of 0, to a Y value of an
+     * absolute number of pixels of 100, and set its duration to 1000ms. We initialize [RotateAnimation]
+     * variable `val rotateAnimation` with an instance which will animate from 0 to 360 degrees, with
+     * a pivot X value relative to self of .5 and a pivot Y value relative to self of .5, and set its
+     * duration to 1000ms. We initialize [ScaleAnimation] variable `val scaleAnimation` with an
+     * instance which will animate the scaling of X from 1 to 2 and the scaling of Y from 1 to 2
+     * and set its duration to 1000ms. We initialize [AnimationSet] variable `val setAnimation` with
+     * a new instance, and add `alphaAnimation`, `translateAnimation`, `rotateAnimation`, and
+     * `scaleAnimation` to it. Then we call our method [setupAnimation] to setup `alphaButton` with
+     * `alphaAnimation` and the resource animation [R.anim.alpha_anim], setup `translateButton` with
+     * `translateAnimation` and the resource animation [R.anim.translate_anim], setup `rotateButton`
+     * with `rotateAnimation` and the resource animation [R.anim.rotate_anim], setup `scaleButton`
+     * with `scaleAnimation` and the resource animation [R.anim.scale_anim], and setup `setButton`
+     * with `setAnimation` and the resource animation [R.anim.set_anim].
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,16 +103,27 @@ class ViewAnimations : Activity() {
         translateAnimation.duration = 1000
 
         // Spin the button around in a full circle
-        val rotateAnimation = RotateAnimation(0f, 360f,
-            Animation.RELATIVE_TO_SELF, .5f, Animation.RELATIVE_TO_SELF, .5f)
+        val rotateAnimation = RotateAnimation(
+            /* fromDegrees = */ 0f,
+            /* toDegrees = */ 360f,
+            /* pivotXType = */ Animation.RELATIVE_TO_SELF,
+            /* pivotXValue = */ .5f,
+            /* pivotYType = */ Animation.RELATIVE_TO_SELF,
+            /* pivotYValue = */ .5f
+        )
         rotateAnimation.duration = 1000
 
         // Scale the button in X and Y.
-        val scaleAnimation = ScaleAnimation(1f, 2f, 1f, 2f)
+        val scaleAnimation = ScaleAnimation(
+            /* fromX = */ 1f,
+            /* toX = */ 2f,
+            /* fromY = */ 1f,
+            /* toY = */ 2f
+        )
         scaleAnimation.duration = 1000
 
         // Run the animations above in sequence on the final button. Looks horrible.
-        val setAnimation = AnimationSet(true)
+        val setAnimation = AnimationSet(/* shareInterpolator = */ true)
         setAnimation.addAnimation(alphaAnimation)
         setAnimation.addAnimation(translateAnimation)
         setAnimation.addAnimation(rotateAnimation)
@@ -124,12 +136,13 @@ class ViewAnimations : Activity() {
     }
 
     /**
-     * Adds an `OnClickListener` which animates the `View view` using a programmatically
-     * created `Animation animation` if our `CheckBox mCheckBox` is unchecked, or using
-     * an xml animation with resource id `int animationID` if it is checked.
+     * Adds an [View.OnClickListener] which animates the [View] parameter [view] using a
+     * programmatically created [Animation] parameter [animation] if our [CheckBox] field
+     * [mCheckBox] is unchecked, or using an xml animation with resource id [Int] parameter
+     * [animationID] if it is checked.
      *
-     * @param view `View` which we want to add an animating `OnClickListener` to
-     * @param animation programmatically created `Animation`
+     * @param view the [View] which we want to add an animating [View.OnClickListener] to
+     * @param animation programmatically created [Animation]
      * @param animationID resource id of an xml animation file
      */
     private fun setupAnimation(view: View, animation: Animation, animationID: Int) {
