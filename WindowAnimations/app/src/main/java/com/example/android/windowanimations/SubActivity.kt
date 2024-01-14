@@ -19,8 +19,7 @@ import android.app.Activity
 import android.os.Bundle
 
 /**
- * See WindowAnimations.java for comments on the overall application.
- *
+ * See [WindowAnimations] for comments on the overall application.
  *
  * This is a sub-activity which does not provide any custom animation. Exiting this
  * sub-activity therefore gets the default system behavior for window animations.
@@ -28,9 +27,9 @@ import android.os.Bundle
 class SubActivity : Activity() {
     /**
      * Called when the activity is starting. We just call our super's implementation of `onCreate`,
-     * and set our content view to our layout file R.layout.activity_sub.
+     * and set our content view to our layout file [R.layout.activity_sub].
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

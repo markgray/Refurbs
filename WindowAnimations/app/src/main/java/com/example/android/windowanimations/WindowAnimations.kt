@@ -30,7 +30,6 @@ import android.widget.ImageView
  * This example shows how to create custom Window animations to animate between different
  * sub-activities.
  *
- *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [...](https://www.youtube.com/watch?v=Ho8vk61lVIU)
  */
