@@ -363,6 +363,7 @@ class SelectionBuilder {
     ): Cursor {
         assertTable()
         columns?.let { mapColumns(it) }
+        @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
         Log.v(TAG, "query(columns=" + Arrays.toString(columns) + ") " + this)
         return db.query(mTable, columns, selection, selectionArgs, groupBy, having, orderBy, limit)
     }

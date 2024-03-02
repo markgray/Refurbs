@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "MoveVariableDeclarationIntoWhen")
+@file:Suppress("DEPRECATION")
 
 package com.example.android.basicsyncadapter.net
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "RedundantNullableReturnType", "MoveVariableDeclarationIntoWhen", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "MemberVisibilityCanBePrivate")
+@file:Suppress("DEPRECATION", "RedundantNullableReturnType", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "MemberVisibilityCanBePrivate")
 
 package com.example.android.basicsyncadapter.provider
 
