@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "CatchMayIgnoreException", "PLATFORM_CLASS_MAPPED_TO_KOTLIN", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog")
+@file:Suppress("DEPRECATION", "CatchMayIgnoreException", "PLATFORM_CLASS_MAPPED_TO_KOTLIN", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn")
 
 package com.example.android.displayingbitmaps.util
 
