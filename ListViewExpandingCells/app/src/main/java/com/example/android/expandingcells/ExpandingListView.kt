@@ -775,8 +775,8 @@ class ExpandingListView : ListView {
                          * not before the collapse then the bounds are calculated using
                          * the bottom and top translation of the collapsing cell.*/
                         val delta: Int = if (i > index) yTranslateBottom else -yTranslateTop
-                        v.top = v.top + delta
-                        v.bottom = v.bottom + delta
+                        v.top += delta
+                        v.bottom += delta
                     }
                 }
                 val expandingLayout: View = view.findViewById(R.id.expanding_layout)
