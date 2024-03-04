@@ -93,7 +93,7 @@ class JetBoyView(
                      * and set the visibility of [TextView] field [mTextView] to VISIBLE. We then
                      * log the value of [Int] field [mHitTotal] (the total number of hits scored by
                      * the user). If [mHitTotal] is greater than or equal to [Int] field
-                     * [mSuccessThreshold] we set the text of [TextView] field [mTextView] to the
+                     * [SUCCESS_THRESHOLD] we set the text of [TextView] field [mTextView] to the
                      * string with resource id [R.string.winText] ("You win...") otherwise we set
                      * its text to the string "Sorry, You Lose! ...". We then set the text of
                      * [TextView] field [mTimerView] to the string "1:12", and set the height of
@@ -110,7 +110,7 @@ class JetBoyView(
                             mTimerView!!.visibility = INVISIBLE
                             mTextView!!.visibility = VISIBLE
                             Log.d(TAG, "the total was $mHitTotal")
-                            if (mHitTotal >= mSuccessThreshold) {
+                            if (mHitTotal >= SUCCESS_THRESHOLD) {
                                 mTextView!!.setText(R.string.winText)
                             } else {
                                 mTextView!!.text = ("Sorry, You Lose! You got " + mHitTotal
@@ -1949,7 +1949,7 @@ class JetBoyView(
         /**
          * the number of asteroids that must be destroyed
          */
-        const val mSuccessThreshold: Int = 50
+        const val SUCCESS_THRESHOLD: Int = 50
 
         /**
          * TAG used for logging.
