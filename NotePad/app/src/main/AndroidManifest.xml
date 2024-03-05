@@ -62,7 +62,8 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="sensor"
             android:theme="@android:style/Theme.Holo.Light"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="DiscouragedApi">
             <!-- This filter says that we can view or edit the data of
                  a single note -->
             <intent-filter android:label="@string/resolve_edit"
