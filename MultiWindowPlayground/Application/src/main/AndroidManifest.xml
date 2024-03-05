@@ -42,7 +42,7 @@
             android:name="com.android.multiwindowplayground.activities.UnresizableActivity"
             android:resizeableActivity="false"
             android:taskAffinity=""
-            tools:ignore="NonResizeableActivity" />
+            tools:ignore="DiscouragedApi,NonResizeableActivity" />
 
         <!-- This Activity has a default size (750x500dp) with a minimum size
         (500dp at its shortest side). It is launched in the top/end (top/right) corner by default.
