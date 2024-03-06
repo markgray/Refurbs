@@ -38,7 +38,8 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="nosensor"
             android:theme="@android:style/Theme.NoTitleBar"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
