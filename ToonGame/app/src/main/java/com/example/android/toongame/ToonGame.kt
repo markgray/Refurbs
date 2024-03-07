@@ -434,17 +434,17 @@ class ToonGame : Activity() {
         /**
          * Scale factor used by our [getDuration] method to uniformly scale the duration constants.
          */
-        private const val sDurationScale = 1f
+        private const val DURATION_SCALE = 1f
 
         /**
          * Returns our [Long] parameter [baseDuration] multiplied by our [Float] field
-         * [sDurationScale].
+         * [DURATION_SCALE].
          *
          * @param baseDuration base duration to scale.
-         * @return our parameter [baseDuration] multiplied by our [Float] field [sDurationScale]
+         * @return our parameter [baseDuration] multiplied by our [Float] field [DURATION_SCALE]
          */
         fun getDuration(baseDuration: Long): Long {
-            return (baseDuration * sDurationScale).toLong()
+            return (baseDuration * DURATION_SCALE).toLong()
         }
     }
 }
