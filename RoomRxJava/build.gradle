@@ -3,7 +3,7 @@
 buildscript {
     apply from: 'versions.gradle'
     ext {
-        kotlin_version = '1.9.22'
+        kotlin_version = '1.9.23'
     }
     repositories {
         google()
@@ -13,7 +13,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:8.3.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.22-1.0.17"
+        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.23-1.0.19"
     }
 }
 
