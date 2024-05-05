@@ -45,6 +45,7 @@ class DirectoryEntryAdapter
         /**
          * Cached link to the [TextView] we display the file name in: [R.id.textview_filename]
          */
+        @Suppress("JoinDeclarationAndAssignment") // Easier to debug this way
         val fileName: TextView
 
         /**
