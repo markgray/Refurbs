@@ -85,6 +85,7 @@ abstract class ImageWorker protected constructor(context: Context) {
      * [Resources] object to use to access resources.
      */
     @JvmField
+    @Suppress("JoinDeclarationAndAssignment") // Easier to debug this way
     protected var mResources: Resources
 
     /**
@@ -500,6 +501,7 @@ abstract class ImageWorker protected constructor(context: Context) {
         /**
          * [WeakReference] to the actual worker task that is downloading and processing the image
          */
+        @Suppress("JoinDeclarationAndAssignment") // Easier to debug this way
         private val bitmapWorkerTaskReference: WeakReference<BitmapWorkerTask>
 
         /**

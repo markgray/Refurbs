@@ -656,6 +656,7 @@ abstract class AsyncTask<Params, Progress, Result> {
         /**
          * Data returned by the `AsyncTask`
          */
+        @Suppress("JoinDeclarationAndAssignment") // Easier to debug this way
         val mData: Array<Data>
 
         /**
