@@ -40,6 +40,7 @@ class LoyaltyCardReader(accountCallback: AccountCallback) : ReaderCallback {
      * Weak reference to prevent retain loop. [mAccountCallback] is responsible for exiting
      * foreground mode before it becomes invalid (e.g. during onPause() or onStop()).
      */
+    @Suppress("JoinDeclarationAndAssignment") // Easier to debug this way
     private val mAccountCallback: WeakReference<AccountCallback>
 
     /**
