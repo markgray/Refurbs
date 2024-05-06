@@ -306,6 +306,7 @@ class MainActivity : Activity() {
         /**
          * [MainActivity] passed to our constructor. Prevent possible leaks with a weak reference.
          */
+        @Suppress("JoinDeclarationAndAssignment") // It is better this way
         private val mActivity: WeakReference<MainActivity>
 
         init {
