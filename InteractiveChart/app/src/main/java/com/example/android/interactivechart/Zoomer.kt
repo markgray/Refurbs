@@ -33,6 +33,7 @@ class Zoomer(context: Context) {
     /**
      * The interpolator, used for making zooms animate 'naturally.'
      */
+    @Suppress("JoinDeclarationAndAssignment")
     private val mInterpolator: Interpolator
 
     /**
