@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
         /**
          * The regular [TextView] we were constructed to write to using the [EmojiCompat] library.
          */
+        @Suppress("JoinDeclarationAndAssignment") // It is better this way
         private val mRegularTextViewRef: WeakReference<TextView>
 
         init {
