@@ -773,6 +773,7 @@ class MovieView @JvmOverloads constructor(
         /**
          * Weak reference to the [MovieView] whose controls we are supposed to hide.
          */
+        @Suppress("JoinDeclarationAndAssignment") // It is better this way
         val mMovieViewRef: WeakReference<MovieView>
 
         /**
