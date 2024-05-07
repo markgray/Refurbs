@@ -160,6 +160,7 @@ class MainActivity : Activity() {
          * [EditText] with id [R.id.main_primary_title], displays the text "Primary Channel" to
          * start with, we use its text as the title for the primary channel notifications sent.
          */
+        @Suppress("JoinDeclarationAndAssignment") // It is better this way
         val titlePrimary: TextView?
 
         /**
