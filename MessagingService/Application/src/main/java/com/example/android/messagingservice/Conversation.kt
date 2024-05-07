@@ -25,6 +25,7 @@ class Conversation(
      * A given conversation can have a single or multiple messages.
      * Note that the messages are sorted from *newest* to *oldest*
      */
+    @Suppress("JoinDeclarationAndAssignment") // It is better this way
     val messages: List<String>
 
     /**
