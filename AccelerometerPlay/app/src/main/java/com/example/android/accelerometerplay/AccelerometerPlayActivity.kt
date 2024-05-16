@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("KDocUnresolvedReference", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment")
 
 package com.example.android.accelerometerplay
 
@@ -198,6 +198,28 @@ class AccelerometerPlayActivity : Activity() {
 
     /**
      * `View` which draws our simulation.
+     * Our constructor, called from the `onCreate` override of `AccelerometerPlayActivity`.
+     * First we call our super's constructor. Then we initialize our field `Sensor mAccelerometer`
+     * with a reference to the default accelerometer sensor returned by the `getDefaultSensor`
+     * method of the SENSOR_SERVICE system level service `SensorManager mSensorManager`. We
+     * initialize `DisplayMetrics metrics` with a new instance, then fetch the window manager
+     * for showing custom windows, call its `getDefaultDisplay` method to retrieve the window
+     * it is managing, and call the `getMetrics` method of that window to load `metrics`
+     * with the display metrics that describe the size and density of the display. We then initialize
+     * our field `float mXDpi` with the exact physical pixels per inch of the screen in the X
+     * dimension from the `xdpi` field of `metrics`, and `float mYDpi` with the
+     * exact physical pixels per inch of the screen in the Y dimension from the `ydpi` field
+     * of `metrics`. We convert `mXDpi` to meters to set `mMetersToPixelsX` and
+     * `mYDpi` to meters to set `mMetersToPixelsY`. We initialize `Bitmap ball`
+     * by decoding the png with resource id R.drawable.ball, calculate `int dstWidth` and
+     * `int dstHeight` to be approximately 0.5 cm given the value of `mMetersToPixelsX`
+     * and `mMetersToPixelsY`, then set `Bitmap mBitmap` to a new bitmap created from
+     * `ball` by scaling it to `int dstWidth` by `int dstHeight`. We initialize
+     * `Options opts` with a new instance, set its `inDither` field to true (ignored),
+     * and set its `inPreferredConfig` field to RGB_565. We then use `opts` as the
+     * options when we load the jpg with resource id R.drawable.wood into `Bitmap mWood`.
+     *
+     * @param context the [Context] to use to access resources.
      */
     internal inner class SimulationView(context: Context?) : View(context), SensorEventListener {
         /**
@@ -502,10 +524,10 @@ class AccelerometerPlayActivity : Activity() {
              * while we have not looped for more the NUM_MAX_ITERATIONS:
              *  * We set `more` to false.
              *
-             *  * We loop over `i` for all the `mBalls[i]` setting `Particle curr`
-             *  to `mBalls[i]` then loop over `j` from `i+1` to `count`:
+             *  * We loop over `i` for all the `mBalls[ i ]` setting `Particle curr`
+             *  to `mBalls[ i ]` then loop over `j` from `i+1` to `count`:
              *
-             *  * Setting `Particle ball` to `mBalls[j]` then calculating the
+             *  * Setting `Particle ball` to `mBalls[ j ]` then calculating the
              *  distance in the X coordinate between `ball` and `curr` (the
              *  difference of their two `mPosX` fields) to be `float dx` and
              *  the distance in the Y coordinate between `ball` and `curr` to
@@ -635,30 +657,6 @@ class AccelerometerPlayActivity : Activity() {
             mSensorManager!!.unregisterListener(this)
         }
 
-        /**
-         * Our constructor, called from the `onCreate` override of `AccelerometerPlayActivity`.
-         * First we call our super's constructor. Then we initialize our field `Sensor mAccelerometer`
-         * with a reference to the default accelerometer sensor returned by the `getDefaultSensor`
-         * method of the SENSOR_SERVICE system level service `SensorManager mSensorManager`. We
-         * initialize `DisplayMetrics metrics` with a new instance, then fetch the window manager
-         * for showing custom windows, call its `getDefaultDisplay` method to retrieve the window
-         * it is managing, and call the `getMetrics` method of that window to load `metrics`
-         * with the display metrics that describe the size and density of the display. We then initialize
-         * our field `float mXDpi` with the exact physical pixels per inch of the screen in the X
-         * dimension from the `xdpi` field of `metrics`, and `float mYDpi` with the
-         * exact physical pixels per inch of the screen in the Y dimension from the `ydpi` field
-         * of `metrics`. We convert `mXDpi` to meters to set `mMetersToPixelsX` and
-         * `mYDpi` to meters to set `mMetersToPixelsY`. We initialize `Bitmap ball`
-         * by decoding the png with resource id R.drawable.ball, calculate `int dstWidth` and
-         * `int dstHeight` to be approximately 0.5 cm given the value of `mMetersToPixelsX`
-         * and `mMetersToPixelsY`, then set `Bitmap mBitmap` to a new bitmap created from
-         * `ball` by scaling it to `int dstWidth` by `int dstHeight`. We initialize
-         * `Options opts` with a new instance, set its `inDither` field to true (ignored),
-         * and set its `inPreferredConfig` field to RGB_565. We then use `opts` as the
-         * options when we load the jpg with resource id R.drawable.wood into `Bitmap mWood`.
-         *
-         * @param context `Context` to use to access resources.
-         */
         init {
             mAccelerometer = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!!
             val metrics = DisplayMetrics()
