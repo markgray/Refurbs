@@ -55,6 +55,7 @@ class BasicGestureDetectFragment : Fragment() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        @Suppress("DEPRECATION") // TODO: Use MenuProvider
         setHasOptionsMenu(true)
     }
 
@@ -124,6 +125,7 @@ class BasicGestureDetectFragment : Fragment() {
      * @param item The [MenuItem] that was selected.
      * @return we return `true` to consume the event here.
      */
+    @Deprecated("Deprecated in Java") // TODO: Reolace with MenuProvider
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.sample_action) {
             clearLog()
