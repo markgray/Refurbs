@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'com.google.devtools.ksp'
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "kotlin-kapt"
+apply plugin: "com.google.devtools.ksp"
 
 android {
-    compileSdk 34
+    compileSdk (34)
 
     repositories {
         google()
@@ -28,17 +28,17 @@ android {
     }
 
     defaultConfig {
-        applicationId 'com.example.android.persistence'
-        minSdkVersion 21
-        targetSdkVersion 34
-        versionCode 1
-        versionName "1.0"
+        applicationId ("com.example.android.persistence")
+        minSdkVersion (21)
+        targetSdkVersion (34)
+        versionCode (1)
+        versionName ("1.0")
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled (false)
+            proguardFiles (getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
     dataBinding {
@@ -46,44 +46,44 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = "17"
     }
-    namespace "com.example.android.persistence"
+    namespace ("com.example.android.persistence")
 }
 
 dependencies {
     // Support libraries
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation ("androidx.appcompat:appcompat:1.7.0")
+    implementation ("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation ("com.google.android.material:material:1.12.0")
+    implementation ("androidx.cardview:cardview:1.0.0")
 
     // Architecture components
-    implementation 'androidx.lifecycle:lifecycle-runtime:2.8.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0'
-    ksp 'androidx.lifecycle:lifecycle-common:2.8.0'
-    implementation 'androidx.room:room-runtime:2.6.1'
-    ksp "androidx.room:room-compiler:2.6.1"
+    implementation ("androidx.lifecycle:lifecycle-runtime:2.8.1")
+    implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation ("androidx.core:core-ktx:1.13.1")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
+    ksp ("androidx.lifecycle:lifecycle-common:2.8.1")
+    implementation ("androidx.room:room-runtime:2.6.1")
+    ksp ("androidx.room:room-compiler:2.6.1")
 
-    // Android Testing Support Library's runner and rules
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test:rules:1.5.0'
-    androidTestImplementation 'androidx.room:room-testing:2.6.1'
-    androidTestImplementation 'androidx.arch.core:core-testing:2.2.0'
+    // Android Testing Support Library"s runner and rules
+    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation ("androidx.test:rules:1.5.0")
+    androidTestImplementation ("androidx.room:room-testing:2.6.1")
+    androidTestImplementation ("androidx.arch.core:core-testing:2.2.0")
 
     // Espresso UI Testing
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.5.1'
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.5.1")
+    androidTestImplementation ("androidx.test.espresso:espresso-intents:3.5.1")
 
     // Resolve conflicts between main and test APK:
-    androidTestImplementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    androidTestImplementation 'androidx.appcompat:appcompat:1.6.1'
-    androidTestImplementation 'com.google.android.material:material:1.12.0'
+    androidTestImplementation ("androidx.legacy:legacy-support-v4:1.0.0")
+    androidTestImplementation ("androidx.appcompat:appcompat:1.7.0")
+    androidTestImplementation ("com.google.android.material:material:1.12.0")
 }
