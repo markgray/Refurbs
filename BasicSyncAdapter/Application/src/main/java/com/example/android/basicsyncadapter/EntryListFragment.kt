@@ -281,6 +281,7 @@ class EntryListFragment
      * @param menu The options menu in which you place our items.
      * @param inflater [MenuInflater] to use to instantiate menu XML files into [Menu] objects
      */
+    @Deprecated("Deprecated in Java")  // TODO: Replace with MenuProvider
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         mOptionsMenu = menu
@@ -298,6 +299,7 @@ class EntryListFragment
      * @return [Boolean]: Return `false` to allow normal menu processing to proceed, `true` to
      * consume it here.
      */
+    @Deprecated("Deprecated in Java") // TODO: Replace with MenuProvider
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_refresh -> {
