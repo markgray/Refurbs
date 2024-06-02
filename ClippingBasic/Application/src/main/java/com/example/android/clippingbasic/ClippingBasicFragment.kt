@@ -68,6 +68,7 @@ class ClippingBasicFragment : Fragment() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
         setHasOptionsMenu(true)
         mOutlineProvider = ClipOutlineProvider()
         mSampleTexts = resources.getStringArray(R.array.sample_texts)
