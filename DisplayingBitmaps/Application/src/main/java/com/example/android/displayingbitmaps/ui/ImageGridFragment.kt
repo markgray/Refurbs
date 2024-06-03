@@ -319,6 +319,7 @@ class ImageGridFragment
      * @param menu The options menu in which you place your items.
      * @param inflater a [MenuInflater] you can use to inflate xml menu layout files.
      */
+    @Deprecated("Deprecated in Java", ReplaceWith("inflater.inflate(R.menu.main_menu, menu)", "com.example.android.displayingbitmaps.R")) // TODO: Switch to MenuProvider
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
     }
@@ -336,6 +337,7 @@ class ImageGridFragment
      * @return [Boolean] Return `false` to allow normal menu processing to
      * proceed, `true` to consume it here.
      */
+    @Deprecated("Deprecated in Java") // TODO: Switch to MenuProvider
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.clear_cache -> {
