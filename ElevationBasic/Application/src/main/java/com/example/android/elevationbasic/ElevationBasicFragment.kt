@@ -41,6 +41,7 @@ class ElevationBasicFragment : Fragment() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        @Suppress("DEPRECATION") // TODO: Switch to MenuProvider
         setHasOptionsMenu(true)
     }
 
