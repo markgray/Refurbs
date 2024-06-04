@@ -99,6 +99,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        @Suppress("DEPRECATION") // TODO: Use MenuProvider
         setHasOptionsMenu(/* hasMenu = */ true)
     }
 
@@ -160,6 +161,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * @param menu The options menu in which you place your items.
      * @param inflater a [MenuInflater] you can use to inflate xml menu layout files.
      */
+    @Deprecated("Deprecated in Java", ReplaceWith("inflater.inflate(R.menu.media_effects, menu)")) // TODO: Use MenuProvider
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.media_effects, menu)
     }
@@ -174,6 +176,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * @param item The menu item that was selected.
      * @return We return `true` to consume the event here.
      */
+    @Deprecated("Deprecated in Java") // TODO: Use MenuProvider
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         setCurrentEffect(item.itemId)
         mEffectView!!.requestRender()
