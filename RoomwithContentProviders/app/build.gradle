@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.application'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'com.google.devtools.ksp'
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.google.devtools.ksp"
 
 android {
-    compileSdk 34
+    compileSdk (34)
     defaultConfig {
-        applicationId "com.example.android.contentprovidersample"
-        minSdkVersion 21
-        targetSdkVersion 34
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        applicationId ("com.example.android.contentprovidersample")
+        minSdkVersion (21)
+        targetSdkVersion (34)
+        versionCode (1)
+        versionName ("1.0")
+        testInstrumentationRunner ("androidx.test.runner.AndroidJUnitRunner")
 
         // Write out the current schema of Room
         javaCompileOptions {
@@ -37,35 +37,35 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled (false)
+            proguardFiles (getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = "17"
     }
-    namespace "com.example.android.contentprovidersample"
+    namespace ("com.example.android.contentprovidersample")
 }
 
 dependencies {
     // Test
-    testImplementation "junit:junit:4.13.2"
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
-        exclude group: 'com.android.support', module: 'support-annotations'
+    testImplementation ("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0", {
+        exclude group: "com.android.support", module: "support-annotations"
     })
 
     // Support Libraries
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation ("androidx.appcompat:appcompat:1.7.0")
+    implementation ("androidx.recyclerview:recyclerview:1.3.2")
 
     // App Toolkit
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.room:room-runtime:2.6.1'
-    annotationProcessor 'androidx.lifecycle:lifecycle-common:2.8.0'
-    annotationProcessor 'androidx.room:room-compiler:2.6.1'
-    ksp "androidx.room:room-compiler:2.6.1"
+    implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation ("androidx.room:room-runtime:2.6.1")
+    annotationProcessor ("androidx.lifecycle:lifecycle-common:2.8.1")
+    annotationProcessor ("androidx.room:room-compiler:2.6.1")
+    ksp ("androidx.room:room-compiler:2.6.1")
 }
