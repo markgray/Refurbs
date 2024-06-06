@@ -68,6 +68,7 @@ class StorageClientFragment : Fragment() {
      * @return [Boolean] Return `false` to allow normal menu processing to
      * proceed, `true` to consume it here.
      */
+    @Deprecated("Deprecated in Java") // TODO: Use MenuProvider
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.sample_action) {
             performFileSearch()
