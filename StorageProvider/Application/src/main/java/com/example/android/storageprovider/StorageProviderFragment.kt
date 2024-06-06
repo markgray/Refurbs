@@ -47,6 +47,7 @@ class StorageProviderFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mLoggedIn = readLoginValue()
+        @Suppress("DEPRECATION") // TODO: Use MenuProvider
         setHasOptionsMenu(true)
     }
 
@@ -60,7 +61,9 @@ class StorageProviderFragment : Fragment() {
      *
      * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu].
      */
+    @Deprecated("Deprecated in Java") // TODO: Use MenuProvider
     override fun onPrepareOptionsMenu(menu: Menu) {
+        @Suppress("DEPRECATION") // TODO: Use MenuProvider
         super.onPrepareOptionsMenu(menu)
         val item: MenuItem = menu.findItem(R.id.sample_action)
         item.setTitle(if (mLoggedIn) R.string.log_out else R.string.log_in)
@@ -81,6 +84,7 @@ class StorageProviderFragment : Fragment() {
      * @return [Boolean] Return `false` to allow normal menu processing to
      * proceed, `true` to consume it here.
      */
+    @Deprecated("Deprecated in Java") // TODO: Use MenuProvider
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.sample_action) {
             toggleLogin()
