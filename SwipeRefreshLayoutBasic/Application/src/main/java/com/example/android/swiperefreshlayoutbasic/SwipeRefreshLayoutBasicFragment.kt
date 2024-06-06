@@ -171,6 +171,7 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
      * @param menu     The options menu in which you place our items.
      * @param inflater [MenuInflater] to use to instantiate menu XML files into Menu objects
      */
+    @Deprecated("Deprecated in Java", ReplaceWith("inflater.inflate(R.menu.main_menu, menu)")) // TODO: Use MenuProvider
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
     }
@@ -193,6 +194,7 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
      * @return [Boolean] Return `false` to allow normal menu processing to proceed,
      * `true` to consume it here.
      */
+    @Deprecated("Deprecated in Java") // TODO: Use MenuProvider
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_refresh) {
             Log.i(LOG_TAG, "Refresh menu item selected")
