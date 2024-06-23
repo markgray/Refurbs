@@ -1,28 +1,29 @@
-apply plugin: "com.android.application"
-apply plugin: "org.jetbrains.kotlin.android"
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
 
 android {
-    compileSdk (34)
-
+    compileSdk = 34
     defaultConfig {
-        minSdkVersion (21)
-        targetSdkVersion (34)
+        minSdk = 21
+        targetSdk = 34
     }
-
     defaultConfig {
-        applicationId ("com.example.android.activityinstrumentation")
+        applicationId = "com.example.android.activityinstrumentation"
     }
-
     dependencies {
         implementation ("androidx.appcompat:appcompat:1.7.0")
         implementation ("androidx.legacy:legacy-support-v4:1.0.0")
         implementation ("androidx.core:core-ktx:1.13.1")
     }
-
     buildTypes {
         release {
-            minifyEnabled (false)
-            proguardFiles (getDefaultProguardFile("proguard-android.txt"), "proguard-rules.txt")
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
+                "proguard-rules.txt"
+            )
         }
     }
     compileOptions {
@@ -32,5 +33,5 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    namespace ("com.example.android.activityinstrumentation")
+    namespace = "com.example.android.activityinstrumentation"
 }
