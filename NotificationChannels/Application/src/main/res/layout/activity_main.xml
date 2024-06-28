@@ -51,7 +51,7 @@
             android:contentDescription="@string/main_primary_config"
             android:src="@android:drawable/ic_menu_preferences" />
 
-        <Space
+        <android.widget.Space
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_columnSpan="2"
