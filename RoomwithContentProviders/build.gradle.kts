@@ -14,29 +14,8 @@
  * limitations under the License.
  */
 
-buildscript {
-    apply from: "versions.gradle"
-    ext {
-        kotlin_version = "1.9.24"
-    }
-    repositories {
-        google()
-        mavenCentral()
-    }   
-    dependencies {
-        classpath ("com.android.tools.build:gradle:8.4.1")
-        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-        classpath ("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.24-1.0.20")
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-tasks.register("clean", Delete) {
-    delete rootProject.layout.buildDir
+plugins {
+    id("com.android.application") version "8.5.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.24" apply false
+    id("com.google.devtools.ksp") version "1.9.24-1.0.20" apply false
 }
