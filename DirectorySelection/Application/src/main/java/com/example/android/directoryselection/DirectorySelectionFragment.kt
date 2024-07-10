@@ -38,6 +38,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import java.io.FileNotFoundException
+import java.lang.AutoCloseable
 
 /**
  * Fragment that demonstrates how to use Directory Selection API.
