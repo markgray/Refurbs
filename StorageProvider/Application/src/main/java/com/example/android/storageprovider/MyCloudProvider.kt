@@ -208,7 +208,7 @@ class MyCloudProvider : DocumentsProvider() {
         val parent: File? = getFileForDocId(rootId)
 
         // Create a queue to store the most recent documents, which orders by last modified.
-        val lastModifiedFiles = PriorityQueue<File?>(5) { i, j ->
+        val lastModifiedFiles = PriorityQueue(5) { i: File, j: File ->
             java.lang.Long.compare(i.lastModified(), j.lastModified())
         }
 
