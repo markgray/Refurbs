@@ -49,7 +49,7 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-rxjava2:2.6.1")
-    implementation("androidx.annotation:annotation:1.8.1")
+    implementation("androidx.annotation:annotation:1.8.2")
 
     // RxJava
     implementation("io.reactivex.rxjava2:rxandroid:2.0.1")
