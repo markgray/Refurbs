@@ -70,7 +70,7 @@ dependencies {
     // App Toolkit
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.room:room-runtime:2.6.1")
-    annotationProcessor("androidx.lifecycle:lifecycle-common:2.8.4")
+    annotationProcessor("androidx.lifecycle:lifecycle-common:2.8.5")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
 }
