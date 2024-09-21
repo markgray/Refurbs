@@ -23,7 +23,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.ViewAnimator
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
@@ -67,7 +67,7 @@ open class MainActivity : SampleActivityBase() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        val rootView = window.decorView.findViewById<FrameLayout>(android.R.id.content)
+        val rootView = findViewById<LinearLayout>(R.id.sample_main_layout)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
