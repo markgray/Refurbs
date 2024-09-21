@@ -7,7 +7,7 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "com.example.android.accelerometerplay"
-        minSdk = 16
+        minSdk = 21
         targetSdk = 34
     }
     buildTypes {
@@ -27,5 +27,9 @@ android {
         jvmTarget = "17"
     }
     namespace = "com.example.android.accelerometerplay"
+}
+dependencies {
+    implementation("androidx.activity:activity-ktx:1.9.2")
+    implementation("androidx.appcompat:appcompat:1.7.0")
 }
 

@@ -17,7 +17,6 @@
 
 package com.example.android.accelerometerplay
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -34,7 +33,14 @@ import android.util.DisplayMetrics
 import android.view.Display
 import android.view.Surface
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import kotlin.math.sqrt
 
 /**
@@ -50,7 +56,7 @@ import kotlin.math.sqrt
  *
  * @see Sensor
  */
-class AccelerometerPlayActivity : Activity() {
+class AccelerometerPlayActivity : ComponentActivity() {
     /**
      * The [SimulationView] instance which is used as our content view.
      */
@@ -125,6 +131,7 @@ class AccelerometerPlayActivity : Activity() {
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         // Get an instance of the SensorManager
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
@@ -153,6 +160,20 @@ class AccelerometerPlayActivity : Activity() {
             or WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
             or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
             or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
+        val rootView = window.decorView.findViewById<FrameLayout>(android.R.id.content)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     /**
