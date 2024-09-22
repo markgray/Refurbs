@@ -16,6 +16,12 @@
 package com.example.android.directoryselection
 
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -37,9 +43,25 @@ class DirectorySelectionActivity : FragmentActivity() {
      * (`null`) in which case we need to create and add our fragment. On a
      * configuration change our fragment will be restored by the system.
      */
+    @Suppress("ReplaceNotNullAssertionWithElvisReturn")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_directory_selection)
+        val rootView = findViewById<FrameLayout>(R.id.container)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height/2
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.container, DirectorySelectionFragment.newInstance())
