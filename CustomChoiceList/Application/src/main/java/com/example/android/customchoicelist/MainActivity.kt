@@ -24,13 +24,18 @@ import android.widget.BaseAdapter
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This sample demonstrates how to create custom single- or multi-choice
  * [android.widget.ListView] UIs. The most interesting bits are in
  * the `res/layout/` directory of this sample.
  */
-class MainActivity : Activity() {
+class MainActivity : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
      * then we set our content view to our layout file [R.layout.sample_main] (which consists of a
@@ -41,9 +46,25 @@ class MainActivity : Activity() {
      *
      * @param savedInstanceState We do not override `onSaveInstanceState` so do not use.
      */
+    @Suppress("ReplaceNotNullAssertionWithElvisReturn")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.sample_main)
+        val rootView = findViewById<LinearLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height/2
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         findViewById<ListView>(android.R.id.list).adapter = MyAdapter()
     }
 
