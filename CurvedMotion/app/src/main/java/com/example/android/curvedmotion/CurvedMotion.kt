@@ -18,15 +18,20 @@
 package com.example.android.curvedmotion
 
 import android.animation.ObjectAnimator
-import android.app.Activity
+import android.animation.TimeInterpolator
 import android.os.Bundle
 import android.view.View.OnClickListener
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
-import android.animation.TimeInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.RelativeLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This app shows how to move a view in a curved path between two endpoints. The real work is done
@@ -38,7 +43,7 @@ import android.widget.RelativeLayout
  * https://www.youtube.com/playlist?list=PLWz5rJ2EKKc_XOgcRukSoKKjewFJZrKV0.
  * https://www.youtube.com/watch?v=JVGg4zPRHNE
  */
-class CurvedMotion : Activity() {
+class CurvedMotion : ComponentActivity() {
     /**
      * Flag indicating whether our [Button] field [mButton] is at the top left of the screen
      * (beginning position) or has been moved to the bottom of the screen.
@@ -63,7 +68,22 @@ class CurvedMotion : Activity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_curved_motion)
+        val rootView = findViewById<RelativeLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mButton = findViewById(R.id.button)
         mButton!!.setOnClickListener {
             // Capture current location of button
