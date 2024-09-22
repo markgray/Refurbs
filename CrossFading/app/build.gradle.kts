@@ -27,4 +27,7 @@ android {
             )
         }
     }
+    dependencies {
+        implementation("androidx.activity:activity-ktx:1.9.2")
+    }
 }

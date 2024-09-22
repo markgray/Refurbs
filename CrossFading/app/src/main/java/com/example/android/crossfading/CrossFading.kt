@@ -17,7 +17,6 @@
 
 package com.example.android.crossfading
 
-import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -25,7 +24,14 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.view.View.OnClickListener
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This example shows how to use [TransitionDrawable] to perform a simple cross-fade effect
@@ -34,7 +40,7 @@ import android.widget.ImageView
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at https://www.youtube.com/watch?v=atH3o2uh_94
  */
-class CrossFading : Activity() {
+class CrossFading : ComponentActivity() {
     /**
      * Which layer of the [TransitionDrawable] is currently being
      * displayed -- 0 is the first layer, 1 is the second layer.
@@ -70,7 +76,22 @@ class CrossFading : Activity() {
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_cross_fading)
+        val rootView = findViewById<LinearLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         val imageView = findViewById<ImageView>(R.id.image_view)
 
         // Create red and green bitmaps to cross-fade between
