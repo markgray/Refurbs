@@ -21,15 +21,20 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.app.Activity
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.GestureDetector.OnGestureListener
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.RelativeLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.example.android.cardflip.CardView.Corner
 
 /**
@@ -51,7 +56,7 @@ import com.example.android.cardflip.CardView.Corner
  * can be flipped at a time. When the cards are in a rotated-out state, no new cards can be rotated
  * to or from that stack. These changes were made to simplify the code for this demo.
  */
-class CardFlip : Activity(), CardFlipListener {
+class CardFlip : ComponentActivity(), CardFlipListener {
     /**
      * Half of the width of the [RelativeLayout] field [mLayout] (ID [R.id.main_relative_layout])
      * used for the layout params for the [CardView] when a card is added to the stack by our method
@@ -129,7 +134,22 @@ class CardFlip : Activity(), CardFlipListener {
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.main)
+        mLayout = findViewById(R.id.main_relative_layout)
+        ViewCompat.setOnApplyWindowInsetsListener(mLayout!!) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mStackCards = ArrayList()
         mStackCards!!.add(ArrayList())
         mStackCards!!.add(ArrayList())
@@ -139,7 +159,6 @@ class CardFlip : Activity(), CardFlipListener {
         mVerticalPadding = resources.getInteger(R.integer.vertical_card_margin)
         mHorizontalPadding = resources.getInteger(R.integer.horizontal_card_margin)
         gDetector = GestureDetector(this, mGestureListener)
-        mLayout = findViewById(R.id.main_relative_layout)
         val observer: ViewTreeObserver = mLayout!!.viewTreeObserver
         observer.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             /**

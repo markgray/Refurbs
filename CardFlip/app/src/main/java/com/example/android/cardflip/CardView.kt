@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_PARAMETER", "unused", "DEPRECATION", "ReplaceJavaStaticMethodWithKotlinAnalog", "PrivatePropertyName", "MemberVisibilityCanBePrivate", "ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress("UNUSED_PARAMETER", "unused",
+    "ReplaceJavaStaticMethodWithKotlinAnalog", "PrivatePropertyName", "MemberVisibilityCanBePrivate", "ReplaceNotNullAssertionWithElvisReturn")
 
 package com.example.android.cardflip
 
@@ -37,6 +38,7 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.core.content.res.ResourcesCompat
 
 /**
  * This [CardView] object is a view which can flip horizontally about its edges,
@@ -48,7 +50,7 @@ import android.widget.RelativeLayout
  * every single animation. Therefore, every consecutive animation that this
  * view experiences is completely independent of what its prior state was.
  */
-class CardView : ImageView {
+class CardView : androidx.appcompat.widget.AppCompatImageView {
     /**
      * Constants used to specify the corner of the card that is of interest.
      */
@@ -177,7 +179,7 @@ class CardView : ImageView {
      * @param context The [Context] the view is running in, through which it can access the current
      * theme, resources, etc.
      */
-    constructor(context: Context?) : super(context) {
+    constructor(context: Context?) : super(context!!) {
         initialize(context)
     }
 
@@ -189,7 +191,7 @@ class CardView : ImageView {
      * theme, resources, etc.
      * @param attrs   The attributes of the XML tag that is inflating the view.
      */
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {
         initialize(context)
     }
 
@@ -210,8 +212,8 @@ class CardView : ImageView {
     fun initialize(context: Context?) {
         mHorizontalFlipMatrix = Matrix()
         cameraDistance = CAMERA_DISTANCE.toFloat()
-        mFrontBitmapDrawable = bitmapWithBorder(resources.getDrawable(R.drawable.red) as BitmapDrawable)
-        mBackBitmapDrawable = bitmapWithBorder(resources.getDrawable(R.drawable.blue) as BitmapDrawable)
+        mFrontBitmapDrawable = bitmapWithBorder(ResourcesCompat.getDrawable(resources, R.drawable.red, null) as BitmapDrawable)
+        mBackBitmapDrawable = bitmapWithBorder(ResourcesCompat.getDrawable(resources, R.drawable.blue, null) as BitmapDrawable)
         updateDrawableBitmap()
     }
 

@@ -27,4 +27,9 @@ android {
         jvmTarget = "17"
     }
     namespace = "com.example.android.cardflip"
+    dependencies {
+        implementation("androidx.activity:activity-ktx:1.9.2")
+        implementation("androidx.appcompat:appcompat:1.7.0")
+        implementation("androidx.core:core-ktx:1.13.1")
+    }
 }
