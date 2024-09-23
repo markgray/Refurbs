@@ -17,7 +17,6 @@
 
 package com.example.android.jobscheduler
 
-import android.app.Activity
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
 import android.content.ComponentName
@@ -34,12 +33,19 @@ import android.os.PersistableBundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioButton
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.ColorRes
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.example.android.jobscheduler.service.MyJobService
 import java.lang.ref.WeakReference
 
@@ -47,7 +53,7 @@ import java.lang.ref.WeakReference
  * Schedules and configures jobs to be executed by a [JobScheduler]. [MyJobService] can send
  * messages to this class via a [Messenger] that is sent in the Intent that starts the Service.
  */
-class MainActivity : Activity() {
+class MainActivity : ComponentActivity() {
     /**
      * [EditText] the user uses to enter the number of seconds to delay before launching a job.
      */
@@ -125,8 +131,23 @@ class MainActivity : Activity() {
      * @param savedInstanceState we do not use `onSaveInstanceState` so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sample_main)
+        val rootView = findViewById<ScrollView>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height/2
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
 
         // Set up UI.
         mDelayEditText = findViewById(R.id.delay_time)
