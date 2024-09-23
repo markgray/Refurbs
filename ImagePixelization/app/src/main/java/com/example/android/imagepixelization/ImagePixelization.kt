@@ -20,7 +20,6 @@ package com.example.android.imagepixelization
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -31,11 +30,18 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import java.util.Arrays
 
 /**
@@ -55,7 +61,7 @@ import java.util.Arrays
  * computation heavy processing can be moved onto a background thread,
  * so as to keep the UI completely responsive to user input.
  */
-class ImagePixelization : Activity() {
+class ImagePixelization : ComponentActivity() {
     /**
      * Original [Bitmap] loaded from [R.drawable.image] jpg
      */
@@ -111,8 +117,23 @@ class ImagePixelization : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_pixelization)
+        val rootView = findViewById<RelativeLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height/2
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mImageView = findViewById(R.id.pixelView)
         mSeekBar = findViewById(R.id.seekbar)
         mImageBitmap = BitmapFactory.decodeResource(resources, R.drawable.image)
