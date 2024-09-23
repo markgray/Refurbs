@@ -17,19 +17,25 @@
 
 package com.example.android.directshare
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toolbar
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * Provides the landing screen of this sample. There is nothing particularly interesting here. All
  * the codes related to the Direct Share feature are in [SampleChooserTargetService].
  */
-class MainActivity : Activity() {
+class MainActivity : ComponentActivity() {
     /**
      * [EditText] with resource id [R.id.body], user enters text here that they want to share.
      */
@@ -46,7 +52,22 @@ class MainActivity : Activity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.main)
+        val rootView = findViewById<LinearLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height/2
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         setActionBar(findViewById<View>(R.id.toolbar) as Toolbar)
         mEditBody = findViewById(R.id.body)
         findViewById<View>(R.id.share).setOnClickListener(mOnClickListener)
