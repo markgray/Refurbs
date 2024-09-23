@@ -15,7 +15,6 @@
  */
 package com.example.android.keyframeanimation
 
-import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -24,7 +23,14 @@ import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View.OnClickListener
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This example shows how to use [AnimationDrawable] to construct a keyframe animation where each
@@ -33,7 +39,7 @@ import android.widget.ImageView
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [Key Frame Animations](https://www.youtube.com/watch?v=V3ksidLf7vA)
  */
-class KeyframeAnimation : Activity() {
+class KeyframeAnimation : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
      * then we set our content view to our layout file [R.layout.activity_keyframe_animation], and
@@ -51,8 +57,24 @@ class KeyframeAnimation : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_keyframe_animation)
+        val rootView = findViewById<RelativeLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
+
         val imageview = findViewById<ImageView>(R.id.imageview)
 
         // Create the AnimationDrawable in which we will store all frames of the animation

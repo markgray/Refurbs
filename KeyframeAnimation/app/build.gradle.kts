@@ -7,7 +7,7 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "com.example.android.keyframeanimation"
-        minSdk = 16
+        minSdk = 21
         targetSdk = 34
     }
     buildTypes {
@@ -27,4 +27,7 @@ android {
         jvmTarget = "17"
     }
     namespace = "com.example.android.keyframeanimation"
+    dependencies {
+        implementation("androidx.activity:activity-ktx:1.9.2")
+    }
 }
