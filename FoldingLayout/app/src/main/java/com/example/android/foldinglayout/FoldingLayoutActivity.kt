@@ -21,7 +21,6 @@ import android.Manifest
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
@@ -48,9 +47,15 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.CheckBox
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Spinner
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.example.android.foldinglayout.FoldingLayout.Orientation
 import com.example.android.foldinglayout.FoldingLayout.Orientation.HORIZONTAL
 import com.example.android.foldinglayout.FoldingLayout.Orientation.VERTICAL
@@ -70,7 +75,7 @@ import java.io.IOException
  * result of scaling operations on rectangles. The [ImageView] however contains a 1 pixel transparent
  * border around its contents which can be used to avoid this unwanted artifact.
  */
-class FoldingLayoutActivity : Activity() {
+class FoldingLayoutActivity : ComponentActivity() {
     /**
      * Permissions we need to ask for.
      */
@@ -223,8 +228,24 @@ class FoldingLayoutActivity : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fold)
+        val rootView = findViewById<LinearLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
+
         mImageView = findViewById(R.id.image_view)
         mImageView!!.setPadding(
             ANTIALIAS_PADDING, ANTIALIAS_PADDING,
