@@ -20,17 +20,23 @@ package com.example.android.listviewanimations
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import java.util.Collections
 
 /**
@@ -40,7 +46,7 @@ import java.util.Collections
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [ListViewAnimations](https://www.youtube.com/watch?v=8MIfSxgsHIs).
  */
-class ListViewAnimations : Activity() {
+class ListViewAnimations : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
      * then we set our content view to our layout file [R.layout.activity_list_view_animations]. We
@@ -63,8 +69,24 @@ class ListViewAnimations : Activity() {
      * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_view_animations)
+        val rootView = findViewById<LinearLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
+
         val vpaCB = findViewById<CheckBox>(R.id.vpaCB)
         val setTransientStateCB = findViewById<CheckBox>(R.id.setTransientStateCB)
         val listView = findViewById<ListView>(R.id.list_view)
