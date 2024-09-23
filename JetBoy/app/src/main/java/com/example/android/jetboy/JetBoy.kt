@@ -20,19 +20,25 @@
 package com.example.android.jetboy
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.example.android.jetboy.JetBoyView.JetBoyThread
 
 /**
  * This is the main activity of this demo game.
  */
-class JetBoy : Activity(), View.OnClickListener {
+class JetBoy : ComponentActivity(), View.OnClickListener {
     /**
      * A handle to the thread that's actually running the animation.
      */
@@ -81,9 +87,25 @@ class JetBoy : Activity(), View.OnClickListener {
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
+    @SuppressLint("RestrictedApi")
     public override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
+        val rootView = findViewById<FrameLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
 
         // get handles to the JetView from XML and the JET thread.
         mJetBoyView = findViewById(R.id.JetBoyView)
