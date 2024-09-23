@@ -18,7 +18,6 @@
 package com.example.android.layouttranschanging
 
 import android.animation.LayoutTransition
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -26,6 +25,11 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This example shows how to use [LayoutTransition] to animate simple changes in a layout container.
@@ -33,7 +37,7 @@ import android.widget.LinearLayout
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [LayoutTransChanging video](https://www.youtube.com/watch?v=55wLsaWpQ4g).
  */
-class LayoutTransChanging : Activity() {
+class LayoutTransChanging : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
      * then we set our content view to our layout file [R.layout.main]. We initialize [Button]
@@ -56,9 +60,26 @@ class LayoutTransChanging : Activity() {
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
+    @Suppress("ReplaceNotNullAssertionWithElvisReturn")
     public override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
+        val rootView = findViewById<LinearLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height/2
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
+
         val addButton = findViewById<Button>(R.id.addButton)
         val removeButton = findViewById<Button>(R.id.removeButton)
         val container = findViewById<LinearLayout>(R.id.container)

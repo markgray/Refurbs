@@ -27,4 +27,7 @@ android {
         jvmTarget = "17"
     }
     namespace = "com.example.android.layouttranschanging"
+    dependencies {
+        implementation("androidx.activity:activity-ktx:1.9.2")
+    }
 }
