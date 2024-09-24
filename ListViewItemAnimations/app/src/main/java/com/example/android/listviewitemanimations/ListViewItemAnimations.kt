@@ -22,13 +22,13 @@ import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewConfiguration
+import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
@@ -37,7 +37,13 @@ import android.view.animation.Animation
 import android.view.animation.Animation.AnimationListener
 import android.view.animation.AnimationSet
 import android.view.animation.TranslateAnimation
+import android.widget.LinearLayout
 import android.widget.ListView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import java.util.Collections
 
 /**
@@ -52,7 +58,7 @@ import java.util.Collections
  * [ListViewItemAnimations](https://www.youtube.com/watch?v=PeuVuoa13S8&list=PLWz5rJ2EKKc_XOgcRukSoKKjewFJZrKV0&index=74&t=0s)
  */
 @SuppressLint("UseSparseArrays")
-class ListViewItemAnimations : Activity() {
+class ListViewItemAnimations : ComponentActivity() {
     /**
      * [StableArrayAdapter] holding the list of cheeses for our [ListView]
      */
@@ -114,8 +120,23 @@ class ListViewItemAnimations : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_view_item_animations)
+        val rootView = findViewById<LinearLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mBackgroundContainer = findViewById(R.id.listViewBackground)
         mListView = findViewById(R.id.list_view)
         val cheeseList = ArrayList<String>()
