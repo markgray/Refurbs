@@ -17,9 +17,14 @@
 
 package com.example.android.expandingcells
 
-import android.app.Activity
 import android.os.Bundle
+import android.view.ViewGroup
 import android.widget.ListView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This activity creates a ListView whose items can be clicked to expand and show
@@ -34,7 +39,7 @@ import android.widget.ListView
  *
  * See: [ListViewExpandingCells](https://www.youtube.com/watch?v=mwE61B56pVQ)
  */
-class ExpandingCells : Activity() {
+class ExpandingCells : ComponentActivity() {
     /**
      * [ExpandingListView] in our layout with id [R.id.main_list_view] (it is the only widget in
      * our layout, and extends [ListView]).
@@ -57,8 +62,24 @@ class ExpandingCells : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val rootView = findViewById<ExpandingListView>(R.id.main_list_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
+
         val values: Array<ExpandableListItem> = arrayOf(
             ExpandableListItem("Chameleon", R.drawable.chameleon, CELL_DEFAULT_HEIGHT,
                 resources.getString(R.string.short_lorem_ipsum)),
@@ -73,7 +94,7 @@ class ExpandingCells : Activity() {
                 obj.collapsedHeight, obj.text))
         }
         val adapter = CustomArrayAdapter(this, R.layout.list_view_item, mData)
-        mListView = findViewById(R.id.main_list_view)
+        mListView = rootView
         mListView!!.adapter = adapter
         mListView!!.divider = null
     }
