@@ -33,9 +33,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -134,12 +138,27 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
      * select item 0 in our drawer.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation_drawer)
+        val rootView = findViewById<DrawerLayout>(R.id.drawer_layout)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mDrawerTitle = title
         mTitle = mDrawerTitle
         mPlanetTitles = resources.getStringArray(R.array.planets_array)
-        mDrawerLayout = findViewById(R.id.drawer_layout)
+        mDrawerLayout = rootView
         mDrawerList = findViewById(R.id.left_drawer)
 
         // set a custom shadow that overlays the main content when the drawer opens
