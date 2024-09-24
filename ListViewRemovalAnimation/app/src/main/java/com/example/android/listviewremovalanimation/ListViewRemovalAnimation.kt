@@ -18,19 +18,24 @@
 package com.example.android.listviewremovalanimation
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewConfiguration
+import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
+import android.widget.LinearLayout
 import android.widget.ListView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import java.util.Collections
-import java.util.HashMap
 
 /**
  * This example shows what goes wrong when a view that is chosen to be deleted when that view is on
@@ -40,7 +45,7 @@ import java.util.HashMap
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [ListViewRemovalAnimation](https://www.youtube.com/watch?v=NewCSg2JKLk).
  */
-class ListViewRemovalAnimation : Activity() {
+class ListViewRemovalAnimation : ComponentActivity() {
     /**
      * The [StableArrayAdapter] we use for our [ListView]
      */
@@ -85,8 +90,23 @@ class ListViewRemovalAnimation : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_view_deletion)
+        val rootView = findViewById<LinearLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mBackgroundContainer = findViewById(R.id.listViewBackground)
         mListView = findViewById(R.id.list_view)
         Log.d("Debug", "d=" + mListView!!.divider)
@@ -365,7 +385,7 @@ class ListViewRemovalAnimation : Activity() {
              *  we `firstAnimation` to `false` to avoid adding the end action again.
              *
              * Having animated the movement of all the other views when [viewToRemove] is removed
-             * we call the [HashMap.clear] method of [HashMap] of [Long] to [Int] field [mItemIdTopMap]
+             * we call the `HashMap.clear` method of [HashMap] of [Long] to [Int] field [mItemIdTopMap]
              * to remove all of the mappings from the map, and return `true` to proceed with the
              * current drawing pass.
              *
