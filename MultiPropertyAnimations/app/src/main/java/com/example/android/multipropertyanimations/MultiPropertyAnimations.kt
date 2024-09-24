@@ -18,11 +18,17 @@ package com.example.android.multipropertyanimations
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
-import android.view.ViewPropertyAnimator
 import android.view.View.OnClickListener
+import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
+import android.widget.LinearLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This example shows various ways of animating multiple properties in parallel.
@@ -32,16 +38,32 @@ import android.view.View.OnClickListener
  * [DevBytes](https://www.youtube.com/playlist?list=PLWz5rJ2EKKc_XOgcRukSoKKjewFJZrKV0).
  * [MultiPropertyAnimations](https://www.youtube.com/watch?v=WvCZcy3WGP4)
  */
-class MultiPropertyAnimations : Activity() {
+class MultiPropertyAnimations : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
      * then we set our content view to our layout file [R.layout.activity_multi_property_animations]
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
+    @Suppress("ReplaceNotNullAssertionWithElvisReturn")
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_property_animations)
+        val rootView = findViewById<LinearLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     /**
