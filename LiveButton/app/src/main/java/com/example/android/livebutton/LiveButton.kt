@@ -19,15 +19,21 @@ package com.example.android.livebutton
 
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
+import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.Button
+import android.widget.RelativeLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This app shows a simple application of anticipation and follow-through techniques as
@@ -39,7 +45,7 @@ import android.widget.Button
  * [DevBytes](https://www.youtube.com/playlist?list=PLWz5rJ2EKKc_XOgcRukSoKKjewFJZrKV0).
  * [LiveButton](https://www.youtube.com/watch?v=uQ7PTe7QMQM)
  */
-class LiveButton : Activity() {
+class LiveButton : ComponentActivity() {
     /**
      * [DecelerateInterpolator] used for the ACTION_DOWN movement of the button
      */
@@ -62,8 +68,23 @@ class LiveButton : Activity() {
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_overshoot)
+        val rootView = findViewById<RelativeLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         val clickMeButton = findViewById<Button>(R.id.clickMe)
         clickMeButton.animate().duration = 200
         clickMeButton.setOnTouchListener { arg0, arg1 ->
