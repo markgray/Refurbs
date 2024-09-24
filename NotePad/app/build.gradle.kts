@@ -7,7 +7,7 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "com.example.android.notepad"
-        minSdk = 19
+        minSdk = 21
         targetSdk = 34
         testApplicationId = "com.example.android.notepad.tests"
         testInstrumentationRunner = "android.test.InstrumentationTestRunner"
@@ -29,5 +29,6 @@ android {
 }
 
 dependencies {
+    implementation("androidx.activity:activity-ktx:1.9.2")
     implementation("androidx.core:core-ktx:1.13.1")
 }
