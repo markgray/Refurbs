@@ -19,7 +19,6 @@ package com.example.android.notificationchannels
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
-import android.app.Activity
 import android.app.Notification
 import android.app.NotificationChannel
 import android.content.Intent
@@ -29,17 +28,24 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * Display main screen for sample. Displays controls for sending test notifications.
  */
 @RequiresApi(api = Build.VERSION_CODES.O)
-class MainActivity : Activity() {
+class MainActivity : ComponentActivity() {
     /**
      * A view model for interacting with the UI elements. Its constructor sets the [OnClickListener]
      * of the buttons in our layout to "this", so it is actually used in spite of the lint warning.
@@ -63,10 +69,25 @@ class MainActivity : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val rootView = findViewById<RelativeLayout>(R.id.activity_main)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         noti = NotificationHelper(this)
-        ui = MainUi(findViewById(R.id.activity_main))
+        ui = MainUi(rootView)
     }
 
     /**
