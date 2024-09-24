@@ -21,14 +21,19 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.app.Activity
 import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.RelativeLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This application creates a [ListView] to which new elements can be added from the top. When a new
@@ -37,7 +42,7 @@ import android.widget.RelativeLayout
  * animation is accompanied by an image animation that pops out of the round view and pops into the
  * correct position in the top cell.
  */
-class InsertingCells : Activity(), OnRowAdditionAnimationListener {
+class InsertingCells : ComponentActivity(), OnRowAdditionAnimationListener {
     /**
      * Contains the [ListItemObject] objects we cycle through round robin in our method
      * [addRow], which then clones the chosen one, and adds the clone to our [ListView].
@@ -101,8 +106,23 @@ class InsertingCells : Activity(), OnRowAdditionAnimationListener {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val rootView = findViewById<RelativeLayout>(R.id.relative_layout)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mValues = arrayOf(
             ListItemObject("Chameleon", R.drawable.chameleon, 0),
             ListItemObject("Rock", R.drawable.rock, 0),
@@ -111,13 +131,12 @@ class InsertingCells : Activity(), OnRowAdditionAnimationListener {
         mCellHeight = resources.getDimension(R.dimen.cell_height).toInt()
         val mData: List<ListItemObject> = ArrayList()
         val mAdapter = CustomArrayAdapter(this, R.layout.list_view_item, mData)
-        val mLayout = findViewById<RelativeLayout>(R.id.relative_layout)
         mRoundView = findViewById(R.id.round_view)
         mButton = findViewById(R.id.add_row_button)
         mListView = findViewById(R.id.list_view)
         mListView!!.adapter = mAdapter
         mListView!!.setData(mData)
-        mListView!!.setLayout(mLayout)
+        mListView!!.setLayout(rootView)
         mListView!!.setRowAdditionAnimationListener(this)
     }
 
