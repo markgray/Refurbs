@@ -17,7 +17,6 @@
 
 package com.example.android.obbapp
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.os.Environment
@@ -25,8 +24,15 @@ import android.os.storage.OnObbStateChangeListener
 import android.os.storage.StorageManager
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import java.io.File
 
 /**
@@ -35,7 +41,7 @@ import java.io.File
  * is that it implements an [OnObbStateChangeListener] which updates some text fields with relevant
  * information.
  */
-class ObbMountActivity : Activity() {
+class ObbMountActivity : ComponentActivity() {
     /**
      * [TextView] we use to display the current status of our use of the Obb file
      */
@@ -77,10 +83,25 @@ class ObbMountActivity : Activity() {
      * [ObbState] that it returns).
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.obb_mount_activity)
+        val rootView = findViewById<RelativeLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
 
         // Hook up button presses to the appropriate event handler.
         findViewById<View>(R.id.mount).setOnClickListener(mMountListener)
@@ -193,7 +214,8 @@ class ObbMountActivity : Activity() {
      * (these will then be restored in the [onCreate] override from the [Object] returned by the
      * [getLastNonConfigurationInstance] method).
      */
-    override fun onRetainNonConfigurationInstance(): Any {
+    @Deprecated("Use a {@link androidx.lifecycle.ViewModel} to store non config state.")
+    override fun onRetainCustomNonConfigurationInstance(): Any {
         // Since our OBB mount is tied to the StorageManager, retain it
         return ObbState(mSM, mStatus!!.text, mPath!!.text)
     }

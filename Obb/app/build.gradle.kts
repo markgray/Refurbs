@@ -7,7 +7,7 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "com.example.android.obbapp"
-        minSdk = 16
+        minSdk = 21
         targetSdk = 34
     }
     compileOptions {
@@ -18,6 +18,9 @@ android {
         jvmTarget = "17"
     }
     namespace = "com.example.android.obbapp"
+    dependencies {
+        implementation("androidx.activity:activity-ktx:1.9.2")
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
