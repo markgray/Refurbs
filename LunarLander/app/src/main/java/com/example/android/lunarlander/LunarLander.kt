@@ -17,7 +17,7 @@
 
 package com.example.android.lunarlander
 
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -25,7 +25,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.example.android.lunarlander.LunarView.LunarThread
 
 /**
@@ -36,7 +43,7 @@ import com.example.android.lunarlander.LunarView.LunarThread
  *  * loading and drawing resources
  *  * handling onPause() in an animation
  */
-class LunarLander : Activity() {
+class LunarLander : ComponentActivity() {
     /**
      * A handle to the thread that's actually running the animation.
      */
@@ -175,10 +182,25 @@ class LunarLander : Activity() {
      * execution, or `null` if this is a new execution
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         // tell system to use the layout defined in our XML file
         setContentView(R.layout.lunar_layout)
+        val rootView = findViewById<FrameLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
 
         // get handles to the LunarView from XML, and its LunarThread
         mLunarView = findViewById(R.id.lunar)
@@ -221,6 +243,7 @@ class LunarLander : Activity() {
              *
              * @param v The [View] that was clicked and held.
              */
+            @SuppressLint("RestrictedApi")
             override fun onClick(v: View) {
                 if (mLunarThread != null) {
                     if (mLunarThread!!.mMode != LunarView.STATE_RUNNING) {
