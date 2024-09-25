@@ -16,12 +16,18 @@
 package com.example.android.snake
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * Snake: a simple game that everyone can enjoy.
@@ -31,7 +37,7 @@ import android.widget.TextView
  * will you become longer, but you'll move faster. Running into yourself or the walls will end the
  * game.
  */
-class Snake : Activity() {
+class Snake : ComponentActivity() {
     /**
      * Reference to the [SnakeView] in our layout file.
      */
@@ -62,8 +68,23 @@ class Snake : Activity() {
      */
     @SuppressLint("ClickableViewAccessibility") // I doubt the blind can play this game (but I may be wrong).
     public override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.snake_layout)
+        val rootView = findViewById<FrameLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mSnakeView = findViewById(R.id.snake)
         mSnakeView.setDependentViews(
                 findViewById(R.id.text),  // view to use for its field {@code TextView mStatusText}
@@ -143,6 +164,7 @@ class Snake : Activity() {
      * @param outState [Bundle] in which to place your saved state.
      */
     public override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
         // Store the game state
         outState.putBundle(ICICLE_KEY, mSnakeView.saveState())
     }
