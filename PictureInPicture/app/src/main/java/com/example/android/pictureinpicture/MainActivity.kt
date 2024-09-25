@@ -32,11 +32,17 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Rational
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.annotation.DrawableRes
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.example.android.pictureinpicture.widget.MovieView
 import com.example.android.pictureinpicture.widget.MovieView.MovieListener
 
@@ -219,8 +225,23 @@ class MainActivity : AppCompatActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val rootView = findViewById<LinearLayout>(R.id.activity_main)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
 
         // Prepare string resources for Picture-in-Picture actions.
         mPlay = getString(R.string.play)
@@ -340,15 +361,15 @@ class MainActivity : AppCompatActivity() {
      *  [MovieView.isPlaying] method returns `false`, we call its [MovieView.showControls] method.
      *
      * @param isInPictureInPictureMode `true` if the activity is in picture-in-picture mode.
-     * @param configuration            The new configuration of the activity with the state
+     * @param newConfig            The new configuration of the activity with the state
      * `isInPictureInPictureMode`.
      */
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean,
-        configuration: Configuration
+        newConfig: Configuration
     ) {
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, configuration)
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             // Starts receiving events from action items in PiP mode.
             @SuppressLint("UnspecifiedRegisterReceiverFlag")
