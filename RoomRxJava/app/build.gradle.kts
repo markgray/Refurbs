@@ -33,8 +33,9 @@ android {
 }
 
 dependencies {
+    implementation("androidx.activity:activity-ktx:1.9.2")
     implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
 
     // Support libraries
     implementation("androidx.appcompat:appcompat:1.7.0")
@@ -42,9 +43,9 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
 
     // Architecture components
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    annotationProcessor("androidx.lifecycle:lifecycle-common:2.8.5")
+    annotationProcessor("androidx.lifecycle:lifecycle-common:2.8.6")
     implementation("androidx.room:room-runtime:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
