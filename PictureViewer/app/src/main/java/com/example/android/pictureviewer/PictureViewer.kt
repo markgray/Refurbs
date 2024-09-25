@@ -17,16 +17,21 @@
 
 package com.example.android.pictureviewer
 
-import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This example shows how to use [ViewPropertyAnimator] to get a cross-fade effect as new
@@ -35,7 +40,7 @@ import android.widget.ImageView
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [...](https://www.youtube.com/watch?v=9XbKMUtVnJA).
  */
-class PictureViewer : Activity() {
+class PictureViewer : ComponentActivity() {
     /**
      * Index into the [IntArray] field [drawableIDs] array of resource ids for drawables, it is
      * incremented round robin every time the [ImageView] is clicked and points to the resource id
@@ -77,8 +82,23 @@ class PictureViewer : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picture_viewer)
+        val rootView = findViewById<FrameLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
 
         // This app works by having two views, which get faded in/out for the cross-fade effect
         val prevImageView = findViewById<ImageView>(R.id.prevImageView)
