@@ -17,10 +17,15 @@
 
 package com.example.android.requestduringlayout
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This example shows what horrible things can result from calling requestLayout() during
@@ -29,7 +34,7 @@ import android.widget.Button
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [...](https://www.youtube.com/watch?v=HbAeTGoKG6k).
  */
-class RequestDuringLayout : Activity() {
+class RequestDuringLayout : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
      * then we set our content view to our layout file [R.layout.activity_request_during_layout]. We
@@ -48,9 +53,23 @@ class RequestDuringLayout : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_request_during_layout)
         val myLayout: MyLayout = findViewById(R.id.container)
+        ViewCompat.setOnApplyWindowInsetsListener(myLayout) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         val addViewButton: Button = findViewById(R.id.addView)
         val removeViewButton: Button = findViewById(R.id.removeView)
         val forceLayoutButton: Button = findViewById(R.id.forceLayout)
