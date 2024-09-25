@@ -21,7 +21,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
-import android.app.Activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -32,6 +31,11 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.RelativeLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This example shows how to add some life to a view during animation by deforming the shape.
@@ -44,7 +48,7 @@ import android.widget.RelativeLayout
  * [...](https://www.youtube.com/playlist?list=PLWz5rJ2EKKc_XOgcRukSoKKjewFJZrKV0)
  * [...](https://www.youtube.com/watch?v=wJL1oW6DlCc)
  */
-class SquashAndStretch : Activity() {
+class SquashAndStretch : ComponentActivity() {
     /**
      * The [RelativeLayout] in our layout file with id [R.id.container] which contains our button.
      */
@@ -63,9 +67,24 @@ class SquashAndStretch : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
-        mContainer = findViewById(R.id.container)
+        val rootView = findViewById<RelativeLayout>(R.id.container)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top+actionBar!!.height
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
+        mContainer = rootView
     }
 
     /**
