@@ -64,13 +64,14 @@ dependencies {
     }
 
     // Support Libraries
+    implementation("androidx.activity:activity-ktx:1.9.2")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
     // App Toolkit
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.room:room-runtime:2.6.1")
-    annotationProcessor("androidx.lifecycle:lifecycle-common:2.8.5")
+    annotationProcessor("androidx.lifecycle:lifecycle-common:2.8.6")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
 }
