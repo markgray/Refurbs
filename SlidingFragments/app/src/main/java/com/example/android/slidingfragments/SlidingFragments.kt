@@ -26,9 +26,14 @@ import android.animation.PropertyValuesHolder
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 import androidx.fragment.app.FragmentTransaction
@@ -106,8 +111,23 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sliding_fragments_layout)
+        val rootView = findViewById<FrameLayout>(R.id.move_to_back_container)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mDarkHoverView = findViewById(R.id.dark_hover_view)
         mDarkHoverView!!.alpha = 0f
         mImageFragment = supportFragmentManager.findFragmentById(R.id.move_fragment) as ImageFragment?
