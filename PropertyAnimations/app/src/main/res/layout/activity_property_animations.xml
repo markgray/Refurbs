@@ -18,10 +18,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="64dp" />
     <CheckBox
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
         android:text="@string/use_animation_resources" />
 
     <Button
