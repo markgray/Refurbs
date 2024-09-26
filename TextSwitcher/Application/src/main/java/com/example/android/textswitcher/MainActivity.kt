@@ -17,26 +17,32 @@
 
 package com.example.android.textswitcher
 
-import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextSwitcher
 import android.widget.TextView
 import android.widget.ViewSwitcher
 import android.widget.ViewSwitcher.ViewFactory
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This sample shows the use of the [TextSwitcher] View with animations. A [TextSwitcher] is
  * a special type of [ViewSwitcher] that animates the current text out and new text in when
  * [TextSwitcher.setText] is called.
  */
-class MainActivity : Activity() {
+class MainActivity : ComponentActivity() {
     /**
      * [TextSwitcher] view in our layout with ID [R.id.switcher]
      */
@@ -66,8 +72,23 @@ class MainActivity : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sample_main)
+        val rootView = findViewById<LinearLayout>(R.id.LinearLayout1)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
 
         // Get the TextSwitcher view from the layout
         mSwitcher = findViewById(R.id.switcher)
