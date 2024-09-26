@@ -17,9 +17,9 @@
 
 package com.example.android.viewanimations
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
@@ -29,6 +29,12 @@ import android.view.animation.ScaleAnimation
 import android.view.animation.TranslateAnimation
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.LinearLayout
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This example shows how to use pre-3.0 view Animation classes to create various animated UI
@@ -38,7 +44,7 @@ import android.widget.CheckBox
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [...](https://www.youtube.com/watch?v=_UWXqFBF86U)
  */
-class ViewAnimations : Activity() {
+class ViewAnimations : ComponentActivity() {
     /**
      * [CheckBox] with id [R.id.checkbox], "Use Animation Resources" switches to xml [Animation]
      */
@@ -76,8 +82,23 @@ class ViewAnimations : Activity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_animations)
+        val rootView = findViewById<LinearLayout>(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mCheckBox = findViewById(R.id.checkbox)
         val alphaButton: Button = findViewById(R.id.alphaButton)
         val translateButton: Button = findViewById(R.id.translateButton)
