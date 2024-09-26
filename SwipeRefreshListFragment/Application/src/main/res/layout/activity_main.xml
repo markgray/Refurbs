@@ -38,7 +38,7 @@
                   android:layout_height="wrap_content"
                   android:paddingLeft="@dimen/horizontal_page_margin"
                   android:paddingRight="@dimen/horizontal_page_margin"
-                  android:paddingTop="@dimen/vertical_page_margin"
+                  android:paddingTop="64dp"
                   android:paddingBottom="@dimen/vertical_page_margin"
                   android:text="@string/intro_message" />
         </ScrollView>
