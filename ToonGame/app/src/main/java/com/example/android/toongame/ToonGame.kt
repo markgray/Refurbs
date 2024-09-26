@@ -26,7 +26,6 @@ import android.animation.PropertyValuesHolder
 import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -44,6 +43,11 @@ import android.view.animation.LinearInterpolator
 import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 /**
  * This application shows various cartoon animation techniques in the context of
@@ -59,7 +63,7 @@ import android.widget.TextView
  * or on the DevBytes playlist in the android developers channel on YouTube at
  * https://www.youtube.com/watch?v=8sG3bAPOhyw
  */
-class ToonGame : Activity() {
+class ToonGame : ComponentActivity() {
     /**
      * [Button] in our layout with id [R.id.startButton] ("Play!"), launches [PlayerSetupActivity]
      * when clicked (activity is launched by a [Runnable] when the animation of the button release
@@ -87,6 +91,7 @@ class ToonGame : Activity() {
      */
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= 34) {
             overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, 0, 0)
@@ -95,8 +100,22 @@ class ToonGame : Activity() {
             overridePendingTransition(0, 0)
         }
         setContentView(R.layout.activity_toon_game)
+        val rootView = findViewById<RelativeLayout>(R.id.container)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
         mStarter = findViewById(R.id.startButton)
-        mContainer = findViewById(R.id.container)
+        mContainer = rootView
         mStarter!!.setOnTouchListener(funButtonListener)
         mStarter!!.animate().duration = 100
     }
