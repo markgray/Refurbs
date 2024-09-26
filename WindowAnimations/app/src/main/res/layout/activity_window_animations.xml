@@ -14,9 +14,14 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="64dp" />
 
     <Button android:id="@+id/defaultButton"
         android:text="@string/default_animations"
