@@ -130,8 +130,8 @@ class AccelerometerPlayActivity : ComponentActivity() {
      * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
 
         // Get an instance of the SensorManager
         mSensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
