@@ -171,8 +171,8 @@ class PictureDetailsActivity : AppCompatActivity() {
      * by the window manager (e.g., device rotation, not null)
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.picture_info)
         mImageView = findViewById(R.id.imageView)
         mTopLevelLayout = findViewById(R.id.topLevelLayout)
