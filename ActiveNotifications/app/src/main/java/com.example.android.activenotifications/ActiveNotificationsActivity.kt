@@ -25,6 +25,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.os.PersistableBundle
+import androidx.activity.enableEdgeToEdge
 
 /**
  * TODO: Add kdoc
@@ -77,6 +78,7 @@ class ActiveNotificationsActivity : MainActivity() {
      * ***Note: Otherwise it is null.*** We do not use
      */
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState, persistentState)
         findFragment()
         mFragment!!.updateNumberOfNotifications()
