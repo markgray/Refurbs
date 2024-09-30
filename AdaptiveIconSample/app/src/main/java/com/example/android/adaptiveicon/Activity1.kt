@@ -34,8 +34,8 @@ class Activity1 : AppCompatActivity() {
      */
     @SuppressLint("InflateParams")
     public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         window.decorView.findViewById<View>(android.R.id.content)
         val view = layoutInflater.inflate(R.layout.empty_activity, null) ?: return
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, windowInsets ->

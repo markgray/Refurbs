@@ -33,8 +33,8 @@ class Activity2 : AppCompatActivity() {
      */
     @SuppressLint("InflateParams")
     public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         val view = layoutInflater.inflate(R.layout.empty_activity, null)
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
