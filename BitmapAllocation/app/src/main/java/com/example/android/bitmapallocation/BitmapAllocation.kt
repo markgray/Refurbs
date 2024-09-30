@@ -93,8 +93,8 @@ class BitmapAllocation : AppCompatActivity() {
      */
     @SuppressLint("SetTextI18n")
     public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bitmap_allocation)
         val rootView = findViewById<LinearLayout>(R.id.root_view)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
