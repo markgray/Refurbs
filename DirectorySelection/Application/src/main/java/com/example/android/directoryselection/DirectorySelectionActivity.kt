@@ -45,8 +45,8 @@ class DirectorySelectionActivity : FragmentActivity() {
      */
     @Suppress("ReplaceNotNullAssertionWithElvisReturn")
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_directory_selection)
         val rootView = findViewById<FrameLayout>(R.id.container)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
