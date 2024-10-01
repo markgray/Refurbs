@@ -68,8 +68,8 @@ class MainActivity : SampleActivityBase() {
      * a configuration change so the fragment already exists.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val rootView = findViewById<LinearLayout>(R.id.sample_main_layout)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
