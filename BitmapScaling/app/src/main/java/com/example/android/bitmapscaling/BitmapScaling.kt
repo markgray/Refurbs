@@ -60,8 +60,8 @@ class BitmapScaling : AppCompatActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bitmap_scaling)
         val rootView = findViewById<LinearLayout>(R.id.root_view)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
