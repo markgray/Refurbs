@@ -48,8 +48,8 @@ class MainActivity : ComponentActivity() {
      */
     @Suppress("ReplaceNotNullAssertionWithElvisReturn")
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.sample_main)
         val rootView = findViewById<LinearLayout>(R.id.root_view)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
