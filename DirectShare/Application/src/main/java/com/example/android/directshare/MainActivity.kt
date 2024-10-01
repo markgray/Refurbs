@@ -51,8 +51,8 @@ class MainActivity : ComponentActivity() {
      * @param savedInstanceState We do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
         val rootView = findViewById<LinearLayout>(R.id.root_view)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
