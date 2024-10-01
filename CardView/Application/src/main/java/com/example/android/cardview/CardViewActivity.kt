@@ -44,8 +44,8 @@ class CardViewActivity : FragmentActivity() {
      * it is not `null`, and the system will have seen to restoring the old fragment).
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_card_view)
         val rootView = findViewById<FrameLayout>(R.id.container)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
