@@ -133,8 +133,8 @@ class CardFlip : ComponentActivity(), CardFlipListener {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
         mLayout = findViewById(R.id.main_relative_layout)
         ViewCompat.setOnApplyWindowInsetsListener(mLayout!!) { v, windowInsets ->
