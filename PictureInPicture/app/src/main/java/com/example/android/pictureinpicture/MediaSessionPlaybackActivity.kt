@@ -28,10 +28,16 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Rational
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.example.android.pictureinpicture.widget.MovieView
 import com.example.android.pictureinpicture.widget.MovieView.MovieListener
 
@@ -144,8 +150,23 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val rootView = findViewById<LinearLayout>(R.id.activity_main)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = insets.left
+                rightMargin = insets.right
+                topMargin = insets.top
+                bottomMargin = insets.bottom
+            }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
+            WindowInsetsCompat.CONSUMED
+        }
 
         // View references
         mMovieView = findViewById(R.id.movie)
@@ -293,14 +314,14 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
      * we call the [MovieView.showControls] method of [mMovieView] to show the video controls.
      *
      * @param isInPictureInPictureMode `true` if the activity is in picture-in-picture mode.
-     * @param configuration            The new [Configuration] of the activity with the state
+     * @param newConfig            The new [Configuration] of the activity with the state
      * [isInPictureInPictureMode].
      */
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean,
-        configuration: Configuration
+        newConfig: Configuration
     ) {
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, configuration)
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (!isInPictureInPictureMode) {
             // Show the video controls if the video is not playing
             if (mMovieView != null && !mMovieView!!.isPlaying) {
