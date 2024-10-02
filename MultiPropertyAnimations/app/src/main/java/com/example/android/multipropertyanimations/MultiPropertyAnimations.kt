@@ -48,6 +48,7 @@ class MultiPropertyAnimations : ComponentActivity() {
     @Suppress("ReplaceNotNullAssertionWithElvisReturn")
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
+        // TODO: Make Buttons automatically adjust for edgeToEdge
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_multi_property_animations)
         val rootView = findViewById<LinearLayout>(R.id.root_view)
