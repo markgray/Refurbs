@@ -78,6 +78,7 @@ class MainActivity : FragmentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
+        // TODO: Move buttons down.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val rootView = findViewById<FrameLayout>(R.id.container)
