@@ -64,6 +64,7 @@ class MainActivity : ComponentActivity(), AdapterView.OnItemClickListener {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
+        // TODO: Move text down autmatically
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val rootView = findViewById<LinearLayout>(R.id.root_view)
