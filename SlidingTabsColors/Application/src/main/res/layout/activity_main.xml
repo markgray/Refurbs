@@ -35,7 +35,7 @@
                 style="@style/Widget.SampleMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="@dimen/horizontal_page_margin"
                 android:paddingLeft="@dimen/horizontal_page_margin"
                 android:paddingTop="@dimen/vertical_page_margin"
                 android:paddingRight="@dimen/horizontal_page_margin"
