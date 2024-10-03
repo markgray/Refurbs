@@ -30,6 +30,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
@@ -70,14 +71,15 @@ class SquashAndStretch : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
-        val rootView = findViewById<RelativeLayout>(R.id.container)
+        // TODO: Move button down below action bar.
+        val rootView = findViewById<LinearLayout>(R.id.container)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
-                topMargin = insets.top+actionBar!!.height
+                topMargin = insets.top
                 bottomMargin = insets.bottom
             }
             // Return CONSUMED if you don't want want the window insets to keep passing
