@@ -57,6 +57,7 @@ class MainActivity : SampleActivityBase() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
+        // TODO: Move text down automatically
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val rootView = findViewById<LinearLayout>(R.id.sample_main_layout)
@@ -66,7 +67,7 @@ class MainActivity : SampleActivityBase() {
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
-                topMargin = insets.top+actionBar!!.height
+                topMargin = insets.top
                 bottomMargin = insets.bottom
             }
             // Return CONSUMED if you don't want want the window insets to keep passing
