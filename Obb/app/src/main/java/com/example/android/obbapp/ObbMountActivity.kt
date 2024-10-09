@@ -92,6 +92,7 @@ class ObbMountActivity : ComponentActivity() {
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.obb_mount_activity)
         val rootView = findViewById<RelativeLayout>(R.id.root_view)
+        // TODO: Position buttons here instead of in xml
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
