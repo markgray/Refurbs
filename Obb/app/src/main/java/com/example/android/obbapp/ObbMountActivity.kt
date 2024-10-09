@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
+    "KDocUnresolvedReference"
+)
 
 package com.example.android.obbapp
 
@@ -34,6 +36,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import java.io.File
+import java.util.Locale
 
 /**
  * This class provides a basic demonstration of how to manage an OBB (Opaque Binary Blob) file.
@@ -95,7 +98,7 @@ class ObbMountActivity : ComponentActivity() {
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
-                topMargin = insets.top+actionBar!!.height
+                topMargin = insets.top
                 bottomMargin = insets.bottom
             }
             // Return CONSUMED if you don't want want the window insets to keep passing
@@ -140,7 +143,7 @@ class ObbMountActivity : ComponentActivity() {
          */
         override fun onObbStateChange(path: String, state: Int) {
             Log.d(TAG, "path=$path; state=$state")
-            mStatus!!.text = state.toString()
+            mStatus!!.text = String.format(Locale.ENGLISH,"%d", state)
             if (state == MOUNTED) {
                 mPath!!.text = mSM!!.getMountedObbPath(mObbPath)
             } else {
@@ -170,7 +173,7 @@ class ObbMountActivity : ComponentActivity() {
             } else {
                 mStatus!!.setText(R.string.failed_to_start_mount)
             }
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             mStatus!!.setText(R.string.obb_already_mounted)
             Log.d(TAG, "OBB already mounted")
         }
@@ -194,7 +197,7 @@ class ObbMountActivity : ComponentActivity() {
             } else {
                 mStatus!!.setText(R.string.failed_to_start_unmount)
             }
-        } catch (e: IllegalArgumentException) {
+        } catch (_: IllegalArgumentException) {
             mStatus!!.setText(R.string.obb_not_mounted)
             Log.d(TAG, "OBB not mounted")
         }
