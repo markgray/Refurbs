@@ -91,10 +91,10 @@ class ListViewRemovalAnimation : ComponentActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
-        // TODO: Make list start at top of screen
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_view_deletion)
         val rootView = findViewById<LinearLayout>(R.id.root_view)
+        // TODO: Make list start at top of screen here instead of in xml
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
