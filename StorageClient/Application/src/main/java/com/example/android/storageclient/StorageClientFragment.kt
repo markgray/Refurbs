@@ -132,7 +132,7 @@ class StorageClientFragment : Fragment() {
             val uri: Uri?
             if (resultData != null) {
                 uri = resultData.data
-                Log.i(TAG, "Uri: " + uri.toString())
+                Log.i(TAG, "Uri: $uri")
                 showImage(uri)
             }
             // END_INCLUDE (parse_open_document_response)
@@ -263,7 +263,6 @@ class StorageClientFragment : Fragment() {
             // The easiest way to divide up this labor is with an AsyncTask.  The doInBackground
             // method will run in a separate thread, but onPostExecute will run in the main
             // UI thread.
-            @Suppress("RedundantVisibilityModifier")
             @SuppressLint("StaticFieldLeak")
             val imageLoadAsyncTask: AsyncTask<Uri, Void, Bitmap> =
                 object : AsyncTask<Uri, Void, Bitmap>() {
