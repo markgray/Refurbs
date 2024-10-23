@@ -29,6 +29,6 @@ android {
     }
     namespace = "com.example.squashandstretch"
     dependencies {
-        implementation("androidx.activity:activity-ktx:1.9.2")
+        implementation("androidx.activity:activity-ktx:1.9.3")
     }
 }
