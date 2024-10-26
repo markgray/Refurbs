@@ -16,7 +16,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/topLevelLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="MergeRootFrame">
 
     <com.example.android.activityanim.ShadowLayout
         android:id="@+id/shadowLayout"
