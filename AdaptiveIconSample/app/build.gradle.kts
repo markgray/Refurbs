@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.example.android.adaptiveicon"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
     }
     buildTypes {
         release {
