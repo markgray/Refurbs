@@ -313,7 +313,7 @@ class GenericAccountService : Service() {
             // This string should *not* be localized. If the user switches locale, we would not be
             // able to locate the old account, and may erroneously register multiple accounts.
             val accountName = ACCOUNT_NAME
-            return Account(accountName, accountType)
+            return Account(accountName, accountType!!)
         }
     }
 }

@@ -365,7 +365,7 @@ class SelectionBuilder {
         columns?.let { mapColumns(it) }
         @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
         Log.v(TAG, "query(columns=" + Arrays.toString(columns) + ") " + this)
-        return db.query(mTable, columns, selection, selectionArgs, groupBy, having, orderBy, limit)
+        return db.query(mTable!!, columns, selection, selectionArgs, groupBy, having, orderBy, limit)
     }
 
     /**
@@ -384,7 +384,7 @@ class SelectionBuilder {
     fun update(db: SQLiteDatabase, values: ContentValues?): Int {
         assertTable()
         Log.v(TAG, "update() $this")
-        return db.update(mTable, values, selection, selectionArgs)
+        return db.update(mTable!!, values, selection, selectionArgs)
     }
 
     /**
@@ -401,7 +401,7 @@ class SelectionBuilder {
     fun delete(db: SQLiteDatabase): Int {
         assertTable()
         Log.v(TAG, "delete() $this")
-        return db.delete(mTable, selection, selectionArgs)
+        return db.delete(mTable!!, selection, selectionArgs)
     }
 
     companion object {
