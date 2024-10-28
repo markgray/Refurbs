@@ -300,7 +300,7 @@ class MainActivity : ComponentActivity() {
     fun finishJob(v: View?) {
         val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler
         val allPendingJobs: MutableList<JobInfo> = jobScheduler.allPendingJobs
-        if (allPendingJobs.size > 0) {
+        if (allPendingJobs.isNotEmpty()) {
             // Finish the last one
             val jobId = allPendingJobs[0].id
             jobScheduler.cancel(jobId)
