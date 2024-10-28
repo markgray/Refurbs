@@ -331,7 +331,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                 } finally {
                     try {
                         out?.close()
-                    } catch (e: IOException) {
+                    } catch (_: IOException) {
                     }
                 }
             }
@@ -391,7 +391,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
             while (mDiskCacheStarting) {
                 try {
                     mDiskCacheLock.wait()
-                } catch (e: InterruptedException) {
+                } catch (_: InterruptedException) {
                 }
             }
             if (mDiskLruCache != null) {
@@ -418,7 +418,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                 } finally {
                     try {
                         inputStream?.close()
-                    } catch (e: IOException) {
+                    } catch (_: IOException) {
                     }
                 }
             }
@@ -632,6 +632,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                 ("setMemCacheSizePercent - percent must be "
                     + "between 0.01 and 0.8 (inclusive)")
             }
+            @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
             memCacheSize = Math.round(fraction * Runtime.getRuntime().maxMemory() / 1024)
         }
     }
@@ -779,7 +780,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
             // is smaller than the reusable bitmap candidate allocation byte count.
             val width = targetOptions.outWidth / targetOptions.inSampleSize
             val height = targetOptions.outHeight / targetOptions.inSampleSize
-            val byteCount = width * height * getBytesPerPixel(candidate.config)
+            val byteCount = width * height * getBytesPerPixel(candidate.config!!)
             return byteCount <= candidate.allocationByteCount
         }
 
@@ -858,7 +859,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                 val mDigest = MessageDigest.getInstance("MD5")
                 mDigest.update(key.toByteArray())
                 bytesToHexString(mDigest.digest())
-            } catch (e: NoSuchAlgorithmException) {
+            } catch (_: NoSuchAlgorithmException) {
                 key.hashCode().toString()
             }
             return cacheKey
