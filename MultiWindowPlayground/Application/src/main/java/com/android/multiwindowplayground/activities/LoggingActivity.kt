@@ -159,9 +159,8 @@ abstract class LoggingActivity : AppCompatActivity() {
      *
      * @param isInMultiWindowMode `true` if the activity is in multi-window mode.
      */
-    @Deprecated("Deprecated in Java") // TODO: replace with onMultiWindowModeChanged(boolean, Configuration)
-    override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean) {
-        super.onMultiWindowModeChanged(isInMultiWindowMode)
+    override fun onMultiWindowModeChanged(isInMultiWindowMode: Boolean, configuration: Configuration) {
+        super.onMultiWindowModeChanged(isInMultiWindowMode, configuration)
         Log.d(mLogTag, "onMultiWindowModeChanged: $isInMultiWindowMode")
     }
 
