@@ -575,7 +575,7 @@ class InsertionListView : ListView {
      */
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
-        if (mCellBitmapDrawables!!.size > 0) {
+        if (mCellBitmapDrawables!!.isNotEmpty()) {
             for (bitmapDrawable in mCellBitmapDrawables!!) {
                 bitmapDrawable!!.draw(canvas)
             }

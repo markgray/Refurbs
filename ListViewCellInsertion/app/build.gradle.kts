@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.example.android.insertingcells"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
     }
     buildTypes {
         release {
