@@ -22,7 +22,7 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="128dp"/>
+        android:layout_height="64dp"/>
 
     <view
         class="com.example.android.listviewremovalanimation.BackgroundContainer"
