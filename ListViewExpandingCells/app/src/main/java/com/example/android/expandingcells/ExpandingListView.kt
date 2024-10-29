@@ -513,7 +513,7 @@ class ExpandingListView : ListView {
                         viewObject.isExpanded = true
                         isEnabled = true
                         isClickable = true
-                        if (mViewsToDraw.size > 0) {
+                        if (mViewsToDraw.isNotEmpty()) {
                             for (v in mViewsToDraw) {
                                 v.setHasTransientState(false)
                             }
@@ -545,7 +545,7 @@ class ExpandingListView : ListView {
      */
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
-        if (mViewsToDraw.size == 0) {
+        if (mViewsToDraw.isEmpty()) {
             return
         }
         for (v in mViewsToDraw) {
