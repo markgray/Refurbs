@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     defaultConfig {
         applicationId = "com.example.android.notepad"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         testApplicationId = "com.example.android.notepad.tests"
         testInstrumentationRunner = "android.test.InstrumentationTestRunner"
     }
