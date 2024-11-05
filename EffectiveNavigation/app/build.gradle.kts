@@ -7,7 +7,7 @@ android {
     compileSdk = 35
     defaultConfig {
         applicationId = "com.example.android.effectivenavigation"
-        minSdk = 19
+        minSdk = 21
         targetSdk = 35
     }
     compileOptions {
@@ -31,5 +31,5 @@ android {
 
 dependencies {
     implementation ("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation ("androidx.core:core-ktx:1.13.1")
+    implementation ("androidx.core:core-ktx:1.15.0")
 }
