@@ -928,8 +928,8 @@ class JetBoyView(
          * @param canvas [Canvas] on which to do our drawing.
          */
         private fun doAsteroidAnimation(canvas: Canvas?) {
-            if ((mDangerWillRobinson == null || mDangerWillRobinson!!.isEmpty)
-                && (mExplosion != null && mExplosion!!.isEmpty)) return
+            if ((mDangerWillRobinson == null || mDangerWillRobinson!!.isEmpty())
+                && (mExplosion != null && mExplosion!!.isEmpty())) return
 
             // Compute what percentage through a beat we are and adjust
             // animation and position based on that. This assumes 140bpm(428ms/beat).
@@ -1232,8 +1232,9 @@ class JetBoyView(
          *
          * @param inputContext unused.
          */
+        @Suppress("unused")
         fun updateAsteroids(inputContext: Any?) {
-            if ((mDangerWillRobinson == null) or (mDangerWillRobinson!!.isEmpty)) return
+            if ((mDangerWillRobinson == null) or (mDangerWillRobinson!!.isEmpty())) return
             for (i in mDangerWillRobinson!!.size - 1 downTo 0) {
                 val asteroid = mDangerWillRobinson!!.elementAt(i)
 
@@ -1296,8 +1297,9 @@ class JetBoyView(
          *
          * @param inputContext unused.
          */
+        @Suppress("unused")
         protected fun updateExplosions(inputContext: Any?) {
-            if ((mExplosion == null) or (mExplosion!!.isEmpty)) return
+            if ((mExplosion == null) or (mExplosion!!.isEmpty())) return
             for (i in mExplosion!!.indices.reversed()) {
                 val ex = mExplosion!!.elementAt(i)
                 ex.mAniIndex += ANIMATION_FRAMES_PER_BEAT
@@ -1371,6 +1373,7 @@ class JetBoyView(
          * @param value Value of the JET event, we only care about [NEW_ASTEROID_EVENT] (create a
          * new asteroid)
          */
+        @Suppress("unused")
         protected fun processJetEvent(
             player: JetPlayer?,
             segment: Short,
@@ -1919,7 +1922,7 @@ class JetBoyView(
             try {
                 thread!!.join()
                 retry = false
-            } catch (e: InterruptedException) {
+            } catch (_: InterruptedException) {
                 Log.i(TAG, "surfaceDestroyed was interrupted")
             }
         }
