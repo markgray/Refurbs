@@ -121,7 +121,7 @@ class CollectionDemoActivity : FragmentActivity() {
                 // Create a simple intent that starts the hierarchical parent activity and
                 // use NavUtils in the Support Package to ensure proper handling of Up.
                 val upIntent = Intent(this, MainActivity::class.java)
-                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
+                if (this.shouldUpRecreateTask(upIntent)) {
                     // This activity is not part of the application's task, so create a new task
                     // with a synthesized back stack.
                     TaskStackBuilder.create(this) // If there are ancestor activities, they should be added here.
@@ -131,7 +131,7 @@ class CollectionDemoActivity : FragmentActivity() {
                 } else {
                     // This activity is part of the application's task, so simply
                     // navigate up to the hierarchical parent activity.
-                    NavUtils.navigateUpTo(this, upIntent)
+                    this.navigateUpTo(upIntent)
                 }
                 return true
             }
