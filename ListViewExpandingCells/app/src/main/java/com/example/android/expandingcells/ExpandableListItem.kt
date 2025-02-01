@@ -36,11 +36,11 @@ class ExpandableListItem(
     /**
      * Title of the item, it is displayed to the right of the image whether the [ExpandableListItem]
      * is "expanded" or not. The [CustomArrayAdapter.getView] override of [CustomArrayAdapter] uses
-     * it as the text of the [TextView] with id [R.id.title_view].
+     * it as the text of the [TextView] with id `R.id.title_view`.
      */
     val title: String,
     /**
-     * Resource id of the jpg used for the [ImageView] with id [R.id.image_view] in the item
+     * Resource id of the jpg used for the [ImageView] with id `R.id.image_view` in the item
      * layout, it is displayed to the left of the title of the item.
      */
     val imgResource: Int,
@@ -50,7 +50,7 @@ class ExpandableListItem(
      */
     var collapsedHeight: Int,
     /**
-     * Text used by the [TextView] inside the [ExpandingLayout] with id [R.id.text_view]
+     * Text used by the [TextView] inside the [ExpandingLayout] with id `R.id.text_view`
      */
     var text: String
 ) : OnSizeChangedListener {

@@ -65,14 +65,14 @@ import androidx.core.view.updateLayoutParams
  */
 class ToonGame : ComponentActivity() {
     /**
-     * [Button] in our layout with id [R.id.startButton] ("Play!"), launches [PlayerSetupActivity]
+     * [Button] in our layout with id `R.id.startButton` ("Play!"), launches [PlayerSetupActivity]
      * when clicked (activity is launched by a [Runnable] when the animation of the button release
      * finishes).
      */
     var mStarter: Button? = null
 
     /**
-     * The [RelativeLayout] in our layout file with id [R.id.container], we use it to animate our
+     * The [RelativeLayout] in our layout file with id `R.id.container`, we use it to animate our
      * transition to [PlayerSetupActivity]
      */
     var mContainer: ViewGroup? = null
@@ -81,10 +81,10 @@ class ToonGame : ComponentActivity() {
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
      * then we call the [overridePendingTransition] method to cancel any pending incoming or outgoing
      * animation (by using 0 as the resource id for both `enterAnim` and `exitAnim`). Then
-     * we set our content view to our layout file [R.layout.activity_toon_game]. We initialize our
-     * [Button] field [mStarter] by finding the view with id [R.id.startButton] ("Play!"), initialize
+     * we set our content view to our layout file `R.layout.activity_toon_game`. We initialize our
+     * [Button] field [mStarter] by finding the view with id `R.id.startButton` ("Play!"), initialize
      * our [ViewGroup] field [mContainer] by finding the [RelativeLayout] in our layout file with
-     * id [R.id.container], set the [OnTouchListener] of [mStarter] to [funButtonListener] and set
+     * id `R.id.container`, set the [OnTouchListener] of [mStarter] to [funButtonListener] and set
      * the duration of its [ViewPropertyAnimator] to 100ms.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use

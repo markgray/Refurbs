@@ -67,8 +67,8 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.sample_main]. We find
-     * the view with id [R.id.viewpager] to set our [ViewPager] variable `val vp`, and add our
+     * `onCreate`, then we set our content view to our layout file `R.layout.sample_main`. We find
+     * the view with id `R.id.viewpager` to set our [ViewPager] variable `val vp`, and add our
      * [OnPageChangeListener] field [mOnPageChangeListener] as an [OnPageChangeListener].
      * Finally we set the adapter of `vp` to our [PagerAdapter] field [mPagerAdapter].
      *
@@ -107,13 +107,13 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. First we fetch a
-     * [MenuInflater] for this context and use it to inflate our menu [R.menu.main_menu] into
+     * [MenuInflater] for this context and use it to inflate our menu `R.menu.main_menu` into
      * our [Menu] parameter [menu]. We initialize our [MenuItem] variable `val shareItem` by
-     * finding the menu item with id [R.id.menu_share] in [menu]. We initialize our
+     * finding the menu item with id `R.id.menu_share` in [menu]. We initialize our
      * [ShareActionProvider] field [mShareActionProvider] by finding the [ActionProvider] defined
      * for `shareItem` using the `support:actionProviderClass` attribute (in our case
      * "android.support.v7.widget.ShareActionProvider"). We locate the [ViewPager] by finding
-     * the view with id [R.id.viewpager] in order to get the current item position in order
+     * the view with id `R.id.viewpager` in order to get the current item position in order
      * to set our [Int] variable `val currentViewPagerItem` and call our method [setShareIntent]
      * in order to set the share intent for the item to one for the `currentViewPagerItem` item.
      * Finally we return the value returned by our super's implementation of `onCreateOptionsMenu`
@@ -194,12 +194,12 @@ class MainActivity : AppCompatActivity() {
          * to the item in position [position] in our list of [ContentItem] field [mItems]. We switch
          * on the value of the [ContentItem.contentType] field of `item`:
          *  * `CONTENT_TYPE_TEXT` - We use [mInflater] to inflate the layout file with resource ID
-         *  [R.layout.item_text] into our [TextView] variable `val tv`, set its `text` to the string
+         *  `R.layout.item_text` into our [TextView] variable `val tv`, set its `text` to the string
          *  resource indicated by the [ContentItem.contentResourceId] field of `item`, and add `tv`
          *  to our [ViewGroup] parameter [container]. Finally we return `tv` to the caller.
          *
          *  * `CONTENT_TYPE_IMAGE` - We use `mInflater` to inflate the layout file with resource ID
-         *  [R.layout.item_image] into [ImageView] variable `val iv`, set its image to the bitmap
+         *  `R.layout.item_image` into [ImageView] variable `val iv`, set its image to the bitmap
          *  decoded from the content [Uri] returned from the [ContentItem.contentUri] property of
          *  `item`, and add `iv` to [ViewGroup] parameter [container]. Finally we return `iv` to
          *  the caller.

@@ -60,8 +60,8 @@ class MainActivity : FragmentActivity(), DownloadCallback {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.sample_main]. We
-     * initialize our [TextView] field  [mDataText] by finding the view with id [R.id.data_text],
+     * `onCreate`, then we set our content view to our layout file `R.layout.sample_main`. We
+     * initialize our [TextView] field  [mDataText] by finding the view with id `R.id.data_text`,
      * and initialize our [NetworkFragment] field [mNetworkFragment] with a handle to an instance
      * constructed to retrieve the url "[Google](https://www.google.com)" (creating it if
      * need be, or using the fragment manager to fetch a handle to an already running instance).
@@ -96,7 +96,7 @@ class MainActivity : FragmentActivity(), DownloadCallback {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We fetch a [MenuInflater]
-     * for this context and use it to inflate our menu layout file [R.menu.main] into our [Menu]
+     * for this context and use it to inflate our menu layout file `R.menu.main` into our [Menu]
      * parameter [menu], then return `true` to the caller so the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
@@ -112,10 +112,10 @@ class MainActivity : FragmentActivity(), DownloadCallback {
      * This hook is called whenever an item in your options menu is selected. We switch on to item
      * id of our [MenuItem] parameter [item]:
      *
-     *  * [R.id.fetch_action]: ("FETCH") we call our method [startDownload] to start a background
+     *  * `R.id.fetch_action`: ("FETCH") we call our method [startDownload] to start a background
      *  download and return `true` to the caller to consume the event here.
      *
-     *  * [R.id.clear_action]: ("CLEAR") we call our method [finishDownloading] to cancel any
+     *  * `R.id.clear_action`: ("CLEAR") we call our method [finishDownloading] to cancel any
      *  ongoing download, set the text of [TextView] field [mDataText] to the empty string, and
      *  return `true` to the caller to consume the event here.
      *
@@ -160,7 +160,7 @@ class MainActivity : FragmentActivity(), DownloadCallback {
      * Method from the [DownloadCallback] interface used by [NetworkFragment] to send us the data it
      * downloaded. If our [String] parameter [result] is not `null` we set the text of our [TextView]
      * field [mDataText] to it, otherwise we set it to the string with resource ID
-     * [R.string.connection_error] ("Connection error.").
+     * `R.string.connection_error` ("Connection error.").
      *
      * @param result string containing the data downloaded.
      */

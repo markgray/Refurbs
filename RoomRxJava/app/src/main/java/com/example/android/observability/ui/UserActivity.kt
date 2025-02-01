@@ -48,19 +48,19 @@ import io.reactivex.schedulers.Schedulers
  */
 class UserActivity : AppCompatActivity() {
     /**
-     * [TextView] with id [R.id.user_name] in our layout file layout/activity_user.xml which is
+     * [TextView] with id `R.id.user_name` in our layout file layout/activity_user.xml which is
      * used to display the current user name.
      */
     private var mUserName: TextView? = null
 
     /**
-     * [EditText] with id [R.id.user_name_input] in our layout file layout/activity_user.xml
+     * [EditText] with id `R.id.user_name_input` in our layout file layout/activity_user.xml
      * which is used to enter a new user name
      */
     private var mUserNameInput: EditText? = null
 
     /**
-     * [Button] with id [R.id.update_user] in our layout file layout/activity_user.xml which is
+     * [Button] with id `R.id.update_user` in our layout file layout/activity_user.xml which is
      * used to read the text in [EditText] field [mUserNameInput] and use it to update the database.
      */
     private var mUpdateButton: Button? = null
@@ -84,10 +84,10 @@ class UserActivity : AppCompatActivity() {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_user]. We
-     * initialize our [TextView] field [mUserName] by finding the view with id [R.id.user_name],
-     * [EditText] field [mUserNameInput] by finding the view with id [R.id.user_name_input], and our
-     * [Button] field [mUpdateButton] by finding the view with id [R.id.update_user]. We initialize
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_user`. We
+     * initialize our [TextView] field [mUserName] by finding the view with id `R.id.user_name`,
+     * [EditText] field [mUserNameInput] by finding the view with id `R.id.user_name_input`, and our
+     * [Button] field [mUpdateButton] by finding the view with id `R.id.update_user`. We initialize
      * our [ViewModelFactory] field [mViewModelFactory] to the [ViewModelFactory] returned by the
      * [Injection.provideViewModelFactory] method, and use that to initialize [UserViewModel] field
      * [mViewModel] using the [ViewModelProvider] created from it to get a [ViewModel] of the class

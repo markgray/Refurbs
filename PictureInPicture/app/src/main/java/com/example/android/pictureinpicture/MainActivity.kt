@@ -71,19 +71,19 @@ class MainActivity : AppCompatActivity() {
     private var mReceiver: BroadcastReceiver? = null
 
     /**
-     * The string with resource id [R.string.play] ("Play") that we use for the title of the "play"
+     * The string with resource id `R.string.play` ("Play") that we use for the title of the "play"
      * action item.
      */
     private var mPlay: String? = null
 
     /**
-     * The string with resource id [R.string.pause] ("Pause") that we use for the title of the
+     * The string with resource id `R.string.pause` ("Pause") that we use for the title of the
      * "pause" action item.
      */
     private var mPause: String? = null
 
     /**
-     * [View.OnClickListener] for the button with id [R.id.pip] ("Enter Picture-in-Picture mode").
+     * [View.OnClickListener] for the button with id `R.id.pip` ("Enter Picture-in-Picture mode").
      * When this button is clicked we call our method [minimize] (Enters Picture-in-Picture mode).
      */
     private val mOnClickListener = View.OnClickListener { view: View ->
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         /**
          * Called when the video is started or resumed. Since we are now playing the video
          * we call our method [updatePictureInPictureActions] to change the action
-         * item to pause the video, using [R.drawable.ic_pause_24dp] as the icon, [mPause]
+         * item to pause the video, using `R.drawable.ic_pause_24dp` as the icon, [mPause]
          * ("Pause") as the title, [CONTROL_TYPE_PAUSE] as the type of action, and [REQUEST_PAUSE]
          * as the request code for the pending intent.
          */
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
         /**
          * Called when the video is paused or finished. Since the video has stopped playing we call
          * our method [updatePictureInPictureActions] to change the action item to play the video,
-         * using [R.drawable.ic_play_arrow_24dp] as the icon, [mPlay] ("Play") as the title,
+         * using `R.drawable.ic_play_arrow_24dp` as the icon, [mPlay] ("Play") as the title,
          * [CONTROL_TYPE_PLAY] as the type of action, and [REQUEST_PLAY] as the request code for
          * the pending intent.
          */
@@ -155,11 +155,11 @@ class MainActivity : AppCompatActivity() {
      * using `icon` as the icon, our [String] parameter [title] as the title and the content
      * description, and `intent` as the pending intent that will be used when the action item is
      * clicked. Next we add a fixed [RemoteAction] to `actions` that is constructed the drawable
-     * [R.drawable.ic_info_24dp] as the icon, the string with the id [R.string.info] ("Info") as the
-     * title, the string with the id [R.string.info_description] ("Information about this video") as
+     * `R.drawable.ic_info_24dp` as the icon, the string with the id `R.string.info` ("Info") as the
+     * title, the string with the id `R.string.info_description` ("Information about this video") as
      * the content description, and a pending intent constructed with the request code [REQUEST_INFO],
      * an intent with the action [Intent.ACTION_VIEW], and a Intent data  URI parsed from the string
-     * with id [R.string.info_uri] ("[...](https://peach.blender.org/)"). We then set the actions of
+     * with id `R.string.info_uri` ("[...](https://peach.blender.org/)"). We then set the actions of
      * our [PictureInPictureParams.Builder] field [mPictureInPictureParamsBuilder] to `actions`. We
      * then build [mPictureInPictureParamsBuilder] to supply the argument to the method
      * [setPictureInPictureParams] which updates the properties of the picture in picture activity,
@@ -208,18 +208,18 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. We
-     * then initialize our [String] field [mPlay] by fetching the string with id [R.string.play]
-     * ("Play"), and [String] field [mPause] by fetching the string with id [R.string.pause]
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`. We
+     * then initialize our [String] field [mPlay] by fetching the string with id `R.string.play`
+     * ("Play"), and [String] field [mPause] by fetching the string with id `R.string.pause`
      * ("Pause"). We initialize our [MovieView] field [mMovieView] by finding the view with id
-     * [R.id.movie], and [ScrollView] field [mScrollView] by finding the view with id [R.id.scroll].
+     * `R.id.movie`, and [ScrollView] field [mScrollView] by finding the view with id `R.id.scroll`.
      *
      * We initialize [Button] variable `val switchExampleButton` by finding the view with id
-     * [R.id.switch_example], set its text to the string with id [R.string.switch_media_session]
+     * `R.id.switch_example`, set its text to the string with id `R.string.switch_media_session`
      * ("Switch to using MediaSession"), and set its [View.OnClickListener] to [mOnClickListener].
      * We call the [MovieView.setMovieListener]  method of [MovieView] field [mMovieView] to set its
      * [MovieView.MovieListener] to our [MovieView.MovieListener] field [mMovieListener]. Finally
-     * we find the view with id [R.id.pip] ("Enter Picture-in-Picture mode") and set its
+     * we find the view with id `R.id.pip` ("Enter Picture-in-Picture mode") and set its
      * [View.OnClickListener] to our field [mOnClickListener].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
@@ -467,7 +467,7 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Launches [MediaSessionPlaybackActivity] and closes this activity. This is the
-     * [View.OnClickListener] for the button with id [R.id.switch_example] ("Switch to
+     * [View.OnClickListener] for the button with id `R.id.switch_example` ("Switch to
      * using MediaSession").
      */
     private inner class SwitchActivityOnClick : View.OnClickListener {

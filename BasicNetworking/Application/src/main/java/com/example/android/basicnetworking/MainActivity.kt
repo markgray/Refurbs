@@ -55,14 +55,14 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.sample_main]. We initialize
+     * then we set our content view to our layout file `R.layout.sample_main`. We initialize
      * [SimpleTextFragment] variable `val introFragment` by finding the fragment that was identified
-     * by the id [R.id.intro_fragment] when our layout file was inflated from XML. We then call its
+     * by the id `R.id.intro_fragment` when our layout file was inflated from XML. We then call its
      * [SimpleTextFragment.setText] method to have it set its text the the string with resource id
-     * [R.string.intro_message] and then we retrieve its [TextView] to call its [TextView.setTextSize]
+     * `R.string.intro_message` and then we retrieve its [TextView] to call its [TextView.setTextSize]
      * method to set its text size to 16.0 DIP. Finally we call our method [initializeLogging] to
      * create a chain of targets that will receive log data and display them in the [LogFragment]
-     * which has id [R.id.log_fragment] in our layout file.
+     * which has id `R.id.log_fragment` in our layout file.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We fetch a [MenuInflater]
-     * for our activity's context and use it to inflate our menu layout [R.menu.main] into our [Menu]
+     * for our activity's context and use it to inflate our menu layout `R.menu.main` into our [Menu]
      * parameter [menu] and return `true` to the caller so that the menu will be displayed.
      *
      * @param menu The options [Menu] in which to place our items.
@@ -111,11 +111,11 @@ class MainActivity : AppCompatActivity() {
      * This hook is called whenever an item in our options menu is selected. We switch on the id of
      * our parameter `MenuItem item`:
      *
-     *  * [R.id.test_action]: we call our method [checkNetworkConnection] to check whether the
+     *  * `R.id.test_action`: we call our method [checkNetworkConnection] to check whether the
      *  device is connected, and if so, whether the connection is wifi or mobile. We then return
      *  `true` to the caller to consume the event.
      *
-     *  * [R.id.clear_action]: We fetch the [LogView] from our [LogFragment] field [mLogFragment]
+     *  * `R.id.clear_action`: We fetch the [LogView] from our [LogFragment] field [mLogFragment]
      *  and call its [LogView.setText] method (aka kotlin `text` property) to set its text the empty
      *  string, and then return `true` to the caller to consume the even.
      *
@@ -151,13 +151,13 @@ class MainActivity : AppCompatActivity() {
      * to `true` if the the `type` of network to which the info in `activeInfo` pertains is TYPE_WIFI,
      * and our [Boolean] field [mobileConnected] to `true` if its type is TYPE_MOBILE. If:
      *
-     *      * [wifiConnected] is true, we log the string [R.string.wifi_connection] ("The active
+     *      * [wifiConnected] is true, we log the string `R.string.wifi_connection` ("The active
      *      connection is wifi")
      *
      *      * [mobileConnected] is true, we log the string R.string.mobile_connection ("The active
      *      connection is mobile")
      *
-     * If we are not connected we log the string [R.string.no_wifi_or_mobile] ("No wireless or mobile
+     * If we are not connected we log the string `R.string.no_wifi_or_mobile` ("No wireless or mobile
      * connection")
      */
     @Suppress("DEPRECATION") // TODO: Fix activeNetworkInfo deprecation
@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity() {
      * have it be the [LogNode] that data will be sent to. We initialize [MessageOnlyLogFilter]
      * variable `val msgFilter` with a new instance and set it to be the `next` [LogNode] that
      * `logWrapper` will pipe data to. We locate our [LogFragment] by using the fragment manager
-     * to find the fragment in our layout with id [R.id.log_fragment] to initialize our [mLogFragment]
+     * to find the fragment in our layout with id `R.id.log_fragment` to initialize our [mLogFragment]
      * field, and set its [LogView] to be the next [LogNode] that `msgFilter` pipes data to (which
      * causes all the messages we log to be displayed in that view).
      */

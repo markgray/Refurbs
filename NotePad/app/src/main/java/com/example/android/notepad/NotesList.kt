@@ -60,7 +60,7 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
     /**
      * The adapter we use for our [ListView], displays the column [NotePad.Notes.COLUMN_NAME_TITLE]
      * from our [Cursor] in the [TextView] with id [android.R.id.text1] of our item layout file
-     * [R.layout.notes_list_item]
+     * `R.layout.notes_list_item`
      */
     private var mAdapter: SimpleCursorAdapter? = null
 
@@ -79,7 +79,7 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
      * [NotePad.Notes.COLUMN_NAME_TITLE] "title") and [IntArray] variable `val viewIDs` to the view
      * id that will display the cursor column ([android.R.id.text1] "text1"). Then we initialize our
      * [SimpleCursorAdapter] field [mAdapter] with an instance which will use the layout file
-     * [R.layout.notes_list_item], a `null` cursor (the cursor will be set by [CursorLoader] when
+     * `R.layout.notes_list_item`, a `null` cursor (the cursor will be set by [CursorLoader] when
      * loaded), `dataColumns` for the list of column names to use, `viewIDs` for the list of view
      * id's to display each column in, and the flag [CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER]
      * to have the adapter register a content observer on the cursor and call [onContentChanged]
@@ -159,7 +159,7 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
      * offer the user other applications that can handle notes.
      *
      * We initialize [MenuInflater] variable `val inflater` with a [MenuInflater] for this context
-     * and use it to inflate our menu layout file [R.menu.list_options_menu] into our [Menu]
+     * and use it to inflate our menu layout file `R.menu.list_options_menu` into our [Menu]
      * parameter []. We initialize [Intent] variable `val intent` with a new instance with a `null`
      * action and a data uri consisting of the data contained in the [Intent.getData] (kotlin `data`
      * property) data uri of the intent that started this activity. We then add the category
@@ -205,7 +205,7 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
      * implementation of `onPrepareOptionsMenu`. We initialize [ClipboardManager] variable
      * `val clipboard` with the system level service [CLIPBOARD_SERVICE], and initialize [MenuItem]
      * variable `val mPasteItem` by finding the item in our [Menu] parameter [menu] with the id
-     * [R.id.menu_paste] ("Paste"). If `clipboard` currently contains an item in its primary clip
+     * `R.id.menu_paste` ("Paste"). If `clipboard` currently contains an item in its primary clip
      * we enable `mPasteItem`, if not then we disable it instead. We initialize [Boolean] variable
      * `val haveItems` to `true` if our [ListAdapter] has more than 0 items in its data set, then
      * branch on the value of `haveItems`:
@@ -319,11 +319,11 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
      * value returned by the [MenuItem.getItemId] method of our [MenuItem] parameter [item]
      * (kotlin `itemId` property), its item Id:
      *
-     *  * [R.id.menu_add] "New note": We launch an [Intent] that has an action of [Intent.ACTION_INSERT],
+     *  * `R.id.menu_add` "New note": We launch an [Intent] that has an action of [Intent.ACTION_INSERT],
      *  and whose data URI is the data URI of the [Intent] that launched us, and return `true` to consume
      *  the event here (this starts the [NoteEditor] Activity in [NotePad]).
      *
-     *  * [R.id.menu_paste] "Paste": We launch an [Intent] that has an action of [Intent.ACTION_PASTE],
+     *  * `R.id.menu_paste` "Paste": We launch an [Intent] that has an action of [Intent.ACTION_PASTE],
      *  and whose data URI is the data URI of the [Intent] that launched us, and return `true` to consume
      *  the event here (this starts the [NoteEditor] Activity in [NotePad]).
      *
@@ -372,7 +372,7 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
      * of `info` (this is the position in the adapter for which the context menu is being displayed).
      * If `cursor` is `null` we return (for some reason the requested item isn't available, so we do
      * nothing). We initialize [MenuInflater] variable `val inflater` with a [MenuInflater] for this
-     * [Context] and use it to inflate our context menu layout file [R.menu.list_context_menu] into
+     * [Context] and use it to inflate our context menu layout file `R.menu.list_context_menu` into
      * our [ContextMenu] parameter [menu]. We set the context menu header's title to the string
      * stored in the [COLUMN_INDEX_TITLE] column of `cursor` (title of the selected note). We
      * initialize [Intent] variable `val intent` with an instance whose action is `null`, and whose
@@ -459,17 +459,17 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
      * context menu is being displayed) to the data URI that launched this activity. We then when
      * switch on the item id of our [MenuItem] parameter [item]:
      *
-     *  * [R.id.context_open] "Open": We start an activity with an [Intent] that has the action
+     *  * `R.id.context_open` "Open": We start an activity with an [Intent] that has the action
      *  [Intent.ACTION_EDIT] and whose data URI is `noteUri` (launches an activity to view/edit the
      *  currently selected item), then return `true` to consume the event here.
      *
-     *  * [R.id.context_copy] "Copy": We initialize [ClipboardManager] variable `val clipboard` with
+     *  * `R.id.context_copy` "Copy": We initialize [ClipboardManager] variable `val clipboard` with
      *  a handle to the system level service [CLIPBOARD_SERVICE], and set the current primary clip
      *  on the clipboard to a [ClipData] created by having a [ContentResolver] instance for our
      *  application's package copy the note addressed by `noteUri` to the clip board using the
      *  User-visible label "Note" for the clip data, then return `true` to consume the event here.
      *
-     *  * [R.id.context_delete] "Delete": We use a [ContentResolver] instance for our application's
+     *  * `R.id.context_delete` "Delete": We use a [ContentResolver] instance for our application's
      *  package to delete the note with the URI `noteUri`, then return `true` to consume the event
      *  here.
      *

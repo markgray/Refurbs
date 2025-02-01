@@ -173,7 +173,7 @@ abstract class LoggingActivity : AppCompatActivity() {
      * the message text) and set it as the [LogNode] that `logWrapper` will next send data to. We
      * then create [LogFragment] variable `val logFragment` by using the [FragmentManager] for
      * interacting with fragments associated with this activity to find the fragment with the
-     * resource id [R.id.log_fragment], and set its [LogView] as the [LogNode] that `msgFilter`
+     * resource id `R.id.log_fragment`, and set its [LogView] as the [LogNode] that `msgFilter`
      * will send data to.
      */
     fun initializeLogging() {
@@ -200,9 +200,9 @@ abstract class LoggingActivity : AppCompatActivity() {
     }
 
     /**
-     * Set the description text if a TextView with the resource id [R.id.description] is available.
+     * Set the description text if a TextView with the resource id `R.id.description` is available.
      * We initialize [TextView] variable `val description` by finding the view with id
-     * [R.id.description] and if this is not `null` we set its text to the string with the
+     * `R.id.description` and if this is not `null` we set its text to the string with the
      * resource id in our [Int] parameter [textId].
      *
      * @param textId resource ID of string we are to display
@@ -215,7 +215,7 @@ abstract class LoggingActivity : AppCompatActivity() {
 
     /**
      * Set the background color for the description text. We initialize [View] variable
-     * `val scrollView` by finding the view with id [R.id.scrollview] and if this is not `null`
+     * `val scrollView` by finding the view with id `R.id.scrollview` and if this is not `null`
      * we set its background to the color with the resource ID in our [Int] parameter [colorId].
      *
      * @param colorId resource id of the color to use.

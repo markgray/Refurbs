@@ -48,8 +48,8 @@ class MessageReplyReceiver : BroadcastReceiver() {
      * a [NotificationManagerCompat] variable `val notificationManager` instance from our [Context]
      * parameter [context], building a [Notification] variable `val repliedNotification` using a
      * [NotificationCompat.Builder] for our [Context] parameter [context] whose `channelId` is the
-     * "default" channel ID, with the drawable with ID [R.drawable.notification_icon] as its small
-     * icon, and with the drawable with ID [R.drawable.android_contact] as its large icon, and the
+     * "default" channel ID, with the drawable with ID `R.drawable.notification_icon` as its small
+     * icon, and with the drawable with ID `R.drawable.android_contact` as its large icon, and the
      * [String] "Replied" as the text. We then use the `notificationManager` to post the
      * `repliedNotification` using the same `conversationId` (This has the effect of replacing
      * the notification that was replied to with our new "Replied" notification.)

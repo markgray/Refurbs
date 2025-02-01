@@ -45,7 +45,7 @@ import androidx.fragment.app.FragmentTransaction
 class MainActivity : AppCompatActivity(), ActionBar.TabListener {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.sample_main]. We
+     * `onCreate`, then we set our content view to our layout file `R.layout.sample_main`. We
      * initialize our [ActionBar] variable `val ab` with a reference to this activity's [ActionBar],
      * set its navigation mode to [ActionBar.NAVIGATION_MODE_TABS], then add three tabs to it with
      * their [ActionBar.TabListener] set to this.
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity(), ActionBar.TabListener {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We inflate our menu layout
-     * file [R.menu.main] into our [Menu] parameter [menu] then return whatever our super's
+     * file `R.menu.main` into our [Menu] parameter [menu] then return whatever our super's
      * implementation of `onCreateOptionsMenu` returns to our caller.
      *
      * @param menu The options [Menu] in which you place your items.

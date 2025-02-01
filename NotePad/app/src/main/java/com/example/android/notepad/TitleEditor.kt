@@ -60,8 +60,8 @@ class TitleEditor : Activity() {
      * This method is called by Android when the Activity is first started. From the incoming
      * [Intent], it determines what kind of editing is desired, and then does it. First we call our
      * super's implementation of `onCreate`, then we set our content view to our layout file
-     * [R.layout.title_editor]. We initialize [EditText] field [mText] by finding the view with id
-     * [R.id.title], then initialize our [Uri] field [mUri] to the data URI of the [Intent]
+     * `R.layout.title_editor`. We initialize [EditText] field [mText] by finding the view with id
+     * `R.id.title`, then initialize our [Uri] field [mUri] to the data URI of the [Intent]
      * that launched us. We initialize [Cursor] variable `val cursor` to the [Cursor] returned from the
      * [ContentResolver.query] method of a [ContentResolver] instance for our application's package
      * when retrieving the note whose URI is [mUri], retrieving all the columns in [PROJECTION], with
@@ -182,7 +182,7 @@ class TitleEditor : Activity() {
      *
      *  * We then set our field `mSavedTitle` to `newTitle`.
      *
-     * If there is no text in [mText] we just toast the string with resource id [R.string.title_blank]
+     * If there is no text in [mText] we just toast the string with resource id `R.string.title_blank`
      * ("Blank title not saved").
      */
     private fun saveTitle() {

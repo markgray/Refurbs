@@ -37,8 +37,8 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_main], and initialize our
-     * [InteractiveLineGraphView] field [mGraphView] by finding the view with ID [R.id.chart]
+     * then we set our content view to our layout file `R.layout.activity_main`, and initialize our
+     * [InteractiveLineGraphView] field [mGraphView] by finding the view with ID `R.id.chart`
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
      * items in to [Menu] parameter [menu]. This is only called once, the first time the options
      * menu is displayed. To update the menu every time it is displayed, see [onPrepareOptionsMenu].
      * First we call our super's implementation of `onCreateOptionsMenu`, then we use a [MenuInflater]
-     * with `this` context to inflate the menu layout file with ID [R.menu.main] into our [Menu]
+     * with `this` context to inflate the menu layout file with ID `R.menu.main` into our [Menu]
      * parameter [menu] and return `true` so that the menu will be displayed.
      *
      * @param menu – The options menu in which you place your items.
@@ -84,20 +84,20 @@ class MainActivity : ComponentActivity() {
     /**
      * This hook is called whenever an item in your options menu is selected. We `when` branch on the
      * [MenuItem.getItemId] value (kotlin `itemId` property) of the [MenuItem] parameter [item]:
-     *  - [R.id.action_zoom_in] "Demo zoom in": we call the [InteractiveLineGraphView.zoomIn] method
+     *  - `R.id.action_zoom_in` "Demo zoom in": we call the [InteractiveLineGraphView.zoomIn] method
      *  of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the event.
-     *  - [R.id.action_zoom_out] "Demo zoom out": we call the [InteractiveLineGraphView.zoomOut]
+     *  - `R.id.action_zoom_out` "Demo zoom out": we call the [InteractiveLineGraphView.zoomOut]
      *  method of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the
      *  event.
-     *  - [R.id.action_pan_left] "Demo pan left": we call the [InteractiveLineGraphView.panLeft]
+     *  - `R.id.action_pan_left` "Demo pan left": we call the [InteractiveLineGraphView.panLeft]
      *  method of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the
      *  event.
-     *  - [R.id.action_pan_right] "Demo pan right": we call the [InteractiveLineGraphView.panRight]
+     *  - `R.id.action_pan_right` "Demo pan right": we call the [InteractiveLineGraphView.panRight]
      *  method of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the
      *  event.
-     *  - [R.id.action_pan_up] "Demo pan up": we call the [InteractiveLineGraphView.panUp] method
+     *  - `R.id.action_pan_up` "Demo pan up": we call the [InteractiveLineGraphView.panUp] method
      *  of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the event.
-     *  - [R.id.action_pan_down] "Demo pan down": we call the [InteractiveLineGraphView.panDown]
+     *  - `R.id.action_pan_down` "Demo pan down": we call the [InteractiveLineGraphView.panDown]
      *  method of [InteractiveLineGraphView] field [mGraphView] and return `true` to consume the
      *  event.
      *

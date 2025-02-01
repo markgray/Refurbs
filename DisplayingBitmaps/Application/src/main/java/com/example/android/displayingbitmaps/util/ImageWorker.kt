@@ -698,7 +698,7 @@ abstract class ImageWorker protected constructor(context: Context) {
         /**
          * Causes background thread to execute the [clearCacheInternal] method, which clears both
          * the memory and disk cache associated with our [ImageCache] object. Used by our [clearCache]
-         * method which is called when the user selects the [R.id.clear_cache] menu item.
+         * method which is called when the user selects the `R.id.clear_cache` menu item.
          */
         private const val MESSAGE_CLEAR = 0
 

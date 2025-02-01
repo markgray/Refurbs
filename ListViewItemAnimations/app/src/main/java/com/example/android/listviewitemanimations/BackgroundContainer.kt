@@ -40,7 +40,7 @@ class BackgroundContainer : FrameLayout {
     var mShowing: Boolean = false
 
     /**
-     * The [Drawable] with id [R.drawable.shadowed_background] (shadowed_background.9.png) which we
+     * The [Drawable] with id `R.drawable.shadowed_background` (shadowed_background.9.png) which we
      * draw in the area occupied by the item being swiped when [Boolean] field [mShowing] is true.
      */
     var mShadowedBackground: Drawable? = null
@@ -106,7 +106,7 @@ class BackgroundContainer : FrameLayout {
 
     /**
      * Called from our constructors to initialize our [Drawable] field [mShadowedBackground] with
-     * the 9 patch png in our resources with id [R.drawable.shadowed_background]
+     * the 9 patch png in our resources with id `R.drawable.shadowed_background`
      */
     private fun inititalize() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -45,7 +45,7 @@ import com.example.android.common.logger.MessageOnlyLogFilter
 class MainActivity : SampleActivityBase() {
     /**
      * Called when the activity is starting. We first call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. If
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`. If
      * the [FragmentManager] for interacting with fragments associated with this activity cannot find
      * a fragment with the tag [FRAGTAG] ("BasicGestureDetectFragment"), we initialize our
      * [FragmentTransaction] variable `val transaction` by using the fragment manager to begin a
@@ -84,7 +84,7 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater] with
-     * this context to inflate our menu layout file [R.menu.main] into our [Menu] parameter [menu]
+     * this context to inflate our menu layout file `R.menu.main` into our [Menu] parameter [menu]
      * and return `true` so that the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
@@ -103,7 +103,7 @@ class MainActivity : SampleActivityBase() {
      * everything except the message text) and set it as the [LogNode] that `logWrapper` will next
      * send data to. We then initialize [LogFragment] variable `val logFragment` by using the
      * [FragmentManager] for interacting with fragments associated with this activity to find the
-     * fragment with the resource id [R.id.log_fragment], then set its [LogView] as the [LogNode]
+     * fragment with the resource id `R.id.log_fragment`, then set its [LogView] as the [LogNode]
      * that `msgFilter` will send data to. Finally we log the message "Ready".
      */
     override fun initializeLogging() {

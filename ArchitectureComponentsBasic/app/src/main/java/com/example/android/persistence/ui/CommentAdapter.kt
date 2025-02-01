@@ -150,7 +150,7 @@ class CommentAdapter
     /**
      * Called when [RecyclerView] needs a new [CommentViewHolder] of the given type to represent an
      * item. We create [CommentItemBinding] variable `val binding` by inflating our layout fie
-     * [R.layout.comment_item] (a [CommentItemBinding] is a view data binding class generated from
+     * `R.layout.comment_item` (a [CommentItemBinding] is a view data binding class generated from
      * the inflated layout, Data-binding layout files are slightly different and start with a root
      * tag of layout followed by a data element and a view root element. This view element is what
      * your root would be in a non-binding layout file.) We then set the "callback" variable defined

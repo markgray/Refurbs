@@ -95,13 +95,13 @@ class SlidingTabsColorsFragment : Fragment() {
      * Called when this [Fragment] is starting. We add four [SamplePagerItem] objects to
      * our [MutableList] of [SamplePagerItem] field [mTabs]:
      *
-     *  * Title: [R.string.tab_stream] ("Stream"), Indicator color: BLUE, Divider color: GRAY
+     *  * Title: `R.string.tab_stream` ("Stream"), Indicator color: BLUE, Divider color: GRAY
      *
-     *  * Title: [R.string.tab_messages] ("Messages"), Indicator color: RED, Divider color: GRAY
+     *  * Title: `R.string.tab_messages` ("Messages"), Indicator color: RED, Divider color: GRAY
      *
-     *  * Title: [R.string.tab_photos] ("Photos"), Indicator color: YELLOW, Divider color: GRAY
+     *  * Title: `R.string.tab_photos` ("Photos"), Indicator color: YELLOW, Divider color: GRAY
      *
-     *  * Title: [R.string.tab_notifications] ("Notifications"), Indicator color: GREEN,
+     *  * Title: `R.string.tab_notifications` ("Notifications"), Indicator color: GREEN,
      *  Divider color: GRAY
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
@@ -138,7 +138,7 @@ class SlidingTabsColorsFragment : Fragment() {
      * Called to have the fragment instantiate its user interface view. Inflates the [View]
      * which will be displayed by this [Fragment] from the app's resources. We just return the
      * [View] which our [LayoutInflater] parameter [inflater] inflates from our layout file
-     * [R.layout.fragment_sample] using our [ViewGroup] parameter [container] for the LayoutParams
+     * `R.layout.fragment_sample` using our [ViewGroup] parameter [container] for the LayoutParams
      * without attaching to it.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
@@ -161,10 +161,10 @@ class SlidingTabsColorsFragment : Fragment() {
     /**
      * Called immediately after [onCreateView] has returned, but before any saved state has been
      * restored in to the view. We initialize our [ViewPager] field [mViewPager] by finding the
-     * view in our [View] parameter [view] with id [R.id.viewpager], and set its adapter to a new
+     * view in our [View] parameter [view] with id `R.id.viewpager`, and set its adapter to a new
      * instance of [SampleFragmentPagerAdapter] constructed using a private [FragmentManager] for
      * placing and managing Fragments inside of our [Fragment]. We initialize our [SlidingTabLayout]
-     * field [mSlidingTabLayout] by finding the [View] in [view] with id [R.id.sliding_tabs], and
+     * field [mSlidingTabLayout] by finding the [View] in [view] with id `R.id.sliding_tabs`, and
      * give it the [ViewPager] field [mViewPager] so that it may populate itself. We set an anonymous
      * [TabColorizer] as the custom tab colorizer of [SlidingTabLayout] field [mSlidingTabLayout]
      * whose [TabColorizer.getIndicatorColor], and [TabColorizer.getDividerColor] overrides return

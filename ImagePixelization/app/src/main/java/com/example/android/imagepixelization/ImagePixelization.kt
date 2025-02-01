@@ -63,34 +63,34 @@ import java.util.Arrays
  */
 class ImagePixelization : ComponentActivity() {
     /**
-     * Original [Bitmap] loaded from [R.drawable.image] jpg
+     * Original [Bitmap] loaded from `R.drawable.image` jpg
      */
     var mImageBitmap: Bitmap? = null
 
     /**
-     * [ImageView] in our layout with id [R.id.pixelView], used to display our pixelated image.
+     * [ImageView] in our layout with id `R.id.pixelView`, used to display our pixelated image.
      */
     var mImageView: ImageView? = null
 
     /**
-     * [SeekBar] in our layout with id [R.id.seekbar], used to control degree of pixelization
+     * [SeekBar] in our layout with id `R.id.seekbar`, used to control degree of pixelization
      */
     var mSeekBar: SeekBar? = null
 
     /**
-     * Flag indicating the [CheckBox] in our options menu with id [R.id.checkbox]
+     * Flag indicating the [CheckBox] in our options menu with id `R.id.checkbox`
      * ("Using AsyncTask") is checked.
      */
     var mIsChecked: Boolean = false
 
     /**
-     * Flag indicating the [CheckBox] in our options menu with id [R.id.builtin_pixelation_checkbox]
+     * Flag indicating the [CheckBox] in our options menu with id `R.id.builtin_pixelation_checkbox`
      * ("Built-in Pixelization") is checked.
      */
     var mIsBuiltinPixelizationChecked: Boolean = false
 
     /**
-     * Progress of the [SeekBar] with id [R.id.seekbar] last time our [invokePixelization]
+     * Progress of the [SeekBar] with id `R.id.seekbar` last time our [invokePixelization]
      * method was called.
      */
     var mLastProgress: Int = 0
@@ -107,10 +107,10 @@ class ImagePixelization : ComponentActivity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_image_pixelization]. We
-     * initialize our [ImageView] field [mImageView] by finding the view with id [R.id.pixelView],
-     * and our [SeekBar] field [mSeekBar] by finding the view with id [R.id.seekbar]. We initialize
-     * our [Bitmap] field [mImageBitmap] by decoding the jpg with resource id [R.drawable.image],
+     * then we set our content view to our layout file `R.layout.activity_image_pixelization`. We
+     * initialize our [ImageView] field [mImageView] by finding the view with id `R.id.pixelView`,
+     * and our [SeekBar] field [mSeekBar] by finding the view with id `R.id.seekbar`. We initialize
+     * our [Bitmap] field [mImageBitmap] by decoding the jpg with resource id `R.drawable.image`,
      * and set it to be the content of [mImageView]. Finally we set the [OnSeekBarChangeListener] of
      * [mSeekBar] to our [OnSeekBarChangeListener] field [mOnSeekBarChangeListener].
      *
@@ -143,7 +143,7 @@ class ImagePixelization : ComponentActivity() {
 
     /**
      * The [OnSeekBarChangeListener] for our [SeekBar] field [mSeekBar] (the [SeekBar] with id
-     * [R.id.seekbar]), communicates changes to the position of the [SeekBar] to the parts of
+     * `R.id.seekbar`), communicates changes to the position of the [SeekBar] to the parts of
      * our code responsible for pixilating our image.
      */
     private val mOnSeekBarChangeListener: OnSeekBarChangeListener = object : OnSeekBarChangeListener {
@@ -198,7 +198,7 @@ class ImagePixelization : ComponentActivity() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We fetch a [MenuInflater]
-     * for this context and use it to inflate our menu layout file [R.menu.image_pixelization] into
+     * for this context and use it to inflate our menu layout file `R.menu.image_pixelization` into
      * our [Menu] parameter [menu].
      *
      * @param menu The options menu in which you place your items.
@@ -213,18 +213,18 @@ class ImagePixelization : ComponentActivity() {
      * This hook is called whenever an item in your options menu is selected. We switch on the item
      * id of our [MenuItem] parameter [item]:
      *
-     *  * [R.id.animate]: ("Animate") We initialize [ObjectAnimator] variable `val animator` with an
+     *  * `R.id.animate`: ("Animate") We initialize [ObjectAnimator] variable `val animator` with an
      *  instance configured to animate the [Int] "progress" property of [SeekBar] field [mSeekBar]
      *  from 0 to the upper limit its range. We set its [TimeInterpolator] to a new instance of
      * [LinearInterpolator] (interpolator where the rate of change is constant), set its
      * duration to SEEKBAR_ANIMATION_DURATION (10_000), and start it running.
      *
-     *  * [R.id.checkbox]: ("Using AsyncTask") If our [Boolean] field [mIsChecked] is `true` we set
+     *  * `R.id.checkbox`: ("Using AsyncTask") If our [Boolean] field [mIsChecked] is `true` we set
      *  the checked state of [MenuItem] parameter [item] to `false` and set [Boolean] field
      *  [mIsChecked] to `false`, if it is currently `false` we set the checked state of [item] to
      *  `true` and set [mIsChecked] to true.
      *
-     *  * [R.id.builtin_pixelation_checkbox]: ("Built-in Pixelization") We toggle the value of our
+     *  * `R.id.builtin_pixelation_checkbox`: ("Built-in Pixelization") We toggle the value of our
      *  [Boolean] field [mIsBuiltinPixelizationChecked], and set the checked state of [item] to it.
      *
      *  * default: we ignore.
@@ -443,7 +443,7 @@ class ImagePixelization : ComponentActivity() {
 
     /**
      * Invokes pixelization either on the main thread or on a background thread depending on whether
-     * or not the checkbox with id [R.id.checkbox] ("Using AsyncTask") was checked. We set our [Long]
+     * or not the checkbox with id `R.id.checkbox` ("Using AsyncTask") was checked. We set our [Long]
      * field [mLastTime] to the current system time, set our [Int] field [mLastProgress] to the current
      * progress of [SeekBar] field [], then branch on the value of [Boolean] field [mIsChecked]:
      *

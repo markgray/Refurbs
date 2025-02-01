@@ -55,13 +55,13 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main].
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`.
      * If our [Bundle] parameter [savedInstanceState] is `null` this is the first time we have been
      * called so we create [FragmentTransaction] variable `val transaction` by using the [FragmentManager]
      * for interacting with fragments associated with this activity to begin a fragment transaction.
      * We initialize [MediaEffectsFragment] variable `val fragment` with a new instance and add a
      * request to `transaction` for it to replace the fragment in the view with ID
-     * [R.id.sample_content_fragment]. Finally we commit `transaction`.
+     * `R.id.sample_content_fragment`. Finally we commit `transaction`.
      *
      * @param savedInstanceState if this is `null`, this is the first time we were called so we need
      * to create and add our [MediaEffectsFragment] fragment, otherwise we are being called after a
@@ -96,7 +96,7 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater]
-     * for this context to inflate our menu layout file [R.menu.main] into our [Menu] parameter
+     * for this context to inflate our menu layout file `R.menu.main` into our [Menu] parameter
      * [menu], then return `true` so the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
@@ -110,11 +110,11 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * Prepare the Screen's standard options menu to be displayed. We initialize [MenuItem] variable
-     * `val logToggle` by finding the item in our [Menu] parameter [menu] with id [R.id.menu_toggle_log]
-     * and if the view with id [R.id.sample_output] is an instance of [ViewAnimator] we set it to
+     * `val logToggle` by finding the item in our [Menu] parameter [menu] with id `R.id.menu_toggle_log`
+     * and if the view with id `R.id.sample_output` is an instance of [ViewAnimator] we set it to
      * visible. If our [Boolean] flag field [mLogShown] is `true` we set the title of `logToggle` to
-     * the string with resource id [R.string.sample_hide_log] ("Hide Log") otherwise we set it to the
-     * string with resource id [R.string.sample_show_log] ("Show Log"). Finally we return the value
+     * the string with resource id `R.string.sample_hide_log` ("Hide Log") otherwise we set it to the
+     * string with resource id `R.string.sample_show_log` ("Show Log"). Finally we return the value
      * returned by our super's implementation of `onPrepareOptionsMenu` to the caller.
      *
      * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu]
@@ -130,9 +130,9 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * This hook is called whenever an item in your options menu is selected. If the item id of our
-     * [MenuItem] parameter [item] is [R.id.menu_toggle_log] we toggle the value of our [Boolean]
+     * [MenuItem] parameter [item] is `R.id.menu_toggle_log` we toggle the value of our [Boolean]
      * flag field [mLogShown] and initialize [ViewAnimator] variable `val output` by finding the
-     * view with id [R.id.sample_output]. If [mLogShown] is now `true` set set the displayed child
+     * view with id `R.id.sample_output`. If [mLogShown] is now `true` set set the displayed child
      * of `output` to 1, otherwise we set it to 0. We then call the [invalidateOptionsMenu] method
      * to declare that the options menu has changed, so should be recreated, and return `true` to
      * consume the event here. If it is not our menu item we return the value returned by our
@@ -164,7 +164,7 @@ class MainActivity : SampleActivityBase() {
      * set it to be the next node to receive Log data after `logWrapper` has done its work (this
      * will pipe data through `msgFilter` which will filter out everything except the message text).
      * We initialize [LogFragment] variable `val logFragment` by using the [FragmentManager] to find
-     * the fragment in our layout with id [R.id.log_fragment]. We then set the next node to receive
+     * the fragment in our layout with id `R.id.log_fragment`. We then set the next node to receive
      * Log data after `msgFilter` to be the `[LogView] contained in `logFragment`. We then log the
      * message "Ready".
      */

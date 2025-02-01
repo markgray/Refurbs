@@ -128,7 +128,7 @@ class EntryListFragment
      * processed by [SimpleCursorAdapter].
      *
      * We then set our list adapter to [mAdapter], set our empty text to the string with id
-     * [R.string.loading] ("Waiting for sync..."). We then fetch the [LoaderManager] for this
+     * `R.string.loading` ("Waiting for sync..."). We then fetch the [LoaderManager] for this
      * fragment (creating it if needed) and call its [LoaderManager.initLoader] method to ensure
      * a loader is initialized and active. (If the loader doesn't already exist, one is created
      * and (if the fragment is currently started) starts the loader. Otherwise the last created
@@ -276,7 +276,7 @@ class EntryListFragment
     /**
      * Create the ActionBar. First we call our super's implementation of `onCreateOptionsMenu`
      * then we save our [Menu] parameter [menu] in our field [mOptionsMenu]. Finally we use our
-     * [MenuInflater] parameter [inflater] to inflate our menu layout [R.menu.main] into [menu].
+     * [MenuInflater] parameter [inflater] to inflate our menu layout `R.menu.main` into [menu].
      *
      * @param menu The options menu in which you place our items.
      * @param inflater [MenuInflater] to use to instantiate menu XML files into [Menu] objects
@@ -290,7 +290,7 @@ class EntryListFragment
 
     /**
      * Respond to user gestures on the ActionBar. We `when` switch on the id of our [MenuItem]
-     * parameter [item] catching only [R.id.menu_refresh] in which case we call our method
+     * parameter [item] catching only `R.id.menu_refresh` in which case we call our method
      * [SyncUtils.TriggerRefresh] to trigger an immediate sync ("refresh") and return `true` to the
      * caller to consume the selection here. Otherwise we return the value returned by calling our
      * super's implementation of `onOptionsItemSelected`.
@@ -352,11 +352,11 @@ class EntryListFragment
      * Set the state of the Refresh button. If a sync is active, turn on the [ProgressBar] widget.
      * Otherwise, turn it off. If our [Menu] field [mOptionsMenu] is `null` we return having done
      * nothing. Otherwise we initialize [MenuItem] variable `val refreshItem` by finding the item in
-     * [mOptionsMenu] with id [R.id.menu_refresh] and if this is not `null` we branch on the
+     * [mOptionsMenu] with id `R.id.menu_refresh` and if this is not `null` we branch on the
      * value of our [Boolean] parameter [refreshing]:
      *
      *  * `true`: We set the action view of [MenuItem] `refreshItem` to the layout file
-     *  [R.layout.actionbar_indeterminate_progress] (an indeterminateProgressStyle [ProgressBar]).
+     *  `R.layout.actionbar_indeterminate_progress` (an indeterminateProgressStyle [ProgressBar]).
      *
      *  * `false`: We set the action view of [MenuItem] `refreshItem` to null
      *

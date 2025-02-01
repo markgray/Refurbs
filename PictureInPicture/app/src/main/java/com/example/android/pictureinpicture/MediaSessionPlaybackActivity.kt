@@ -67,9 +67,9 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     private var mScrollView: ScrollView? = null
 
     /**
-     * [View.OnClickListener] for the button with id [R.id.pip] ("Enter Picture-in-Picture mode"),
+     * [View.OnClickListener] for the button with id `R.id.pip` ("Enter Picture-in-Picture mode"),
      * it consists of an anonymous class whose `onClick` override calls our method [minimize]
-     * if the view that was clicked had the id [R.id.pip].
+     * if the view that was clicked had the id `R.id.pip`.
      */
     private val mOnClickListener = View.OnClickListener { view: View ->
         /**
@@ -136,15 +136,15 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. We
-     * initialize our [MovieView] field [mMovieView] by finding the view with id [R.id.movie], and
-     * [ScrollView] field [mScrollView] by finding the view with id [R.id.scroll]. We initialize our
-     * [Button] variable `val switchExampleButton` by finding the view with id [R.id.switch_example],
-     * set its text to the string with id [R.string.switch_custom] ("Switch to custom actions
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`. We
+     * initialize our [MovieView] field [mMovieView] by finding the view with id `R.id.movie`, and
+     * [ScrollView] field [mScrollView] by finding the view with id `R.id.scroll`. We initialize our
+     * [Button] variable `val switchExampleButton` by finding the view with id `R.id.switch_example`,
+     * set its text to the string with id `R.string.switch_custom` ("Switch to custom actions
      * example"), and set its [View.OnClickListener] to a new instance of [SwitchActivityOnClick]
      * (Starts the activity [MainActivity] running instead of us). We set the [MovieListener] of
      * [MovieView] field [mMovieView] to [MovieListener] field [mMovieListener], then find the
-     * button with the id [R.id.pip] ("Enter Picture-in-Picture mode") and set its
+     * button with the id `R.id.pip` ("Enter Picture-in-Picture mode") and set its
      * [View.OnClickListener] to our [View.OnClickListener] field [mOnClickListener].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
@@ -567,7 +567,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
 
     /**
      * Switches to the activity [MainActivity], it is the [View.OnClickListener] for the button
-     * with the id [R.id.switch_example] (its text is set to "Switch to custom actions example" in
+     * with the id `R.id.switch_example` (its text is set to "Switch to custom actions example" in
      * the [onCreate] override of [MediaSessionPlaybackActivity]). First we start the activity
      * [MainActivity], then we call [finish] to close this activity.
      */

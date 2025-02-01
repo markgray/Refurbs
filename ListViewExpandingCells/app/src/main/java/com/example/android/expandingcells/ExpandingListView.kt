@@ -285,7 +285,7 @@ class ExpandingListView : ListView {
      *
      * When we have finished filling `oldCoordinates` with the Y boundaries of our children we
      * initialize [View] variable `val expandingLayout` by finding the [View] in `view` with id
-     * [R.id.expanding_layout] (the extra content) and set its visibility to visible. We
+     * `R.id.expanding_layout` (the extra content) and set its visibility to visible. We
      * [ViewTreeObserver] `val observer` with the [ViewTreeObserver] for this view's hierarchy, and
      * add an anonymous [OnPreDrawListener] whose [OnPreDrawListener.onPreDraw] override calculates
      * and sets in motion the animations which result from expanding `view` in two passes.
@@ -382,7 +382,7 @@ class ExpandingListView : ListView {
              * created by our [getAnimation] method for animating the translation of the top Y of
              * `view` (the clicked on cell) by `-yTranslateTop` and the bottom Y by `yTranslateBottom`.
              * Then we add an object animator to `animations` which animates the alpha property of
-             * the view in `view` with id [R.id.expanding_layout] (the expanding extra content) from
+             * the view in `view` with id `R.id.expanding_layout` (the expanding extra content) from
              * 0 to 1. We then disable our [ListView] for the duration of the animation, and set it
              * to not be clickable. We initialize [AnimatorSet] variable `val s` with a new instance,
              * set it to play the animations in `animations` at the same time, and add to it an
@@ -681,7 +681,7 @@ class ExpandingListView : ListView {
              *  top plus `delta` and the bottom Y to the current bottom plus delta.
              *
              * We initialize [View] variable `val expandingLayout` by finding the view in `view`
-             * with id [R.id.expanding_layout] and initialize [ArrayList] of [Animator] variable
+             * with id `R.id.expanding_layout` and initialize [ArrayList] of [Animator] variable
              * `val animations` with a new instance. Then we loop over [Int] variable `var i` for
              * all our `childCountLocal` children:
              *

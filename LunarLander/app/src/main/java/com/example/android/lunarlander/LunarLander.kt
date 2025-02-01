@@ -166,12 +166,12 @@ class LunarLander : ComponentActivity() {
 
     /**
      * Invoked when the Activity is created. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.lunar_layout]. We initialize our
-     * [LunarView] field [mLunarView] by finding the view with id [R.id.lunar], and initialize our
+     * then we set our content view to our layout file `R.layout.lunar_layout`. We initialize our
+     * [LunarView] field [mLunarView] by finding the view with id `R.id.lunar`, and initialize our
      * [LunarThread] field [mLunarThread] with the handle to the animation thread returned by the
      * [LunarView.thread] property of [mLunarView]. We then call the [LunarView.setTextView] method
      * of [mLunarView] to have it set the [TextView] it uses for status messages to the view we find
-     * with the id [R.id.text]. If our [Bundle] parameter [savedInstanceState] is `null` we were
+     * with the id `R.id.text`. If our [Bundle] parameter [savedInstanceState] is `null` we were
      * just launched so we call the [LunarThread.setState] method of [mLunarThread] to have it
      * set the game state to [LunarView.STATE_READY]. If [savedInstanceState] is not `null` we call
      * the [LunarThread.restoreState] method of [mLunarThread] to have it restore its state from the

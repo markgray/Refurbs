@@ -51,9 +51,9 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Called when our [AppCompatActivity] is starting. First we call our super's implementation
-     * of `onCreate`, then we set our content view to our layout file [R.layout.main_activity]
+     * of `onCreate`, then we set our content view to our layout file `R.layout.main_activity`
      * (it consists of a single [RecyclerView]). We initialize [RecyclerView] variable `val list`
-     * by finding the view with id [R.id.list], and set its layout manager to a new instance of
+     * by finding the view with id `R.id.list`, and set its layout manager to a new instance of
      * [LinearLayoutManager] created to use the context of `list`. We initialize our [CheeseAdapter]
      * field [mCheeseAdapter] with a new instance and set the adapter of `list` to it. Finally we
      * call the [LoaderManager.initLoader] method of the activity's [LoaderManager] to initialize

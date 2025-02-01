@@ -49,8 +49,8 @@ class CrossFading : ComponentActivity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_cross_fading]. We initialize
-     * [ImageView] variable `val imageView` by finding the view with id [R.id.image_view]. We
+     * then we set our content view to our layout file `R.layout.activity_cross_fading`. We initialize
+     * [ImageView] variable `val imageView` by finding the view with id `R.id.image_view`. We
      * initialize both [Bitmap] variable `val bitmap0` and [Bitmap] variable `val bitmap1` with 500
      * by 500 pixel bitmaps with a config of ARGB_8888. We initialize [Canvas] variable `var canvas`
      * with an instance that will draw into `bitmap0` then call its [Canvas.drawColor] method to fill

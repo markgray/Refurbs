@@ -61,17 +61,17 @@ class PdfRendererBasicFragment
 
     /**
      * [ImageView] that shows a PDF page as a [Bitmap], its resource id in our layout file is
-     * [R.id.image]
+     * `R.id.image`
      */
     private var mImageView: ImageView? = null
 
     /**
-     * [Button] to move to the previous page, resource id [R.id.previous]
+     * [Button] to move to the previous page, resource id `R.id.previous`
      */
     private var mButtonPrevious: Button? = null
 
     /**
-     * [Button] to move to the next page, resource id [R.id.next]
+     * [Button] to move to the next page, resource id `R.id.next`
      */
     private var mButtonNext: Button? = null
 
@@ -83,7 +83,7 @@ class PdfRendererBasicFragment
     /**
      * Called to have the fragment instantiate its user interface view. We return the [View] that
      * our [LayoutInflater] parameter [inflater] inflates from our layout file
-     * [R.layout.fragment_pdf_renderer_basic], using our [ViewGroup] parameter [container] for the
+     * `R.layout.fragment_pdf_renderer_basic`, using our [ViewGroup] parameter [container] for the
      * LayoutParams of the view without attaching to it.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
@@ -106,9 +106,9 @@ class PdfRendererBasicFragment
     /**
      * Called immediately after [onCreateView] has returned, but before any saved state has been
      * restored in to the view. First we call our super's implementation of `onViewCreated` then we
-     * initialize our [ImageView] field [mImageView] by finding the view with id [R.id.image], our
-     * [Button] field [mButtonPrevious] by finding the view with id [R.id.previous], and our
-     * [Button] field [mButtonNext] by finding the view with id [R.id.next]. We then set the
+     * initialize our [ImageView] field [mImageView] by finding the view with id `R.id.image`, our
+     * [Button] field [mButtonPrevious] by finding the view with id `R.id.previous`, and our
+     * [Button] field [mButtonNext] by finding the view with id `R.id.next`. We then set the
      * [View.OnClickListener] of both [mButtonPrevious] and [mButtonNext] to this. We initialize our
      * [Int] field [mPageIndex] to 0, then if our [Bundle] parameter [savedInstanceState] is not
      * `null` we set [Int] field [mPageIndex] to the [Int] stored under the key
@@ -309,7 +309,7 @@ class PdfRendererBasicFragment
      * disable it if it is. We enable the [Button] field [mButtonNext] if `index+1` is less than
      * `pageCount` and disable it if it is greater than or equal to `pageCount`. We then set the
      * title associated with this activity to the string formatted using the format string with
-     * resource id [R.string.app_name_with_index] to display the value `index+1` (page number) and
+     * resource id `R.string.app_name_with_index` to display the value `index+1` (page number) and
      * `pageCount`.
      */
     private fun updateUi() {
@@ -335,10 +335,10 @@ class PdfRendererBasicFragment
      * Called when a [View] has been clicked. We `when` switch on the id of our [View] parameter
      * [view]:
      *
-     *  * [R.id.previous] "Previous": we call our [showPage] method to display the page that is 1
+     *  * `R.id.previous` "Previous": we call our [showPage] method to display the page that is 1
      *  page before the current page index of our [PdfRenderer.Page] field [mCurrentPage].
      *
-     *  * [R.id.next] "Next": we call our [showPage] method to display the page that is 1 page after
+     *  * `R.id.next` "Next": we call our [showPage] method to display the page that is 1 page after
      *  the current page index of our [PdfRenderer.Page] field [mCurrentPage]
      *
      * @param view The [View] that was clicked.

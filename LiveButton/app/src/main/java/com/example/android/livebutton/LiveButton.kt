@@ -58,8 +58,8 @@ class LiveButton : ComponentActivity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_overshoot]. We initialize
-     * our [Button] variable `val clickMeButton` by finding the view with id [R.id.clickMe]
+     * then we set our content view to our layout file `R.layout.activity_overshoot`. We initialize
+     * our [Button] variable `val clickMeButton` by finding the view with id `R.id.clickMe`
      * ("Click me!") and set the duration of its [ViewPropertyAnimator] to 200ms. Finally we set its
      * [OnTouchListener] to an anonymous class which animates its scaling properties when an
      * ACTION_DOWN or ACTION_UP [MotionEvent] is received.

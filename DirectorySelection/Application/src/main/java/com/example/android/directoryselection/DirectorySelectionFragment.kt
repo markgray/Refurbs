@@ -50,14 +50,14 @@ class DirectorySelectionFragment : Fragment() {
     var mCurrentDirectoryUri: Uri? = null
 
     /**
-     * [TextView] with id [R.id.textview_current_directory], used to display the name of the
+     * [TextView] with id `R.id.textview_current_directory`, used to display the name of the
      * currently selected directory (whose contents are displayed in the [RecyclerView] below it).
      */
     @JvmField
     var mCurrentDirectoryTextView: TextView? = null
 
     /**
-     * [Button] with id [R.id.button_create_directory] used to create an [AlertDialog]
+     * [Button] with id `R.id.button_create_directory` used to create an [AlertDialog]
      * when clicked which allows the user to create a new directory.
      */
     @JvmField
@@ -96,7 +96,7 @@ class DirectorySelectionFragment : Fragment() {
 
     /**
      * Called to have the fragment instantiate its user interface view. We use our [LayoutInflater]
-     * parameter [inflater] to inflate our layout file [R.layout.fragment_directory_selection]
+     * parameter [inflater] to inflate our layout file `R.layout.fragment_directory_selection`
      * using our [ViewGroup] parameter [container] for the LayoutParams without attaching to it
      * and return the [View] created to our caller.
      *
@@ -121,18 +121,18 @@ class DirectorySelectionFragment : Fragment() {
     /**
      * Called immediately after [onCreateView] has returned, but before any saved state has been
      * restored in to the view. First we call through to our super's implementation of `onViewCreated`,
-     * then we locate the view with id [R.id.button_open_directory] ("Open directory") and set its
+     * then we locate the view with id `R.id.button_open_directory` ("Open directory") and set its
      * [OnClickListener] to an anonymous class whose [OnClickListener.onClick] override launches an
      * intent for its result with the action [Intent.ACTION_OPEN_DOCUMENT_TREE]. Next we initialize
      * our [TextView] field [mCurrentDirectoryTextView] by finding the view with id
-     * [R.id.textview_current_directory], and our [Button] field [mCreateDirectoryButton] by finding
-     * the view with id [R.id.button_create_directory] ("Create Directory"). We then set the
+     * `R.id.textview_current_directory`, and our [Button] field [mCreateDirectoryButton] by finding
+     * the view with id `R.id.button_create_directory` ("Create Directory"). We then set the
      * [OnClickListener] of [mCreateDirectoryButton] to an anonymous class whose [OnClickListener.onClick]
      * override launches an [AlertDialog] which allows the user to enter the name of a directory that
      * he would like to create and creates it in the current directory [mCurrentDirectoryUri].
      *
      * After this we initialize our [RecyclerView] field [mRecyclerView] by finding the view with
-     * id [R.id.recyclerview_directory_entries], and initialize [RecyclerView.LayoutManager] field
+     * id `R.id.recyclerview_directory_entries`, and initialize [RecyclerView.LayoutManager] field
      * [mLayoutManager] by using the [RecyclerView.getLayoutManager] method (aka `layoutManager`
      * property in kotlin) of [mRecyclerView] to retrieve it (we never reference this again). We
      * scroll [mRecyclerView] to position 0, initialize our [DirectoryEntryAdapter] field [mAdapter]

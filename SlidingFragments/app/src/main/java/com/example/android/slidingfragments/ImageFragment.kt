@@ -24,7 +24,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 
 /**
- * This [Fragment] displays an [ImageView] whose ID is [R.drawable.golden_gate]
+ * This [Fragment] displays an [ImageView] whose ID is `R.drawable.golden_gate`
  */
 class ImageFragment : Fragment() {
     /**
@@ -35,7 +35,7 @@ class ImageFragment : Fragment() {
     /**
      * Called to have the fragment instantiate its user interface view. We initialize [View] variable
      * `val view` by using our [LayoutInflater] parameter [inflater] to inflate our layout file
-     * [R.layout.image_fragment] into it using our [ViewGroup] parameter [container] for its layout
+     * `R.layout.image_fragment` into it using our [ViewGroup] parameter [container] for its layout
      * params without attaching to it. Then we set its [View.OnClickListener] to our
      * [View.OnClickListener] field [mClickListener] and return `view` to the caller.
      *

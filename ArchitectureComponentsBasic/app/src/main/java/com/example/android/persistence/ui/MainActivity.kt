@@ -42,12 +42,12 @@ import com.example.android.persistence.model.Product
 class MainActivity : AppCompatActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.main_activity].
+     * `onCreate`, then we set our content view to our layout file `R.layout.main_activity`.
      * Then if our parameter [savedInstanceState] is null we initialize our [ProductListFragment]
      * variable `val fragment` with a new instance. We fetch the [FragmentManager] used for
      * interacting with fragments associated with this activity, begin a series of edit operations
      * on the Fragments associated with it, add `fragment` to the container with id
-     * [R.id.fragment_container] (the [FrameLayout] in our layout file), using the TAG field of
+     * `R.id.fragment_container` (the [FrameLayout] in our layout file), using the TAG field of
      * [ProductListFragment] as the tag name for the fragment, and then we commit the fragment
      * transaction.
      *
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
      * [product]. Then we fetch the [FragmentManager] used for interacting with fragments
      * associated with this activity, begin a series of edit operations on the Fragments associated
      * with it, add this transaction to the back stack with the name "product", replace the current
-     * fragment with ID [R.id.fragment_container] with `productFragment` using `null` as the tag,
+     * fragment with ID `R.id.fragment_container` with `productFragment` using `null` as the tag,
      * and then we commit the transaction.
      *
      * @param product the [ProductEntity] whose the product detail we are to display ([ProductEntity]

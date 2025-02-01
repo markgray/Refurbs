@@ -37,12 +37,12 @@ import androidx.core.view.updateLayoutParams
 class RequestDuringLayout : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_request_during_layout]. We
-     * initialize our [MyLayout] variable `val myLayout` by finding the view with id [R.id.container],
-     * initialize [Button] variable `val addViewButton` by finding the view with id [R.id.addView]
+     * then we set our content view to our layout file `R.layout.activity_request_during_layout`. We
+     * initialize our [MyLayout] variable `val myLayout` by finding the view with id `R.id.container`,
+     * initialize [Button] variable `val addViewButton` by finding the view with id `R.id.addView`
      * ("Add"), initialize [Button] variable `val removeViewButton` by finding the view with id
-     * [R.id.removeView] ("Remove") and initialize [Button] variable `val forceLayoutButton` by
-     * finding the view with id [R.id.forceLayout] ("Layout"). We set the [View.OnClickListener] of
+     * `R.id.removeView` ("Remove") and initialize [Button] variable `val forceLayoutButton` by
+     * finding the view with id `R.id.forceLayout` ("Layout"). We set the [View.OnClickListener] of
      * `addViewButton` to an anonymous class which sets the [MyLayout.mAddRequestPending] field of
      * `myLayout` to `true`, then calls its [MyLayout.requestLayout] method, and we set the
      * [View.OnClickListener] of `removeViewButton` to an anonymous class which sets the

@@ -41,13 +41,13 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
 
     /**
      * Called when the activity is starting and creates the activity. Sets up an [ActionBar] with
-     * tabs, and then configures the [ViewPager] contained inside [R.layout.activity_main]. A
+     * tabs, and then configures the [ViewPager] contained inside `R.layout.activity_main`. A
      * [SectionsPagerAdapter] will be instantiated to hold the different pages of fragments that
      * are to be displayed. A [ViewPager.SimpleOnPageChangeListener] will also be configured to
      * receive callbacks when the user swipes between pages in the ViewPager.
      *
      * First we call our super's implementation of `onCreate`, then we set our content view to
-     * our layout file [R.layout.sample_main] (it holds only a [androidx.viewpager.widget.ViewPager]
+     * our layout file `R.layout.sample_main` (it holds only a [androidx.viewpager.widget.ViewPager]
      * widget). We initialize [ActionBar] variable `val actionBar` with the [Activity]'s [ActionBar],
      * and set its navigation mode to [ActionBar.NAVIGATION_MODE_TABS] (tab navigation mode, instead
      * of static title text this mode presents a series of tabs for navigation within the activity).
@@ -55,7 +55,7 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
      * constructed using the [FragmentManager] for interacting with fragments associated with this
      * activity for the various [FragmentTransaction] operations it uses to swap fragments. We
      * initialize our [ViewPager] field [mViewPager] by finding the view in our layout file with id
-     * [R.id.pager] set its adapter to [mSectionsPagerAdapter], and set its [OnPageChangeListener]
+     * `R.id.pager` set its adapter to [mSectionsPagerAdapter], and set its [OnPageChangeListener]
      * to an anonymous [SimpleOnPageChangeListener] whose [SimpleOnPageChangeListener.onPageSelected]
      * override calls the [setSelectedNavigationItem] method of [ActionBar] variable `actionBar`
      * with the Position index of the newly selected page `position` in order to set its selected
@@ -219,15 +219,15 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
          * of the Java Virtual Machine, Then we `when` switch on the value of our [Int] parameter
          * [position]:
          *
-         *  * 0: we return the string with resource id [R.string.title_section1] ("Section 1")
+         *  * 0: we return the string with resource id `R.string.title_section1` ("Section 1")
          *  with all of the characters in this [String] converted to upper case using the rules
          *  of [Locale] `l`.
          *
-         *  * 1: we return the string with resource id [R.string.title_section2] ("Section 2")
+         *  * 1: we return the string with resource id `R.string.title_section2` ("Section 2")
          *  with all of the characters in this [String] converted to upper case using the rules
          * of [Locale] `l`.
          *
-         *  * 2: we return the string with resource id [R.string.title_section3] ("Section 3")
+         *  * 2: we return the string with resource id `R.string.title_section3` ("Section 3")
          *  with all of the characters in this [String] converted to upper case using the rules
          * of [Locale] `l`.
          *
@@ -259,9 +259,9 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
         /**
          * Called to have the fragment instantiate its user interface view. We initialize our [View]
          * variable `val rootView` with the view that our [LayoutInflater] parameter [inflater]
-         * inflates from our layout file [R.layout.fragment_main_dummy] using our [ViewGroup]
+         * inflates from our layout file `R.layout.fragment_main_dummy` using our [ViewGroup]
          * parameter [container] for `LayoutParams` without attaching to it. We initialize [TextView]
-         * variable `val dummyTextView` by finding the view in `rootView` with id [R.id.section_label],
+         * variable `val dummyTextView` by finding the view in `rootView` with id `R.id.section_label`,
          * then set its text to the string formed by converting the [Int] stored in our argument
          * [Bundle] under the key [ARG_SECTION_NUMBER] to a string. Finally we return `rootView` to the caller.
          *

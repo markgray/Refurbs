@@ -41,7 +41,7 @@ import androidx.core.view.updateLayoutParams
 class MultiPropertyAnimations : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_multi_property_animations]
+     * then we set our content view to our layout file `R.layout.activity_multi_property_animations`
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */

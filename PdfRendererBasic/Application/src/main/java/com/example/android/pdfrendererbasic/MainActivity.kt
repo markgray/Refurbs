@@ -37,11 +37,11 @@ import androidx.fragment.app.FragmentTransaction
 class MainActivity : AppCompatActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_main_real]. If our [Bundle]
+     * then we set our content view to our layout file `R.layout.activity_main_real`. If our [Bundle]
      * parameter [savedInstanceState] is `null` this is the first time we were called, so we fetch
      * the [FragmentManager] for interacting with fragments associated with this activity and use it
      * to begin a [FragmentTransaction] to which we chain an [FragmentTransaction.add] command to
-     * add a new instance of [PdfRendererBasicFragment] to the view in our layout with ID [R.id.container]
+     * add a new instance of [PdfRendererBasicFragment] to the view in our layout with ID `R.id.container`
      * using [FRAGMENT_PDF_RENDERER_BASIC] ("pdf_renderer_basic") as its fragment tag, and to this
      * command we chain a command to `commit` the [FragmentTransaction].
      *
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We retrieve a [MenuInflater]
-     * for this context and use it to inflate our menu layout file [R.menu.main] into our [Menu]
+     * for this context and use it to inflate our menu layout file `R.menu.main` into our [Menu]
      * parameter [menu], then return `true` to the caller so that the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
@@ -91,13 +91,13 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * This hook is called whenever an item in your options menu is selected. We switch on the item
-     * id of our [MenuItem] parameter [item] and if it is [R.id.action_info] we construct a new
-     * [AlertDialog.Builder], set its message to the string with resource ID [R.string.intro_message]
+     * id of our [MenuItem] parameter [item] and if it is `R.id.action_info` we construct a new
+     * [AlertDialog.Builder], set its message to the string with resource ID `R.string.intro_message`
      * ("This sample demonstrates how to use PdfRenderer to display PDF documents on the screen."),
      * set its positive button to display the string with resource id [android.R.string.ok] ("OK")
      * with `null` as its [DialogInterface.OnClickListener], then chain a call to its `show` method
      * to display the [AlertDialog] it built. We then return `true` to the caller to consume the
-     * event here. If the item id is not [R.id.action_info] we return the value returned by our
+     * event here. If the item id is not `R.id.action_info` we return the value returned by our
      * super's implementation of `onOptionsItemSelected`.
      *
      * @param item The menu item that was selected.

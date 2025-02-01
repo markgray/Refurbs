@@ -72,7 +72,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
     private var mUri: Uri? = null
 
     /**
-     * [EditText] with id [R.id.note] in our layout file [R.layout.note_editor] used to enter note
+     * [EditText] with id `R.id.note` in our layout file `R.layout.note_editor` used to enter note
      */
     private var mText: EditText? = null
 
@@ -175,7 +175,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      *  field [mUri] to the data URI of the [Intent] `intent` that launched our activity.
      *
      *  * [Intent.ACTION_INSERT] or [Intent.ACTION_PASTE]: We set our [Int] state field [mState] to
-     *  [STATE_INSERT], set our activities title to the string with resource id [R.string.title_create]
+     *  [STATE_INSERT], set our activities title to the string with resource id `R.string.title_create`
      *  ("New note"), and set [Uri] field [mUri] to the URL returned when we have a [ContentResolver]
      *  instance for our application's package insert an entry into the table addressed by the
      *  data URI of the [Intent] `intent` that launched our activity. If [mUri] is `null` we log the
@@ -192,8 +192,8 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      * overloads will be called). If `action` is [Intent.ACTION_PASTE] we call our [performPaste]
      * method to replace the note's data with the contents of the clipboard, and set our [Int] state
      * field [mState] to [STATE_EDIT]. Finally we set our content view to our layout file
-     * [R.layout.note_editor], and initialize our [EditText] field [mText] by finding the view in
-     * it with id [R.id.note].
+     * `R.layout.note_editor`, and initialize our [EditText] field [mText] by finding the view in
+     * it with id `R.id.note`.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
      * down then this Bundle contains the data it most recently supplied in [onSaveInstanceState].
@@ -403,7 +403,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      * to handle the MIME types for this application.
      *
      * We initialize [MenuInflater] variable `val inflater` with an instance for this context, and
-     * then use it to inflate our menu layout file [R.menu.editor_options_menu] into our parameter
+     * then use it to inflate our menu layout file `R.menu.editor_options_menu` into our parameter
      * [Menu] parameter [menu]. If our [Int] state field [mState] is equal to [STATE_EDIT] we
      * initialize [Intent] variable `val intent` with a new instance with [Uri] field [mUri] as its
      * data URI, add the category [Intent.CATEGORY_ALTERNATIVE] to it, then add to [menu] a group of
@@ -460,7 +460,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      * initialize [String] variable `val savedNote` with the column whose index is `colNoteIndex`,
      * and initialize [String] varialbe `val currentNote` with the text string contained in [EditText]
      * field [mText] (the version that the user has been editing). If `savedNote` is equal to
-     * `currentNote` we find the item in our [Menu] parameter [menu] with id [R.id.menu_revert]
+     * `currentNote` we find the item in our [Menu] parameter [menu] with id `R.id.menu_revert`
      * ("Revert changes") and set it to be invisible, and if they are not equal we set it to be
      * visible. Then we close `cursor` and return the value returned by our super's implementation
      * of `onPrepareOptionsMenu` to the caller.
@@ -495,16 +495,16 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      * The when statement in this method calls the appropriate method to perform the action the
      * user chose. We when switch on the value of the item id of our [MenuItem] parameter [item]:
      *
-     *  * [R.id.menu_save]: ("Save") We initialize [String] variable `val text` with the text
+     *  * `R.id.menu_save`: ("Save") We initialize [String] variable `val text` with the text
      *  contained in our [EditText] field [mText], then call our [updateNote] method to store `text`
      *  in the `COLUMN_NAME_NOTE` column of the note whose URI is [Uri] field [mUri], and passing
      *  `null` as the title so that the [updateNote] method will construct and store a new title
      *  derived from `text`.
      *
-     *  * [R.id.menu_delete]: ("Delete") We call our method [deleteNote] to delete the note whose
+     *  * `R.id.menu_delete`: ("Delete") We call our method [deleteNote] to delete the note whose
      *  URI is our [Uri] field [mUri] from our database, and call [finish] to end this activity.
      *
-     *  * [R.id.menu_revert]: ("Revert changes") We call our method [cancelNote] to cancel the work
+     *  * `R.id.menu_revert`: ("Revert changes") We call our method [cancelNote] to cancel the work
      *  done on a note (it deletes the note if it was newly created, or reverts to the original text
      *  of the note if it was being edited).
      *
@@ -776,7 +776,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      * [String] variable `val title` with the string at index `colTitleIndex` in [cursor],
      * initialize [Resources] variable `val res` to a [Resources] instance for our application's
      * package and use it to format [String] variable `val text` from `title` using the format with
-     * resource id [R.string.title_edit] ("Edit: %1$s"). We then set the title associated with this
+     * resource id `R.string.title_edit` ("Edit: %1$s"). We then set the title associated with this
      * activity to `text`. We initialize [String] variable `val note` with the string at index
      * `colNoteIndex` in [cursor] and use it to set the text to be displayed in [EditText] field
      * [mText] while retaining the cursor position. Finally if [mOriginalContent] is `null` we set

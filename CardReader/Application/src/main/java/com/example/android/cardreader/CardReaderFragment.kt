@@ -43,7 +43,7 @@ class CardReaderFragment : Fragment(), AccountCallback {
     var mLoyaltyCardReader: LoyaltyCardReader? = null
 
     /**
-     * [TextView] in our layout with ID [R.id.card_account_field] which we use to display the account
+     * [TextView] in our layout with ID `R.id.card_account_field` which we use to display the account
      * number our [AccountCallback.onAccountReceived] override receives from `LoyaltyCardReader`.
      */
     private var mAccountField: TextView? = null
@@ -60,10 +60,10 @@ class CardReaderFragment : Fragment(), AccountCallback {
 
     /**
      * Called to have the fragment instantiate its user interface view. We use our [LayoutInflater]
-     * parameter [inflater] to inflate our layout file [R.layout.main_fragment] into [View] variable
+     * parameter [inflater] to inflate our layout file `R.layout.main_fragment` into [View] variable
      * `val v` using our [ViewGroup] parameter [container] for the layout parameters. If `v` is not
      * `null` we initialize our [TextView] field [mAccountField] by finding the view in it with ID
-     * [R.id.card_account_field] and set its text to the string "Waiting...". We initialize our
+     * `R.id.card_account_field` and set its text to the string "Waiting...". We initialize our
      * [LoyaltyCardReader] field [mLoyaltyCardReader] with a new instance, then call our method
      * [enableReaderMode] to enable reader mode, disable Android Beam and register our card reader
      * callback [mLoyaltyCardReader].

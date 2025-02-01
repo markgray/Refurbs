@@ -55,9 +55,9 @@ class StorageProviderFragment : Fragment() {
      * Prepare the Fragment host's standard options menu to be displayed. First we call our super's
      * implementation of `onPrepareOptionsMenu`. Then we locate the [MenuItem] variable `val item`
      * in our [Menu] parameter [menu] (already inflated by [MainActivity]) with the id
-     * [R.id.sample_action], and if our [Boolean] flag field [mLoggedIn] is `true` we set its title
-     * to the string with id [R.string.log_out] ("Log out"), otherwise we set it to the string with
-     * id [R.string.log_in] ("Log in").
+     * `R.id.sample_action`, and if our [Boolean] flag field [mLoggedIn] is `true` we set its title
+     * to the string with id `R.string.log_out` ("Log out"), otherwise we set it to the string with
+     * id `R.string.log_in` ("Log in").
      *
      * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu].
      */
@@ -71,10 +71,10 @@ class StorageProviderFragment : Fragment() {
 
     /**
      * This hook is called whenever an item in your options menu is selected. If the id of our
-     * [MenuItem] parameter [item] is [R.id.sample_action], we call our method [toggleLogin] to
+     * [MenuItem] parameter [item] is `R.id.sample_action`, we call our method [toggleLogin] to
      * toggle whether we are logged in or not, and if our [Boolean] flag field [mLoggedIn] is now
-     * `true` we set the title of [item] to the string with id [R.string.log_out] ("Log out")
-     * otherwise we set it to thestring with id [R.string.log_in] ("Log in"). We then retrieve a
+     * `true` we set the title of [item] to the string with id `R.string.log_out` ("Log out")
+     * otherwise we set it to thestring with id `R.string.log_in` ("Log in"). We then retrieve a
      * [ContentResolver] instance for our application's package and call its [ContentResolver.notifyChange]
      * method to notify registered observers that a row was updated in the URI representing the
      * roots of our document provider [AUTHORITY] ("com.example.android.storageprovider.documents").
@@ -132,9 +132,9 @@ class StorageProviderFragment : Fragment() {
     /**
      * Dummy function to save whether the user is logged in. We initialize [SharedPreferences]
      * variable `val sharedPreferences` with the preferences file with the name whose resource id
-     * is [R.string.app_name] ("StorageProvider"). We then use `sharedPreferences` to create an
+     * is `R.string.app_name` ("StorageProvider"). We then use `sharedPreferences` to create an
      * [SharedPreferences.Editor] which we use to store the value of our [Boolean] parameter
-     * [loggedIn] under the key with resource id [R.string.key_logged_in] ("logged_in")
+     * [loggedIn] under the key with resource id `R.string.key_logged_in` ("logged_in")
      * and then apply the change.
      */
     private fun writeLoginValue(loggedIn: Boolean) {
@@ -148,8 +148,8 @@ class StorageProviderFragment : Fragment() {
     /**
      * Dummy function to determine whether the user is logged in. We initialize [SharedPreferences]
      * variable `val sharedPreferences` with the preferences file with the name whose resource id is
-     * [R.string.app_name] ("StorageProvider"). We then use `sharedPreferences` to fetch the boolean
-     * stored under the key with resource id [R.string.key_logged_in] ("logged_in") defaulting to
+     * `R.string.app_name` ("StorageProvider"). We then use `sharedPreferences` to fetch the boolean
+     * stored under the key with resource id `R.string.key_logged_in` ("logged_in") defaulting to
      * `false`, which we return to the caller.
      *
      * @return value stored in shared preferences file under the key "logged_in".

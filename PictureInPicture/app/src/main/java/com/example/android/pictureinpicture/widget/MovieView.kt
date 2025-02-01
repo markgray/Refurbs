@@ -80,37 +80,37 @@ class MovieView @JvmOverloads constructor(
     }
 
     /**
-     * Shows the video playback. Its id is [R.id.surface] in layout [R.layout.view_movie].
+     * Shows the video playback. Its id is `R.id.surface` in layout `R.layout.view_movie`.
      */
     val mSurfaceView: SurfaceView
 
     // Controls
 
     /**
-     * Play/Pause button with id [R.id.toggle], its image is toggled in the [adjustToggleState]
-     * method between [R.drawable.ic_pause_64dp], and [R.drawable.ic_play_arrow_64dp] depending on
+     * Play/Pause button with id `R.id.toggle`, its image is toggled in the [adjustToggleState]
+     * method between `R.drawable.ic_pause_64dp`, and `R.drawable.ic_play_arrow_64dp` depending on
      * whether the movie is paused or playing.
      */
     val mToggle: ImageButton
 
     /**
-     * [View] with id [R.id.shade], it is a translucent GRAY shade which is used to partially
+     * [View] with id `R.id.shade`, it is a translucent GRAY shade which is used to partially
      * obscure the movie when the controls are visible on top of it.
      */
     val mShade: View
 
     /**
-     * [ImageButton] with id [R.id.fast_forward], it is the fast forward button.
+     * [ImageButton] with id `R.id.fast_forward`, it is the fast forward button.
      */
     val mFastForward: ImageButton
 
     /**
-     * [ImageButton] with id [R.id.fast_rewind], it is the fast rewind button.
+     * [ImageButton] with id `R.id.fast_rewind`, it is the fast rewind button.
      */
     val mFastRewind: ImageButton
 
     /**
-     * [ImageButton] with id [R.id.minimize], it is the minimize (enter PiP button).
+     * [ImageButton] with id `R.id.minimize`, it is the minimize (enter PiP button).
      */
     val mMinimize: ImageButton
 
@@ -164,34 +164,34 @@ class MovieView @JvmOverloads constructor(
      */
     /**
      * Our `init` block. First we set our background color to BLACK. Then we inflate our layout file
-     * [R.layout.view_movie], attaching the result to to "this" [MovieView] extends [RelativeLayout]
+     * `R.layout.view_movie`, attaching the result to to "this" [MovieView] extends [RelativeLayout]
      * instance.  We initialize our [SurfaceView] field [mSurfaceView] by finding the view with id
-     * [R.id.surface], [View] field [mShade] by finding the view with id [R.id.shade], [ImageButton]
-     * field [mToggle] by finding the view with id [R.id.toggle], [ImageButton] field [mFastForward]
-     * by finding the view with id [R.id.fast_forward], [ImageButton] field [mFastRewind] by finding
-     * the view with id [R.id.fast_rewind], and [ImageButton] field [mMinimize] by finding the view
-     * with id [R.id.minimize].
+     * `R.id.surface`, [View] field [mShade] by finding the view with id `R.id.shade`, [ImageButton]
+     * field [mToggle] by finding the view with id `R.id.toggle`, [ImageButton] field [mFastForward]
+     * by finding the view with id `R.id.fast_forward`, [ImageButton] field [mFastRewind] by finding
+     * the view with id `R.id.fast_rewind`, and [ImageButton] field [mMinimize] by finding the view
+     * with id `R.id.minimize`.
      *
      * We initialize [TypedArray] variable `val attributes` by retrieving styled attribute information
      * in this Context's theme from the [AttributeSet] parameter `attrs` of the constructor for the
-     * attributes in [R.styleable.MovieView] (Attributes that can be used with a [MovieView]:
+     * attributes in `R.styleable.MovieView` (Attributes that can be used with a [MovieView]:
      * android:src, android:title, and android:adjustViewBounds), using `defStyleAttr` the resource
      * ID of a possible style file constaining default values if not 0, and
-     * [R.style.Widget_PictureInPicture_MovieView] as the default style (android:src is null,
+     * `R.style.Widget_PictureInPicture_MovieView` as the default style (android:src is null,
      * android:adjustViewBounds is false).
      *
      * We then set our [Int] field [mVideoResourceId] (the video resource id that we will play)
-     * to the resource id in `attributes` stored under the key [R.styleable.MovieView_android_src]
+     * to the resource id in `attributes` stored under the key `R.styleable.MovieView_android_src`
      * (set to @raw/vid_bigbuckbunny (raw/vid_bigbuckbunny.mp4) by an android:src="@raw/vid_bigbuckbunny"
      * attribute in our layout file layout/activity_main.xml).
      *
      * We call our method [setAdjustViewBounds] to set the background in accordance with the [Boolean]
-     * stored under the key [R.styleable.MovieView_android_adjustViewBounds] in `attributes`
+     * stored under the key `R.styleable.MovieView_android_adjustViewBounds` in `attributes`
      * (set to `true` by an android:adjustViewBounds="true" attribute in our layout file
      * layout/activity_main.xml).
      *
      * We set our [String] field [title] to the title of our movie stored under the key
-     * [R.styleable.MovieView_android_title] in `attributes` (set to "Big Buck Bunny" by an
+     * `R.styleable.MovieView_android_title` in `attributes` (set to "Big Buck Bunny" by an
      * android:title="@string/title_bigbuckbunny" attribute in our layout file
      * layout/activity_main.xml). We then recycle `attributes`.
      *
@@ -239,19 +239,19 @@ class MovieView @JvmOverloads constructor(
              * Called when one of the views we have been registered as an [OnClickListener]
              * is clicked. First we `when` switch on the id of the view that was clicked:
              *
-             *  * [R.id.surface] (our [SurfaceView] in layout/view_movie.xml) we call our method
+             *  * `R.id.surface` (our [SurfaceView] in layout/view_movie.xml) we call our method
              *  [toggleControls] to toggle the visibility of our control  buttons.
              *
-             *  * [R.id.toggle] (the play/pause button in layout/view_movie.xml) we call our method
+             *  * `R.id.toggle` (the play/pause button in layout/view_movie.xml) we call our method
              *  [toggle] to toggle between playing and paused states.
              *
-             *  * [R.id.fast_forward] (the fast forward button in layout/view_movie.xml) we call our
+             *  * `R.id.fast_forward` (the fast forward button in layout/view_movie.xml) we call our
              *  method [fastForward] to fast forward 5000ms.
              *
-             *  * [R.id.fast_rewind] (the fast rewind button in layout/view_movie.xml) we call our
+             *  * `R.id.fast_rewind` (the fast rewind button in layout/view_movie.xml) we call our
              *  method [fastRewind] to fast rewind 5000ms.
              *
-             *  * [R.id.minimize] (the minimise button (down carrot) in layout/view_movie.xml) if
+             *  * `R.id.minimize` (the minimise button (down carrot) in layout/view_movie.xml) if
              *  our [MovieListener] field [mMovieListener] is not `null` we call its method
              *  [MovieListener.onMovieMinimized].
              *
@@ -750,11 +750,11 @@ class MovieView @JvmOverloads constructor(
      * Sets the content description and image of [ImageButton] field [mToggle] depending on whether
      * the movie is playing or not. If [MediaPlayer] field [mMediaPlayer] is not `null`, and its
      * [MediaPlayer.isPlaying] method indicates that the movie is currently playing by returning
-     * `true` we set the content description of [mToggle] to the string with id [R.string.pause]
-     * ("Pause"), and set its image to the drawable with resource id [R.drawable.ic_pause_64dp]
+     * `true` we set the content description of [mToggle] to the string with id `R.string.pause`
+     * ("Pause"), and set its image to the drawable with resource id `R.drawable.ic_pause_64dp`
      * (the double bar pause icon), otherwise we set the content description of [mToggle] to the
-     * string with id [R.string.play] ("Play"), and set its image to the drawable with resource id
-     * [R.drawable.ic_play_arrow_64dp] (the right pointing triangle play icon).
+     * string with id `R.string.play` ("Play"), and set its image to the drawable with resource id
+     * `R.drawable.ic_play_arrow_64dp` (the right pointing triangle play icon).
      */
     fun adjustToggleState() {
         if (mMediaPlayer != null && mMediaPlayer!!.isPlaying) {

@@ -149,8 +149,8 @@ class CustomArrayAdapter(
      *
      * Whether recycling or using a new [convertView] we set its layout params to [MATCH_PARENT]
      * for the X size, and the height of `obj` for the Y size. We initialize [ImageView] variable
-     * `val imgView` by finding the view in [convertView] with id [R.id.image_view], and [TextView]
-     * variable `val textView` by finding the view with id [R.id.text_view]. We initialize [Bitmap]
+     * `val imgView` by finding the view in [convertView] with id `R.id.image_view`, and [TextView]
+     * variable `val textView` by finding the view with id `R.id.text_view`. We initialize [Bitmap]
      * variable `val bitmap` by decoding the image whose resource id is that returned by the
      * [ListItemObject.imgResource] property of `obj`, set the text of `textView` to the string
      * returned by the [ListItemObject.title] property of `obj` and set the content of `imgView`

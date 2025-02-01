@@ -59,7 +59,7 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
         private set
 
     /**
-     * [ViewPager] with ID [R.id.pager] in our layout file.
+     * [ViewPager] with ID `R.id.pager` in our layout file.
      */
     private var mPager: ViewPager? = null
 
@@ -68,7 +68,7 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
      * [BuildConfig.DEBUG] is true, and if it is we call the [Utils.enableStrictMode] method to set
      * the policy for what potentially suspect actions should be detected and logged using
      * [android.os.StrictMode]. Then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file [R.layout.image_detail_pager].
+     * set our content view to our layout file `R.layout.image_detail_pager`.
      *
      * We initialize [DisplayMetrics] variable `val displayMetrics` with a new instance, and load it
      * with the display metrics that describe the size and density of our display. We then initialize
@@ -84,8 +84,8 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
      *
      * We initialize our [ImagePagerAdapter] field [mAdapter] to have as many pages as there are
      * urls in the array [Images.imageUrls], initialize our [ViewPager] field [mPager] by finding
-     * the view with id [R.id.pager], set its adapter to [mAdapter], set its page margin to the
-     * value of the resource [R.dimen.horizontal_page_margin] (16 default, 64 for sw600dp), and
+     * the view with id `R.id.pager`, set its adapter to [mAdapter], set its page margin to the
+     * value of the resource `R.dimen.horizontal_page_margin` (16 default, 64 for sw600dp), and
      * set its off screen page limit to 2.
      *
      * We set the [WindowManager.LayoutParams.FLAG_FULLSCREEN] flag of the current window for the
@@ -215,7 +215,7 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
      *  * [android.R.id.home]: We call the [NavUtils.navigateUpFromSameTask] method to navigate up
      *  to the activity which launched us, and return `true` to the caller consuming the event.
      *
-     *  * [R.id.clear_cache]: We call the [ImageFetcher.clearCache] method of [ImageFetcher] field
+     *  * `R.id.clear_cache`: We call the [ImageFetcher.clearCache] method of [ImageFetcher] field
      *  [imageFetcher] to clear both the memory and disk cache associated with its [ImageCache]
      *  object, then we toast the message "Caches have been cleared", and return `true` to the caller
      *  thereby consuming the event.
@@ -246,7 +246,7 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We fetch a [MenuInflater]
-     * for our context and use it to inflate our menu layout file [R.menu.main_menu] into [Menu]
+     * for our context and use it to inflate our menu layout file `R.menu.main_menu` into [Menu]
      * parameter [menu]. We then return `true` to the caller so that the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.

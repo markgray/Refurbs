@@ -67,7 +67,7 @@ class PlanetAdapter(
      */
     class ViewHolder(
         /**
-         * [TextView] in the view we inflate from [R.layout.drawer_list_item] which displays the
+         * [TextView] in the view we inflate from `R.layout.drawer_list_item` which displays the
          * planet name, and whose [OnClickListener] calls the [OnItemClickListener.onClick] override
          * of our [OnItemClickListener] field  [mListener]
          */
@@ -78,7 +78,7 @@ class PlanetAdapter(
      * Called when [RecyclerView] needs a new [RecyclerView.ViewHolder] of the given type to
      * represent an item. We initialize [LayoutInflater] variable `val vi` with the [LayoutInflater]
      * from the context of our [ViewGroup] parameter [parent] then use it to initialize [View]
-     * variable `val v` with the view it inflates from our layout file [R.layout.drawer_list_item]
+     * variable `val v` with the view it inflates from our layout file `R.layout.drawer_list_item`
      * using [parent] for the layout params without attaching to it. We initialize [TextView]
      * variable `val tv` by finding the view in `v` with id [android.R.id.text1], then return a
      * [ViewHolder] constructed from `tv` to the caller.

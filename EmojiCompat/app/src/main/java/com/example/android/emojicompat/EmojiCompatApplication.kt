@@ -45,7 +45,7 @@ class EmojiCompatApplication : Application() {
      *  "com.google.android.gms.fonts" as the authority of the Font Provider to be used for the
      *  request, "com.google.android.gms" as the package for the Font Provider to be used for the
      *  request,  "Noto Color Emoji Compat" as the query to be sent over to the provider, and the
-     *  resource array [R.array.com_google_android_gms_fonts_certs] as the list of sets of hashes
+     *  resource array `R.array.com_google_android_gms_fonts_certs` as the list of sets of hashes
      *  for the certificates the provider should be signed with. Then we set `config` to an
      *  asynchronous request for `fontRequest`, which we instruct to replace all emojis found with
      *  [EmojiSpan]'s, and to which we register an anonymous [EmojiCompat.InitCallback] class whose

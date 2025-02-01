@@ -62,12 +62,12 @@ class ObbMountActivity : ComponentActivity() {
 
     /**
      * Called with the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.obb_mount_activity]. Next we set
-     * the [View.OnClickListener] of the [View] with id [R.id.mount] ("Mount" [Button]) to our field
-     * [mMountListener] and the [View.OnClickListener] of the view with id [R.id.unmount] ("Unmount"
+     * then we set our content view to our layout file `R.layout.obb_mount_activity`. Next we set
+     * the [View.OnClickListener] of the [View] with id `R.id.mount` ("Mount" [Button]) to our field
+     * [mMountListener] and the [View.OnClickListener] of the view with id `R.id.unmount` ("Unmount"
      * [Button]) to our field [mUnmountListener]. We initialize our [TextView] field [mStatus] by
-     * finding the view with id [R.id.status] and our [TextView] field [mPath] by finding the view
-     * with id [R.id.path]. We then initialize our [ObbState] variable `val state` by using the
+     * finding the view with id `R.id.status` and our [TextView] field [mPath] by finding the view
+     * with id `R.id.path`. We then initialize our [ObbState] variable `val state` by using the
      * [getLastNonConfigurationInstance] method (kotlin `lastNonConfigurationInstance` property) to
      * retrieve the [ObbState] object that our [onRetainNonConfigurationInstance] override may have
      * saved if we are being restarted after a configuration change. If `state` is not `null` (we
@@ -159,9 +159,9 @@ class ObbMountActivity : ComponentActivity() {
      * [StorageManager] field [mSM] to try to mount the OBB whose file system path is given by our
      * [String] field [mObbPath] and whose [OnObbStateChangeListener] is the [OnObbStateChangeListener]
      * field [mEventListener]. If the method returns `true` (the mount call was successfully queued)
-     * we set the text of [mStatus] to the string with resource id [R.string.attempting_mount]
+     * we set the text of [mStatus] to the string with resource id `R.string.attempting_mount`
      * ("Attempting to mount..."), if it returns `false` (the mount call was not queued) we set the
-     * text of [mStatus] to the string with resource id [R.string.failed_to_start_mount] ("Failed
+     * text of [mStatus] to the string with resource id `R.string.failed_to_start_mount` ("Failed
      * to start mount process...").
      */
     var mMountListener: View.OnClickListener = View.OnClickListener {
@@ -187,9 +187,9 @@ class ObbMountActivity : ComponentActivity() {
      * by our [String] field [mObbPath] and whose [OnObbStateChangeListener] is the
      * [OnObbStateChangeListener] field [mEventListener]. If the method returns `true` (the unmount
      * call was successfully queued) we set the text of [TextView] field [mStatus] to the string
-     * with resource id [R.string.attempting_unmount] ("Attempting to unmount..."), if it returns
+     * with resource id `R.string.attempting_unmount` ("Attempting to unmount..."), if it returns
      * `false` (the unmount call was not queued) we set the text of [mStatus] to the string with
-     * resource id [R.string.failed_to_start_unmount] ("Failed to start unmount process...").
+     * resource id `R.string.failed_to_start_unmount` ("Failed to start unmount process...").
      */
     var mUnmountListener: View.OnClickListener = View.OnClickListener {
         try {

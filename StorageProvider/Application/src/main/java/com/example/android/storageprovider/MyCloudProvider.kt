@@ -88,7 +88,7 @@ class MyCloudProvider : DocumentsProvider() {
      *  * [Root.COLUMN_ROOT_ID]: (Unique ID of a root) [ROOT] "root"
      *
      *  * [Root.COLUMN_SUMMARY]: (Summary for this root, which may be shown to a user) the string
-     *  with resource id [R.string.root_summary] ("cloudy with a chance of...")
+     *  with resource id `R.string.root_summary` ("cloudy with a chance of...")
      *
      *  * [Root.COLUMN_FLAGS]: (Flags that apply to a root) bitwise or of [Root.FLAG_SUPPORTS_CREATE]
      *  (Flag indicating that at least one directory under this root supports creating content),
@@ -97,7 +97,7 @@ class MyCloudProvider : DocumentsProvider() {
      *  supports search)
      *
      *  * [Root.COLUMN_TITLE]: (Title for a root, which will be shown to a user) the string with
-     *  resource id [R.string.app_name] ("StorageProvider")
+     *  resource id `R.string.app_name` ("StorageProvider")
      *
      *  * [Root.COLUMN_DOCUMENT_ID]: (Document id which is a directory that represents the top
      *  directory of this root) the string returned by our [getDocIdForFile] method when passed our
@@ -110,7 +110,7 @@ class MyCloudProvider : DocumentsProvider() {
      *  by the [File.getFreeSpace] method (kotlin `freeSpace` property) of [File] field [mBaseDir]
      *  (Returns the number of unallocated bytes in the partition containing it).
      *
-     *  * [Root.COLUMN_ICON]: (Icon resource ID for a root) [R.drawable.ic_launcher] (a cloud icon)
+     *  * [Root.COLUMN_ICON]: (Icon resource ID for a root) `R.drawable.ic_launcher` (a cloud icon)
      *
      * Finally we return `result` to the caller.
      *
@@ -644,7 +644,7 @@ class MyCloudProvider : DocumentsProvider() {
      * [DocumentsContract.Document.COLUMN_SIZE], `mimeType` in column
      * [DocumentsContract.Document.COLUMN_MIME_TYPE], the time that `fileLocal` was last modified in
      * column [DocumentsContract.Document.COLUMN_LAST_MODIFIED], `flags` in column
-     * [DocumentsContract.Document.COLUMN_FLAGS], and the resource id [R.drawable.ic_launcher] in
+     * [DocumentsContract.Document.COLUMN_FLAGS], and the resource id `R.drawable.ic_launcher` in
      * column [DocumentsContract.Document.COLUMN_ICON].
      *
      * @param result the cursor to modify
@@ -740,18 +740,18 @@ class MyCloudProvider : DocumentsProvider() {
      * [mBaseDir] is greater than 0 we return having done nothing (we have already been run before
      * now). Otherwise we initialize [IntArray] variable `val imageResIds` with the resource ID
      * array that our method [getResourceIdArray] constructs from the resource array
-     * [R.array.image_res_ids] (references for five jpg files in /raw) then loop for all the [Int]
+     * `R.array.image_res_ids` (references for five jpg files in /raw) then loop for all the [Int]
      * variable `var resId` in `imageResIds` calling our method [writeFileToInternalStorage] for
      * each `resId` using ".jpeg" as the extension.
      *
      * We next initialize [IntArray] variable `val textResIds` with the resource ID array that our
-     * method [getResourceIdArray] constructs from the resource array [R.array.text_res_ids]
+     * method [getResourceIdArray] constructs from the resource array `R.array.text_res_ids`
      * (references to two text files in /raw) then loop for all the [Int] variable `var resId` in
      * `imageResIds` calling our method [writeFileToInternalStorage] for each `resId` using ".txt"
      * as the extension.
      *
      * We next initialize [IntArray] variable `val docxResIds` with the resource ID array that our
-     * method [getResourceIdArray] constructs from the resource array [R.array.docx_res_ids]
+     * method [getResourceIdArray] constructs from the resource array `R.array.docx_res_ids`
      * (reference to one docx file) then loop for all the [Int] variable `var resId` in `docxResIds`
      * calling our method [writeFileToInternalStorage] for each `resId` using ".docx" as the
      * extension.
@@ -838,8 +838,8 @@ class MyCloudProvider : DocumentsProvider() {
     /**
      * Dummy function to determine whether the user is logged in. We initialize our [SharedPreferences]
      * variable `val sharedPreferences` with the [SharedPreferences] instance for the name with
-     * resource id [R.string.app_name] ("StorageProvider"). Then we return the [Boolean] value stored
-     * under the key with resource id [R.string.key_logged_in] ("logged_in") defaulting to `false`.
+     * resource id `R.string.app_name` ("StorageProvider"). Then we return the [Boolean] value stored
+     * under the key with resource id `R.string.key_logged_in` ("logged_in") defaulting to `false`.
      *
      * @return `true` if the user is "logged in".
      */

@@ -26,10 +26,10 @@ class Contact(
 ) {
 
     /**
-     * Gets the icon of this contact. We use the mipmap with resource ID [R.mipmap.logo_avatar] for
+     * Gets the icon of this contact. We use the mipmap with resource ID `R.mipmap.logo_avatar` for
      * all of our [Contact] instances.
      *
-     * @return The resource ID of our icon, [R.mipmap.logo_avatar]
+     * @return The resource ID of our icon, `R.mipmap.logo_avatar`
      */
     val icon: Int
         get() = R.mipmap.logo_avatar

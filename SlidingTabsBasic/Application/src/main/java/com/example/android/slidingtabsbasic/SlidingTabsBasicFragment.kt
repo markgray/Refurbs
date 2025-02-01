@@ -48,7 +48,7 @@ class SlidingTabsBasicFragment : Fragment() {
     /**
      * Inflates the [View] which will be displayed by this [Fragment], from the app's
      * resources. We return the [View] inflated by our [LayoutInflater] parameter [inflater]
-     * from our layout file [R.layout.fragment_sample] using our [ViewGroup] parameter [container]
+     * from our layout file `R.layout.fragment_sample` using our [ViewGroup] parameter [container]
      * for the LayoutParams without attaching to it.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
@@ -135,10 +135,10 @@ class SlidingTabsBasicFragment : Fragment() {
          * Instantiate the [View] which should be displayed at [Int] parameter [position]. Here we
          * inflate a layout from the apps resources and then change the text view to signify the
          * position. We initialize [View] variable `val view` by using the [LayoutInflater] instance
-         * that our activity used to inflate its Window to inflate our layout file [R.layout.pager_item]
+         * that our activity used to inflate its Window to inflate our layout file `R.layout.pager_item`
          * using our [ViewGroup] parameter [container] for the LayoutParams with our attaching to it.
          * We then add `view` to our parameter [container]. We initialize [TextView] variable
-         * `val title` by finding the view in `view` with id [R.id.item_title] and set the text of
+         * `val title` by finding the view in `view` with id `R.id.item_title` and set the text of
          * `title` to the string value of our [Int] parameter [position] plus 1, and we then log
          * what we just did. Finally we return `view` to the caller.
          *

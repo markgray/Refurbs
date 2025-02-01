@@ -55,7 +55,7 @@ class MainActivity : FragmentActivity() {
     /**
      * Called when the activity is starting (or restarting after an orientation change). First we
      * call through to our super's implementation of onCreate, then we set our content view to our
-     * layout file [R.layout.activity_main]. We initialize our [NotificationManager] field [mNM]
+     * layout file `R.layout.activity_main`. We initialize our [NotificationManager] field [mNM]
      * by using the [getSystemService] method to get a handle to the system-level service with the
      * name [Context.NOTIFICATION_SERVICE] ("notification"). We initialize our [NotificationChannel]
      * variable `val chan1` to a new instance whose `id` is our [PRIMARY_CHANNEL] constant ("default"),
@@ -70,7 +70,7 @@ class MainActivity : FragmentActivity() {
      * from `chan1`. Then if our [Bundle] parameter [savedInstanceState] is `null` (first time we
      * are running) we use the [FragmentManager] for interacting with fragments associated with this
      * activity to begin a [FragmentTransaction] which we use to add a new instance of our fragment
-     * [MessagingFragment] to the container view with ID [R.id.container] and commit that
+     * [MessagingFragment] to the container view with ID `R.id.container` and commit that
      * [FragmentTransaction].
      *
      * @param savedInstanceState we use it only to decide if we are running for the first time (it

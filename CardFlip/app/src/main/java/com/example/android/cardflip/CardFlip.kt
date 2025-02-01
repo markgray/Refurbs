@@ -58,26 +58,26 @@ import com.example.android.cardflip.CardView.Corner
  */
 class CardFlip : ComponentActivity(), CardFlipListener {
     /**
-     * Half of the width of the [RelativeLayout] field [mLayout] (ID [R.id.main_relative_layout])
+     * Half of the width of the [RelativeLayout] field [mLayout] (ID `R.id.main_relative_layout`)
      * used for the layout params for the [CardView] when a card is added to the stack by our method
      * [addNewCard], and in our [getStack] to determine which stack has been flung.
      */
     var mCardWidth: Int = 0
 
     /**
-     * Height of the [RelativeLayout] field [mLayout] (ID [R.id.main_relative_layout]) used for the
+     * Height of the [RelativeLayout] field [mLayout] (ID `R.id.main_relative_layout`) used for the
      * layout params of the [CardView] when a card is added to the stack by our method [addNewCard].
      */
     var mCardHeight: Int = 0
 
     /**
-     * Set from the resource with id [R.integer.vertical_card_margin], used to set the vertical
+     * Set from the resource with id `R.integer.vertical_card_margin`, used to set the vertical
      * padding of the [CardView] when a card is added to a stack by our method [addNewCard]
      */
     var mVerticalPadding: Int = 0
 
     /**
-     * Set from the resource with id [R.integer.horizontal_card_margin], used to set the horizontal
+     * Set from the resource with id `R.integer.horizontal_card_margin`, used to set the horizontal
      * padding of the [CardView] when a card is added to a stack by our method [addNewCard]
      */
     var mHorizontalPadding: Int = 0
@@ -95,7 +95,7 @@ class CardFlip : ComponentActivity(), CardFlipListener {
     lateinit var mIsStackEnabled: BooleanArray
 
     /**
-     * [RelativeLayout] in our layout with id [R.id.main_relative_layout] (the entire layout file).
+     * [RelativeLayout] in our layout with id `R.id.main_relative_layout` (the entire layout file).
      * Contains both stacks of cards.
      */
     var mLayout: RelativeLayout? = null
@@ -114,17 +114,17 @@ class CardFlip : ComponentActivity(), CardFlipListener {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.main]. We initialize our [List] of
+     * then we set our content view to our layout file `R.layout.main`. We initialize our [List] of
      * [ArrayList] of [CardView] field [mStackCards] with a new instance, and add two new instances
      * of [ArrayList] of [CardView] to it. We allocate 2 [Boolean]'s for our [BooleanArray] field
      * [mIsStackEnabled] and set both entries to `true`. We initialize our [Int] field [mVerticalPadding]
-     * by fetching the integer resource with ID [R.integer.vertical_card_margin], and our [Int] field
-     * [mHorizontalPadding] by fetching the integer resource with ID [R.integer.horizontal_card_margin]
+     * by fetching the integer resource with ID `R.integer.vertical_card_margin`, and our [Int] field
+     * [mHorizontalPadding] by fetching the integer resource with ID `R.integer.horizontal_card_margin`
      * (these are both 30). We initialize our [GestureDetector] field [gDetector] with a new instance
      * which uses as its [OnGestureListener] our [SimpleOnGestureListener] field [mGestureListener]
      * (it overrides the methods `onSingleTapUp` and `onFling` in order to do the card deck animations
      * in response to user gestures). We initialize our [RelativeLayout] field [mLayout] by finding
-     * the view with ID [R.id.main_relative_layout] and initialize our [ViewTreeObserver] variable
+     * the view with ID `R.id.main_relative_layout` and initialize our [ViewTreeObserver] variable
      * `val observer` with a handle to the [ViewTreeObserver] for its hierarchy. We then add to
      * `observer` an anonymous [OnGlobalLayoutListener] whose [OnGlobalLayoutListener.onGlobalLayout]
      * override creates and adds the [CardView] objects to [mLayout] (as well as adding them to the

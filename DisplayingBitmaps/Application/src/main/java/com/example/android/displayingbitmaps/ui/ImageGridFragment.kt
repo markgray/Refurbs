@@ -66,12 +66,12 @@ class ImageGridFragment
  */
     : Fragment(), OnItemClickListener {
     /**
-     * Image thumbnail size in pixels ([R.dimen.image_thumbnail_size] converted to pixels)
+     * Image thumbnail size in pixels (`R.dimen.image_thumbnail_size` converted to pixels)
      */
     private var mImageThumbSize: Int = 0
 
     /**
-     * Spacing between thumbnails in our GridView in pixels ([R.dimen.image_thumbnail_spacing]
+     * Spacing between thumbnails in our GridView in pixels (`R.dimen.image_thumbnail_spacing`
      * converted to pixels)
      */
     private var mImageThumbSpacing: Int = 0
@@ -91,14 +91,14 @@ class ImageGridFragment
      * `onCreate`, then we report that this fragment would like to participate in populating
      * the options menu by receiving a call to [onCreateOptionsMenu] and related methods. We
      * initialize [Int] field [mImageThumbSize] by retrieving the raw pixel dimension conversion of
-     * the resource value [R.dimen.image_thumbnail_size], and [Int] field [mImageThumbSpacing] by
-     * retrieving the pixel conversion of [R.dimen.image_thumbnail_spacing]. We initialize
+     * the resource value `R.dimen.image_thumbnail_size`, and [Int] field [mImageThumbSpacing] by
+     * retrieving the pixel conversion of `R.dimen.image_thumbnail_spacing`. We initialize
      * [ImageAdapter] field [mAdapter] with a new instance. We initialize [ImageCache.ImageCacheParams]
      * variable `val cacheParams` with a new instance which uses [IMAGE_CACHE_DIR] ("thumbs") as its
      * subdirectory, and set its memory cache to 25% of app memory. We initialize [ImageFetcher]
      * field [mImageFetcher] to a new instance configured to use [mImageThumbSize] as the width and
      * height of the bitmaps it decodes from the fetched images, set its loading image to
-     * [R.drawable.empty_photo] (displays while image is being downloaded in the background), and
+     * `R.drawable.empty_photo` (displays while image is being downloaded in the background), and
      * add to [mImageFetcher] an image cache using `cacheParams` as the cache parameters to use for
      * the image cache.
      *
@@ -122,8 +122,8 @@ class ImageGridFragment
     /**
      * Called to have the fragment instantiate its user interface view. We initialize [View] variable
      * `val v` by using our [LayoutInflater] parameter [inflater] to inflate our layout file
-     * [R.layout.image_grid_fragment], and [GridView] variable `val mGridView` by finding the view
-     * in `v` with id [R.id.gridView]. We set the adapter of `mGridView` to [ImageAdapter] field
+     * `R.layout.image_grid_fragment`, and [GridView] variable `val mGridView` by finding the view
+     * in `v` with id `R.id.gridView`. We set the adapter of `mGridView` to [ImageAdapter] field
      * [mAdapter] and its [OnItemClickListener] to `this`. We set the [AbsListView.OnScrollListener]
      * of `mGridView` to an anonymous class whose [AbsListView.OnScrollListener.onScrollStateChanged]
      * override calls the [ImageFetcher.setPauseWork] method of [ImageFetcher] field [mImageFetcher]
@@ -282,7 +282,7 @@ class ImageGridFragment
     }
 
     /**
-     * Callback method to be invoked when an item in our [GridView] (resource ID [R.id.gridView])
+     * Callback method to be invoked when an item in our [GridView] (resource ID `R.id.gridView`)
      * has been clicked. First we initialize [Intent] variable `val i` with an [Intent] to launch
      * [ImageDetailActivity], and add an extra to it with our [Long] parameter [id] stored under the
      * key [ImageDetailActivity.EXTRA_IMAGE] ("extra_image"). If our device is at least `JELLY_BEAN`,
@@ -313,7 +313,7 @@ class ImageGridFragment
 
     /**
      * Initialize the contents of the [Fragment] host's standard options menu. We just use our
-     * [MenuInflater] parameter [inflater] to inflate our menu layout file [R.menu.main_menu] into
+     * [MenuInflater] parameter [inflater] to inflate our menu layout file `R.menu.main_menu` into
      * our [Menu] parameter [menu].
      *
      * @param menu The options menu in which you place your items.
@@ -327,7 +327,7 @@ class ImageGridFragment
     /**
      * This hook is called whenever an item in your options menu is selected. We switch on the value
      * returned by the [MenuItem.getItemId] method (kotlin `itemId` property) of our [MenuItem]
-     * parameter [item] and if it is [R.id.clear_cache] we call the [ImageFetcher.clearCache] method
+     * parameter [item] and if it is `R.id.clear_cache` we call the [ImageFetcher.clearCache] method
      * of [ImageFetcher] field [mImageFetcher] which clears both the memory and disk cache associated
      * with its [ImageCache] object. We toast the message "Caches have been cleared" and return `true`
      * to the caller to signify that we consumed the event. If it is not an item that we recognise,

@@ -31,7 +31,7 @@ import androidx.viewpager.widget.ViewPager
 class ContentFragment : Fragment() {
     /**
      * Called to have the fragment instantiate its user interface view. We return the view that our
-     * [LayoutInflater] parameter [inflater] inflates from our layout file [R.layout.pager_item],
+     * [LayoutInflater] parameter [inflater] inflates from our layout file `R.layout.pager_item`,
      * using our [ViewGroup] parameter [container] for the LayoutParams without attaching to it.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
@@ -58,18 +58,18 @@ class ContentFragment : Fragment() {
      * instantiated. If `args` is not `null` we then:
      *
      *  * Initialize [TextView] variable `val title` by finding the view in our [View] parameter
-     *  [view] with ID [R.id.item_title], and set its text to the string formed by concatenating
+     *  [view] with ID `R.id.item_title`, and set its text to the string formed by concatenating
      *  the string "Title: " to the string stored in `args` under the key [KEY_TITLE].
      *
      *  * Initialize [Int] variable `val indicatorColor` to the [Int] stored in `args` under the
      *  key [KEY_INDICATOR_COLOR], initialize [TextView] variable `val indicatorColorView` by
-     *  finding the view in [View] parameter [view] with id [R.id.item_indicator_color] then set
+     *  finding the view in [View] parameter [view] with id `R.id.item_indicator_color` then set
      *  its text to the string formed by concatenating the string "Indicator: #" to the hexString
      *  of `indicatorColor` and set its text color to `indicatorColor`.
      *
      *  * Initialize [Int] variable `val dividerColor` to the [Int] stored in `args` under the key
      *  [KEY_DIVIDER_COLOR], initialize [TextView] variable `val dividerColorView` by finding the
-     *  [View] in [View] parameter [view] with id [R.id.item_divider_color] then set its text to the
+     *  [View] in [View] parameter [view] with id `R.id.item_divider_color` then set its text to the
      *  string formed by concatenating the string "Divider: #" to the hexString of `dividerColor`
      *  and set its text color to `dividerColor`.
      *
@@ -120,11 +120,11 @@ class ContentFragment : Fragment() {
          * with a new instance, set `bundle` as its arguments bundle and return the fragment to the
          * caller.
          *
-         * @param title Title to display in the [TextView] with ID [R.id.item_title]
+         * @param title Title to display in the [TextView] with ID `R.id.item_title`
          * @param indicatorColor Indicator color to display as an HexString in the [TextView] with
-         * id [R.id.item_indicator_color], and to use as its color
+         * id `R.id.item_indicator_color`, and to use as its color
          * @param dividerColor Divider color to display as an HexString in the [TextView] with id
-         * [R.id.item_divider_color], and to use as its color
+         * `R.id.item_divider_color`, and to use as its color
          * @return a new instance of [ContentFragment], adding the parameters into a bundle and
          * setting them as arguments.
          */

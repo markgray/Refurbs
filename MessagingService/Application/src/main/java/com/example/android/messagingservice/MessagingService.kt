@@ -147,7 +147,7 @@ class MessagingService : Service() {
      * created by our method [getMessageReplyIntent], and the flag [PendingIntent.FLAG_UPDATE_CURRENT]
      * (Flag indicating that if the described [PendingIntent] already exists, then keep it but
      * replace its extra data with what is in this new [Intent].) We next build a Remote Input
-     * enabled action which includes [R.drawable.notification_icon] as its icon, the String with
+     * enabled action which includes `R.drawable.notification_icon` as its icon, the String with
      * ID [string.reply] ("Reply") as its label, and our `replyIntent` then add `remoteInput`
      * as the input to be collected from the user when this action is sent. We next create an
      * [NotificationCompat.CarExtender.UnreadConversation.Builder] to initiaizle variable
@@ -158,13 +158,13 @@ class MessagingService : Service() {
      * `val messageForNotification`, then proceed to iterate over all of the messages in
      * [Conversation] parameter [conversation] adding them to the Builder `unreadConvBuilder` and
      * appending them to `messageForNotification`. Next we create [NotificationCompat.Builder]
-     * variable `val builder`, set its small icon to [R.drawable.notification_icon], set its large
-     * icon to [R.drawable.android_contact], set its content text to the [String] returned by the
+     * variable `val builder`, set its small icon to `R.drawable.notification_icon`, set its large
+     * icon to `R.drawable.android_contact`, set its content text to the [String] returned by the
      * [toString] method of [StringBuilder] variable `messageForNotification`, set the time the
      * event occurred to the [Conversation.timestamp] field of [conversation], set its content title
      * to the [Conversation.participantName] of the [conversation], set its content [Intent] to
      * `readPendingIntent`, extend it with a [NotificationCompat.CarExtender] whose unread
-     * conversation is set to `unreadConvBuilder.build`, whose color is set to [R.color.default_color_light],
+     * conversation is set to `unreadConvBuilder.build`, whose color is set to `R.color.default_color_light`,
      * and lastly add the action `actionReplyByRemoteInput` to [NotificationCompat.Builder] `builder`.
      * We log that we are sending the notification, then use [NotificationManagerCompat] field
      * [mNotificationManager] to post the notification using the [Conversation.conversationId] of

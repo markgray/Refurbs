@@ -33,11 +33,11 @@ class FloatingActionButtonBasicFragment : Fragment(), OnCheckedChangeListener {
     /**
      * Called to have the [Fragment] instantiate its user interface view. We initialize [View]
      * variable `val rootView` to the [View] that our [LayoutInflater] parameter [inflater] inflates
-     * from our layout file [R.layout.fab_layout] using our [ViewGroup] parameter [container] for
+     * from our layout file `R.layout.fab_layout` using our [ViewGroup] parameter [container] for
      * LayoutParams without attaching to it. We initialize [FloatingActionButton] variable `val fab1`
-     *  with id [R.id.fab_1] and set its [OnCheckedChangeListener] to this, and we initialize
+     *  with id `R.id.fab_1` and set its [OnCheckedChangeListener] to this, and we initialize
      * [FloatingActionButton] variable `val fab2` by finding the view in `rootView` with id
-     * [R.id.fab_2] and set its [OnCheckedChangeListener] to this. Finally we return `rootView` to
+     * `R.id.fab_2` and set its [OnCheckedChangeListener] to this. Finally we return `rootView` to
      * the caller.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
@@ -69,11 +69,11 @@ class FloatingActionButtonBasicFragment : Fragment(), OnCheckedChangeListener {
      * Called when the checked state of a FAB has changed. We switch on the id of our
      * [FloatingActionButton] parameter [fabView]:
      *
-     *  * [R.id.fab_1]: We log the formatted string "FAB 1 was checked" if our [Boolean] parameter
+     *  * `R.id.fab_1`: We log the formatted string "FAB 1 was checked" if our [Boolean] parameter
      *  [isChecked] is `true`, or the string "FAB 1 was unchecked" is our parameter [isChecked] is
      *  false.
      *
-     *  * [R.id.fab_2]: We log the formatted string "FAB 2 was checked" is our [Boolean] parameter
+     *  * `R.id.fab_2`: We log the formatted string "FAB 2 was checked" is our [Boolean] parameter
      *  [isChecked] is `true`, or the string "FAB 2 was unchecked" is our parameter [isChecked] is
      *  false.
      *

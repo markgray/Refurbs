@@ -48,9 +48,9 @@ class ElevationBasicFragment : Fragment() {
     /**
      * Called to have the fragment instantiate its user interface view. We initialize [View] variable
      * `val rootView` with the view that our [LayoutInflater] parameter [inflater] inflates from our
-     * layout file [R.layout.elevation_basic] using our [ViewGroup] parameter [container] for
+     * layout file `R.layout.elevation_basic` using our [ViewGroup] parameter [container] for
      * LayoutParams without attaching to that view. We then initialize [View] variable `val shape2`
-     * by finding the view in `rootView` with id [R.id.floating_shape_2]. We set the [OnTouchListener]
+     * by finding the view in `rootView` with id `R.id.floating_shape_2`. We set the [OnTouchListener]
      * of `shape2` to an anonymous class whose [OnTouchListener.onTouch] override moves the depth
      * location of this [View] relative to its [View.getElevation] elevation by 120f on an
      * [MotionEvent.ACTION_DOWN] action, or back to 0f on an [MotionEvent.ACTION_UP] action.

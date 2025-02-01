@@ -54,7 +54,7 @@ class ProductFragment : Fragment() {
 
     /**
      * Called to have the fragment instantiate its user interface view. First we inflate our data
-     * binding layout file [R.layout.product_fragment] to initialize our [ProductFragmentBinding]
+     * binding layout file `R.layout.product_fragment` to initialize our [ProductFragmentBinding]
      * field [mBinding]. We create a new instance of [CommentAdapter] to initialize our field
      * [mCommentAdapter], and use our field [mBinding] to set the adapter of the [RecyclerView]
      * of [ProductFragmentBinding.commentList] (the android:id="@+id/comment_list" [RecyclerView]
@@ -87,12 +87,12 @@ class ProductFragment : Fragment() {
     /**
      * [CommentClickCallback] we use when we create the [CommentAdapter] for our list of
      * [Comment] object, it is used in a lambda specified using android:onClick in the layout
-     * file for a comment item [R.layout.comment_item].
+     * file for a comment item `R.layout.comment_item`.
      */
     private val mCommentClickCallback = object: CommentClickCallback() {
         /**
          * This is used in a lambda specified using android:onClick in the layout file for a comment
-         * item [R.layout.comment_item], and is called with the bound variable "comment" from that file.
+         * item `R.layout.comment_item`, and is called with the bound variable "comment" from that file.
          *
          * @param comment the [Comment] item that has been clicked
          */

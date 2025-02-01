@@ -94,7 +94,7 @@ class JetBoyView(
                      * log the value of [Int] field [mHitTotal] (the total number of hits scored by
                      * the user). If [mHitTotal] is greater than or equal to [Int] field
                      * [SUCCESS_THRESHOLD] we set the text of [TextView] field [mTextView] to the
-                     * string with resource id [R.string.winText] ("You win...") otherwise we set
+                     * string with resource id `R.string.winText` ("You win...") otherwise we set
                      * its text to the string "Sorry, You Lose! ...". We then set the text of
                      * [TextView] field [mTimerView] to the string "1:12", and set the height of
                      * [TextView] field [mTextView] to 20.
@@ -246,20 +246,20 @@ class JetBoyView(
      * [muteMask] (associated with the music beds in the JET file) to their appropriate `true` or
      * `false` value. We set our state to [STATE_START], and call our method [setInitialGameState]
      * to set up all our initial JET requirements (including loading the JET file). We initialize
-     * [Bitmap] field [mTitleBG] by decoding the png with resource id [R.drawable.title_hori],
+     * [Bitmap] field [mTitleBG] by decoding the png with resource id `R.drawable.title_hori`,
      * initialize [Bitmap] field [mBackgroundImageFar] by decoding the png with resource id
-     * [R.drawable.background_a], initialize [Bitmap] field [mLaserShot] by decoding the png with
-     * resource id [R.drawable.laser], initialize [Bitmap] field [mBackgroundImageNear] by decoding
-     * the png with resource id [R.drawable.background_b], initialize the four bitmaps used
+     * `R.drawable.background_a`, initialize [Bitmap] field [mLaserShot] by decoding the png with
+     * resource id `R.drawable.laser`, initialize [Bitmap] field [mBackgroundImageNear] by decoding
+     * the png with resource id `R.drawable.background_b`, initialize the four bitmaps used
      * by [Array] of [Bitmap] field [mShipFlying] by decoding the png's with resource id
-     * [R.drawable.ship2_1], [R.drawable.ship2_2], [R.drawable.ship2_3], and [R.drawable.ship2_4],
+     * `R.drawable.ship2_1`, `R.drawable.ship2_2`, `R.drawable.ship2_3`, and `R.drawable.ship2_4`,
      * initialize the four bitmaps used by [Array] of [Bitmap] field [mBeam] by decoding the png's
-     * with resource id [R.drawable.intbeam_1], [R.drawable.intbeam_2], [R.drawable.intbeam_3], and
-     * [R.drawable.intbeam_4], initialize [Bitmap] field [mTimerShell] by decoding the png with
-     * resource id [R.drawable.int_timer], initialize [Array] of [Bitmap] field [mAsteroids] with
-     * the 12 png's with resource id's [R.drawable.asteroid01] through [R.drawable.asteroid12], and
+     * with resource id `R.drawable.intbeam_1`, `R.drawable.intbeam_2`, `R.drawable.intbeam_3`, and
+     * `R.drawable.intbeam_4`, initialize [Bitmap] field [mTimerShell] by decoding the png with
+     * resource id `R.drawable.int_timer`, initialize [Array] of [Bitmap] field [mAsteroids] with
+     * the 12 png's with resource id's `R.drawable.asteroid01` through `R.drawable.asteroid12`, and
      * initialize [Array] of [Bitmap] field [mExplosions] with the 4 png's with resource id's
-     * [R.drawable.asteroid_explode1] through [R.drawable.asteroid_explode4].
+     * `R.drawable.asteroid_explode1` through `R.drawable.asteroid_explode4`.
      *
      * @param mSurfaceHolder [SurfaceHolder] we are to use
      * @param mContext       The [Context] our view is running in, used to access resources.
@@ -374,13 +374,13 @@ class JetBoyView(
         val mExplosions: Array<Bitmap?> = arrayOfNulls(4)
 
         /**
-         * Contains the png with resource id [R.drawable.int_timer] which is used to decorate our
+         * Contains the png with resource id `R.drawable.int_timer` which is used to decorate our
          * timer [TextView]
          */
         private val mTimerShell: Bitmap
 
         /**
-         * Contains the png with resource id [R.drawable.laser] which is used when the laser is fired.
+         * Contains the png with resource id `R.drawable.laser` which is used when the laser is fired.
          */
         private val mLaserShot: Bitmap
 
@@ -628,7 +628,7 @@ class JetBoyView(
          * [JetPlayer.getJetPlayer] of [JetPlayer] to create a [JetPlayer] instance which we save
          * in our [JetPlayer] field [mJet], set our [Boolean] field [mJetPlaying] to `false`,
          * clear the queue of [mJet], set its [OnJetEventListener] to 'this', and load [mJet] with
-         * the raw resources JET file with resource id [R.raw.level1]. We then set our [Int] field
+         * the raw resources JET file with resource id `R.raw.level1`. We then set our [Int] field
          * [mCurrentBed] to 0, and initialize [Byte] variable `val sSegmentID` to 0. We call the
          * [JetPlayer.queueJetSegment] method of [mJet] to queue up segment 0, using 0 as the index
          * of the sound bank associated with the segment, with 0 as the repeat count (plays only
@@ -732,7 +732,7 @@ class JetBoyView(
          *  to do before the game has started.
          *
          *  * [STATE_PLAY], or [STATE_LOSE]: If our [Bitmap] field [mTitleBG2] is `null` we
-         *  initialize it by decoding the png with resource id [R.drawable.title_bg_hori], then
+         *  initialize it by decoding the png with resource id `R.drawable.title_bg_hori`, then
          *  call our method [doDrawPlay] to do whatever drawing is appropriate while we wait for
          *  the user to press the "PLAY!" button.
          *
@@ -1547,10 +1547,10 @@ class JetBoyView(
          *
          *  * [STATE_PLAY]: We initialize [Resources] variable `val res` with an instance for the
          *  context of our [Context] field [mContext]. We set [Bitmap] field [mBackgroundImageFar]
-         *  by decoding the png with resource ID [R.drawable.background_a], then scale it to be
+         *  by decoding the png with resource ID `R.drawable.background_a`, then scale it to be
          *  twice the width of our canvas and the height of our canvas and specifying that it
          *  should be filtered. We set [Bitmap] field [mBackgroundImageNear] by decoding the png
-         *  with resource ID [R.drawable.background_b], then scale it to be twice the width of our
+         *  with resource ID `R.drawable.background_b`, then scale it to be twice the width of our
          *  canvas and the height of our canvas, specifying that it should be filtered.
          *
          *  * [STATE_RUNNING]: We clear our [ConcurrentLinkedQueue] of [GameEvent] field [mEventQueue]

@@ -71,15 +71,15 @@ class JetBoy : ComponentActivity(), View.OnClickListener {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.main]. We initialize our [JetBoyView]
+     * then we set our content view to our layout file `R.layout.main`. We initialize our [JetBoyView]
      * field [mJetBoyView] by finding the view with id R.id.JetBoyView, and our [JetBoyThread] field
      * [mJetBoyThread] with the value of the [JetBoyView.thread] property of [mJetBoyView] (it is
      * the thread that actually draws the animation). We initialize [Button] field [mButton] by
-     * finding the view with id [R.id.Button01] ("START!") and set its [View.OnClickListener] to
-     * 'this', initialize [Button] field [mButtonRetry] by finding the view with id [R.id.Button02]
+     * finding the view with id `R.id.Button01` ("START!") and set its [View.OnClickListener] to
+     * 'this', initialize [Button] field [mButtonRetry] by finding the view with id `R.id.Button02`
      * ("RETRY") and set its [View.OnClickListener] to 'this'. We then initialize [TextView] field
-     * [mTextView] by finding the view with id [R.id.text], and [TextView] field [mTimerView] by
-     * finding the view with id [R.id.timer]. We call the [JetBoyView.setTimerView] method of
+     * [mTextView] by finding the view with id `R.id.text`, and [TextView] field [mTimerView] by
+     * finding the view with id `R.id.timer`. We call the [JetBoyView.setTimerView] method of
      * [mJetBoyView] to set the timer view widget it updates to [mTimerView], call the
      * [JetBoyView.setButtonView] method of [mJetBoyView] to set the button to start game over to
      * [mButtonRetry], and call the [JetBoyView.setTextView] method of [mJetBoyView] to set the end
@@ -139,7 +139,7 @@ class JetBoy : ComponentActivity(), View.OnClickListener {
      * our [Button] field [mButtonRetry]:
      *  * Game state is [STATE_START]: (the first screen) we set the text of [Button] field [mButton]
      *  to "PLAY!", set the visibility of [TextView] field [mTextView] to visible, set its text to
-     *  the string with resource id [R.string.helpText] (the help text) and set the
+     *  the string with resource id `R.string.helpText` (the help text) and set the
      *  [JetBoyThread.gameState] property of [JetBoyThread] field [mJetBoyThread] to STATE_PLAY.
      *
      *  * Game state is [STATE_PLAY]: (we have entered game play, now we about to start running)
@@ -149,7 +149,7 @@ class JetBoy : ComponentActivity(), View.OnClickListener {
      *
      *  * The [View] parameter [v] that was clicked is [Button] field [mButtonRetry]: (this is a
      *  retry button click) We set the text of [TextView] field [mTextView] to the string with
-     *  resource id [R.string.helpText] (the help text), set the text of [Button] field [mButton]
+     *  resource id `R.string.helpText` (the help text), set the text of [Button] field [mButton]
      *  to "PLAY!", and the visibility of [Button] field [mButtonRetry] to INVISIBLE. We set the
      *  visibility of [TextView] field [mTextView] to VISIBLE, set the text of [Button] field
      *  [mButton] to "PLAY!" (again?) and set its visibility to VISIBLE. The we set the

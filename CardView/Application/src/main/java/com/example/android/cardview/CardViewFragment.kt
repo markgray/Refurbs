@@ -65,7 +65,7 @@ class CardViewFragment
 
     /**
      * Called to have the fragment instantiate its user interface view. We use our [LayoutInflater]
-     * parameter [inflater] to inflate our layout file [R.layout.fragment_card_view] using our
+     * parameter [inflater] to inflate our layout file `R.layout.fragment_card_view` using our
      * [ViewGroup] parameter [container] for the LayoutParams without attaching to it, and return
      * the view created to our caller.
      *
@@ -87,12 +87,12 @@ class CardViewFragment
      * Called immediately after [onCreateView] has returned, but before any saved state has been
      * restored in to the view. First we call our super's implementation of `onViewCreated`. We
      * initialize our [CardView] field [mCardView] by finding the [View] in [View] parameter [view]
-     * with ID [R.id.cardview], and initialize our [SeekBar] field [mRadiusSeekBar] by finding the
-     * [View] in [view] with ID [R.id.cardview_radius_seekbar]. We then set the [OnSeekBarChangeListener]
+     * with ID `R.id.cardview`, and initialize our [SeekBar] field [mRadiusSeekBar] by finding the
+     * [View] in [view] with ID `R.id.cardview_radius_seekbar`. We then set the [OnSeekBarChangeListener]
      * of [mRadiusSeekBar] to an anonymous class whose [OnSeekBarChangeListener.onProgressChanged]
      * override updates the corner radius of the [CardView] field [mCardView] with the current
      * progress level of [mRadiusSeekBar] (0-100). We then initialize our [SeekBar] field
-     * [mElevationSeekBar] by finding the [View] in [view] with id [R.id.cardview_elevation_seekbar]
+     * [mElevationSeekBar] by finding the [View] in [view] with id `R.id.cardview_elevation_seekbar`
      * and set its [OnSeekBarChangeListener] to an anonymous class whose
      * [OnSeekBarChangeListener.onProgressChanged] override sets the base elevation of [mCardView]
      * to the current progress level of [mElevationSeekBar] (0-100).

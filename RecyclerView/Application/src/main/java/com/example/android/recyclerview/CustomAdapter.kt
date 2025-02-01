@@ -43,13 +43,13 @@ class CustomAdapter(
      *  of our [View] parameter `v` to an anonymous class whose [View.OnClickListener.onClick]
      *  override logs the position in the adapter of the view that was clicked, and toasts the same
      *  message. Finally we initialize our [TextView] field [textView] by finding the view with id
-     *  [R.id.textView] in `v`.
+     *  `R.id.textView` in `v`.
      *
      * @param v the [View] we are to "hold"
      */
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         /**
-         * [TextView] in our view with ID [R.id.textView].
+         * [TextView] in our view with ID `R.id.textView`.
          */
         val textView: TextView
 

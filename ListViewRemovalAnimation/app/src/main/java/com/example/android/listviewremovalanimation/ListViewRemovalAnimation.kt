@@ -52,12 +52,12 @@ class ListViewRemovalAnimation : ComponentActivity() {
     var mAdapter: StableArrayAdapter? = null
 
     /**
-     * The [ListView] in our layout with id [R.id.list_view] which displays our cheeses.
+     * The [ListView] in our layout with id `R.id.list_view` which displays our cheeses.
      */
     var mListView: ListView? = null
 
     /**
-     * The [BackgroundContainer] in our layout with id [R.id.listViewBackground]
+     * The [BackgroundContainer] in our layout with id `R.id.listViewBackground`
      */
     var mBackgroundContainer: BackgroundContainer? = null
     /**
@@ -77,13 +77,13 @@ class ListViewRemovalAnimation : ComponentActivity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_list_view_deletion]. We
+     * then we set our content view to our layout file `R.layout.activity_list_view_deletion`. We
      * initialize our [BackgroundContainer] field [mBackgroundContainer] by finding the view with id
-     * [R.id.listViewBackground], and [ListView] field [mListView] by finding the view with id
-     * [R.id.list_view]. We allocate a new instance of [ArrayList] of [String] to initialize variable
+     * `R.id.listViewBackground`, and [ListView] field [mListView] by finding the view with id
+     * `R.id.list_view`. We allocate a new instance of [ArrayList] of [String] to initialize variable
      * `val cheeseList` then add all the cheeses in the [Array] of [String] field [Cheeses.sCheeseStrings]
      * to it. We initialize our [StableArrayAdapter] field [mAdapter] with a new instance which will
-     * use `cheeseList` as its dataset, displaying them using the layout [R.layout.opaque_text_view]
+     * use `cheeseList` as its dataset, displaying them using the layout `R.layout.opaque_text_view`
      * with our [OnTouchListener] field [mTouchListener] as its [OnTouchListener]. Finally we set the
      * adapter of [mListView] to be [mAdapter].
      *

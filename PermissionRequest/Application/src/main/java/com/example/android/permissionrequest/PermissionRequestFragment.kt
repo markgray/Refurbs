@@ -68,7 +68,7 @@ class PermissionRequestFragment : Fragment(), ConfirmationDialogFragment.Listene
 
     /**
      * Called to have the fragment instantiate its user interface view. We use our [LayoutInflater]
-     * parameter [inflater] to inflate our layout file [R.layout.fragment_permission_request] using
+     * parameter [inflater] to inflate our layout file `R.layout.fragment_permission_request` using
      * our [ViewGroup] parameter [container] for the LayoutParams without attaching the view to it
      * and return the [View] created to the caller.
      *
@@ -92,7 +92,7 @@ class PermissionRequestFragment : Fragment(), ConfirmationDialogFragment.Listene
     /**
      * Called immediately after [onCreateView] has returned, but before any saved state has been
      * restored in to the view. We initialize our [WebView] field [mWebView] by finding the view in
-     * our [View] parameter [view] with the id [R.id.web_view]. Then we set the chrome handler of
+     * our [View] parameter [view] with the id `R.id.web_view`. Then we set the chrome handler of
      * [mWebView] to our [WebChromeClient] field [mWebChromeClient] (for use in handling JavaScript
      * dialogs etc.). Finally we retrieve the [WebSettings] object of [mWebView] and call our method
      * [configureWebSettings] with it to enable JavaScript.
@@ -188,7 +188,7 @@ class PermissionRequestFragment : Fragment(), ConfirmationDialogFragment.Listene
      * Called to request CAMERA permission. If the method [shouldShowRequestPermissionRationale]
      * returns `true`, we have asked the user for permission before and he turned us down so we
      * create a new instance of [MessageDialogFragment] to display the message with resource id
-     * [R.string.permission_message] ("This sample app uses camera."), the positive button
+     * `R.string.permission_message` ("This sample app uses camera."), the positive button
      * `onClicked` override will call our override of [onOkClicked] which will then call the method
      * [requestPermissions]. If [shouldShowRequestPermissionRationale] returns `false` we call the
      * method [requestPermissions] now.

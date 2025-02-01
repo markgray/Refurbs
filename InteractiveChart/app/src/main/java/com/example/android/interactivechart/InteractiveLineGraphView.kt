@@ -106,16 +106,16 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * The size of the text drawn by [Paint] field [mLabelTextPaint], it is used in the call to
      * its [Paint.setTextSize] method (kotlin `textSize` property) in our [initPaints] method.
-     * It is set by the attribute [R.styleable.InteractiveLineGraphView_labelTextSize] of
-     * [R.styleable.InteractiveLineGraphView] to app:labelTextSize="14sp" in the layout file
+     * It is set by the attribute `R.styleable.InteractiveLineGraphView_labelTextSize` of
+     * `R.styleable.InteractiveLineGraphView` to app:labelTextSize="14sp" in the layout file
      * `activity_main.xml`
      */
     private var mLabelTextSize = 0f
 
     /**
      * The separation between axis labels, it is used by the [drawAxes] method. It is set by the
-     * attribute [R.styleable.InteractiveLineGraphView_labelSeparation] of
-     * [R.styleable.InteractiveLineGraphView] to app:labelSeparation="10dp" in the layout file
+     * attribute `R.styleable.InteractiveLineGraphView_labelSeparation` of
+     * `R.styleable.InteractiveLineGraphView` to app:labelSeparation="10dp" in the layout file
      * `activity_main.xml`
      */
     private var mLabelSeparation = 0
@@ -123,8 +123,8 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * The color of the text drawn by [Paint] field [mLabelTextPaint], it is used in the call to
      * its [Paint.setColor] method (kotlin `color` property) in our [initPaints] method. It is set
-     * by the attribute [R.styleable.InteractiveLineGraphView_labelTextColor] of
-     * [R.styleable.InteractiveLineGraphView] to app:labelTextColor="#d000" in the layout file
+     * by the attribute `R.styleable.InteractiveLineGraphView_labelTextColor` of
+     * `R.styleable.InteractiveLineGraphView` to app:labelTextColor="#d000" in the layout file
      * `activity_main.xml`
      */
     private var mLabelTextColor = 0
@@ -153,7 +153,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * This is used in a call to the [Paint.setStrokeWidth] method of [Paint] field [mGridPaint]
      * (aka kotlin `strokeWidth` property) to set the width for stroking. It is set by the attribute
-     * [R.styleable.InteractiveLineGraphView_gridThickness] of [R.styleable.InteractiveLineGraphView]
+     * `R.styleable.InteractiveLineGraphView_gridThickness` of `R.styleable.InteractiveLineGraphView`
      * to app:gridThickness="1dp" in the layout file `activity_main.xml`
      */
     private var mGridThickness = 0f
@@ -161,7 +161,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * This is used in a call to the [Paint.setColor] method of [Paint] field [mGridPaint]
      * (aka kotlin `color` property) to set the paint's color.  It is set by the attribute
-     * [R.styleable.InteractiveLineGraphView_gridColor] of [R.styleable.InteractiveLineGraphView]
+     * `R.styleable.InteractiveLineGraphView_gridColor` of `R.styleable.InteractiveLineGraphView`
      * to app:gridColor="#2000" in the layout file `activity_main.xml`
      */
     private var mGridColor = 0
@@ -175,7 +175,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * This is used in a call to the [Paint.setStrokeWidth] method of [Paint] field [mAxisPaint]
      * (aka kotlin `strokeWidth` property) to set the width for stroking. It is set by the attribute
-     * [R.styleable.InteractiveLineGraphView_axisThickness] of [R.styleable.InteractiveLineGraphView]
+     * `R.styleable.InteractiveLineGraphView_axisThickness` of `R.styleable.InteractiveLineGraphView`
      * to app:axisThickness="2dp" in the layout file `activity_main.xml`
      */
     private var mAxisThickness = 0f
@@ -183,7 +183,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * This is used in a call to the [Paint.setColor] method of [Paint] field [mAxisPaint]
      * (aka kotlin `color` property) to set the paint's color.  It is set by the attribute
-     * [R.styleable.InteractiveLineGraphView_axisColor] of [R.styleable.InteractiveLineGraphView]
+     * `R.styleable.InteractiveLineGraphView_axisColor` of `R.styleable.InteractiveLineGraphView`
      * to app:axisColor="#d000" in the layout file `activity_main.xml`
      */
     private var mAxisColor = 0
@@ -197,7 +197,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * This is used in a call to the [Paint.setStrokeWidth] method of [Paint] field [mDataPaint]
      * (aka kotlin `strokeWidth` property) to set the width for stroking. It is set by the attribute
-     * [R.styleable.InteractiveLineGraphView_dataThickness] of [R.styleable.InteractiveLineGraphView]
+     * `R.styleable.InteractiveLineGraphView_dataThickness` of `R.styleable.InteractiveLineGraphView`
      * to app:dataThickness="8dp" in the layout file `activity_main.xml`
      */
     var dataThickness: Float = 0f
@@ -205,7 +205,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * This is used in a call to the [Paint.setColor] method of [Paint] field [mDataPaint]
      * (aka kotlin `color` property) to set the paint's color.  It is set by the attribute
-     * [R.styleable.InteractiveLineGraphView_dataColor] of [R.styleable.InteractiveLineGraphView]
+     * `R.styleable.InteractiveLineGraphView_dataColor` of `R.styleable.InteractiveLineGraphView`
      * to app:dataColor="#a6c" in the layout file `activity_main.xml`
      */
     var dataColor: Int = 0
@@ -776,7 +776,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * accurate and efficient measurement of their contents. When overriding this method, you
      * *must* call [setMeasuredDimension] to store the measured width and height of this view.
      * We initialize our [Int] variable `val minChartSize` to the value stored in our resources
-     * for the dimension with resource ID [R.dimen.min_chart_size] (this is set to 100dp in the
+     * for the dimension with resource ID `R.dimen.min_chart_size` (this is set to 100dp in the
      * file values/dimens.xml). Then we call [setMeasuredDimension] with the `measuredWidth`
      * argument the maximum of the value returned by the [getSuggestedMinimumWidth] method (aka
      * kotlin `suggestedMinimumWidth` property) and the value returned by the [View.resolveSize]

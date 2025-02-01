@@ -43,18 +43,18 @@ class DirectoryEntryAdapter
      */
     class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         /**
-         * Cached link to the [TextView] we display the file name in: [R.id.textview_filename]
+         * Cached link to the [TextView] we display the file name in: `R.id.textview_filename`
          */
         @Suppress("JoinDeclarationAndAssignment") // Easier to debug this way
         val fileName: TextView
 
         /**
-         * Cached link to the [TextView] we display the mime type in: [R.id.textview_mimetype]
+         * Cached link to the [TextView] we display the mime type in: `R.id.textview_mimetype`
          */
         val mimeType: TextView
 
         /**
-         * Cached link to the [ImageView] we display the file icon in: [R.id.entry_image]
+         * Cached link to the [ImageView] we display the file icon in: `R.id.entry_image`
          */
         val imageView: ImageView
 
@@ -77,7 +77,7 @@ class DirectoryEntryAdapter
     /**
      * Called when RecyclerView needs a new [ViewHolder] of the given type to represent an item.
      * We initialize [View] variable `val v` by using the [LayoutInflater] from the context of our
-     * [ViewGroup] parameter [viewGroup] to inflate our layout file [R.layout.directory_item], using
+     * [ViewGroup] parameter [viewGroup] to inflate our layout file `R.layout.directory_item`, using
      * [viewGroup] for the layout parameters but not attaching the view to it. We then return a
      * [ViewHolder] constructed from `v` to the caller.
      *
@@ -103,8 +103,8 @@ class DirectoryEntryAdapter
      * [DirectoryEntry] object in position [position] of our data set [mDirectoryEntries] is
      * [DIRECTORY_MIME_TYPE], we set the image of the [ViewHolder.imageView] cached [ImageView] of
      * our [ViewHolder] parameter [viewHolder] to the png with the resource code
-     * [R.drawable.ic_folder_grey600_36dp] (a folder icon), otherwise we do the same only using the
-     * png with resource id [R.drawable.ic_description_grey600_36dp] (a file icon).
+     * `R.drawable.ic_folder_grey600_36dp` (a folder icon), otherwise we do the same only using the
+     * png with resource id `R.drawable.ic_description_grey600_36dp` (a file icon).
      *
      * @param viewHolder The [ViewHolder] which should be updated to represent the contents of the
      * item at the given [position] in the data set.

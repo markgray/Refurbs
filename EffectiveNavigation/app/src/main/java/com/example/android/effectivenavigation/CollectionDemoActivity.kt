@@ -56,14 +56,14 @@ class CollectionDemoActivity : FragmentActivity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_collection_demo]. Then we
+     * then we set our content view to our layout file `R.layout.activity_collection_demo`. Then we
      * initialize our [DemoCollectionPagerAdapter] field [mDemoCollectionPagerAdapter] with a new
      * instance constructed to use a handle to the [FragmentManager] for interacting with fragments
      * associated with this activity. We then initialize [ActionBar] variable `val actionBar` with a
      * reference to our activity's [ActionBar], and specify that the Home button should show an "Up"
      * caret, indicating that touching the button will take the user one step up in the application's
      * hierarchy. We initialize our field [ViewPager] field [mViewPager] by finding the view with id
-     * [R.id.pager] and set its [PagerAdapter] to [mDemoCollectionPagerAdapter].
+     * `R.id.pager` and set its [PagerAdapter] to [mDemoCollectionPagerAdapter].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -199,7 +199,7 @@ class CollectionDemoActivity : FragmentActivity() {
         /**
          * Called to have the fragment instantiate its user interface view. We initialize [View]
          * variable `val rootView` by using our [LayoutInflater] parameter [inflater] to inflate
-         * our layout file [R.layout.fragment_collection_object] using our [ViewGroup] parameter
+         * our layout file `R.layout.fragment_collection_object` using our [ViewGroup] parameter
          * [container] for layout params without attaching to it. We then initialize [Bundle]
          * variable `val args` by fetching our argument [Bundle]. We find the view in `rootView`
          * with the id [android.R.id.text1] and set its text to the string value of the [Int]

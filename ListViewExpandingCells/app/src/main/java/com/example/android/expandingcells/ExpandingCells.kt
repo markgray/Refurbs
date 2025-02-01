@@ -41,22 +41,22 @@ import androidx.core.view.updateLayoutParams
  */
 class ExpandingCells : ComponentActivity() {
     /**
-     * [ExpandingListView] in our layout with id [R.id.main_list_view] (it is the only widget in
+     * [ExpandingListView] in our layout with id `R.id.main_list_view` (it is the only widget in
      * our layout, and extends [ListView]).
      */
     private var mListView: ExpandingListView? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_main]. We initialize our
+     * then we set our content view to our layout file `R.layout.activity_main`. We initialize our
      * [Array] of [ExpandableListItem] variable `val values` with three different instances. We
      * initialize our [MutableList] of [ExpandableListItem] variable `val mData` with a new instance
      * of [ArrayList]. We then loop over [Int] variable `var i` adding [NUM_OF_CELLS] of
      * [ExpandableListItem] objects constructed by copying the contents of entries of `values` in a
      * round robin order. We initialize [CustomArrayAdapter] variable `val adapter` with a new
-     * instance which uses `mData` as its dataset, and the layout file [R.layout.list_view_item] to
+     * instance which uses `mData` as its dataset, and the layout file `R.layout.list_view_item` to
      * display each item in that dataset. We initialize [ExpandingListView] field [mListView] by
-     * finding the view with id [R.id.main_list_view], set its adapter to be `adapter` and call its
+     * finding the view with id `R.id.main_list_view`, set its adapter to be `adapter` and call its
      * [ExpandingListView.setDivider] method (kotlin `divider` property) to set its divider to `null`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.

@@ -44,7 +44,7 @@ import com.example.android.common.logger.MessageOnlyLogFilter
 class MainActivity : SampleActivityBase() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. If
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`. If
      * the [FragmentManager] for interacting with fragments associated with this activity is unable
      * to find a fragment with the tag [FRAGTAG] ("StorageClientFragment"), we initialize
      * [FragmentTransaction] `val transaction` by beginning it, create a new instance for
@@ -81,7 +81,7 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater] for
-     * this context to inflate our menu layout file [R.menu.main] into our [Menu] parameter [menu]
+     * this context to inflate our menu layout file `R.menu.main` into our [Menu] parameter [menu]
      * and return `true` so the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
@@ -100,9 +100,9 @@ class MainActivity : SampleActivityBase() {
      * it to be the [LogNode] that `logWrapper` will send data to. We initialize [LogFragment]
      * variable `val logFragment` by using the [FragmentManager] for interacting with fragments
      * associated with this activity to find the fragment whose container has the id
-     * [R.id.log_fragment], and set its [LogView] to be the [LogNode] that `msgFilter` will send
+     * `R.id.log_fragment`, and set its [LogView] to be the [LogNode] that `msgFilter` will send
      * data to. We then set the text appearance of the [LogView] of `logFragment` to be that
-     * indicated by the style file [R.style.Log], and set its background color to [Color.WHITE].
+     * indicated by the style file `R.style.Log`, and set its background color to [Color.WHITE].
      * Finally we log the message "Ready".
      */
     override fun initializeLogging() {

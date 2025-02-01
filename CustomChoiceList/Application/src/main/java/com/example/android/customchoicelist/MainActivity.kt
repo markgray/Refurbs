@@ -38,7 +38,7 @@ import androidx.core.view.updateLayoutParams
 class MainActivity : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.sample_main] (which consists of a
+     * then we set our content view to our layout file `R.layout.sample_main` (which consists of a
      * [LinearLayout] containing a [TextView] which explains the example and a [ListView] with id
      * "@android:id/list" which this [Activity] will use to display its list o Cheeses. Finally we
      * call the [ListView.setAdapter] method of the [ListView] (aka kotlin `adapter` property) with
@@ -107,7 +107,7 @@ class MainActivity : ComponentActivity() {
         /**
          * Get a View that displays the data at the specified position in the data set. If our [View]
          * parameter [convertView] is `null` we set it to the view that the [LayoutInflater] for our
-         * activities window inflates from the layout file [R.layout.list_item] using our [ViewGroup]
+         * activities window inflates from the layout file `R.layout.list_item` using our [ViewGroup]
          * parameter [container] for the LayoutParams without attaching to it (this layout file
          * consists of a custom [CheckableLinearLayout] which is central to this example). We
          * find the [TextView] in [convertView] with id [android.R.id.text1] and set its text

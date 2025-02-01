@@ -418,12 +418,12 @@ class SnakeView : TileView {
      * Otherwise we initialize our [Resources] variable `val res` to a [Resources] instance for the
      * application's package and initialize [CharSequence] variable `var str` to the empty string.
      * If `newMode` is [PAUSE] we set the visibility of our fields [mArrowsView] and [mBackgroundView]
-     * to `GONE` and load `str` with the string whose resource id is [R.string.mode_pause] ("Paused
+     * to `GONE` and load `str` with the string whose resource id is `R.string.mode_pause` ("Paused
      * Press Up To Resume"). If `newMode` is [READY] we set the visibility of our fields [mArrowsView]
      * and [mBackgroundView] to `GONE` and load `str` with the string whose resource id is
-     * [R.string.mode_ready] ("Snake Press Up To Play"). If `newMode` is [LOSE] we set the visibility
+     * `R.string.mode_ready` ("Snake Press Up To Play"). If `newMode` is [LOSE] we set the visibility
      * of our fields [mArrowsView] and [mBackgroundView]` to `GONE` and load `str` with the string
-     * created by using the string with resource id [R.string.mode_lose] ("Game Over Score: [mScore]
+     * created by using the string with resource id `R.string.mode_lose` ("Game Over Score: [mScore]
      * Press Up To Play") to format our field [mScore]. In any case we then set the text of our
      * field [mStatusText] to `str` and set its visibility to `VISIBLE`.
      *

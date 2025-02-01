@@ -62,10 +62,10 @@ class PictureViewer : ComponentActivity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_picture_viewer] (this is a
+     * then we set our content view to our layout file `R.layout.activity_picture_viewer` (this is a
      * [FrameLayout] containing two [ImageView] widgets occupying the same space). We initialize
-     * [ImageView] variable `val prevImageView` by finding the view with id [R.id.prevImageView],
-     * and [ImageView] variable `val nextImageView` by finding the view with id [R.id.nextImageView],
+     * [ImageView] variable `val prevImageView` by finding the view with id `R.id.prevImageView`,
+     * and [ImageView] variable `val nextImageView` by finding the view with id `R.id.nextImageView`,
      * and set the background color of both to [Color.TRANSPARENT]. We also set the duration of both
      * view's [ViewPropertyAnimator] to 1000ms. We initialize the [BitmapDrawable] variable
      * `val drawables` array with an instance which will hold as many [BitmapDrawable] objects as

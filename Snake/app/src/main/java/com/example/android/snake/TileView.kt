@@ -51,9 +51,9 @@ open class TileView : View {
     /**
      * Constructor that is called when inflating a view from XML. First we call our super's constructor,
      * then we initialize [TypedArray] variable `val a` with the styled attribute information for the
-     * attribute with the id [R.styleable.TileView] as specified in the [AttributeSet] parameter
+     * attribute with the id `R.styleable.TileView` as specified in the [AttributeSet] parameter
      * [attrs] attributes of the XML tag that is inflating the view. We then initialize our field
-     * [mTileSize] with the attribute for [R.styleable.TileView_tileSize] converting the 24dp value
+     * [mTileSize] with the attribute for `R.styleable.TileView_tileSize` converting the 24dp value
      * given in our layout file to pixels and defaulting to 12. We then recycle [TypedArray] `a`.
      *
      * @param context The Context the view is running in, through which it can
@@ -69,9 +69,9 @@ open class TileView : View {
     /**
      * Perform inflation from XML and apply a class-specific base style from a theme attribute. First
      * we call our super's constructor, then we initialize [TypedArray] variable `val a` with the
-     * styled attribute information for the attribute with the id [R.styleable.TileView] as specified
+     * styled attribute information for the attribute with the id `R.styleable.TileView` as specified
      * in the [AttributeSet] parameter [attrs] attributes of the XML tag that is inflating the view.
-     * We then initialize our field [mTileSize] with the attribute for [R.styleable.TileView_tileSize]
+     * We then initialize our field [mTileSize] with the attribute for `R.styleable.TileView_tileSize`
      * converting the 24dp value given in our layout file to pixels and defaulting to 12. We then
      * recycle [TypedArray] `a`.
      *
@@ -215,7 +215,7 @@ open class TileView : View {
      * number of tiles that will be drawn.
      */
         /**
-         * Size of the square tile in pixels, controlled by the attribute [R.styleable.TileView_tileSize]
+         * Size of the square tile in pixels, controlled by the attribute `R.styleable.TileView_tileSize`
          * (defaulting to 12) set to 24dp in our layout file.
          */
         @JvmStatic

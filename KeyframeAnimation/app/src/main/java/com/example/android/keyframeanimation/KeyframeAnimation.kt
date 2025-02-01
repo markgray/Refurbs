@@ -42,8 +42,8 @@ import androidx.core.view.updateLayoutParams
 class KeyframeAnimation : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_keyframe_animation], and
-     * we initialize [ImageView] variable `val imageview` by finding the view with id [R.id.imageview].
+     * then we set our content view to our layout file `R.layout.activity_keyframe_animation`, and
+     * we initialize [ImageView] variable `val imageview` by finding the view with id `R.id.imageview`.
      * We initialize our [AnimationDrawable] variable `val animationDrawable` to a new instance then
      * loop for [Int] variable `var i` from 0 to 9 calling the [AnimationDrawable.addFrame] method
      * of `animationDrawable` to add the [BitmapDrawable] returned by our method

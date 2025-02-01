@@ -37,11 +37,11 @@ import android.widget.TextView
 class SelectContactActivity : Activity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.select_contact]. We
+     * `onCreate`, then we set our content view to our layout file `R.layout.select_contact`. We
      * initialize [Intent] variable `val intent` with the intent that started this activity and if
      * the action of the intent is not [ACTION_SELECT_CONTACT] we call [finish] to close this
      * activity and then we return. Otherwise we initialize [ListView] variable `val list` by
-     * finding the view with id [R.id.list], set its adapter to our [ListAdapter] field [mAdapter],
+     * finding the view with id `R.id.list`, set its adapter to our [ListAdapter] field [mAdapter],
      * and set its [OnItemClickListener] to our [OnItemClickListener] field [mOnItemClickListener].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
@@ -100,7 +100,7 @@ class SelectContactActivity : Activity() {
          * Get a [View] that displays the data at the specified position in the data set. We set our
          * [View] variable `var viewLocal` to our [View] parameter [view]. It it is `null`, we
          * initialize it by using the [LayoutInflater] from the context of our [ViewGroup] parameter
-         * [parent] to inflate our layout file [R.layout.contact] (just contains a single [TextView]
+         * [parent] to inflate our layout file `R.layout.contact` (just contains a single [TextView]
          * whose id is "contact_name"). We initialize [TextView] variable `val textView` by casting
          * `viewLocal` to a `TextView`, initialize [Contact] variable `val contact` by using our
          * [getItem] method to fetch the item at [Int] parameter [i], then call the method

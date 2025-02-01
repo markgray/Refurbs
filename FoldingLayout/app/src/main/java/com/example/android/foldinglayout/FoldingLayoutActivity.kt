@@ -82,18 +82,18 @@ class FoldingLayoutActivity : ComponentActivity() {
     var permissions: Array<String> = arrayOf(Manifest.permission.CAMERA)
 
     /**
-     * The instance of [FoldingLayout] in our layout with id [R.id.fold_view]
+     * The instance of [FoldingLayout] in our layout with id `R.id.fold_view`
      */
     private var mFoldLayout: FoldingLayout? = null
 
     /**
-     * The [SeekBar] in our layout with id [R.id.anchor_seek_bar], used to move the anchor point
+     * The [SeekBar] in our layout with id `R.id.anchor_seek_bar`, used to move the anchor point
      * of the [FoldingLayout].
      */
     private var mAnchorSeekBar: SeekBar? = null
 
     /**
-     * Orientation of our [FoldingLayout], toggled by the menu item with id [R.id.toggle_orientation]
+     * Orientation of our [FoldingLayout], toggled by the menu item with id `R.id.toggle_orientation`
      * (labeled either "Horizontal" or "Vertical" depending on the current orientation).
      */
     private var mOrientation: Orientation = HORIZONTAL
@@ -105,7 +105,7 @@ class FoldingLayoutActivity : ComponentActivity() {
 
     /**
      * Number of folds that our [FoldingLayout] creates, set by the [Spinner] in our
-     * options menu whose id is [R.id.num_of_folds]
+     * options menu whose id is `R.id.num_of_folds`
      */
     private var mNumberOfFolds: Int = 2
 
@@ -131,7 +131,7 @@ class FoldingLayoutActivity : ComponentActivity() {
 
     /**
      * A flag to indicate that our [OnItemSelectedListener.onItemSelected] override for the spinner
-     * with id [R.id.num_of_folds] has been called once already (during its creation) and all further
+     * with id `R.id.num_of_folds` has been called once already (during its creation) and all further
      * calls are in response to user input.
      */
     private var mDidLoadSpinner: Boolean = true
@@ -143,14 +143,14 @@ class FoldingLayoutActivity : ComponentActivity() {
 
     /**
      * Flag to indicate that we are folding a live camera feed instead of a still image, toggled by
-     * the [CheckBox] with id [R.id.camera_feed] ("Camera Feed") in our options menu
+     * the [CheckBox] with id `R.id.camera_feed` ("Camera Feed") in our options menu
      */
     private var mIsCameraFeed: Boolean = false
 
     /**
      * Flag to indicate that our [FoldingLayout] should use sepia mode (use a [Paint] with a
      * saturation value of 0, mapping colors to gray-scale) for the folds while it is folding,
-     * toggled by the checkbox with id [R.id.sepia] ("Sepia Off") in our options menu.
+     * toggled by the checkbox with id `R.id.sepia` ("Sepia Off") in our options menu.
      */
     private var mIsSepiaOn: Boolean = true
 
@@ -162,14 +162,14 @@ class FoldingLayoutActivity : ComponentActivity() {
 
     /**
      * The [ItemSelectedListener] (subclass of [OnItemSelectedListener]) we use to react to items
-     * selected in the [Spinner] with id [R.id.num_of_folds] in our options menu (used to select
+     * selected in the [Spinner] with id `R.id.num_of_folds` in our options menu (used to select
      * the number of folds to use when folding our [FoldingLayout]).
      */
     private var mItemSelectedListener: ItemSelectedListener? = null
 
     /**
      * The camera instance we use as the content of our [TextureView] field [mTextureView] when the
-     * camera source is selected by checking the [CheckBox] with id [R.id.camera_feed] ("Camera Feed")
+     * camera source is selected by checking the [CheckBox] with id `R.id.camera_feed` ("Camera Feed")
      * in our options menu.
      */
     private var mCamera: Camera? = null
@@ -180,36 +180,36 @@ class FoldingLayoutActivity : ComponentActivity() {
     private var mTextureView: TextureView? = null
 
     /**
-     * The [ImageView] that holds our still image, the jpg with resource id [R.drawable.image].
+     * The [ImageView] that holds our still image, the jpg with resource id `R.drawable.image`.
      */
     private var mImageView: ImageView? = null
 
     /**
      * [Paint] whose saturation is set to 0 (gray scale for all colors), used while the view is
-     * folding if the [CheckBox] with id [R.id.sepia] ("Sepia Off") is not checked.
+     * folding if the [CheckBox] with id `R.id.sepia` ("Sepia Off") is not checked.
      */
     private var mSepiaPaint: Paint? = null
 
     /**
-     * Default [Paint] used while the view is folding if the [CheckBox] with id [R.id.sepia]
+     * Default [Paint] used while the view is folding if the [CheckBox] with id `R.id.sepia`
      * ("Sepia Off") is checked.
      */
     private var mDefaultPaint: Paint? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_fold]. We initialize our
-     * [ImageView] field [mImageView] by finding the view with id [R.id.image_view], set its padding
+     * then we set our content view to our layout file `R.layout.activity_fold`. We initialize our
+     * [ImageView] field [mImageView] by finding the view with id `R.id.image_view`, set its padding
      * to [ANTIALIAS_PADDING] on all sides, set its scale type (how the image should be resized or
      * moved to match the size of the [ImageView]) to [ImageView.ScaleType.FIT_XY] (Scale the image
      * using [Matrix.ScaleToFit.FILL] (scale in X and Y independently, so that src matches dst
-     * exactly)), and then set its content to the jpg with resource id [R.drawable.image]. We then
+     * exactly)), and then set its content to the jpg with resource id `R.drawable.image`. We then
      * initialize our [TextureView] field [mTextureView] with a new instance, and set its
      * [SurfaceTextureListener] to our [SurfaceTextureListener] field [mSurfaceTextureListener]
      * (its [SurfaceTextureListener.onSurfaceTextureAvailable] override opens the [Camera] and sets
      * the [SurfaceTexture] to be used for live preview of the camera). We then initialize our
-     * [SeekBar] field [mAnchorSeekBar] by finding the view with id [R.id.anchor_seek_bar]. We
-     * initialize our [FoldingLayout] field [mFoldLayout] by finding the view with id [R.id.fold_view],
+     * [SeekBar] field [mAnchorSeekBar] by finding the view with id `R.id.anchor_seek_bar`. We
+     * initialize our [FoldingLayout] field [mFoldLayout] by finding the view with id `R.id.fold_view`,
      * set its background color to [Color.BLACK], and set its [OnFoldListener] to our [OnFoldListener]
      * field [mOnFoldListener]. We initialize our [Int] field [mTouchSlop] to the standard constant
      * for the UI on this device for the distance in pixels a touch can wander before we think the
@@ -465,11 +465,11 @@ class FoldingLayoutActivity : ComponentActivity() {
     /**
      * Initialize the contents of the Activity's standard options menu. If our [Boolean] flag field
      * [IS_JBMR2] indicates that our device is running the buggy `JELLY_BEAN_MR2` release we fetch
-     * a [MenuInflater] for our context and use it to inflate the options menu [R.menu.fold_with_bug]
+     * a [MenuInflater] for our context and use it to inflate the options menu `R.menu.fold_with_bug`
      * into [Menu] parameter [menu] (it lacks the option items for the camera). Otherwise we fetch a
-     * [MenuInflater] for our context and use it to inflate the options menu [R.menu.fold] into [menu]
+     * [MenuInflater] for our context and use it to inflate the options menu `R.menu.fold` into [menu]
      * (full featured option menu). We initialize our [Spinner] variable `val s` by finding the item
-     * in [menu] with id [R.id.num_of_folds] and retrieving its action view. We then set the
+     * in [menu] with id `R.id.num_of_folds` and retrieving its action view. We then set the
      * [OnItemSelectedListener] of `s` to our [ItemSelectedListener] field [mItemSelectedListener]
      * and return `true` to the caller so that our menu will be displayed.
      *
@@ -519,18 +519,18 @@ class FoldingLayoutActivity : ComponentActivity() {
      * This hook is called whenever an item in your options menu is selected. We `when` switch on
      * the `itemId` of our [MenuItem] parameter [item]:
      *
-     *  * [R.id.animate_fold]: ("Animate") we call our method [animateFold] to animate the folding
+     *  * `R.id.animate_fold`: ("Animate") we call our method [animateFold] to animate the folding
      *  view inwards (to a completely folded state) from its current state and then back out to its
      *  original state.
      *
-     *  * [R.id.toggle_orientation]: ("Vertical" or "Horizontal" depending on the state of the
+     *  * `R.id.toggle_orientation`: ("Vertical" or "Horizontal" depending on the state of the
      *  current orientation) we toggle our [Orientation] field [mOrientation] between [VERTICAL]
      *  or [HORIZONTAL], then set the title of our [MenuItem] parameter [item] to "Vertical" if
      *  the new state is [HORIZONTAL] or to "Horizontal" if it is [VERTICAL]. We then set our [Int]
      *  field [mTranslation] to 0 and set the [FoldingLayout.orientation] property of our
      *  [FoldingLayout] field [mFoldLayout] to set the orientation it folds in to [mOrientation].
      *
-     *  * [R.id.camera_feed]: ("Camera Feed" or "Static Image" depending on the current image
+     *  * `R.id.camera_feed`: ("Camera Feed" or "Static Image" depending on the current image
      *  source) we toggle our [Boolean] field [mIsCameraFeed], and if the new value is `true` we
      *  set the title of our [MenuItem] parameter [item] to "Static Image", if it is `false` we
      *  set the title to "Camera Feed". We then set the checked state of our item's [CheckBox] to
@@ -546,7 +546,7 @@ class FoldingLayoutActivity : ComponentActivity() {
      *  [FoldingLayout.addView] method to add the [ImageView] field [mImageView] using the height
      *  and width of [mFoldLayout] as its layout parameters.
      *
-     *  * [R.id.sepia]: ("Sepia Off") we toggle the value of our [Boolean] field [mIsSepiaOn], then
+     *  * `R.id.sepia`: ("Sepia Off") we toggle the value of our [Boolean] field [mIsSepiaOn], then
      *  set the checked state of our item's [CheckBox] to the inverse of [mIsSepiaOn]. Then if
      *  [mIsSepiaOn] is now `true` and the current fold factor of [mFoldLayout] is not 0 (it is
      *  partially folded) we call our method [setSepiaLayer] to set the sepia layer mode of the
@@ -637,7 +637,7 @@ class FoldingLayoutActivity : ComponentActivity() {
          * our [Int] field [mNumberOfFolds] by parsing as an integer the string value of item at
          * position `pos` in the `parent` [AdapterView] (the string value of an `Item` is the title
          * of it, and the titles of the items in our [Spinner] are taken from the "string-array" in
-         * our resources whose ID is [R.array.num_of_folds_array] which is a list of the strings
+         * our resources whose ID is `R.array.num_of_folds_array` which is a list of the strings
          * "2", "3", "4", "5", "6", "7", "8", and "1" so applying the [String.toInt] returns their
          * [Int] value). If our [Boolean] field [mDidLoadSpinner] is `true` we set it to `false` (we
          * are just being called when our [Spinner] is created, not as the result of a user action),

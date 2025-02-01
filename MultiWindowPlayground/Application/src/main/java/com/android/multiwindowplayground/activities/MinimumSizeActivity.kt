@@ -29,10 +29,10 @@ import com.android.multiwindowplayground.R
 class MinimumSizeActivity : LoggingActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_logging].
-     * We set our background color to [R.color.pink] (0xC2185B), then call the [setDescription]
-     * method to set the description text in the view with id [R.id.description] to the string with
-     * resource ID [R.string.activity_minimum_description]
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_logging`.
+     * We set our background color to `R.color.pink` (0xC2185B), then call the [setDescription]
+     * method to set the description text in the view with id `R.id.description` to the string with
+     * resource ID `R.string.activity_minimum_description`
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */

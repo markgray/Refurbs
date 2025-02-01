@@ -46,12 +46,12 @@ class Snake : ComponentActivity() {
     /**
      * Called when Activity is first created. Turns off the title bar, sets up the content views,
      * and fires up the [SnakeView]. First we call our super's implementation of `onCreate`, then
-     * we set our content view to our layout file [R.layout.snake_layout]. We initialize our
-     * [SnakeView] field  [mSnakeView] by finding the view with id [R.id.snake], then call its
+     * we set our content view to our layout file `R.layout.snake_layout`. We initialize our
+     * [SnakeView] field  [mSnakeView] by finding the view with id `R.id.snake`, then call its
      * method [SnakeView.setDependentViews] to have it set its [TextView] field [SnakeView.mStatusText]
-     * to the view with id [R.id.text], its [View] field [SnakeView.mArrowsView] to the view with id
-     * [R.id.arrowContainer], and its [View] field [SnakeView.mBackgroundView] to the view with id
-     * [R.id.background]. If our [Bundle] parameter [savedInstanceState] is `null` we were just
+     * to the view with id `R.id.text`, its [View] field [SnakeView.mArrowsView] to the view with id
+     * `R.id.arrowContainer`, and its [View] field [SnakeView.mBackgroundView] to the view with id
+     * `R.id.background`. If our [Bundle] parameter [savedInstanceState] is `null` we were just
      * launched so we call the [SnakeView.setMode] method of our field [mSnakeView] to have it set
      * its mode to `READY`. If it is not `null` we are being restored so we initialize [Bundle]
      * variable `val map` with the bundle stored in [savedInstanceState] under the key [ICICLE_KEY],

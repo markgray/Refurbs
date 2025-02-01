@@ -117,13 +117,13 @@ class MainActivity : ComponentActivity() {
      * then set our content view to our layout file R.layout.sample_main. We then proceed to initialize
      * our various UI widget references by finding them in our layout:
      *
-     *  * [mDelayEditText] is the [EditText] with ID [R.id.delay_time]
-     *  * [mDurationTimeEditText] is the [EditText] with ID [R.id.duration_time]
-     *  * [mDeadlineEditText] is the [EditText] with ID [R.id.deadline_time]
-     *  * [mWiFiConnectivityRadioButton] is the [RadioButton] with ID [R.id.checkbox_unmetered]
-     *  * [mAnyConnectivityRadioButton] is the [RadioButton] with ID [R.id.checkbox_any]
-     *  * [mRequiresChargingCheckBox] is the [CheckBox] with ID [R.id.checkbox_charging]
-     *  * [mRequiresIdleCheckbox] is the [CheckBox] with ID [R.id.checkbox_idle]
+     *  * [mDelayEditText] is the [EditText] with ID `R.id.delay_time`
+     *  * [mDurationTimeEditText] is the [EditText] with ID `R.id.duration_time`
+     *  * [mDeadlineEditText] is the [EditText] with ID `R.id.deadline_time`
+     *  * [mWiFiConnectivityRadioButton] is the [RadioButton] with ID `R.id.checkbox_unmetered`
+     *  * [mAnyConnectivityRadioButton] is the [RadioButton] with ID `R.id.checkbox_any`
+     *  * [mRequiresChargingCheckBox] is the [CheckBox] with ID `R.id.checkbox_charging`
+     *  * [mRequiresIdleCheckbox] is the [CheckBox] with ID `R.id.checkbox_idle`
      *
      * We then initialize our [ComponentName] field [mServiceComponent] with a new instance for
      * [MyJobService], and [IncomingMessageHandler] field [mHandler] with a new instance.
@@ -338,34 +338,34 @@ class MainActivity : ComponentActivity() {
          * We implement this to receive messages. First we retrieve [MainActivity] variable
          * `val mainActivity` from our [WeakReference] to a [MainActivity] field [mActivity] and
          * if it is `null` we just return. We initialize [View] variable `val showStartView` by
-         * finding the view in `mainActivity` with id [R.id.onstart_textview], and [View] variable
-         * `val showStopView` by finding the view in `mainActivity` with id [R.id.onstop_textview].
+         * finding the view in `mainActivity` with id `R.id.onstart_textview`, and [View] variable
+         * `val showStopView` by finding the view in `mainActivity` with id `R.id.onstop_textview`.
          * We declare [Message] variable `val m` then switch on the value of the [Message.what]
          * field of our parameter [msg]:
          *
          *  * [MSG_COLOR_START]: Start received, we set the background color of `showStartView` to
-         *  [R.color.start_received] (#00FF00 green), and call our method [updateParamsTextView]
+         *  `R.color.start_received` (#00FF00 green), and call our method [updateParamsTextView]
          *  with the [Message.obj] field of [msg] and the string "started" (this displays the text
-         *  "Job ID `valueOf(obj)` started" in the textview with id [R.id.task_params]). We then
+         *  "Job ID `valueOf(obj)` started" in the textview with id `R.id.task_params`). We then
          *  create a message for `m` with the what field set to [MSG_UNCOLOR_START] and send it to
          *  ourselves with a delay of 1000ms (this will clear the background color after 1000ms and
          *  clear the textview).
          *
          *  * [MSG_COLOR_STOP]: Stop received, we set the background color of `showStopView` to
-         *  [R.color.stop_received] (#FF0000 red), and call our method [updateParamsTextView] with
+         *  `R.color.stop_received` (#FF0000 red), and call our method [updateParamsTextView] with
          *  the [Message.obj] field of [msg] and the string "stopped" (this displays the text
-         *  "Job ID `valueOf(obj)` stopped" in the textview with id [R.id.task_params]). We then
+         *  "Job ID `valueOf(obj)` stopped" in the textview with id `R.id.task_params`). We then
          *  create a [Message] for `m` with the what field set to [MSG_UNCOLOR_STOP] and send it
          *  to ourselves with a delay of 2000ms (this will clear the background color after 2000ms
          *  and clear the textview).
          *
          *  * [MSG_UNCOLOR_START]: We set the background color of `showStartView` to
-         *  [R.color.none_received] (#999999 gray), and call our [updateParamsTextView] method
+         *  `R.color.none_received` (#999999 gray), and call our [updateParamsTextView] method
          *  with `null` for the `jobId` and the empty string for the `action` (clears all the
          *  changes done by a previous [MSG_COLOR_START] message).
          *
          *  * [MSG_UNCOLOR_STOP]: We set the background color of `showStopView` to
-         *  [R.color.none_received] (#999999 gray), and call our [updateParamsTextView] method
+         *  `R.color.none_received` (#999999 gray), and call our [updateParamsTextView] method
          *  with `null` for the `jobId` and the empty string for the `action` (clears
          * all the changes done by a previous MSG_COLOR_STOP message).
          *
@@ -413,9 +413,9 @@ class MainActivity : ComponentActivity() {
         }
 
         /**
-         * Updates text displayed in the textview with id [R.id.task_params]. First we initialize
+         * Updates text displayed in the textview with id `R.id.task_params`. First we initialize
          * our [TextView] variable `val paramsTextView` by finding the view in [mActivity] with id
-         * [R.id.task_params]. If our [Any] parameter [jobId] is `null` we set the text of
+         * `R.id.task_params`. If our [Any] parameter [jobId] is `null` we set the text of
          * `paramsTextView` to the empty string and return. We initialize [String] variable
          * `val jobIdText` with the string value of our [Any] parameter [jobId] then set the text
          * of `paramsTextView` to a string that formats the strings `jobIdText` and `action` with

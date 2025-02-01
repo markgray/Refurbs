@@ -51,15 +51,15 @@ class CurvedMotion : ComponentActivity() {
     var mTopLeft: Boolean = true
 
     /**
-     * [Button] in our layout file with id [R.id.button] ("Click Me!") whose position on the
+     * [Button] in our layout file with id `R.id.button` ("Click Me!") whose position on the
      * screen we animate when the button is clicked.
      */
     var mButton: Button? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`.
-     * then we set our content view to our layout file [R.layout.activity_curved_motion]. We initialize
-     * our [Button] field [mButton] by finding the view with id [R.id.button] ("Click Me!"), and set
+     * then we set our content view to our layout file `R.layout.activity_curved_motion`. We initialize
+     * our [Button] field [mButton] by finding the view with id `R.id.button` ("Click Me!"), and set
      * its [OnClickListener] to an anonymous class whose [OnClickListener.onClick] override causes
      * the button to be moved from the top left of the screen to the bottom right (or back again)
      * using a curved animation.

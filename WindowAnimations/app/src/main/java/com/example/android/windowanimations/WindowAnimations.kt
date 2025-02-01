@@ -43,12 +43,12 @@ import androidx.core.view.updateLayoutParams
 class WindowAnimations : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * and set our content view to our layout file [R.layout.activity_window_animations]. We
-     * initialize [Button] variable `val defaultButton` by finding the view with id [R.id.defaultButton]
+     * and set our content view to our layout file `R.layout.activity_window_animations`. We
+     * initialize [Button] variable `val defaultButton` by finding the view with id `R.id.defaultButton`
      * ("Default Animations"), initialize [Button] variable `val translateButton` by finding the view
-     * with id [R.id.translateButton] ("Translate Animations") initialize [Button] variable
-     * `val scaleButton` by finding the view with id [R.id.scaleButton] ("Scale Animations"), and
-     * initialize [ImageView] variable `val thumbnail` by finding the view with id [R.id.thumbnail]
+     * with id `R.id.translateButton` ("Translate Animations") initialize [Button] variable
+     * `val scaleButton` by finding the view with id `R.id.scaleButton` ("Scale Animations"), and
+     * initialize [ImageView] variable `val thumbnail` by finding the view with id `R.id.thumbnail`
      * (displays the thumbnail drawable-nodpi/thumbnail.png). We set the [View.OnClickListener] of
      * `defaultButton` to an anonymous class whose [View.OnClickListener.onClick] override just
      * creates an [Intent] to launch the activity [SubActivity] and starts it running (relying on
@@ -56,8 +56,8 @@ class WindowAnimations : ComponentActivity() {
      * an anonymous class whose [View.OnClickListener.onClick] override creates an [Intent] to
      * launch [AnimatedSubActivity], then creates a [Bundle] variable `val translateBundle` from an
      * [ActivityOptions] instance which specifies the use of the xml animation with resource id
-     * [R.anim.slide_in_left] as the animation to use for the incoming activity, and
-     * [R.anim.slide_out_left] as the animation to use for the outgoing activity, and finally
+     * `R.anim.slide_in_left` as the animation to use for the incoming activity, and
+     * `R.anim.slide_out_left` as the animation to use for the outgoing activity, and finally
      * launches the [Intent] variable `subActivity` with `translateBundle` as the option bundle.
      * We set the [View.OnClickListener] of `scaleButton` to an anonymous class whose
      * [View.OnClickListener.onClick] override creates an `Intent` to launch [AnimatedSubActivity],

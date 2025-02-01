@@ -48,7 +48,7 @@ class RevealEffectBasicFragment : Fragment() {
 
     /**
      * Called to have the fragment instantiate its user interface view. We return the view that our
-     * [LayoutInflater] parameter [inflater] inflates from our layout file [R.layout.reveal_effect_basic]
+     * [LayoutInflater] parameter [inflater] inflates from our layout file `R.layout.reveal_effect_basic`
      * using our [ViewGroup] parameter [container] for LayoutParams without attaching to that view.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
@@ -68,7 +68,7 @@ class RevealEffectBasicFragment : Fragment() {
      * Called immediately after [onCreateView] has returned, but before any saved state has been
      * restored in to the view. We initialize our [View] variable ` shape` by finding the view in
      * our [View] parameter [view] with resource ID R.id.circle, and our [Button] variable
-     * `val button` by finding the view with id [R.id.button] ("Reveal"). We then set the
+     * `val button` by finding the view with id `R.id.button` ("Reveal"). We then set the
      * [View.OnClickListener] of `button` to a lambda whose [View.OnClickListener.onClick] override
      * creates and runs an [Animator] which animates a clipping circle which obscures [View] `shape`
      * then explodes from the top left corner of `shape` until it reveals the original view again.

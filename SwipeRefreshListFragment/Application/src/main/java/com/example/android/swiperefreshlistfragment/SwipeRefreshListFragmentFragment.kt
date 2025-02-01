@@ -113,7 +113,7 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
 
     /**
      * Initialize the contents of the Fragment host's standard options menu. We just use our
-     * [MenuInflater] parameter [inflater] to inflate our menu layout file [R.menu.main_menu]
+     * [MenuInflater] parameter [inflater] to inflate our menu layout file `R.menu.main_menu`
      * into our [Menu] parameter [menu].
      *
      * @param menu The options menu in which you place your items.
@@ -129,24 +129,24 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
      * the value returned by the [MenuItem.getItemId] method (kotlin `itemId` property) of our
      * [MenuItem] parameter [item]:
      *
-     *  * [R.id.menu_refresh]: we log the fact that we were selected, then if our super's method
+     *  * `R.id.menu_refresh`: we log the fact that we were selected, then if our super's method
      * [isRefreshing] returns false (we are not already refreshing) we  set [isRefreshing] to `true`
      * to start the [SwipeRefreshLayout] progress bar. We then call our [initiateRefresh] method to
      * start our refresh background task and return `true` to consume the event here.
      *
-     *  * [R.id.menu_color_scheme_1]: we log the fact that we were selected, call the
+     *  * `R.id.menu_color_scheme_1`: we log the fact that we were selected, call the
      *  [MenuItem.setChecked] method (kotlin `isChecked` property) of our [MenuItem] parameter
      *  [item] to have it display a checked mark, call our super's [setColorScheme] method with
      *  four resource ids for colors for it to use when displaying the [SwipeRefreshLayout]
      *  progress bar, and return `true` to consume the event here.
      *
-     *  * [R.id.menu_color_scheme_2]: we log the fact that we were selected, call the
+     *  * `R.id.menu_color_scheme_2`: we log the fact that we were selected, call the
      *  [MenuItem.setChecked] method (kotlin `isChecked` property) of our [MenuItem] parameter
      *  [item] to have it display a checked mark, call our super's [setColorScheme] method with
      *  four resource ids for colors for it to use when displaying the [SwipeRefreshLayout]
      *  progress bar, and return `true` to consume the event here.
      *
-     *  * [R.id.menu_color_scheme_3]: we log the fact that we were selected, call the
+     *  * `R.id.menu_color_scheme_3`: we log the fact that we were selected, call the
      *  [MenuItem.setChecked] method (kotlin `isChecked` property) of our [MenuItem] parameter
      *  [item] to have it display a checked mark, call our super's [setColorScheme] method with
      *  four resource ids for colors for it to use when displaying the [SwipeRefreshLayout]

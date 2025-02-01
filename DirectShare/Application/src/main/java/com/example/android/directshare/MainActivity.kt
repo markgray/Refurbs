@@ -37,16 +37,16 @@ import androidx.core.view.updateLayoutParams
  */
 class MainActivity : ComponentActivity() {
     /**
-     * [EditText] with resource id [R.id.body], user enters text here that they want to share.
+     * [EditText] with resource id `R.id.body`, user enters text here that they want to share.
      */
     private var mEditBody: EditText? = null
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.main]. We set the
-     * action bar of our activity to the [Toolbar] whose view has id [R.id.toolbar], initialize
-     * [EditText] field [mEditBody] by finding the view with id [R.id.body], and set the
-     * [View.OnClickListener] of the view with id [R.id.share] to our field [mOnClickListener].
+     * `onCreate`, then we set our content view to our layout file `R.layout.main`. We set the
+     * action bar of our activity to the [Toolbar] whose view has id `R.id.toolbar`, initialize
+     * [EditText] field [mEditBody] by finding the view with id `R.id.body`, and set the
+     * [View.OnClickListener] of the view with id `R.id.share` to our field [mOnClickListener].
      *
      * @param savedInstanceState We do not override [onSaveInstanceState] so do not use
      */
@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
     }
 
     /**
-     * [View.OnClickListener] for the [Button] with id [R.id.share] ("SHARE"), its
+     * [View.OnClickListener] for the [Button] with id `R.id.share` ("SHARE"), its
      * [View.OnClickListener.onClick] override simply calls our method [share].
      */
     private val mOnClickListener = View.OnClickListener { v ->
@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
      * in our [EditText] field [mEditBody] as an extra under the key [Intent.EXTRA_TEXT]
      * ("android.intent.extra.TEXT"). We then start the chooser activity created by the
      * [Intent.createChooser] method from `sharingIntent`, with the title set to the string with id
-     * [R.string.send_intent_title] ("Send a message via:").
+     * `R.string.send_intent_title` ("Send a message via:").
      */
     private fun share() {
         val sharingIntent = Intent(Intent.ACTION_SEND)

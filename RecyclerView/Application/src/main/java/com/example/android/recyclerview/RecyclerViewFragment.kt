@@ -68,7 +68,7 @@ class RecyclerViewFragment : Fragment() {
     var mGridLayoutRadioButton: RadioButton? = null
 
     /**
-     * [RecyclerView] in our layout with ID [R.id.recyclerView].
+     * [RecyclerView] in our layout with ID `R.id.recyclerView`.
      */
     var mRecyclerView: RecyclerView? = null
 
@@ -107,10 +107,10 @@ class RecyclerViewFragment : Fragment() {
     /**
      * Called to have the fragment instantiate its user interface view. We initialize [View] variable
      * `val rootView` to the view inflated by our [LayoutInflater] parameter [inflater] from our
-     * layout file [R.layout.recycler_view_frag] using our [ViewGroup] parameter [container] for its
+     * layout file `R.layout.recycler_view_frag` using our [ViewGroup] parameter [container] for its
      * LayoutParams without attaching to it. We then set the tag of `rootView` to [TAG]
      * ("RecyclerViewFragment") for no reason I can see. We initialize [RecyclerView] field
-     * [mRecyclerView] by finding the view with ID [R.id.recyclerView]. We initialize
+     * [mRecyclerView] by finding the view with ID `R.id.recyclerView`. We initialize
      * [RecyclerView.LayoutManager] field [mLayoutManager] with a new instance of [LinearLayoutManager]
      * using our [FragmentActivity] to access resources, and set our [LayoutManagerType] field
      * [mCurrentLayoutManagerType] to [LayoutManagerType.LINEAR_LAYOUT_MANAGER].
@@ -123,11 +123,11 @@ class RecyclerViewFragment : Fragment() {
      * [mAdapter] with a new instance constructed to use our [Array] of [String] dataset field
      * [mDataset] as its dataset. We then set the adapter of [RecyclerView] field [mRecyclerView] to
      * [mAdapter]. We initialize [RadioButton] field [mLinearLayoutRadioButton] by finding the view
-     * with id [R.id.linear_layout_rb], and set its [View.OnClickListener] to an anonymous class
+     * with id `R.id.linear_layout_rb`, and set its [View.OnClickListener] to an anonymous class
      * whose [View.OnClickListener.onClick] override calls our method [setRecyclerViewLayoutManager]
      * to set the [LayoutManagerType] of our [RecyclerView] to [LayoutManagerType.LINEAR_LAYOUT_MANAGER].
      * We initialize [RadioButton] field [mGridLayoutRadioButton] by finding the view with id
-     * [R.id.grid_layout_rb], and set its [View.OnClickListener] to an anonymous class whose
+     * `R.id.grid_layout_rb`, and set its [View.OnClickListener] to an anonymous class whose
      * [View.OnClickListener.onClick] override calls our method [setRecyclerViewLayoutManager] to
      * set the [LayoutManagerType] of our [RecyclerView] to [LayoutManagerType.GRID_LAYOUT_MANAGER].
      * Finally we return `rootView` to the caller.

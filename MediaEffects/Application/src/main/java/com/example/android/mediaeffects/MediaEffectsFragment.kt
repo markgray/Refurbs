@@ -69,12 +69,12 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     private val mTexRenderer: TextureRenderer = TextureRenderer()
 
     /**
-     * Width of our [Bitmap] with ID  [R.drawable.puppy]: file `drawable-nodpi/puppy.jpg`
+     * Width of our [Bitmap] with ID  `R.drawable.puppy`: file `drawable-nodpi/puppy.jpg`
      */
     private var mImageWidth = 0
 
     /**
-     * Height of our [Bitmap] with ID  [R.drawable.puppy]: file `drawable-nodpi/puppy.jpg`
+     * Height of our [Bitmap] with ID  `R.drawable.puppy`: file `drawable-nodpi/puppy.jpg`
      */
     private var mImageHeight = 0
 
@@ -106,7 +106,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     /**
      * Called to have the fragment instantiate its user interface view. We return the view
      * created by using our [LayoutInflater] parameter [inflater] to inflate our layout file
-     * [R.layout.fragment_media_effects] using our [ViewGroup] parameter [container] for the
+     * `R.layout.fragment_media_effects` using our [ViewGroup] parameter [container] for the
      * layout params without attaching to it.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
@@ -129,13 +129,13 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     /**
      * Called immediately after [onCreateView] has returned, but before any saved state has been
      * restored in to the view. We initialize our [GLSurfaceView] field [mEffectView] by finding
-     * the view in our [View] parameter [view] with id [R.id.effects_view], then we set the
+     * the view in our [View] parameter [view] with id `R.id.effects_view`, then we set the
      * `EGLContext` client version it is to use to 2 in order to use OpenGL ES 2.0, set its renderer
      * to this, and set its rendermode to [GLSurfaceView.RENDERMODE_WHEN_DIRTY]. If our [Bundle]
      * parameter [savedInstanceState] is not null we call our [setCurrentEffect] method to set our
      * [Int] field [mCurrentEffect] to the [Int] stored in [savedInstanceState] under the key
      * [STATE_CURRENT_EFFECT] ("current_effect"), otherwise we call [setCurrentEffect] with
-     * [R.id.none].
+     * `R.id.none`.
      *
      * @param view The [View] returned by [onCreateView].
      * @param savedInstanceState If non-`null`, this fragment is being re-constructed
@@ -155,7 +155,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
 
     /**
      * Initialize the contents of the Fragment host's standard options menu. We use our [MenuInflater]
-     * parameter [inflater] to inflate our menu layout file [R.menu.media_effects] into our [Menu]
+     * parameter [inflater] to inflate our menu layout file `R.menu.media_effects` into our [Menu]
      * parameter [menu].
      *
      * @param menu The options menu in which you place your items.
@@ -227,11 +227,11 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * [EffectContext.createWithCurrentGlContext]. We then call the [TextureRenderer.initialize] method of
      * our [TextureRenderer] field [mTexRenderer] to initialize the OpenGL graphics engine to draw
      * for us. Then we call our method [loadTextures] to allocate two texture names for our [IntArray]
-     * field [mTextures], load our image file [R.drawable.puppy] (drawable-nodpi/puppy.jpg) into the
+     * field [mTextures], load our image file `R.drawable.puppy` (drawable-nodpi/puppy.jpg) into the
      * texture named by `mTextures[0]` and do some other initialization necessary to use it as a
      * texture. We then set our [Boolean] field [mInitialized] to `true` so we do not do this
      * initialization the next time we are called. Whether it is the first or a subsequent call,
-     * if our [Int] field [mCurrentEffect] is not [R.id.none], we call our [initEffect] method to
+     * if our [Int] field [mCurrentEffect] is not `R.id.none`, we call our [initEffect] method to
      * initialize the chosen effect, and then call our [applyEffect] method to apply the effect
      * to the texture with texture name `mTextures[0]` (our unmodified bitmap) to create a new
      * texture for the texture name `mTextures[1]`. In either case we then call our [renderResult]
@@ -269,7 +269,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * Creates two texture names, uploads a bitmap to one of the textures, and sets the texture
      * parameters. First we call the [GLES20.glGenTextures] method to generate 2 texture names for
      * our [IntArray] field [mTextures]. We initialize [Bitmap] variable `val bitmap` by decoding
-     * the jpg with resource id [R.drawable.puppy], set our [Int] field [mImageWidth] to the width
+     * the jpg with resource id `R.drawable.puppy`, set our [Int] field [mImageWidth] to the width
      * of `bitmap` and [Int] fiedl [mImageHeight] to the height of `bitmap`, then call the
      * [TextureRenderer.updateTextureSize] method of [TextureRenderer] field [mTexRenderer] to
      * update it with the new size. We call the [GLES20.glBindTexture] method to bind the texture
@@ -304,114 +304,114 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * its [Effect.release] method to release the effect and any resources associated with it. Then
      * we `when` switch on the value or our [Int] field [mCurrentEffect]:
      *
-     *  * [R.id.none] ("None"): we do nothing
+     *  * `R.id.none` ("None"): we do nothing
      *
-     *  * [R.id.auto_fix] ("Autofix"): we set our [Effect] field [mEffect] to the effect produced by
+     *  * `R.id.auto_fix` ("Autofix"): we set our [Effect] field [mEffect] to the effect produced by
      *  `effectFactory` for [EffectFactory.EFFECT_AUTOFIX] (Attempts to auto-fix the image based on
      *  histogram equalization). We then set the parameter of [mEffect] with the key "scale" to 0.5
      *  (scale of the adjustment, Zero means no adjustment, while 1 indicates the maximum amount of
      *  adjustment).
      *
-     *  * [R.id.bw] ("Min/Max Color Intensity"): we set our [Effect] field [mEffect] to the effect
+     *  * `R.id.bw` ("Min/Max Color Intensity"): we set our [Effect] field [mEffect] to the effect
      *  produced by `effectFactory` for [EffectFactory.EFFECT_BLACKWHITE] (Adjusts the range of
      *  minimal and maximal color pixel intensities). We then set the parameter of [mEffect] with
      *  the key "black" to .1f (value of the minimal pixel) and the parameter of [mEffect] with the
      *  key "white" to .7f (value of the maximal pixel).
      *
-     *  * [R.id.brightness] ("Brightness"): we set our [Effect] field [mEffect] to the effect
+     *  * `R.id.brightness` ("Brightness"): we set our [Effect] field [mEffect] to the effect
      *  produced by `effectFactory` for [EffectFactory.EFFECT_BRIGHTNESS] (Adjusts the brightness
      *  of the image). We then set the parameter of [mEffect] with the key "brightness" to 2.0f (The
      *  brightness multiplier, 1.0 means no change, larger values will increase brightness).
      *
-     *  * [R.id.contrast] ("Contrast"): we set our [Effect] field [mEffect] to the effect produced
+     *  * `R.id.contrast` ("Contrast"): we set our [Effect] field [mEffect] to the effect produced
      *  by `effectFactory` for [EffectFactory.EFFECT_CONTRAST] (Adjusts the contrast of the image).
      *  We then set the parameter of [mEffect] with the key "contrast" to 1.4f (The contrast
      *  multiplier, 1.0 means no change larger values will increase contrast).
      *
-     *  * [R.id.crossprocess] ("Cross Process"): we set our [Effect] field [mEffect] to the effect
+     *  * `R.id.crossprocess` ("Cross Process"): we set our [Effect] field [mEffect] to the effect
      *  produced by `effectFactory` for [EffectFactory.EFFECT_CROSSPROCESS] (Applies a cross process
      *  effect on image, in which the red and green channels are enhanced while the blue channel is
      *  restricted)..
      *
-     *  * [R.id.documentary] ("Documentary"): we set our [Effect] field [mEffect] to the effect
+     *  * `R.id.documentary` ("Documentary"): we set our [Effect] field [mEffect] to the effect
      *  produced by `effectFactory` for [EffectFactory.EFFECT_DOCUMENTARY] (Applies black and white
      *  documentary style effect on image).
      *
-     *  * [R.id.duotone] ("Duo Tone"): we set our [Effect] field [mEffect] to the effect produced by
+     *  * `R.id.duotone` ("Duo Tone"): we set our [Effect] field [mEffect] to the effect produced by
      *  `effectFactory` for [EffectFactory.EFFECT_DUOTONE] (Representation of photo using only two
      *  color tones). We then set the parameter of [mEffect] with the key "first_color" to YELLOW
      *  (first color tone), and the parameter of [mEffect] with the key "second_color" to DKGRAY
      *  (second color tone).
      *
-     *  * [R.id.filllight] ("Fill Light"): we set our [Effect] field [mEffect] to the effect
+     *  * `R.id.filllight` ("Fill Light"): we set our [Effect] field [mEffect] to the effect
      *  produced by `effectFactory` for [EffectFactory.EFFECT_FILLLIGHT] (Applies back-light
      *  filling to the image). We then set the parameter of [mEffect] with the key "strength"
      *  to .8f (strength of the backlight, between 0 and 1, Zero means no change).
      *
-     *  * [R.id.fisheye] ("Fish Eye"): we set our [Effect] field [mEffect] to the effect produced
+     *  * `R.id.fisheye` ("Fish Eye"): we set our [Effect] field [mEffect] to the effect produced
      *  by `effectFactory` for [EffectFactory.EFFECT_FISHEYE] (Applies a fisheye lens distortion to
      *  the image). We then set the parameter of [mEffect] with the key "scale" to .5f (scale of
      *  the distortion, between 0 and 1, Zero means no distortion).
      *
-     *  * [R.id.flipvert] ("Flip Vertical"): we set our [Effect] field [mEffect] to the effect
+     *  * `R.id.flipvert` ("Flip Vertical"): we set our [Effect] field [mEffect] to the effect
      *  produced by `effectFactory` for [EffectFactory.EFFECT_FLIP] (Flips image vertically and/or
      *  horizontally). We then set the parameter of [mEffect] with the key "vertical" to `true`
      *  (Whether to flip image vertically).
      *
-     *  * [R.id.fliphor] ("Flip Horizontal"): we set our [Effect] field [mEffect] to the effect
+     *  * `R.id.fliphor` ("Flip Horizontal"): we set our [Effect] field [mEffect] to the effect
      *  produced by `effectFactory` for [EffectFactory.EFFECT_FLIP] (Flips image vertically and/or
      *  horizontally). We then set the parameter of [mEffect] with the key "horizontal" to `true`
      *  (Whether to flip image horizontally).
      *
-     *  * [R.id.grain] ("Grain"): we set our [Effect] field [mEffect] to the effect produced by
+     *  * `R.id.grain` ("Grain"): we set our [Effect] field [mEffect] to the effect produced by
      *  `effectFactory` for [EffectFactory.EFFECT_GRAIN] (Applies film grain effect to image). We
      *  then set the parameter of [mEffect] with the key "strength" to 1.0f (strength of the grain
      *  effect, between 0 and 1, Zero means no change).
      *
-     *  * [R.id.grayscale] ("Grayscale"): we set our [Effect] field [mEffect] to the effect produced
+     *  * `R.id.grayscale` ("Grayscale"): we set our [Effect] field [mEffect] to the effect produced
      *  by `effectFactory` for [EffectFactory.EFFECT_GRAYSCALE] (Converts image to grayscale).
      *
-     *  * [R.id.lomoish] ("Lomoish"): we set our [Effect] field [mEffect] to the effect produced by
+     *  * `R.id.lomoish` ("Lomoish"): we set our [Effect] field [mEffect] to the effect produced by
      *  `effectFactory` for [EffectFactory.EFFECT_LOMOISH] (Applies lomo-camera style effect to
      *  image, effect is inspired by photographs taken from an inexpensive Russian camera called the
      *  Lomo LC-A. The photos produced by Lomo carry high-contrast, increased saturation, and unique
      *  coloring due to “improper” color reproduction and dark blurry edges with a sharp center).
      *
-     *  * [R.id.negative] ("Negative"): we set our [Effect] field [mEffect] to the effect produced
+     *  * `R.id.negative` ("Negative"): we set our [Effect] field [mEffect] to the effect produced
      *  by `effectFactory` for [EffectFactory.EFFECT_NEGATIVE] (Inverts the image colors).
      *
-     *  * [R.id.posterize] ("Posterize"): we set our [Effect] field [mEffect] to the effect produced
+     *  * `R.id.posterize` ("Posterize"): we set our [Effect] field [mEffect] to the effect produced
      *  by `effectFactory` for [EffectFactory.EFFECT_POSTERIZE] (Applies posterization effect to image).
      *
-     *  * [R.id.rotate] ("Rotate"): we set our [Effect] field [mEffect] to the effect produced by
+     *  * `R.id.rotate` ("Rotate"): we set our [Effect] field [mEffect] to the effect produced by
      *  `effectFactory` for [EffectFactory.EFFECT_ROTATE] (Rotates the image, snaps to nearest 90
      *  degrees). We then set the parameter of [mEffect] with the key "angle" to 180 (angle of
      *  rotation in degrees, will be rounded to the nearest multiple of 90).
      *
-     *  * [R.id.saturate] ("Saturate"): we set our [Effect] field [mEffect] to the effect produced
+     *  * `R.id.saturate` ("Saturate"): we set our [Effect] field [mEffect] to the effect produced
      *  by `effectFactory` for [EffectFactory.EFFECT_SATURATE] (Adjusts color saturation of image).
      *  We then set the parameter of [mEffect] with the key "scale" to .5f (scale of color
      *  saturation, between -1 and 1. 0 means no change, while -1 indicates full desaturation).
      *
-     *  * [R.id.sepia] ("Sepia"): we set our [Effect] field [mEffect] to the effect produced by
+     *  * `R.id.sepia` ("Sepia"): we set our [Effect] field [mEffect] to the effect produced by
      *  `effectFactory` for [EffectFactory.EFFECT_SEPIA] (Converts image to sepia tone, Sepia toning
      *  is a specialized treatment to give a black-and-white photographic print a warmer tone and
      *  to enhance its archival qualities).
      *
-     *  * [R.id.sharpen] ("Sharpen"): we set our [Effect] field [mEffect] to the effect produced by
+     *  * `R.id.sharpen` ("Sharpen"): we set our [Effect] field [mEffect] to the effect produced by
      *  `effectFactory` for [EffectFactory.EFFECT_SHARPEN] (Sharpens the image).
      *
-     *  * [R.id.temperature] ("Temperature"): we set our [Effect] field [mEffect] to the effect
+     *  * `R.id.temperature` ("Temperature"): we set our [Effect] field [mEffect] to the effect
      *  produced by `effectFactory` for [EffectFactory.EFFECT_TEMPERATURE] (Adjusts color temperature
      *  of the image). We then set the parameter of [mEffect] with the key "scale" to .9f (value of
      *  color temperature, between 0 and 1, with 0 indicating cool, and 1 indicating warm. A value
      *  of 0.5 indicates no change).
      *
-     *  * [R.id.tint] ("Tint"): we set our [Effect] field [mEffect] to the effect produced by
+     *  * `R.id.tint` ("Tint"): we set our [Effect] field [mEffect] to the effect produced by
      *  `effectFactory` for [EffectFactory.EFFECT_TINT] (Tints the photo with specified color).
      *  We then set the parameter of `mEffect` with the key "tint" to MAGENTA.
      *
-     *  * [R.id.vignette] ("Vignette"): we set our [Effect] field [mEffect] to the effect produced
+     *  * `R.id.vignette` ("Vignette"): we set our [Effect] field [mEffect] to the effect produced
      *  by `effectFactory` for [EffectFactory.EFFECT_VIGNETTE] (Adds a vignette effect to image,
      *  i.e. fades away the outer image edges). We then set the parameter of [mEffect] with the key
      *  "scale" to .5f (scale of vignetting, between 0 and 1. 0 means no change).
@@ -533,7 +533,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     }
 
     /**
-     * If the current effect ID in [Int] field [mCurrentEffect] is not [R.id.none] we call the
+     * If the current effect ID in [Int] field [mCurrentEffect] is not `R.id.none` we call the
      * [TextureRenderer.renderTexture] method of our [TextureRenderer] field [mTexRenderer] with
      * `mTextures[1]` as the texture to use (the texture which contains the result of applying the
      * current [Effect]), otherwise we call the [TextureRenderer.renderTexture] method with

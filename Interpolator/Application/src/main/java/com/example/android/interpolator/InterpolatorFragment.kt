@@ -98,7 +98,7 @@ class InterpolatorFragment
      * `onCreate`. We call our method [initInterpolators] to initialize our [Array] of [Interpolator]
      * field [interpolators] with interpolators built from system resource ids. We then initialize
      * our [Array] of [String] field [mInterpolatorNames] by reading the string array with resource
-     * id [R.array.interpolator_names] ("Linear", "Fast Out Linear In", "Fast Out Slow In", and
+     * id `R.array.interpolator_names` ("Linear", "Fast Out Linear In", "Fast Out Slow In", and
      * "Linear Out Slow In"). Finally we call our method [initPaths] to initialize the paths
      * that are used by the [ObjectAnimator] to scale the view ([Path] field [pathIn], and [Path]
      * field [pathOut]).
@@ -115,7 +115,7 @@ class InterpolatorFragment
     /**
      * Called to have the fragment instantiate its user interface view. We return the view that our
      * [LayoutInflater] parameter [inflater] inflates from our layout file
-     * [R.layout.interpolator_fragment], using our [ViewGroup] parameter [container] for the
+     * `R.layout.interpolator_fragment`, using our [ViewGroup] parameter [container] for the
      * LayoutParams without attaching to it.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
@@ -140,15 +140,15 @@ class InterpolatorFragment
      * restored in to the view. We call our method [initAnimateButton] to set up the "Animate!"
      * button (when it is clicked the view is animated with the options selected: the [Interpolator],
      * duration and animation path). We initialize our [TextView] field [mDurationLabel] by finding
-     * the view with id [R.id.durationLabel], and initialize [Spinner] field [mInterpolatorSpinner]
-     * by finding the view with id [R.id.interpolatorSpinner]. We initialize [ArrayAdapter] of
+     * the view with id `R.id.durationLabel`, and initialize [Spinner] field [mInterpolatorSpinner]
+     * by finding the view with id `R.id.interpolatorSpinner`. We initialize [ArrayAdapter] of
      * [String] variable `val spinnerAdapter` with a new instance that uses
      * [android.R.layout.simple_spinner_dropdown_item] as the layout file to use when instantiating
      * views, and [Array] of [String] field [mInterpolatorNames] as the objects to represent. We
      * then set the adapter of [mInterpolatorSpinner] to `spinnerAdapter`. We call our method
      * [initSeekbar] to set up the [SeekBar] that defines the duration of the animation, then
      * initialize our [View] field [mView] by finding the view in [View] parameter [view] with id
-     * [R.id.square]. Finally we call our super's implementation of `onViewCreated`.
+     * `R.id.square`. Finally we call our super's implementation of `onViewCreated`.
      *
      * @param view The [View] returned by [onCreateView].
      * @param savedInstanceState If non-`null`, this fragment is being re-constructed
@@ -179,7 +179,7 @@ class InterpolatorFragment
      * Set up the "Animate!" button, when it is clicked the view is animated with the options
      * selected: the [Interpolator], duration and animation path. First we initialize [View]
      * variable `val button` by finding the view in our [View] parameter [view] with id
-     * [R.id.animateButton] ("Animate!"), and then we set its [OnClickListener] to an anonymous
+     * `R.id.animateButton` ("Animate!"), and then we set its [OnClickListener] to an anonymous
      * class which starts the animation selected running when its [OnClickListener.onClick]
      * override is called.
      *
@@ -215,10 +215,10 @@ class InterpolatorFragment
     /**
      * Set up SeekBar that defines the duration of the animation. First we initialize our [SeekBar]
      * field [mDurationSeekbar] by finding the view in our [View] parameter [view] with id
-     * [R.id.durationSeek], then we set its [OnSeekBarChangeListener] to an anonymous class whose
+     * `R.id.durationSeek`, then we set its [OnSeekBarChangeListener] to an anonymous class whose
      * [OnSeekBarChangeListener.onProgressChanged] override sets the text of our [TextView] field
      * [mDurationLabel] to the string containing the value of the current progress level formatted
-     * using the format string whose resource id is [R.string.animation_duration] ("Duration: %1$d ms").
+     * using the format string whose resource id is `R.string.animation_duration` ("Duration: %1$d ms").
      * Finally we set the progress of [mDurationSeekbar] to [INITIAL_DURATION_MS] (750).
      *
      * @param view The [View] holding the button.
@@ -232,7 +232,7 @@ class InterpolatorFragment
              * Notification that the progress level has changed. We set the text of our [TextView]
              * field [mDurationLabel] to the string containing the value of the current progress
              * level formatted using the format string whose resource id is
-             * [R.string.animation_duration] ("Duration: %1$d ms").
+             * `R.string.animation_duration` ("Duration: %1$d ms").
              *
              * @param seekBar The [SeekBar] whose progress has changed
              * @param i       The current progress level.

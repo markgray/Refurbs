@@ -235,7 +235,7 @@ class InsertionListView : ListView {
              * of [Animator] variable `val animations` with a new instance, initialize [View]
              * variable `val newCell` with our 0'th child (the one with at least a bit showing at
              * the top of our view). We then initialize [ImageView] variable `val imgView` by
-             * finding the view in `newCell` with id [R.id.image_view], and initialize [ImageView]
+             * finding the view in `newCell` with id `R.id.image_view`, and initialize [ImageView]
              * variable `val copyImgView` with a new instance. We initialize [Int] variable
              * `val firstVisiblePosition` with the position within the adapter's data set for the
              * first item displayed on screen, initialize [Boolean] variable `val shouldAnimateInNewRow`
@@ -248,7 +248,7 @@ class InsertionListView : ListView {
              * are 0 children). We now branch on the value of `shouldAnimateInNewRow`:
              *
              *  * `true`: We initialize [TextView] variable `val textView` by finding the view in
-             *  `newCell` with id [R.id.text_view], create [ObjectAnimator] variable `val textAlphaAnimator`
+             *  `newCell` with id `R.id.text_view`, create [ObjectAnimator] variable `val textAlphaAnimator`
              *  to animate the alpha of `textView` from 0 to 1.0, and add it to our [ArrayList] of
              *  [Animator] variable `animations`.
              *

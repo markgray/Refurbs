@@ -83,12 +83,12 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
     /**
      * Inflates the [View] which will be displayed by this [Fragment] from the app's resources. We
      * initialize [View] variable `val view` with the [View] inflated by our [LayoutInflater]
-     * parameter [inflater] from our layout file [R.layout.fragment_sample] using our [ViewGroup]
+     * parameter [inflater] from our layout file `R.layout.fragment_sample` using our [ViewGroup]
      * parameter [container] for the LayoutParams without attaching to it. We initialize our
      * [SwipeRefreshLayout] field [mSwipeRefreshLayout] by finding the [View] in `view` with
-     * id [R.id.swiperefresh], and then set the color resources used in its progress animation from
-     * the color resource id's [R.color.swipe_color_1], [R.color.swipe_color_2], [R.color.swipe_color_3],
-     * and [R.color.swipe_color_4]. We initialize our [GridView] field [mGridView] by finding the
+     * id `R.id.swiperefresh`, and then set the color resources used in its progress animation from
+     * the color resource id's `R.color.swipe_color_1`, `R.color.swipe_color_2`, `R.color.swipe_color_3`,
+     * and `R.color.swipe_color_4`. We initialize our [GridView] field [mGridView] by finding the
      * [View] in `view` with id [android.R.id.list], and initialize our [View] field [mEmptyView]
      * by finding the [View] in `view` with id [android.R.id.empty] then return `view` to the
      * caller.
@@ -180,7 +180,7 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
 
     /**
      * Create the ActionBar. We use our [MenuInflater] parameter [inflater] to inflate our menu
-     * layout file [R.menu.main] into our [Menu] parameter [menu].
+     * layout file `R.menu.main` into our [Menu] parameter [menu].
      *
      * @param menu     The options menu in which you place our items.
      * @param inflater [MenuInflater] to use to instantiate menu XML files into Menu objects
@@ -195,11 +195,11 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
      * progress bar, then initiate the background task that refreshes the content. We switch on the
      * id of our [MenuItem] parameter [item]:
      *
-     *  * [R.id.menu_clear] "Clear items": we log that we were selected, call the [ArrayAdapter.clear]
+     *  * `R.id.menu_clear` "Clear items": we log that we were selected, call the [ArrayAdapter.clear]
      *  method of our [ArrayAdapter] of [String] field [mListAdapter] to remove all items and
      *  `true` to consume the event here.
      *
-     *  * [R.id.menu_refresh] "Refresh": we log that we were selected, and if our [MultiSwipeRefreshLayout]
+     *  * `R.id.menu_refresh` "Refresh": we log that we were selected, and if our [MultiSwipeRefreshLayout]
      *  field [mSwipeRefreshLayout] is not currently refreshing we set it to be refreshing, call our
      *  method [initiateRefresh] to replace the dataset of [mListAdapter] with a new list of
      *  [LIST_ITEM_COUNT] (20) random cheeses, and return `true` to the caller to consume the event

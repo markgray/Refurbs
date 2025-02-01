@@ -72,12 +72,12 @@ import java.util.Locale
  */
 class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickListener {
     /**
-     * View in our layout with ID [R.id.drawer_layout] (the entire layout file)
+     * View in our layout with ID `R.id.drawer_layout` (the entire layout file)
      */
     private var mDrawerLayout: DrawerLayout? = null
 
     /**
-     * [RecyclerView] in our layout with ID [R.id.left_drawer]
+     * [RecyclerView] in our layout with ID `R.id.left_drawer`
      */
     private var mDrawerList: RecyclerView? = null
 
@@ -99,7 +99,7 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
     private var mTitle: CharSequence? = null
 
     /**
-     * Array of names of the planets, loaded from the string array resource [R.array.planets_array],
+     * Array of names of the planets, loaded from the string array resource `R.array.planets_array`,
      * and used as the data set that populates the list view of the drawer and to set the app title
      * when one of the planets is selected.
      */
@@ -107,14 +107,14 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_navigation_drawer].
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_navigation_drawer`.
      * We initialize [CharSequence] field [mTitle] and [CharSequence] field [mDrawerTitle] with the
      * action bar title. We initialize [Array] of [String] field [mPlanetTitles] by using a [Resources]
      * instance for the application's package to read the string array associated with the resource
-     * ID [R.array.planets_array] (a list of the planet names). We initialize [DrawerLayout] field
-     * [mDrawerLayout] by finding the view with id [R.id.drawer_layout], and [RecyclerView] field
-     * [mDrawerList] by finding the view with id [R.id.left_drawer]. We set the nine patch png with
-     * resource id [R.drawable.drawer_shadow] to be a custom shadow that overlays the main content
+     * ID `R.array.planets_array` (a list of the planet names). We initialize [DrawerLayout] field
+     * [mDrawerLayout] by finding the view with id `R.id.drawer_layout`, and [RecyclerView] field
+     * [mDrawerList] by finding the view with id `R.id.left_drawer`. We set the nine patch png with
+     * resource id `R.drawable.drawer_shadow` to be a custom shadow that overlays the main content
      * of [mDrawerLayout] when the drawer opens. We call the [RecyclerView.setHasFixedSize] method
      * of [RecyclerView] field [mDrawerList] with `true` to improve performance by indicating that
      * the list has fixed size. We set the adapter of [mDrawerList] to be a new instance of
@@ -123,9 +123,9 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
      * activity's [ActionBar], to set home to be displayed as an "up" affordance, and enable the
      * "home" button. We initialize our [ActionBarDrawerToggle] field [mDrawerToggle] with a new
      * instance which uses our [DrawerLayout] field [mDrawerLayout] as its [DrawerLayout] object,
-     * the icon with resource id [R.drawable.ic_drawer] as the drawer image to replace 'Up' caret,
-     * the string with resource id [R.string.drawer_open] for the "open drawer" description for
-     * accessibility, and the string with resource id [R.string.drawer_close] as the "close drawer"
+     * the icon with resource id `R.drawable.ic_drawer` as the drawer image to replace 'Up' caret,
+     * the string with resource id `R.string.drawer_open` for the "open drawer" description for
+     * accessibility, and the string with resource id `R.string.drawer_close` as the "close drawer"
      * description for accessibility. In this [ActionBarDrawerToggle] we override both
      * [DrawerLayout.DrawerListener.onDrawerClosed] and [DrawerLayout.DrawerListener.onDrawerOpened]
      * in order to set the title of the action bar to [mTitle] and invalidate the options menu so
@@ -212,7 +212,7 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
 
     /**
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater]
-     * for this context to inflate our menu layout file [R.menu.navigation_drawer] into our [Menu]
+     * for this context to inflate our menu layout file `R.menu.navigation_drawer` into our [Menu]
      * parameter [menu] and return `true` to the caller so that the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
@@ -228,7 +228,7 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
      * Prepare the Screen's standard options menu to be displayed. We initialize [Boolean] variable
      * `val drawerOpen` with the current open state of the "DrawerView" of [DrawerLayout] field
      * [mDrawerLayout], our [RecyclerView] field [mDrawerList]. Then we set the visibility of the
-     * view with item id [R.id.action_websearch] in our [Menu] parameter [menu] to visibile if
+     * view with item id `R.id.action_websearch` in our [Menu] parameter [menu] to visibile if
      * `drawerOpen` is `false` or invisible if the drawer is open. Finally we return the value
      * returned by our super's implementation of `onPrepareOptionsMenu`.
      *
@@ -249,7 +249,7 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
      * return `true` to the caller since it has taken care of the event. Otherwise we switch on
      * the item ID of our [MenuItem] parameter [item]:
      *
-     *  * [R.id.action_websearch]: We construct [Intent] variable `val intent` with the action
+     *  * `R.id.action_websearch`: We construct [Intent] variable `val intent` with the action
      *  [Intent.ACTION_WEB_SEARCH], add the current title in the action bar as an extra under the
      *  key [SearchManager.QUERY], then if the package manager is able to resolve an app for the
      *  [Intent] `intent` we start the activity of `intent`, if not we toast a message ("Sorry,
@@ -304,7 +304,7 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
      * [FragmentManager] variable `val fragmentManager` with the [FragmentManager] for interacting
      * with fragments associated with this activity, then use it to begin [FragmentTransaction]
      * variable `val ft`. We ask `ft` to replace the fragment occupying the view with id
-     * [R.id.content_frame] with `fragment`, then request it to commit its transactions. We call
+     * `R.id.content_frame` with `fragment`, then request it to commit its transactions. We call
      * our method [setTitle] to change the title in the action bar to the string at index [position]
      * in our [Array] of [String] field [mPlanetTitles]`, then order [DrawerLayout] field
      * [mDrawerLayout] to close the drawer containing [RecyclerView] field [mDrawerList].
@@ -380,15 +380,15 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
         /**
          * Called to have the fragment instantiate its user interface view. We initialize [View]
          * variable `val rootView` by using our [LayoutInflater] parameter [inflater] to inflate our
-         * layout file [R.layout.fragment_planet] using our [ViewGroup] parameter [container] for
+         * layout file `R.layout.fragment_planet` using our [ViewGroup] parameter [container] for
          * the LayoutParams without attaching to it. We initialize [Int] variable `val i` by fetching
          * the int stored under the key [ARG_PLANET_NUMBER] in our arguments bundle. We then initialize
          * [String] variable `val planet` to the [String] in position `i` of the string array with
-         * resource id [R.array.planets_array]. We initialize [Int] variable `val imageId` by using
+         * resource id `R.array.planets_array`. We initialize [Int] variable `val imageId` by using
          * a [Resources] instance for the application's package to find a resource identifier
          * for the resource name formed from the lower-cased `planet` name and the type "drawable"
          * for the package name of our activity. We initialize [ImageView] variable `val iv` by
-         * finding the view in `rootView` with id [R.id.image], then set its image to the drawable
+         * finding the view in `rootView` with id `R.id.image`, then set its image to the drawable
          * with resource id `imageId`. Next we call the [FragmentActivity.setTitle] method (kotlin
          * `title` property) of our activity to set the title of the action bar to `planet`. Finally
          * we return `rootView` to the caller.

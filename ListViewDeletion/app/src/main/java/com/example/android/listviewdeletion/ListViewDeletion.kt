@@ -53,11 +53,11 @@ class ListViewDeletion : ComponentActivity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_list_view_deletion]. We
-     * initialize [Button] variable `val deleteButton` by finding the view with id [R.id.deleteButton]
+     * then we set our content view to our layout file `R.layout.activity_list_view_deletion`. We
+     * initialize [Button] variable `val deleteButton` by finding the view with id `R.id.deleteButton`
      * ("Delete Selected"), initialize [CheckBox] variable `val usePositionsCB` by finding the view
-     * with id [R.id.usePositionsCB] ("Use Positions"), and initialize [ListView] variable
-     * `val listView` by finding the view with id [R.id.list_view]. We initialize [ArrayList] of
+     * with id `R.id.usePositionsCB` ("Use Positions"), and initialize [ListView] variable
+     * `val listView` by finding the view with id `R.id.list_view`. We initialize [ArrayList] of
      * [String] variable `val cheeseList` with a new instance, and add all the strings in
      * [Cheeses.sCheeseStrings] to it. We initialize our [StableArrayAdapter] variable `val adapter`
      * with a new instance which uses the layout file with resource id

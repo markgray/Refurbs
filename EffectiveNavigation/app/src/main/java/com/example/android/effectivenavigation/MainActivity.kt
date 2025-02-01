@@ -57,13 +57,13 @@ class MainActivity : FragmentActivity(), TabListener {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_main]. Then we set our
+     * then we set our content view to our layout file `R.layout.activity_main`. Then we set our
      * [AppSectionsPagerAdapter] field [mAppSectionsPagerAdapter] to a new instance constructed to
      * use an instance of the [FragmentManager] for interacting with fragments associated with this
      * activity. We initialize our [ActionBar] variable `val actionBar` with a reference to this
      * activity's [ActionBar], use it to disable the Home/Up button (there is no hierarchical
      * parent), and set its navigation mode to  [ActionBar.NAVIGATION_MODE_TABS]. We initialize our
-     * [ViewPager] field [mViewPager] by finding the view with id [R.id.pager] (our entire layout
+     * [ViewPager] field [mViewPager] by finding the view with id `R.id.pager` (our entire layout
      * file is that [androidx.viewpager.widget.ViewPager]), set its [PagerAdapter] to our
      * [AppSectionsPagerAdapter] field [mAppSectionsPagerAdapter] (it will supply views for the
      * pager as needed) and add an anonymous [SimpleOnPageChangeListener] whose
@@ -241,12 +241,12 @@ class MainActivity : FragmentActivity(), TabListener {
         /**
          * Called to have the fragment instantiate its user interface view. We initialize [View]
          * variable `val rootView` by using our [LayoutInflater] parameter [inflater] to inflate
-         * our layout file [R.layout.fragment_section_launchpad] using our [ViewGroup] parameter
+         * our layout file `R.layout.fragment_section_launchpad` using our [ViewGroup] parameter
          * [container] for its layout params without attaching to it. We find the view in `rootView`
-         * with the id [R.id.demo_collection_button] and set its [OnClickListener] to an anonymous
+         * with the id `R.id.demo_collection_button` and set its [OnClickListener] to an anonymous
          * class whose [OnClickListener.onClick] override creates an [Intent] variable `val intent`
          * intended to launch the activity [CollectionDemoActivity] and starts it running. Then we
-         * find the view in `rootView` with the id [R.id.demo_external_activity] and set its
+         * find the view in `rootView` with the id `R.id.demo_external_activity` and set its
          * [OnClickListener] to an anonymous class whose [OnClickListener.onClick] override creates
          * an [Intent] variable `val externalActivityIntent` whose action is [Intent.ACTION_PICK],
          * sets its mimetype to "image/ *", adds the flag [Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET]
@@ -303,11 +303,11 @@ class MainActivity : FragmentActivity(), TabListener {
         /**
          * Called to have the fragment instantiate its user interface view. We initialize [View]
          * variable `val rootView` by using our [LayoutInflater] parameter [inflater] to inflate
-         * our layout file [R.layout.fragment_section_dummy] using our [ViewGroup] parameter
+         * our layout file `R.layout.fragment_section_dummy` using our [ViewGroup] parameter
          * [container] for its layout params without attaching to it. We initialize [Bundle] variable
          * `val args` to the argument [Bundle] supplied when our fragment was instantiated. We find
          * the view in `rootView` with the id [android.R.id.text1] and set its text to the string
-         * created by using the format whose resource id is [R.string.dummy_section_text]
+         * created by using the format whose resource id is `R.string.dummy_section_text`
          * ("Section %1d is just a dummy section.") to format the [Int] stored in `args` under the
          * key [ARG_SECTION_NUMBER] ("section_number"). Finally we return `rootView` to the caller.
          *

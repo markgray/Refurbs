@@ -33,7 +33,7 @@ import androidx.core.view.updateLayoutParams
 class SubActivity : ComponentActivity() {
     /**
      * Called when the activity is starting. We just call our super's implementation of `onCreate`,
-     * and set our content view to our layout file [R.layout.activity_sub].
+     * and set our content view to our layout file `R.layout.activity_sub`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */

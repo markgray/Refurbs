@@ -40,7 +40,7 @@ import androidx.core.view.updateLayoutParams
 class MainActivity : AppCompatActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.layout_mainactivity]
+     * `onCreate`, then we set our content view to our layout file `R.layout.layout_mainactivity`
      * (this layout file contains a [TouchDisplayView] widget overlayed over a [TextView] in a
      * shared [FrameLayout]).
      *

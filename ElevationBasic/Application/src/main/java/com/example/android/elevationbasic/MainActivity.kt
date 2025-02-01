@@ -54,12 +54,12 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * Called when the activity is starting. We first call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. If
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`. If
      * our [Bundle] parameter [savedInstanceState] is null, this is the first time we were called so
      * we use the [FragmentManager] for interacting with fragments associated with this activity to begin
      * [FragmentTransaction] variable `val transaction`, initialize [ElevationBasicFragment] variable
      * `val fragment` with a new instance and use `transaction` to replace (add) `fragment` to the
-     * container view with ID [R.id.sample_content_fragment] in our layout. We then commit `transaction`.
+     * container view with ID `R.id.sample_content_fragment` in our layout. We then commit `transaction`.
      *
      * @param savedInstanceState If this is `null` we need to create and add our [ElevationBasicFragment]
      * fragment, if not `null` we are being recreated after a configuration change so the fragment
@@ -93,7 +93,7 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater]
-     * with this context to inflate our menu layout file [R.menu.main] into our [Menu] parameter
+     * with this context to inflate our menu layout file `R.menu.main` into our [Menu] parameter
      * [menu] and return `true` so that the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
@@ -108,10 +108,10 @@ class MainActivity : SampleActivityBase() {
     /**
      * Prepare the Screen's standard options menu to be displayed. We initialize [MenuItem] variable
      * `val logToggle` by finding the menu item in our [Menu] parameter [menu] with id
-     * [R.id.menu_toggle_log], set it to visible only if the view in our layout with id
-     * [R.id.sample_output] is an instance of [ViewAnimator], and set its title to
-     * [R.string.sample_hide_log] ("Hide Log") if our [Boolean] flag field [mLogShown] is `true`
-     * or to [R.string.sample_show_log] ("Show Log") if it is `false`. Finally we return the value
+     * `R.id.menu_toggle_log`, set it to visible only if the view in our layout with id
+     * `R.id.sample_output` is an instance of [ViewAnimator], and set its title to
+     * `R.string.sample_hide_log` ("Hide Log") if our [Boolean] flag field [mLogShown] is `true`
+     * or to `R.string.sample_show_log` ("Show Log") if it is `false`. Finally we return the value
      * returned by our super's implementation of `onPrepareOptionsMenu` to the caller.
      *
      * @param menu The options menu as last shown or first initialized by
@@ -128,13 +128,13 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * This hook is called whenever an item in your options menu is selected. We use a `when` switch
-     * to handle only the [MenuItem] with id [R.id.menu_toggle_log]. If it is that item we toggle
+     * to handle only the [MenuItem] with id `R.id.menu_toggle_log`. If it is that item we toggle
      * the value of [Boolean] flag field [mLogShown], then initialize [ViewAnimator] variable
-     * `val output` by finding the view with ID [R.id.sample_output]. If [mLogShown] is `true` we
+     * `val output` by finding the view with ID `R.id.sample_output`. If [mLogShown] is `true` we
      * set the displayed child of `output` to 1, if it is `false` we we set the displayed child of
      * `output` to 0. We then call the method [invalidateOptionsMenu] to declare that the options
      * menu has changed, so should be recreated, and return `true` to the caller to consume the
-     * event here. If the item id is not [R.id.menu_toggle_log] we return the value returned by our
+     * event here. If the item id is not `R.id.menu_toggle_log` we return the value returned by our
      * super's implementation of `onOptionsItemSelected`.
      *
      * @param item The menu item that was selected.
@@ -165,7 +165,7 @@ class MainActivity : SampleActivityBase() {
      * everything except the message text) and set it as the [LogNode] that `logWrapper` will next
      * send data to. We then initialize [LogFragment] variable `val logFragment` by using the
      * [FragmentManager] for interacting with fragments associated with this activity to find the
-     * fragment with the resource id [R.id.log_fragment], then set its [LogView] as the [LogNode]
+     * fragment with the resource id `R.id.log_fragment`, then set its [LogView] as the [LogNode]
      * that `msgFilter` will send data to. Finally we log the message "Ready".
      */
     override fun initializeLogging() {

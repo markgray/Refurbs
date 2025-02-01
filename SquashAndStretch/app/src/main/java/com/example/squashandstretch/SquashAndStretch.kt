@@ -51,7 +51,7 @@ import androidx.core.view.updateLayoutParams
  */
 class SquashAndStretch : ComponentActivity() {
     /**
-     * The [RelativeLayout] in our layout file with id [R.id.container] which contains our button.
+     * The [RelativeLayout] in our layout file with id `R.id.container` which contains our button.
      */
     private var mContainer: ViewGroup? = null
 
@@ -62,8 +62,8 @@ class SquashAndStretch : ComponentActivity() {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.main], and finally we initialize
-     * our [ViewGroup] field [mContainer] by finding the view with id [R.id.container].
+     * then we set our content view to our layout file `R.layout.main`, and finally we initialize
+     * our [ViewGroup] field [mContainer] by finding the view with id `R.id.container`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
@@ -91,7 +91,7 @@ class SquashAndStretch : ComponentActivity() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We retrieve a [MenuInflater]
-     * for our context and use it to inflate our menu layout file [R.menu.main] into our [Menu]
+     * for our context and use it to inflate our menu layout file `R.menu.main` into our [Menu]
      * parameter [menu], then return `true` so that our menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
@@ -105,7 +105,7 @@ class SquashAndStretch : ComponentActivity() {
     /**
      * This hook is called whenever an item in your options menu is selected. If the
      * [MenuItem.getItemId] method (kotlin `itemId` property) of our [MenuItem] parameter [item]
-     * is [R.id.menu_slow] we set our [Long] field [sAnimatorScale] to 1 if that item is currently
+     * is `R.id.menu_slow` we set our [Long] field [sAnimatorScale] to 1 if that item is currently
      * checked, or to 5 if it is unchecked, then we toggle the checked state of [item]. In any case
      * we return the value returned by our super's implementation of `onOptionsItemSelected`
      * to the caller.

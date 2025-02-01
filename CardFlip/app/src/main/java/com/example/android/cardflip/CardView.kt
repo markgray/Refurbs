@@ -121,13 +121,13 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
 
     /**
      * [BitmapDrawable] used for the front of the card, loaded with the jpg with resource id
-     * [R.drawable.red]
+     * `R.drawable.red`
      */
     private var mFrontBitmapDrawable: BitmapDrawable? = null
 
     /**
      * [BitmapDrawable] used for the back of the card, loaded with the jpg with resource id
-     * [R.drawable.blue]
+     * `R.drawable.blue`
      */
     private var mBackBitmapDrawable: BitmapDrawable? = null
 
@@ -201,9 +201,9 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
      * the Z axis (orthogonal to the X/Y plane on which views are drawn) from the camera to this
      * view to our constant [CAMERA_DISTANCE] (8000). We initialize our [BitmapDrawable] field
      * [mFrontBitmapDrawable] with the [BitmapDrawable] created by our method [bitmapWithBorder]
-     * from the jpg with resource id [R.drawable.red], and [BitmapDrawable] field [mBackBitmapDrawable]
+     * from the jpg with resource id `R.drawable.red`, and [BitmapDrawable] field [mBackBitmapDrawable]
      * with the [BitmapDrawable] created by our method [bitmapWithBorder] from the jpg with resource
-     * id [R.drawable.blue]. We then call our [updateDrawableBitmap] method to set [BitmapDrawable]
+     * id `R.drawable.blue`. We then call our [updateDrawableBitmap] method to set [BitmapDrawable]
      * field [mCurrentBitmapDrawable] to [mFrontBitmapDrawable] (since [mIsFrontShowing] starts out
      * `true`) and then set the content of our [ImageView] to [mCurrentBitmapDrawable].
      *

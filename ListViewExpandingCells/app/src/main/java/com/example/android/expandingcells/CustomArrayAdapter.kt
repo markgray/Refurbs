@@ -76,15 +76,15 @@ class CustomArrayAdapter(
      * in [Int] field [mLayoutViewResourceId] into `convertViewLocal` using our [ViewGroup] parameter
      * [parent] for the layout params without attaching to it. Having ensured that `convertViewLocal`
      * holds a non-`null` [View] we initialize [LinearLayout] variable `val linearLayout` by finding
-     * the view in `convertViewLocal` with id [R.id.item_linear_layout], then we initialize
+     * the view in `convertViewLocal` with id `R.id.item_linear_layout`, then we initialize
      * [LinearLayout.LayoutParams] variable `val linearLayoutParams` with an instance whose X size
      * is `MATCH_PARENT` and whose Y size is the collapsed height of `listItem`, and we then set the
      * layout params of `linearLayout` to `linearLayoutParams`.
      *
      * We initialize [ImageView] variable `val imgView` by finding the view in `convertViewLocal`
-     * with id [R.id.image_view], [TextView] variable `val titleView` by finding the view with id
-     * [R.id.title_view], and [TextView] variable `val textView` by finding the view with id
-     * [R.id.text_view]. We set the text of `titleView` to the [ExpandableListItem.title] field of
+     * with id `R.id.image_view`, [TextView] variable `val titleView` by finding the view with id
+     * `R.id.title_view`, and [TextView] variable `val textView` by finding the view with id
+     * `R.id.text_view`. We set the text of `titleView` to the [ExpandableListItem.title] field of
      * `listItem`, the content of `imgView` to the bitmap returned by our method [getCroppedBitmap]
      * when passed the bitmap decoded from the resource id in the [ExpandableListItem.imgResource]
      * field of `listItem` ([getCroppedBitmap] returns a circle cut out of the bitmap), and the text
@@ -93,7 +93,7 @@ class CustomArrayAdapter(
      * whose Y size is WRAP_CONTENT.
      *
      * We initialize [ExpandingLayout] variable `val expandingLayout` by finding the view in
-     * `convertViewLocal` with id [R.id.expanding_layout], set its expanded height property to the
+     * `convertViewLocal` with id `R.id.expanding_layout`, set its expanded height property to the
      * expanded height in the [ExpandableListItem.expandedHeight] field of `listItem`, and set its
      * [OnSizeChangedListener] to `listItem`. If `listItem` is not expanded we set its visibility to
      * GONE, and if it is expanded we set it to VISIBLE. Finally we return `convertViewLocal` to the

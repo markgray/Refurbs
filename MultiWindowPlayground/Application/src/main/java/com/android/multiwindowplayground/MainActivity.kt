@@ -45,9 +45,9 @@ import com.android.multiwindowplayground.activities.UnresizableActivity
 class MainActivity : LoggingActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main].
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`.
      * We initialize [View] variable `val multiDisabledMessage` by finding the view with resource id
-     * [R.id.warning_multiwindow_disabled]. If the [isInMultiWindowMode] method returns `false`
+     * `R.id.warning_multiwindow_disabled`. If the [isInMultiWindowMode] method returns `false`
      * (the activity is NOT in multi-window mode) we set the visibility of `multiDisabledMessage`
      * to [View.VISIBLE], otherwise we set its visibility to [View.GONE].
      *
@@ -88,7 +88,7 @@ class MainActivity : LoggingActivity() {
      * us). We then call [startActivity] to launch the intent's activity.
      *
      * @param view the [View] that was clicked: the [Button] in our layout file with resource ID
-     * [R.id.start_unresizable] ("Start unresizable Activity") specifies us as its [OnClickListener]
+     * `R.id.start_unresizable` ("Start unresizable Activity") specifies us as its [OnClickListener]
      * with an android:onClick="onStartUnresizableClick" attribute.
      */
     fun onStartUnresizableClick(view: View?) {
@@ -111,7 +111,7 @@ class MainActivity : LoggingActivity() {
      * [MinimumSizeActivity].
      *
      * @param view the [View] that was clicked: the [Button] in our layout file with resource ID
-     * [R.id.start_minimumsize] ("Start Activity with minimum size") specifies us as its
+     * `R.id.start_minimumsize` ("Start Activity with minimum size") specifies us as its
      * [OnClickListener] with an android:onClick="onStartMinimumSizeActivity" attribute.
      */
     fun onStartMinimumSizeActivity(view: View?) {
@@ -129,7 +129,7 @@ class MainActivity : LoggingActivity() {
      * launch the intent's activity.
      *
      * @param view the [View] that was clicked: the [Button] in our layout file with resource ID
-     * [R.id.start_adjacent] ("Start Activity adjacent") specifies us as its [OnClickListener] with
+     * `R.id.start_adjacent` ("Start Activity adjacent") specifies us as its [OnClickListener] with
      * an android:onClick="onStartAdjacentActivity" attribute.
      */
     fun onStartAdjacentActivity(view: View?) {
@@ -159,7 +159,7 @@ class MainActivity : LoggingActivity() {
      * activity with a [Bundle] made from `options` as its options [Bundle].
      *
      * @param view the [View] that was clicked: the [Button] in our layout file with resource ID
-     * [R.id.start_launchbounds] ("Start Activity with launch bounds") specifies us as its
+     * `R.id.start_launchbounds` ("Start Activity with launch bounds") specifies us as its
      * [OnClickListener] with an android:onClick="onStartLaunchBoundsActivity" attribute.
      */
     fun onStartLaunchBoundsActivity(view: View?) {
@@ -200,7 +200,7 @@ class MainActivity : LoggingActivity() {
      * the hard-coded class name [CustomConfigurationChangeActivity].
      *
      * @param view the [View] that was clicked: the [Button] in our layout file with resource
-     * ID [R.id.start_customconfiguration] ("Start activity that handles configuration changes")
+     * ID `R.id.start_customconfiguration` ("Start activity that handles configuration changes")
      * specifies us as its [OnClickListener] with an android:onClick="onStartCustomConfigurationActivity"
      * attribute.
      */

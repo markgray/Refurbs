@@ -60,9 +60,9 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. We
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`. We
      * initialize our [NotificationHelper] field [noti] with a new instance, and initialize our
-     * [MainUi] field [ui] by finding the view with id [R.id.activity_main] and passing it to the
+     * [MainUi] field [ui] by finding the view with id `R.id.activity_main` and passing it to the
      * [MainUi] constructor (the constructor finds the buttons in this view group and sets their
      * [OnClickListener] to the [MainUi] instance being constructed).
      *
@@ -99,23 +99,23 @@ class MainActivity : ComponentActivity() {
      *  * [NOTI_PRIMARY1] - we set `nb` to the [Notification.Builder] returned by the
      *  [NotificationHelper.getNotification1] method of our [NotificationHelper] field [noti] using
      *  our [String] parameter [title] as the title of the notification, and the string with
-     *  resource id [R.string.primary1_body] ("The content") as the text body.
+     *  resource id `R.string.primary1_body` ("The content") as the text body.
      *
      *  * [NOTI_PRIMARY2] - we set `nb` to the [Notification.Builder] returned by the
      *  [NotificationHelper.getNotification1] method of our [NotificationHelper] field [noti] using
      *  our [String] parameter [title] as the title of the notification, and the string with
-     *  resource id [R.string.primary2_body] ("Second Notification for Primary Channel") as the text
+     *  resource id `R.string.primary2_body` ("Second Notification for Primary Channel") as the text
      *  body.
      *
      *  * [NOTI_SECONDARY1] - we set `nb` to the [Notification.Builder] returned by the
      *  [NotificationHelper.getNotification2] method of our [NotificationHelper] field [noti] using
      *  our [String] parameter [title] as the title of the notification, and the string with
-     *  resource id [R.string.secondary1_body] ("Notification body text.") as the text body.
+     *  resource id `R.string.secondary1_body` ("Notification body text.") as the text body.
      *
      *  * [NOTI_SECONDARY2] - we set `nb` to the [Notification.Builder] returned by the
      *  [NotificationHelper.getNotification2] method of our [NotificationHelper] field [noti] using
      *  our [String] parameter [title] as the title of the notification, and the string with
-     *  resource id [R.string.secondary2_body] ("Second Notification for Secondary Channel") as the
+     *  resource id `R.string.secondary2_body` ("Second Notification for Secondary Channel") as the
      *  text body.
      *
      *  * `else` - we set `nb` to `null`.
@@ -178,14 +178,14 @@ class MainActivity : ComponentActivity() {
      */
     internal inner class MainUi(root: View) : OnClickListener {
         /**
-         * [EditText] with id [R.id.main_primary_title], displays the text "Primary Channel" to
+         * [EditText] with id `R.id.main_primary_title`, displays the text "Primary Channel" to
          * start with, we use its text as the title for the primary channel notifications sent.
          */
         @Suppress("JoinDeclarationAndAssignment") // It is better this way
         val titlePrimary: TextView?
 
         /**
-         * [EditText] with id [R.id.main_secondary_title], displays the text "Secondary Channel"
+         * [EditText] with id `R.id.main_secondary_title`, displays the text "Secondary Channel"
          * to start with, we use its text as the title for the secondary channel notifications sent.
          */
         val titleSecondary: TextView
@@ -245,31 +245,31 @@ class MainActivity : ComponentActivity() {
          * Called when a view whose [OnClickListener] we are has been clicked. We `when` switch on
          * the `id` of the [View] parameter [view]:
          *
-         *  * [R.id.main_primary_send1] ("Send 1" in primary channel section) - we call our method
+         *  * `R.id.main_primary_send1` ("Send 1" in primary channel section) - we call our method
          *  [sendNotification] with the notification id [NOTI_PRIMARY1], and the title returned by
          *  our property [titlePrimaryText].
          *
-         *  * [R.id.main_primary_send2] ("Send 1" in primary channel section) - we call our method
+         *  * `R.id.main_primary_send2` ("Send 1" in primary channel section) - we call our method
          *  [sendNotification] with the notification id [NOTI_PRIMARY2], and the title returned by
          *  our property [titlePrimaryText].
          *
-         *  * [R.id.main_primary_config] (the setting wrench icon) - we call our method
+         *  * `R.id.main_primary_config` (the setting wrench icon) - we call our method
          *  [goToNotificationSettings] with the notification channel
          *  [NotificationHelper.PRIMARY_CHANNEL] ("default").
          *
-         *  * [R.id.main_secondary_send1] ("Send 1" in secondary channel section) - we call our
+         *  * `R.id.main_secondary_send1` ("Send 1" in secondary channel section) - we call our
          *  method [sendNotification] with the notification id [NOTI_SECONDARY1], and the title
          *  returned by our property [titleSecondaryText].
          *
-         *  * [R.id.main_secondary_send2] ("Send 2" in secondary channel section) - we call our
+         *  * `R.id.main_secondary_send2` ("Send 2" in secondary channel section) - we call our
          *  method [sendNotification] with the notification id [NOTI_SECONDARY2], and the title
          *  returned by our property [titleSecondaryText].
          *
-         *  * [R.id.main_secondary_config] (the setting wrench icon) - we call our method
+         *  * `R.id.main_secondary_config` (the setting wrench icon) - we call our method
          *  [goToNotificationSettings] with the notification channel
          *  [NotificationHelper.SECONDARY_CHANNEL] ("second").
          *
-         *  * [R.id.btnA] ("Go to Settings") - we call the no parameter version of our method
+         *  * `R.id.btnA` ("Go to Settings") - we call the no parameter version of our method
          *  [goToNotificationSettings].
          *
          *  * `else` - we log the message "Unknown click event."

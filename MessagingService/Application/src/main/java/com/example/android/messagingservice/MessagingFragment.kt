@@ -47,28 +47,28 @@ import androidx.fragment.app.FragmentActivity
  */
 class MessagingFragment : Fragment(), View.OnClickListener {
     /**
-     * [Button] in layout with ID [R.id.send_1_conversation] ("Send 1 conversation with 1 message")
+     * [Button] in layout with ID `R.id.send_1_conversation` ("Send 1 conversation with 1 message")
      */
     private var mSendSingleConversation: Button? = null
 
     /**
-     * [Button] in layout with ID [R.id.send_2_conversations] ("Send 2 conversations with 1 message")
+     * [Button] in layout with ID `R.id.send_2_conversations` ("Send 2 conversations with 1 message")
      */
     private var mSendTwoConversations: Button? = null
 
     /**
-     * [Button] in layout with ID [R.id.send_1_conversation_3_messages] ("Send 1 conversation with
+     * [Button] in layout with ID `R.id.send_1_conversation_3_messages` ("Send 1 conversation with
      * 3 messages")
      */
     private var mSendConversationWithThreeMessages: Button? = null
 
     /**
-     * [TextView] in layout with ID [R.id.data_port] used to display conversations
+     * [TextView] in layout with ID `R.id.data_port` used to display conversations
      */
     private var mDataPortView: TextView? = null
 
     /**
-     * [Button] in layout with ID [R.id.clear] ("Clear Log")
+     * [Button] in layout with ID `R.id.clear` ("Clear Log")
      */
     private var mClearLogButton: Button? = null
 
@@ -148,17 +148,17 @@ class MessagingFragment : Fragment(), View.OnClickListener {
 
     /**
      * Called to have the fragment instantiate its user interface view. First we use our [LayoutInflater]
-     * parameter [inflater] to inflate our layout file [R.layout.fragment_message_me] into our [View]
-     * variable `val rootView`. Then we locate the [Button] with ID [R.id.send_1_conversation] to
+     * parameter [inflater] to inflate our layout file `R.layout.fragment_message_me` into our [View]
+     * variable `val rootView`. Then we locate the [Button] with ID `R.id.send_1_conversation` to
      * initialize our [Button] field [mSendSingleConversation] and set its [View.OnClickListener] to
-     * "this", we locate the [Button] with ID [R.id.send_2_conversations] to initialize our [Button]
+     * "this", we locate the [Button] with ID `R.id.send_2_conversations` to initialize our [Button]
      * field [mSendTwoConversations] and set its [View.OnClickListener] to "this", and locate the
-     * [Button] with ID [R.id.send_1_conversation_3_messages] to initialize our [Button] field
+     * [Button] with ID `R.id.send_1_conversation_3_messages` to initialize our [Button] field
      * [mSendConversationWithThreeMessages] and set its [View.OnClickListener] to "this". We
      * initialize our [TextView] field [mDataPortView] by locating the [TextView] with ID
-     * [R.id.data_port] and set its movement method to a new instance of [ScrollingMovementMethod]
+     * `R.id.data_port` and set its movement method to a new instance of [ScrollingMovementMethod]
      * (A movement method that interprets movement keys by scrolling the text buffer). We initialize
-     * our [Button] field [mClearLogButton] by locating the [Button] with ID [R.id.clear] and set its
+     * our [Button] field [mClearLogButton] by locating the [Button] with ID `R.id.clear` and set its
      * [View.OnClickListener] to `this`. We call our method [setButtonsState] with `false` to disable
      * the [Button]'s until after we connect to our [MessagingService]. Finally we return [View]
      * variable `rootView` to the caller.

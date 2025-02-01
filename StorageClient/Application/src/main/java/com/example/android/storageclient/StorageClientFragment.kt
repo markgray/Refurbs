@@ -61,7 +61,7 @@ class StorageClientFragment : Fragment() {
     /**
      * This hook is called whenever an item in your options menu is selected. If the
      * [MenuItem.getItemId] method (kotlin `itemId` property) of our [MenuItem] parameter [item]
-     * returns [R.id.sample_action] we call our method [performFileSearch] to launch the "file
+     * returns `R.id.sample_action` we call our method [performFileSearch] to launch the "file
      * chooser" UI and select an image. In any case we return `true` to consume the event here.
      *
      * @param item The menu item that was selected.

@@ -40,10 +40,10 @@ import androidx.core.view.updateLayoutParams
 class LayoutTransChanging : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.main]. We initialize [Button]
-     * variable `val addButton` by finding the view with id [R.id.addButton] ("Add Item"), [Button]
-     * variable `val removeButton` by finding the view with id [R.id.removeButton] ("Remove Item"),
-     * and [LinearLayout] variable `val container` by finding the view with id [R.id.container].
+     * then we set our content view to our layout file `R.layout.main`. We initialize [Button]
+     * variable `val addButton` by finding the view with id `R.id.addButton` ("Add Item"), [Button]
+     * variable `val removeButton` by finding the view with id `R.id.removeButton` ("Remove Item"),
+     * and [LinearLayout] variable `val container` by finding the view with id `R.id.container`.
      * We initialize [Context] variable `val context` to 'this'. We then loop over [Int] variable
      * `var i` to add two new instances of [ColoredView] to `container`. We set the [OnClickListener]
      * of `addButton` to an anonymous class which adds a new instance of [ColoredView] at index 1 to

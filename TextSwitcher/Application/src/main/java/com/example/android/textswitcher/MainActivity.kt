@@ -44,7 +44,7 @@ import androidx.core.view.updateLayoutParams
  */
 class MainActivity : ComponentActivity() {
     /**
-     * [TextSwitcher] view in our layout with ID [R.id.switcher]
+     * [TextSwitcher] view in our layout with ID `R.id.switcher`
      */
     private var mSwitcher: TextSwitcher? = null
 
@@ -55,15 +55,15 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.sample_main]. We
-     * initialize our [TextSwitcher] field [mSwitcher] by finding the view with id [R.id.switcher],
+     * `onCreate`, then we set our content view to our layout file `R.layout.sample_main`. We
+     * initialize our [TextSwitcher] field [mSwitcher] by finding the view with id `R.id.switcher`,
      * then set the factory used to create the two views between which [mSwitcher] will flip to
      * our [ViewFactory] field  [mFactory]. We load [Animation] variable `val fadeIn` with the
      * animation with resource id [android.R.anim.fade_in], and [Animation] variable `val fadeOut`
      * with the animation with resource id [android.R.anim.fade_out]. We then set the animation
      * started when a [View] enters the screen of [mSwitcher] to `fadeIn` and the animation started
      * when a [View] exits the screen to `fadeOut`. We initialize [Button] variable `val nextButton`
-     * by finding the view in our layout with id [R.id.button] and set its [View.OnClickListener] to
+     * by finding the view in our layout with id `R.id.button` and set its [View.OnClickListener] to
      * a lambda which increments our [Int] field [mCounter], then sets the text of the next view of
      * [mSwitcher] to the string value of [mCounter] and switches to the next view (this will animate
      * the old text out and animate the next text in). Finally we set the text of the text view that

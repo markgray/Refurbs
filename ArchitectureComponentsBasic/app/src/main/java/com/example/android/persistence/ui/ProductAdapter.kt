@@ -107,7 +107,7 @@ class ProductAdapter(
     /**
      * Called when RecyclerView needs a new [ProductViewHolder] of the given type to represent an
      * item. We create [ProductItemBinding] variable `val binding` by inflating our layout file
-     * [R.layout.product_item] using the [DataBindingUtil.inflate] method (a [ProductItemBinding]
+     * `R.layout.product_item` using the [DataBindingUtil.inflate] method (a [ProductItemBinding]
      * is a view data binding class generated from the inflated layout, Data-binding layout files
      * are slightly different and start with a root tag of layout followed by a data element and a
      * view root element. This view element is what your root would be in a non-binding layout file.)

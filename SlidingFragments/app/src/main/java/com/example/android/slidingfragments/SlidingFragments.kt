@@ -57,22 +57,22 @@ import androidx.fragment.app.FragmentTransaction
  */
 class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener, OnBackStackChangedListener {
     /**
-     * [ImageFragment] with id [R.id.move_fragment], it displays an [ImageView] of the jpg with ID
-     * [R.drawable.golden_gate] (drawable-hdpi/golden_gate.jpg)
+     * [ImageFragment] with id `R.id.move_fragment`, it displays an [ImageView] of the jpg with ID
+     * `R.drawable.golden_gate` (drawable-hdpi/golden_gate.jpg)
      */
     var mImageFragment: ImageFragment? = null
 
     /**
-     * [TextFragment] which displays the layout with ID [R.layout.text_fragment]
+     * [TextFragment] which displays the layout with ID `R.layout.text_fragment`
      * (layout/text_fragment.xml), it is added in a [FragmentTransaction] to the
-     * container with id [R.id.move_to_back_container] which is the in the layout
-     * file with ID [R.layout.sliding_fragments_layout] that we use
+     * container with id `R.id.move_to_back_container` which is the in the layout
+     * file with ID `R.layout.sliding_fragments_layout` that we use
      * (layout/sliding_fragments_layout.xml)
      */
     var mTextFragment: TextFragment? = null
 
     /**
-     * [View] with id [R.id.dark_hover_view] in our layout file, its alpha is animated, it shares
+     * [View] with id `R.id.dark_hover_view` in our layout file, its alpha is animated, it shares
      * the [FrameLayout] in our layout file with the [ImageFragment] fragment and is atop it with
      * its alpha set to 0 in our [onCreate] override.
      */
@@ -93,11 +93,11 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.sliding_fragments_layout]. We
-     * initialize [View] field [mDarkHoverView] by finding the view with id [R.id.dark_hover_view]
+     * then we set our content view to our layout file `R.layout.sliding_fragments_layout`. We
+     * initialize [View] field [mDarkHoverView] by finding the view with id `R.id.dark_hover_view`
      * and set its alpha to 0. We initialize [ImageFragment] field [mImageFragment] by using the
      * [FragmentManager] for interacting with fragments associated with this activity to find the
-     * fragment that was identified by the id [R.id.move_fragment] when inflated from XML. We
+     * fragment that was identified by the id `R.id.move_fragment` when inflated from XML. We
      * initialize our [TextFragment] field [mTextFragment] with a new instance. We use the
      * [FragmentManager] for interacting with fragments associated with this activity to add
      * 'this' as an [OnBackStackChangedListener] so that our [onBackStackChanged] override will be
@@ -171,10 +171,10 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
      *  [AnimatorListener.onAnimationEnd] override uses the [FragmentManager] for interacting with
      *  fragments associated with this activity to begin [FragmentTransaction] variable
      *  `val transaction` then calls the [FragmentTransaction.setCustomAnimations] method of
-     *  `transaction` to set the enter animation to the xml file [R.animator.slide_fragment_in],
-     *  and the pop exit animation to xml file [R.animator.slide_fragment_out]. It then uses
+     *  `transaction` to set the enter animation to the xml file `R.animator.slide_fragment_in`,
+     *  and the pop exit animation to xml file `R.animator.slide_fragment_out`. It then uses
      *  `transaction` to add our [TextFragment] field [mTextFragment] to the container with id
-     *  [R.id.move_to_back_container], calls the [FragmentTransaction.addToBackStack] method of
+     *  `R.id.move_to_back_container`, calls the [FragmentTransaction.addToBackStack] method of
      *  `transaction` with `null` to add this transaction to the BackStack with no name for the
      *  BackStack state, and commit the transaction. Having created [AnimatorListener] variable
      *  `val listener` we now call our method [slideBack] with it to animate the image fragment
@@ -251,7 +251,7 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
      * 0.0f to 0.5f, then initialize [ObjectAnimator] variable `val movingFragmentRotator` to an
      * instance which will animate the "rotationX" property of `movingFragmentView` to 0, and set
      * its start delay to the integer stored as a resource under the id
-     * [R.integer.half_slide_up_down_duration] (150ms). Now we initialize [AnimatorSet] variable
+     * `R.integer.half_slide_up_down_duration` (150ms). Now we initialize [AnimatorSet] variable
      * `val s` with a new instance, set it to play together `movingFragmentAnimator`,
      * `darkHoverViewAnimator`, and `movingFragmentRotator`, add our [AnimatorListener] parameter
      * [listener] to it and start it running.
@@ -289,10 +289,10 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
      * "alpha" property of [View] field [mDarkHoverView] from 0.5f to 0.0f, then initialize
      * [ObjectAnimator] variable `val movingFragmentRotator` to an instance which will animate the
      * "rotationX" property of `movingFragmentView` to 0, and set its start delay to the integer
-     * stored as a resource under the id [R.integer.half_slide_up_down_duration] (150ms). Now we
+     * stored as a resource under the id `R.integer.half_slide_up_down_duration` (150ms). Now we
      * initialize [AnimatorSet] variable `val s` with a new instance, set it to play together
      * `movingFragmentAnimator`, `movingFragmentRotator`, and `darkHoverViewAnimator`, set its start
-     * delay to the integer stored as a resource under the id [R.integer.half_slide_up_down_duration]
+     * delay to the integer stored as a resource under the id `R.integer.half_slide_up_down_duration`
      * (150ms), and add an anonymous [AnimatorListenerAdapter] whose
      * [AnimatorListenerAdapter.onAnimationEnd] override sets our [Boolean] flag field [mIsAnimating]
      * to `false`. Finally we start `s` running.

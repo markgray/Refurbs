@@ -640,18 +640,18 @@ internal class LunarView(
          *  and initialize [CharSequence] variable `var str` to the empty string. We then set the
          *  value of `str` based on the value of our game state `mMode`:
          *
-         *  * [STATE_READY]: We set `str` to the string with resource id [R.string.mode_ready]
+         *  * [STATE_READY]: We set `str` to the string with resource id `R.string.mode_ready`
          *  ("Lunar Lander Press Up To Play")
          *
-         *  * [STATE_PAUSE]: We set `str` to the string with resource id [R.string.mode_pause]
+         *  * [STATE_PAUSE]: We set `str` to the string with resource id `R.string.mode_pause`
          *  ("Paused Press Up To Play")
          *
-         *  * [STATE_LOSE]: We set `str` to the string with resource id [R.string.mode_lose]
+         *  * [STATE_LOSE]: We set `str` to the string with resource id `R.string.mode_lose`
          *  ("Game Over Press Up To Play")
          *
          *  * [STATE_WIN]: We set `str` to a string formed by concatenating the string with resource
-         *  id [R.string.mode_win_prefix] followed by the string value of our [Int] field [mWinsInARow]
-         *  followed by the string with resource id [R.string.mode_win_suffix] ("Success! [mWinsInARow]
+         *  id `R.string.mode_win_prefix` followed by the string value of our [Int] field [mWinsInARow]
+         *  followed by the string with resource id `R.string.mode_win_suffix` ("Success! [mWinsInARow]
          *  in a row Press Up To Play")
          *
          *
@@ -1089,14 +1089,14 @@ internal class LunarView(
          * proceed to branch evaluating each in turn:
          *
          *  * `onGoal` is `false`: (we have missed the landing pad) We set `message` to the string
-         *  with resource id [R.string.message_off_pad] ("Off Landing Pad")
+         *  with resource id `R.string.message_off_pad` ("Off Landing Pad")
          *
          *  * [Double] field [mHeading] is greater than [Int] field [mGoalAngle] or less than 360
-         *  minus [mGoalAngle] we set `message` to the string with resource id [R.string.message_bad_angle]
+         *  minus [mGoalAngle] we set `message` to the string with resource id `R.string.message_bad_angle`
          *  ("Bad Angle").
          *
          *  * `speed` is greater than [Int] field [mGoalSpeed] we set `message` to the string with
-         *  resource id [R.string.message_too_fast] ("Too Fast").
+         *  resource id `R.string.message_too_fast` ("Too Fast").
          *
          *  * If we succeed in avoiding loss due to the above tests we set `result` to [STATE_WIN]
          *  and increment [Int] field [mWinsInARow].

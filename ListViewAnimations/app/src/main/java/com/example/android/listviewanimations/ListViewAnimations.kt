@@ -49,11 +49,11 @@ import java.util.Collections
 class ListViewAnimations : ComponentActivity() {
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_list_view_animations]. We
-     * then initialize [CheckBox] variable `val vpaCB` by finding the view with id [R.id.vpaCB]
+     * then we set our content view to our layout file `R.layout.activity_list_view_animations`. We
+     * then initialize [CheckBox] variable `val vpaCB` by finding the view with id `R.id.vpaCB`
      * ("ViewPropertyAnimator") initialize [CheckBox] variable `val setTransientStateCB` by finding
-     * the view with id [R.id.setTransientStateCB] ("Transient State") and initialize [ListView]
-     * variable `val listView` by finding the view with id [R.id.list_view]. We initialize
+     * the view with id `R.id.setTransientStateCB` ("Transient State") and initialize [ListView]
+     * variable `val listView` by finding the view with id `R.id.list_view`. We initialize
      * [ArrayList] of [String] variable `val cheeseList` with a new instance then add all of the
      * strings in the array [Cheeses.sCheeseStrings] to it. We initialize [StableArrayAdapter]
      * variable `val adapter` with an instance which will represent the objects in `cheeseList`

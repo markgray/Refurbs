@@ -37,7 +37,7 @@ import androidx.core.view.updateLayoutParams
 class AnimatedSubActivity : ComponentActivity() {
     /**
      * Called when the activity is starting. We just call our super's implementation of `onCreate`,
-     * and set our content view to our layout file [R.layout.activity_window_anim_sub].
+     * and set our content view to our layout file `R.layout.activity_window_anim_sub`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -67,13 +67,13 @@ class AnimatedSubActivity : ComponentActivity() {
      *
      *  - [Build.VERSION.SDK_INT] is 34 or greater: we call the [overrideActivityTransition] method
      *  to override the [Activity.OVERRIDE_TRANSITION_CLOSE] closing transition animation substituting
-     *  the xml animation with resource ID [R.anim.slide_in_right] for the default enter animation,
-     *  and the xml animation with resource ID [R.anim.slide_out_right] for the default enter
+     *  the xml animation with resource ID `R.anim.slide_in_right` for the default enter animation,
+     *  and the xml animation with resource ID `R.anim.slide_out_right` for the default enter
      *  animation.
      *
      *  - [Build.VERSION.SDK_INT] is less than 34: we call the [overridePendingTransition] method to
-     *  specify the use of the xml animation with resource id [R.anim.slide_in_right] for the incoming
-     *  activity, and [R.anim.slide_out_right] for the outgoing activity.
+     *  specify the use of the xml animation with resource id `R.anim.slide_in_right` for the incoming
+     *  activity, and `R.anim.slide_out_right` for the outgoing activity.
      */
     override fun finish() {
         super.finish()

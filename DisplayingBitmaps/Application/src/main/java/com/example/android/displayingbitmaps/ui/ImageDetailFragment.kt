@@ -45,14 +45,14 @@ class ImageDetailFragment
     private var mImageUrl: String? = null
 
     /**
-     * [RecyclingImageView] in our layout with ID [R.id.imageView], used to display our URL, shares
+     * [RecyclingImageView] in our layout with ID `R.id.imageView`, used to display our URL, shares
      * [FrameLayout] with [ProgressBar] field [mProgressBar] and has its visibility toggled when
      * necessary.
      */
     private var mImageView: ImageView? = null
 
     /**
-     * [ProgressBar] in our layout with ID [R.id.progressbar], displays progress while URL is
+     * [ProgressBar] in our layout with ID `R.id.progressbar`, displays progress while URL is
      * being downloaded, shares [FrameLayout] with [ImageView] field [mImageView] and has its
      * visibility toggled when necessary.
      */
@@ -77,9 +77,9 @@ class ImageDetailFragment
 
     /**
      * Called to have the fragment instantiate its user interface view. First we use our
-     * [LayoutInflater] parameter [inflater] to inflate our layout file [R.layout.image_detail_fragment]
-     * into [View] variable `val v`. Then we locate the view with id [R.id.imageView] in `v` to
-     * initialize our [ImageView] field [mImageView], and the view with id [R.id.progressbar] to
+     * [LayoutInflater] parameter [inflater] to inflate our layout file `R.layout.image_detail_fragment`
+     * into [View] variable `val v`. Then we locate the view with id `R.id.imageView` in `v` to
+     * initialize our [ImageView] field [mImageView], and the view with id `R.id.progressbar` to
      * initialize our [ProgressBar] field [mProgressBar]. Finally we return `v` to the caller.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate

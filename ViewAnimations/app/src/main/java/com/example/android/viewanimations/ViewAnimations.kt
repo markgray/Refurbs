@@ -46,21 +46,21 @@ import androidx.core.view.updateLayoutParams
  */
 class ViewAnimations : ComponentActivity() {
     /**
-     * [CheckBox] with id [R.id.checkbox], "Use Animation Resources" switches to xml [Animation]
+     * [CheckBox] with id `R.id.checkbox`, "Use Animation Resources" switches to xml [Animation]
      */
     var mCheckBox: CheckBox? = null
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_view_animations]. We
-     * initialize our [CheckBox] field [mCheckBox] by finding the view with id [R.id.checkbox]
+     * then we set our content view to our layout file `R.layout.activity_view_animations`. We
+     * initialize our [CheckBox] field [mCheckBox] by finding the view with id `R.id.checkbox`
      * ("Use Animation Resources"), initialize [Button] variable `val alphaButton` by finding the
-     * view with id [R.id.alphaButton] ("Alpha"), initialize [Button] variable `val translateButton`
-     * ("Translate") by finding the view with id [R.id.translateButton], initialize [Button] variable
-     * `val rotateButton` ("Rotate") by finding the view with id [R.id.rotateButton], initialize
-     * [Button] variable `val scaleButton` ("Scale") by finding the view with id [R.id.scaleButton],
+     * view with id `R.id.alphaButton` ("Alpha"), initialize [Button] variable `val translateButton`
+     * ("Translate") by finding the view with id `R.id.translateButton`, initialize [Button] variable
+     * `val rotateButton` ("Rotate") by finding the view with id `R.id.rotateButton`, initialize
+     * [Button] variable `val scaleButton` ("Scale") by finding the view with id `R.id.scaleButton`,
      * and initialize [Button] variable `val setButton` ("Set") by finding the view with id
-     * [R.id.setButton]. We initialize our [AlphaAnimation] variable `val alphaAnimation` with an
+     * `R.id.setButton`. We initialize our [AlphaAnimation] variable `val alphaAnimation` with an
      * instance which will animate the alpha property from 1 to 0 and set its duration to 1000ms,
      * [TranslateAnimation] variable `val translateAnimation` with an instance which will animate
      * from an X value of an absolute number of pixels of 0, to an X value of 1 times the width of
@@ -73,11 +73,11 @@ class ViewAnimations : ComponentActivity() {
      * and set its duration to 1000ms. We initialize [AnimationSet] variable `val setAnimation` with
      * a new instance, and add `alphaAnimation`, `translateAnimation`, `rotateAnimation`, and
      * `scaleAnimation` to it. Then we call our method [setupAnimation] to setup `alphaButton` with
-     * `alphaAnimation` and the resource animation [R.anim.alpha_anim], setup `translateButton` with
-     * `translateAnimation` and the resource animation [R.anim.translate_anim], setup `rotateButton`
-     * with `rotateAnimation` and the resource animation [R.anim.rotate_anim], setup `scaleButton`
-     * with `scaleAnimation` and the resource animation [R.anim.scale_anim], and setup `setButton`
-     * with `setAnimation` and the resource animation [R.anim.set_anim].
+     * `alphaAnimation` and the resource animation `R.anim.alpha_anim`, setup `translateButton` with
+     * `translateAnimation` and the resource animation `R.anim.translate_anim`, setup `rotateButton`
+     * with `rotateAnimation` and the resource animation `R.anim.rotate_anim`, setup `scaleButton`
+     * with `scaleAnimation` and the resource animation `R.anim.scale_anim`, and setup `setButton`
+     * with `setAnimation` and the resource animation `R.anim.set_anim`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */

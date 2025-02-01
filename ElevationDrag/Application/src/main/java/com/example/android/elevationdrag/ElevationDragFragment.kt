@@ -56,7 +56,7 @@ class ElevationDragFragment : Fragment() {
      * First we call our super's implementation of `onCreate`. Then we initialize our
      * [ViewOutlineProvider] field [mOutlineProviderCircle] with a new instance. Finally we
      * initialize [mElevationStep] with the raw pixel size that a Resources instance for the
-     * application's package resolves for the resource with id [R.dimen.elevation_step].
+     * application's package resolves for the resource with id `R.dimen.elevation_step`.
      *
      * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
      */
@@ -69,26 +69,26 @@ class ElevationDragFragment : Fragment() {
     /**
      * Called to have the fragment instantiate its user interface view. We initialize [View] variable
      * `val rootView` by using our [LayoutInflater] parameter [inflater] to inflate our layout file
-     * [R.layout.ztranslation] using our [ViewGroup] parameter [container] for the LayoutParams
+     * `R.layout.ztranslation` using our [ViewGroup] parameter [container] for the LayoutParams
      * without attaching to it. We initialize [View] variable `val floatingShape` by finding the
-     * view in `rootView` with id [R.id.circle], set its [ViewOutlineProvider] to our
+     * view in `rootView` with id `R.id.circle`, set its [ViewOutlineProvider] to our
      * [ViewOutlineProvider] field [mOutlineProviderCircle] (generates the Outline that defines the
      * shape of the shadow it casts, and enables outline clipping), and call its [View.setClipToOutline]
      * method with `true` to indicate that the [View]'s Outline should be used to clip the contents
      * of the [View].
      *
      * We initialize [DragFrameLayout] variable `val dragLayout` by finding the view in `rootView`
-     * with id [R.id.main_layout] and set its [DragFrameLayout.DragFrameLayoutController] to an
+     * with id `R.id.main_layout` and set its [DragFrameLayout.DragFrameLayoutController] to an
      * anonymous class whose [DragFrameLayout.DragFrameLayoutController.onDragDrop] override
      * animates the [View.setTranslationZ] (aka kotlin `translationZ` property) of `floatingShape`
      * depending on whether its `captured` parameter is `true` (view is raised by 50 pixels while
      * captured), or `false` (`translationZ` is returned to 0 when dropped). We then add
      * `floatingShape` to the list of views that are draggable within the container `dragLayout`.
      *
-     * We set the [OnClickListener] of the view in `rootView` with id [R.id.raise_bt] ("Z+")
+     * We set the [OnClickListener] of the view in `rootView` with id `R.id.raise_bt` ("Z+")
      * to an anonymous class whose [OnClickListener.onClick] override adds [mElevationStep] to
      * [mElevation], logs the new elevation, and sets the base elevation of `floatingShape` to
-     * [mElevation], and we set the [OnClickListener] of the view in `rootView` with id [R.id.lower_bt]
+     * [mElevation], and we set the [OnClickListener] of the view in `rootView` with id `R.id.lower_bt`
      * ("Z-") to an anonymous class whose [OnClickListener.onClick] override subtracts [mElevationStep]
      * from [mElevation] (setting to 0 if the result is less than 0), logs the new elevation, and sets
      * the base elevation of `floatingShape` to [mElevation].

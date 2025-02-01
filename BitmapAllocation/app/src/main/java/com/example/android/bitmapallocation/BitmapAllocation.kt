@@ -66,16 +66,16 @@ class BitmapAllocation : AppCompatActivity() {
      * then we set our content view to our layout file R.layout.activity_bitmap_allocation. We
      * initialize our [IntArray] variable `val imageIDs` with the resource id's of the 6 jpg's we
      * display, initialize [CheckBox] variable `val checkbox` by finding the view in our layout with
-     * id [R.id.checkbox] ("Reuse Bitmap" -- if checked the old bitmap will be reused), initialize
-     * [TextView] variable `val durationTextview` by finding the view with id [R.id.loadDuration]
+     * id `R.id.checkbox` ("Reuse Bitmap" -- if checked the old bitmap will be reused), initialize
+     * [TextView] variable `val durationTextview` by finding the view with id `R.id.loadDuration`
      * (we will display the time it took to decode and display our images here), and initialize
-     * [ImageView] variable `val imageview` by finding the view with id [R.id.imageview] (we will
+     * [ImageView] variable `val imageview` by finding the view with id `R.id.imageview` (we will
      * display our images here). We initialize our [BitmapFactory.Options] field [mBitmapOptions]
      * with a new instance, and set its `inJustDecodeBounds` field to `true` (the decoder will return
      * `null` (no bitmap), but the size fields of [mBitmapOptions] will still be set, allowing the
      * caller to query the bitmap without having to allocate the memory for its pixels). We then
      * call the [BitmapFactory.decodeResource] method to set the fields of [mBitmapOptions] given
-     * the jpg with resource id [R.drawable.a]. We then create a bitmap for [Bitmap] field
+     * the jpg with resource id `R.drawable.a`. We then create a bitmap for [Bitmap] field
      * [mCurrentBitmap] using the `outWidth` field of [mBitmapOptions] as the width of the bitmap
      * and the `outHeight` field as the height of the bitmap, using ARGB_8888 as the bitmap
      * configuration (each pixel is stored in 4 bytes, with each channel (RGB and alpha for
@@ -83,7 +83,7 @@ class BitmapAllocation : AppCompatActivity() {
      * of [mBitmapOptions] to `false`, set its `inBitmap` field to [mCurrentBitmap] (decode methods
      * that take the `Options` object will attempt to reuse this bitmap when loading content), and
      * set its `inSampleSize` field to 1 (no sub-sampling). We then call the `decodeResource` method
-     * of [BitmapFactory] to decode the jpg with resource id [R.drawable.a] into [Bitmap] field
+     * of [BitmapFactory] to decode the jpg with resource id `R.drawable.a` into [Bitmap] field
      * [mCurrentBitmap], then set the content of [ImageView] variable `imageview` to it. Finally we
      * set the [View.OnClickListener] of `imageview` to an anonymous class which cycles through the
      * resource id's in `imageIDs` displaying each jpg in turn and reusing [mCurrentBitmap] if the

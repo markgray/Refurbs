@@ -32,10 +32,10 @@ import com.android.multiwindowplayground.R
 class AdjacentActivity : LoggingActivity() {
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_logging].
-     * We set our background color to [R.color.teal] (0x00695C), then call the [setDescription]
-     * method to set the description text in the view with id [R.id.description] to the string with
-     * resource ID [R.string.activity_adjacent_description] (See above comment for its value)
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_logging`.
+     * We set our background color to `R.color.teal` (0x00695C), then call the [setDescription]
+     * method to set the description text in the view with id `R.id.description` to the string with
+     * resource ID `R.string.activity_adjacent_description` (See above comment for its value)
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */

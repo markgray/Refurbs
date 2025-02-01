@@ -79,12 +79,12 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
     /**
      * Inflates the [View] which will be displayed by this [Fragment], from the app's resources.
      * We initialize [View] variable `val view` with the [View] inflated by our [LayoutInflater]
-     * parameter [inflater] from our layout file [R.layout.fragment_sample] using our [ViewGroup]
+     * parameter [inflater] from our layout file `R.layout.fragment_sample` using our [ViewGroup]
      * parameter [container] for the LayoutParams without attaching to it. We initialize our
      * [SwipeRefreshLayout] field [mSwipeRefreshLayout] by finding the [View] in `view` with id
-     * [R.id.swipe_refresh], and then set the color resources used in its progress animation from the
-     * color resource id's [R.color.swipe_color_1], [R.color.swipe_color_2], [R.color.swipe_color_3],
-     * and [R.color.swipe_color_4]. We initialize our [ListView] field [mListView] by finding the
+     * `R.id.swipe_refresh`, and then set the color resources used in its progress animation from the
+     * color resource id's `R.color.swipe_color_1`, `R.color.swipe_color_2`, `R.color.swipe_color_3`,
+     * and `R.color.swipe_color_4`. We initialize our [ListView] field [mListView] by finding the
      * [View] in `view` with id [android.R.id.list] then return `view` to the caller.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
@@ -166,7 +166,7 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
 
     /**
      * Create the ActionBar. We use our [MenuInflater] parameter [inflater] to inflate our menu
-     * layout file [R.menu.main] into our [Menu] parameter [menu].
+     * layout file `R.menu.main` into our [Menu] parameter [menu].
      *
      * @param menu     The options menu in which you place our items.
      * @param inflater [MenuInflater] to use to instantiate menu XML files into Menu objects
@@ -180,14 +180,14 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
      * Respond to the user's selection of the Refresh action item. Start the [SwipeRefreshLayout]
      * progress bar, then initiate the background task that refreshes the content. If the method
      * [MenuItem.getItemId] (kotlin `itemId` property) of our [MenuItem] parameter [item] returns
-     * [R.id.menu_refresh], we log the fact it was selected, and if our [SwipeRefreshLayout] field
+     * `R.id.menu_refresh`, we log the fact it was selected, and if our [SwipeRefreshLayout] field
      * [mSwipeRefreshLayout] is not currently refreshing we set it to be refreshing, call our method
      * [initiateRefresh] which launches a delaying task which when finished returns a new list of
      * [LIST_ITEM_COUNT] (20) random cheese names to [onRefreshComplete] which it uses to to replace
      * the dataset of [ArrayAdapter] of [String] field [mListAdapter]. Having started the refresh
      * we return `true` to the caller to consume the event here.
      *
-     * If the [MenuItem] id of [item] is not [R.id.menu_refresh], we return the value returned by
+     * If the [MenuItem] id of [item] is not `R.id.menu_refresh`, we return the value returned by
      * our super's implementation of `onOptionsItemSelected`.
      *
      * @param item The menu item that was selected.

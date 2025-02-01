@@ -69,7 +69,7 @@ class BasicGestureDetectFragment : Fragment() {
      *
      * First we call our super's implementation of `onActivityCreated`, then we initialize [View]
      * variable `val gestureView` by using the [FragmentActivity] this fragment is currently
-     * associated with to find the view with id [R.id.sample_output], set it to be clickable, and
+     * associated with to find the view with id `R.id.sample_output`, set it to be clickable, and
      * set it to be focusable. We initialize our [GestureDetector.SimpleOnGestureListener] variable
      * `val gestureListener` with a new instance of our custom [GestureListener] class. We initialize
      * our [GestureDetector] variable `val gd` with a new instance which will use `gestureListener`
@@ -119,7 +119,7 @@ class BasicGestureDetectFragment : Fragment() {
 
     /**
      * This hook is called whenever an item in our options menu is selected. If the id of our
-     * [MenuItem] parameter [item] is [R.id.sample_action] we call our method [clearLog], in any
+     * [MenuItem] parameter [item] is `R.id.sample_action` we call our method [clearLog], in any
      * case we return `true` to consume the event here.
      *
      * @param item The [MenuItem] that was selected.
@@ -136,7 +136,7 @@ class BasicGestureDetectFragment : Fragment() {
     /**
      * Clears all the logging text displayed by our [LogFragment]. We initialize [LogFragment]
      * variable `val logFragment` by using the [FragmentActivity] this fragment is currently
-     * associated with to find the view with id [R.id.log_fragment], then fetch the [LogView]
+     * associated with to find the view with id `R.id.log_fragment`, then fetch the [LogView]
      * of `logFragment` and call its [LogView.setText] method to set its text to the empty string.
      */
     fun clearLog() {

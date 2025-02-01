@@ -51,10 +51,10 @@ class MainActivity : ComponentActivity(), AdapterView.OnItemClickListener {
 
     /**
      * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file [R.layout.activity_main]. We
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`. We
      * initialize [Array] of [Sample] field [mSamples] with a new instance containing one [Sample]
-     * which is constructed to display the string with resource id [R.string.navigationdraweractivity_title]
-     * as the title, [R.string.navigationdraweractivity_description] as the description and the class
+     * which is constructed to display the string with resource id `R.string.navigationdraweractivity_title`
+     * as the title, `R.string.navigationdraweractivity_description` as the description and the class
      * of [NavigationDrawerActivity] as the hard-coded activity that will be launched if the
      * item is clicked. We initialize our [GridView] field [mGridView] by finding the view with
      * ID [android.R.id.list], set its adapter to a new instance of [SampleAdapter], and set its
@@ -147,7 +147,7 @@ class MainActivity : ComponentActivity(), AdapterView.OnItemClickListener {
         /**
          * Get a View that displays the data at the specified position in the data set. If our [View]
          * parameter [convertView] is `null`, we set it to the view that the [LayoutInflater] instance
-         * for our context inflates from the layout file [R.layout.sample_dashboard_item] using our
+         * for our context inflates from the layout file `R.layout.sample_dashboard_item` using our
          * [ViewGroup] parameter [container] for the layout params without attaching to it. We find
          * the view in [convertView] with id [android.R.id.text1] and set its text to the [String]
          * whose resource id is found in the [Sample.titleResId] field of the entry in position

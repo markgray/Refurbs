@@ -52,7 +52,7 @@ class ProductListFragment : Fragment() {
 
     /**
      * Called to have the fragment instantiate its user interface view. First we initialize our
-     * [ListFragmentBinding] field [mBinding] by inflating the layout file [R.layout.list_fragment]
+     * [ListFragmentBinding] field [mBinding] by inflating the layout file `R.layout.list_fragment`
      * into a binding for that layout. Next we initialize [ProductAdapter] field [mProductAdapter]
      * with a new instance using [ProductClickCallback] field [mProductClickCallback] as its callback,
      * and then use [mBinding] to set the adapter of the [RecyclerView] in its layout file
@@ -138,7 +138,7 @@ class ProductListFragment : Fragment() {
     private val mProductClickCallback = object: ProductClickCallback() {
         /**
          * This is used in a lambda specified using android:onClick in the layout file for a product
-         * item [R.layout.product_item], and is called with the bound variable "comment" from that
+         * item `R.layout.product_item`, and is called with the bound variable "comment" from that
          * file. When clicked if our lifecycle is at least in the STARTED state, we call the
          * `getActivity` method for our main activity [MainActivity] to get the `AppCompatActivity`
          * this fragment is currently associated with and instruct it to show the product detail

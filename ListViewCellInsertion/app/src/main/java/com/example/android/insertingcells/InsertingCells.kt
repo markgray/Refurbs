@@ -50,14 +50,14 @@ class InsertingCells : ComponentActivity(), OnRowAdditionAnimationListener {
     private lateinit var mValues: Array<ListItemObject>
 
     /**
-     * The [InsertionListView] with id [R.id.list_view] in our layout that we add our
+     * The [InsertionListView] with id `R.id.list_view` in our layout that we add our
      * [ListItemObject] objects to the top of, animating the addition if the current
      * top item is at the top of the [InsertionListView].
      */
     private var mListView: InsertionListView? = null
 
     /**
-     * The [Button] with id [R.id.add_row_button] in our layout, its android:onClick="addRow"
+     * The [Button] with id `R.id.add_row_button` in our layout, its android:onClick="addRow"
      * attribute makes it call our [addRow] method when it is clicked.
      */
     private var mButton: Button? = null
@@ -70,13 +70,13 @@ class InsertingCells : ComponentActivity(), OnRowAdditionAnimationListener {
     private var mItemNum = 0
 
     /**
-     * The [RoundView] with id [R.id.round_view] in our layout, an image animation emerges from
+     * The [RoundView] with id `R.id.round_view` in our layout, an image animation emerges from
      * it when the list is scrolled all the way to the top and a new [ListItemObject] is added.
      */
     private var mRoundView: RoundView? = null
 
     /**
-     * Set from the resource with id [R.dimen.cell_height] (150dp), it is used when creating a clone
+     * Set from the resource with id `R.dimen.cell_height` (150dp), it is used when creating a clone
      * of an [ListItemObject] in our [addRow] method, the [ListItemObject] constructor saves this
      * value in its `mHeight` field for use by the `getView` override of our [CustomArrayAdapter]
      * adapter when configuring the layout params for the item's view.
@@ -85,21 +85,21 @@ class InsertingCells : ComponentActivity(), OnRowAdditionAnimationListener {
 
     /**
      * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file [R.layout.activity_main]. We initialize our
+     * then we set our content view to our layout file `R.layout.activity_main`. We initialize our
      * [Array] of [ListItemObject] field [mValues] with a new instance, filled with three
      * [ListItemObject] instances constructed to contain "Chameleon", "Rock", and "Flower" text
      * views as well as the resource id's for jpg images to use for the associated [ImageView]
-     * ([R.drawable.chameleon], [R.drawable.rock], and [R.drawable.flower] respectively). We
+     * (`R.drawable.chameleon`, `R.drawable.rock`, and `R.drawable.flower` respectively). We
      * initialize our [Int] field [mCellHeight] by retrieving the dimensional for the resource
-     * id [R.dimen.cell_height] from a [Resources] instance for our application's package. We
+     * id `R.dimen.cell_height` from a [Resources] instance for our application's package. We
      * initialize [List] of [ListItemObject] variable `val mData` with a new instance, and
      * [CustomArrayAdapter] variable `val mAdapter` with an instance which will display the
-     * [ListItemObject] items in `mData` using our layout file [R.layout.list_view_item]. We
+     * [ListItemObject] items in `mData` using our layout file `R.layout.list_view_item`. We
      * initialize [RelativeLayout] variable `val mLayout` by finding the view with id
-     * [R.id.relative_layout] (it contains all our other views). We then initialize our fields
-     * [RoundView] field [mRoundView] by finding the view with id [R.id.round_view], [Button] field
-     * [mButton] by finding the view with id [R.id.add_row_button] ("Add Row"), and
-     * [InsertionListView] field [mListView] by finding the view with id [R.id.list_view]. We then
+     * `R.id.relative_layout` (it contains all our other views). We then initialize our fields
+     * [RoundView] field [mRoundView] by finding the view with id `R.id.round_view`, [Button] field
+     * [mButton] by finding the view with id `R.id.add_row_button` ("Add Row"), and
+     * [InsertionListView] field [mListView] by finding the view with id `R.id.list_view`. We then
      * set the adapter of [mListView] to `mAdapter`, its data to `mData`, its parent [RelativeLayout]
      * to `mLayout` and its [OnRowAdditionAnimationListener] to 'this'.
      *
@@ -141,7 +141,7 @@ class InsertingCells : ComponentActivity(), OnRowAdditionAnimationListener {
     }
 
     /**
-     * Called when the [Button] with id [R.id.add_row_button] ("Add Row") is clicked, we add a new
+     * Called when the [Button] with id `R.id.add_row_button` ("Add Row") is clicked, we add a new
      * [ListItemObject] cloned from one of those in [Array] of [ListItemObject] field [mValues] to
      * our layout's [InsertionListView] field [mListView]. First we disable our [Button] field
      * [mButton], then we increment our [Int] field [mItemNum]. We initialize [ListItemObject]
@@ -164,7 +164,7 @@ class InsertingCells : ComponentActivity(), OnRowAdditionAnimationListener {
      * [AnimatorListenerAdapter.onAnimationRepeat] override calls the [InsertionListView.addRow]
      * method of [mListView] to add `newObj` to the list. Finally we start `animator` running.
      *
-     * @param view the [View] that was clicked (the [Button] with id [R.id.add_row_button]
+     * @param view the [View] that was clicked (the [Button] with id `R.id.add_row_button`
      * ("Add Row") calls us when it is clicked thanks to an android:onClick="addRow" attribute).
      */
     @Suppress("UNUSED_PARAMETER")

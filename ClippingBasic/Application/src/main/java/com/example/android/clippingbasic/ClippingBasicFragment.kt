@@ -44,7 +44,7 @@ class ClippingBasicFragment : Fragment() {
     private var mOutlineProvider: ViewOutlineProvider? = null
 
     /**
-     * An array of texts, loaded from the string-array with resource id [R.array.sample_texts], and
+     * An array of texts, loaded from the string-array with resource id `R.array.sample_texts`, and
      * displayed in round robin order every time the [changeText] method is called.
      */
     private lateinit var mSampleTexts: Array<String>
@@ -60,7 +60,7 @@ class ClippingBasicFragment : Fragment() {
      * like to participate in populating the options menu by receiving a call to [onCreateOptionsMenu]
      * and related methods. We initialize our [ViewOutlineProvider] field [mOutlineProvider] with a
      * new instance of [ClipOutlineProvider], and initialize [Array] of [String] field [mSampleTexts]
-     * by retrieving the string-array with resource id [R.array.sample_texts] from our activities
+     * by retrieving the string-array with resource id `R.array.sample_texts` from our activities
      * resources.
      *
      * @param savedInstanceState If the fragment is being re-created from a previous saved state,
@@ -77,7 +77,7 @@ class ClippingBasicFragment : Fragment() {
     /**
      * Called to have the fragment instantiate its user interface view. We return the [View]
      * constructed  by using our [LayoutInflater] parameter [inflater] to inflate our layout file
-     * [R.layout.clipping_basic_fragment] using our [ViewGroup] parameter [container] to generate
+     * `R.layout.clipping_basic_fragment` using our [ViewGroup] parameter [container] to generate
      * the `LayoutParams` without attaching to it.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
@@ -105,14 +105,14 @@ class ClippingBasicFragment : Fragment() {
      *
      * First we call our super's implementation of `onViewCreated`, then we initialize our
      * [TextView] field [mTextView] by finding the view in our [View] parameter [view] with the
-     * id [R.id.text_view] and call our [changeText] method to set its text to the first string in
+     * id `R.id.text_view` and call our [changeText] method to set its text to the first string in
      * our [Array] of strings field [mSampleTexts]. We initialize [View] variable `val clippedView`
-     * by finding the view in [view] with id [R.id.frame], then set its [ViewOutlineProvider] to our
+     * by finding the view in [view] with id `R.id.frame`, then set its [ViewOutlineProvider] to our
      * [ViewOutlineProvider] field [mOutlineProvider] (which generates the [Outline] that defines the
      * shape of the shadow the view casts, and enables outline clipping). We find the view with id
-     * [R.id.button] and set its [OnClickListener] to an anonymous class which toggles whether the
+     * `R.id.button` and set its [OnClickListener] to an anonymous class which toggles whether the
      * [View]'s Outline should be used to clip the contents of the View. We find the view with id
-     * [R.id.text_view] then set its [OnClickListener] to an anonymous class which increments our
+     * `R.id.text_view` then set its [OnClickListener] to an anonymous class which increments our
      * field [mClickCount], calls our method [changeText] to change the next to the next one in
      * order, and then calls the [View.invalidateOutline] method of [View] variable `clippedView` to
      * invalidate the outline just in case the [TextView] changed size.
@@ -135,18 +135,18 @@ class ClippingBasicFragment : Fragment() {
         /* When the button is clicked, the text is clipped or un-clipped. */
         view.findViewById<View>(R.id.button).setOnClickListener { bt: View ->
             /**
-             * Called when the button with id [R.id.button] is clicked. We branch on the value
+             * Called when the button with id `R.id.button` is clicked. We branch on the value
              * returned by the [View.getClipToOutline] method of `clippedView`:
              *
              *  * `true`: (the Outline should be used to clip the contents of the View) we call the
              *  [View.setClipToOutline] method of `clippedView` with `false` to disable the clipping
              *  to outline, log this action, then set the text of the [Button] to the string with
-             *  resource id [R.string.clip_button] ("Enable outline clipping")
+             *  resource id `R.string.clip_button` ("Enable outline clipping")
              *
              *  * `false`: (the Outline should not be used to clip the contents of the View) we call
              *  the [View.setClipToOutline] method of `clippedView` with `true` to enable the
              *  clipping to outline, log this action, then set the text of the [Button] to the
-             *  string with resource id [R.string.unclip_button] ("Disable outline clipping")
+             *  string with resource id `R.string.unclip_button` ("Disable outline clipping")
              *
              * @param bt [View] that was clicked
              */

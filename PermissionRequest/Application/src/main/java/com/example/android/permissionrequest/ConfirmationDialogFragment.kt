@@ -33,11 +33,11 @@ class ConfirmationDialogFragment : DialogFragment() {
      * `val resources` by fetching from our arguments the string array stored under key [ARG_RESOURCES]
      * ("resources") then we return a new instance of [AlertDialog] we build by setting its message
      * to the formatted string of each `resources` entry joined together with a newline delimiter
-     * using format [R.string.confirmation] ("This web page wants to use following resources:\n\n%s"),
-     * whose negative button displays the text with id [R.string.deny] ("Deny") and whose
+     * using format `R.string.confirmation` ("This web page wants to use following resources:\n\n%s"),
+     * whose negative button displays the text with id `R.string.deny` ("Deny") and whose
      * [DialogInterface.OnClickListener] is an anonymous class which calls the [Listener.onConfirmation]
      * method of our parent fragment with `false` as the allowed flag, and whose positive button
-     * displays the text with id [R.string.allow] ("Allow") and whose [DialogInterface.OnClickListener]
+     * displays the text with id `R.string.allow` ("Allow") and whose [DialogInterface.OnClickListener]
      * is an anonymous class which calls the [Listener.onConfirmation] method of our parent fragment
      * with `true` as the allowed flag (the last method in the chain to the [AlertDialog.Builder] is
      * [AlertDialog.Builder.create] of course).
