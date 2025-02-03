@@ -928,6 +928,7 @@ class JetBoyView(
          * @param canvas [Canvas] on which to do our drawing.
          */
         private fun doAsteroidAnimation(canvas: Canvas?) {
+            @Suppress("UsePropertyAccessSyntax") // TODO: Watch this! Using property access iw flaggged as error.
             if ((mDangerWillRobinson == null || mDangerWillRobinson!!.isEmpty())
                 && (mExplosion != null && mExplosion!!.isEmpty())) return
 
@@ -1234,6 +1235,7 @@ class JetBoyView(
          */
         @Suppress("unused")
         fun updateAsteroids(inputContext: Any?) {
+            @Suppress("UsePropertyAccessSyntax") // TODO: Property access is an error?
             if ((mDangerWillRobinson == null) or (mDangerWillRobinson!!.isEmpty())) return
             for (i in mDangerWillRobinson!!.size - 1 downTo 0) {
                 val asteroid = mDangerWillRobinson!!.elementAt(i)
@@ -1299,6 +1301,7 @@ class JetBoyView(
          */
         @Suppress("unused")
         protected fun updateExplosions(inputContext: Any?) {
+            @Suppress("UsePropertyAccessSyntax") // TODO: Property access is an error?
             if ((mExplosion == null) or (mExplosion!!.isEmpty())) return
             for (i in mExplosion!!.indices.reversed()) {
                 val ex = mExplosion!!.elementAt(i)
@@ -1528,10 +1531,10 @@ class JetBoyView(
              * Sets the game mode. That is, whether we are running, paused, in the failure state,
              * in the victory state, etc. See [setGameState]. In a block synchronized on our
              * [SurfaceHolder] field [mSurfaceHolder] we call our method [setGameState] to set the
-             * game state to our [Int] parameter [mode] and to do whatever else is necessary for
+             * game state to our [Int] parameter `mode` and to do whatever else is necessary for
              * this change of game state..
              *
-             * @param mode one of [STATE_START], [STATE_PLAY], [STATE_LOSE], [STATE_PAUSE], or
+             * param `mode` one of [STATE_START], [STATE_PLAY], [STATE_LOSE], [STATE_PAUSE], or
              * [STATE_RUNNING]
              */
             set(mode) {
