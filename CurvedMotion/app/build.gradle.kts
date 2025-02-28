@@ -28,6 +28,6 @@ android {
         }
     }
     dependencies {
-        implementation("androidx.activity:activity-ktx:1.10.0")
+        implementation("androidx.activity:activity-ktx:1.10.1")
     }
 }
