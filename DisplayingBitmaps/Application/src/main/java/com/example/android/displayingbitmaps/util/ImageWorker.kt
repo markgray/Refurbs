@@ -31,7 +31,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.example.android.common.logger.Log
 import com.example.android.displayingbitmaps.BuildConfig
-import com.example.android.displayingbitmaps.R
 import com.example.android.displayingbitmaps.ui.ImageDetailActivity
 import com.example.android.displayingbitmaps.ui.ImageGridFragment
 import com.example.android.displayingbitmaps.util.ImageCache.ImageCacheParams
