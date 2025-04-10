@@ -6,7 +6,7 @@ plugins {
 dependencies {
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.gridlayout:gridlayout:1.0.0")
+    implementation("androidx.gridlayout:gridlayout:1.1.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.core:core-ktx:1.15.0")
