@@ -33,7 +33,7 @@ interface UserDao {
      * @return the user from the table wrapped in a `Flowable`
      */
     @get:Query("SELECT * FROM Users LIMIT 1")
-    val user: Flowable<User?>?
+    val user: Flowable<User>
 
     /**
      * Insert a user in the database. If the user already exists, replace it.

@@ -42,7 +42,7 @@ class LocalUserDataSource
      * @return [User] returned by the DAO field [mUserDao] wrapped in a flowable that will
      * emit every time the user name has been updated.
      */
-    override fun getUser(): Flowable<User?>? {
+    override fun getUser(): Flowable<User> {
         return mUserDao.user
     }
 

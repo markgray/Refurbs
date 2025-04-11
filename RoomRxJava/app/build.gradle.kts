@@ -34,7 +34,7 @@ android {
 
 dependencies {
     implementation("androidx.activity:activity-ktx:1.10.1")
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
 
     // Support libraries
@@ -46,10 +46,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     annotationProcessor("androidx.lifecycle:lifecycle-common:2.8.7")
-    implementation("androidx.room:room-runtime:2.6.1")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-rxjava2:2.6.1")
+    implementation("androidx.room:room-runtime:2.7.0")
+    annotationProcessor("androidx.room:room-compiler:2.7.0")
+    ksp("androidx.room:room-compiler:2.7.0")
+    implementation("androidx.room:room-rxjava2:2.7.0")
     implementation("androidx.annotation:annotation:1.9.1")
 
     // RxJava

@@ -27,7 +27,7 @@ interface UserDataSource {
      *
      * @return the [User] from the data source.
      */
-    fun getUser(): Flowable<User?>?
+    fun getUser(): Flowable<User>
 
     /**
      * Inserts the [User] parameter [user] into the data source, or if this is an existing user,
