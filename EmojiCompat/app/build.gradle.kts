@@ -58,7 +58,7 @@ dependencies {
     implementation("androidx.emoji:emoji:1.1.0")
     implementation("androidx.emoji:emoji-appcompat:1.1.0")
     implementation("androidx.emoji:emoji-bundled:1.1.0")
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.16.0")
 
     // Test
     testImplementation("junit:junit:4.13.2")
