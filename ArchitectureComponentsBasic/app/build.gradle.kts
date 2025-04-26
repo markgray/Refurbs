@@ -67,13 +67,13 @@ dependencies {
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     ksp("androidx.lifecycle:lifecycle-common:2.8.7")
-    implementation("androidx.room:room-runtime:2.7.0")
-    ksp("androidx.room:room-compiler:2.7.0")
+    implementation("androidx.room:room-runtime:2.7.1")
+    ksp("androidx.room:room-compiler:2.7.1")
 
     // Android Testing Support Library"s runner and rules
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:rules:1.6.1")
-    androidTestImplementation("androidx.room:room-testing:2.7.0")
+    androidTestImplementation("androidx.room:room-testing:2.7.1")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
 
     // Espresso UI Testing
