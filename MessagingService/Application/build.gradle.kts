@@ -9,7 +9,7 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v13:1.0.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.fragment:fragment-ktx:1.8.7")
+    implementation("androidx.fragment:fragment-ktx:1.8.8")
 }
 
 android {
