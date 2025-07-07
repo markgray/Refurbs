@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 /*
  * Copyright (C) 2017 The Android Open Source Project
  *
@@ -21,11 +23,11 @@ plugins {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     defaultConfig {
         applicationId = "com.example.android.contentprovidersample"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -50,8 +52,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_17
+        }
     }
     namespace = "com.example.android.contentprovidersample"
 }
