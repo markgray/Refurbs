@@ -50,11 +50,11 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
 
     // Architecture components
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.core:core-ktx:1.16.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1")
-    ksp("androidx.lifecycle:lifecycle-common:2.9.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.2")
+    ksp("androidx.lifecycle:lifecycle-common:2.9.2")
     implementation("androidx.room:room-runtime:2.7.2")
     ksp("androidx.room:room-compiler:2.7.2")
 
