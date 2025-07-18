@@ -113,7 +113,7 @@ class CurvedMotion : ComponentActivity() {
                      * its [AnimatorPath.curveTo] method to add a [PathPoint] that describes a Bezier
                      * curve for the `CURVE` operation of the [PathEvaluator]. We then initialize
                      * [ObjectAnimator] variable `val anim` with an instance which will animate the
-                     * "buttonLoc" property of [CurvedMotion.this] using a new instance of [PathEvaluator]
+                     * "buttonLoc" property of `this` [CurvedMotion] using a new instance of [PathEvaluator]
                      * that will be called on each animation frame to provide the necessary interpolation
                      * between the Object values to derive the animated value, and the [PathPoint]
                      * objects in `path` as the values that the animation will animate between over
