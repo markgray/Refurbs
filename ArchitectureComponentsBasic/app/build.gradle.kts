@@ -60,7 +60,7 @@ dependencies {
 
     // Android Testing Support Library"s runner and rules
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
-    androidTestImplementation("androidx.test:rules:1.6.1")
+    androidTestImplementation("androidx.test:rules:1.7.0")
     androidTestImplementation("androidx.room:room-testing:2.7.2")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
 
