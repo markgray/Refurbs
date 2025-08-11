@@ -42,6 +42,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import kotlin.math.sqrt
+import androidx.core.graphics.scale
 
 /**
  * This is an example of using the accelerometer to integrate the device's
@@ -692,7 +693,7 @@ class AccelerometerPlayActivity : ComponentActivity() {
             val ball = BitmapFactory.decodeResource(resources, R.drawable.ball)
             val dstWidth = (S_BAL_DIAMETER * mMetersToPixelsX + 0.5f).toInt()
             val dstHeight = (S_BAL_DIAMETER * mMetersToPixelsY + 0.5f).toInt()
-            mBitmap = Bitmap.createScaledBitmap(ball, dstWidth, dstHeight, true)
+            mBitmap = ball.scale(dstWidth, dstHeight)
             val opts = BitmapFactory.Options()
             @Suppress("DEPRECATION") // TODO: As of Build.VERSION_CODES.N, this is ignored
             opts.inDither = true
