@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "UNUSED_ANONYMOUS_PARAMETER", "MemberVisibilityCanBePrivate")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "UNUSED_ANONYMOUS_PARAMETER", "MemberVisibilityCanBePrivate",
+    "UnusedImport"
+)
 
 package com.example.android.anticipation
 
@@ -320,13 +322,13 @@ class AnticiButton : AppCompatButton {
         get() = mSkewX
         /**
          * Sets the amount of left/right skew on the button, which determines how far the button
-         * leans. If our [Float] parameter [value] is not equal to our [Float] property [mSkewX]
+         * leans. If our [Float] parameter `value` is not equal to our [Float] property [mSkewX]
          * we set [mSkewX] to it, call the [invalidate] method to force our button to be redrawn
          * with new skew value, and then call our [invalidateSkewedBounds] to also invalidate the
-         * appropriate area of our parent. If our parameter `[value] is already equal to [mSkewX]
+         * appropriate area of our parent. If our parameter ``value` is already equal to [mSkewX]
          * we do nothing.
          *
-         * @param value value to set our [Float] property [mSkewX] to.
+         * @param `value` value to set our [Float] property [mSkewX] to.
          */
         set(value) {
             if (value != mSkewX) {
