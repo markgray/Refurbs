@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNCHECKED_CAST", "KDocUnresolvedReference", "unused")
+@file:Suppress("UNCHECKED_CAST", "KDocUnresolvedReference", "unused", "RedundantSuppression")
 
 package com.example.android.basicmultitouch
 

@@ -27,6 +27,7 @@ import android.util.AttributeSet
 import android.util.SparseArray
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.util.size
 
 /**
  * View that shows touch events and their history. This view demonstrates the use of [onTouchEvent]
@@ -425,7 +426,7 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
         }
 
         // loop through all active touches and draw them
-        for (i in 0 until mTouches.size()) {
+        for (i in 0 until mTouches.size) {
 
             // get the pointer id and associated data for this index
             val id: Int = mTouches.keyAt(i)
