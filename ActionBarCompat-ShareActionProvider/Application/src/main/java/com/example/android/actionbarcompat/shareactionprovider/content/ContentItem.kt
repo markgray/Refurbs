@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
+import androidx.core.net.toUri
 
 /**
  * This class encapsulates a content item. Referencing the content's type, and the differing way
@@ -79,7 +80,7 @@ class ContentItem {
     val contentUri: Uri?
         get() = if (!TextUtils.isEmpty(contentAssetFilePath)) {
             // If this content has an asset, then return a AssetProvider Uri
-            Uri.parse("content://" + AssetProvider.CONTENT_URI + "/" + contentAssetFilePath)
+            ("content://" + AssetProvider.CONTENT_URI + "/" + contentAssetFilePath).toUri()
         } else {
             null
         }
