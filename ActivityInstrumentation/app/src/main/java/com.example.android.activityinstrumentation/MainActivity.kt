@@ -34,6 +34,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import java.util.Arrays
+import androidx.core.content.edit
 
 /**
  * Basic activity with a spinner. The spinner should persist its position to disk every time a
@@ -100,12 +101,12 @@ class MainActivity : AppCompatActivity() {
             // statement and running the tests to watch them fail.
             @SuppressLint("ApplySharedPref")
             override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
-                mPrefs!!.edit().putInt(PREF_SPINNER_POS, position).commit()
+                mPrefs!!.edit(commit = true) { putInt(PREF_SPINNER_POS, position) }
             }
 
             @SuppressLint("ApplySharedPref")
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                mPrefs!!.edit().remove(PREF_SPINNER_POS).commit()
+                mPrefs!!.edit(commit = true) { remove(PREF_SPINNER_POS) }
             }
         }
     }
