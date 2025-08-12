@@ -32,6 +32,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.graphics.createBitmap
 
 /**
  * This example shows how to speed up bitmap loading and reduce garbage collection
@@ -120,8 +121,7 @@ class BitmapAllocation : AppCompatActivity() {
         mBitmapOptions = BitmapFactory.Options()
         mBitmapOptions!!.inJustDecodeBounds = true
         BitmapFactory.decodeResource(resources, R.drawable.a, mBitmapOptions)
-        mCurrentBitmap = Bitmap.createBitmap(mBitmapOptions!!.outWidth,
-            mBitmapOptions!!.outHeight, Bitmap.Config.ARGB_8888)
+        mCurrentBitmap = createBitmap(mBitmapOptions!!.outWidth, mBitmapOptions!!.outHeight)
         mBitmapOptions!!.inJustDecodeBounds = false
         mBitmapOptions!!.inBitmap = mCurrentBitmap
         mBitmapOptions!!.inSampleSize = 1
