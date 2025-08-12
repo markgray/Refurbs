@@ -16,11 +16,13 @@
 
 package com.example.android.basicgesturedetect
 
-import android.annotation.TargetApi
 import android.os.Build
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.RequiresApi
+import com.example.android.basicgesturedetect.GestureListener.Companion.getButtonsPressed
+import com.example.android.basicgesturedetect.GestureListener.Companion.getTouchType
 import com.example.android.common.logger.Log
 
 /**
@@ -254,7 +256,7 @@ class GestureListener : SimpleOnGestureListener() {
          * @return a human-readable string listing all the stylus buttons that were pressed during
          * our [MotionEvent] parameter [e].
          */
-        @TargetApi(21)
+        @RequiresApi(21)
         private fun getButtonsPressed(e: MotionEvent): String {
             var buttons = ""
             if (e.isButtonPressed(MotionEvent.BUTTON_PRIMARY)) {

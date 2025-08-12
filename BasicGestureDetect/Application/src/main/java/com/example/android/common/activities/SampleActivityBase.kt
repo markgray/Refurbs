@@ -31,7 +31,7 @@ open class SampleActivityBase : AppCompatActivity() {
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
-    @Suppress("RedundantOverride") // Suggested change would make class less reusable
+    @Suppress("RedundantOverride", "RedundantSuppression") // Suggested change would make class less reusable
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
