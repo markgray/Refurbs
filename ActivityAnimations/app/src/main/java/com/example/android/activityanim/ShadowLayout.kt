@@ -28,6 +28,8 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.widget.RelativeLayout
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.withTranslation
 
 /**
  * This custom layout paints a drop shadow behind all children. The size and opacity
@@ -108,7 +110,7 @@ class ShadowLayout : RelativeLayout {
         mShadowPaint.color = Color.BLACK
         mShadowPaint.style = Paint.Style.FILL
         setWillNotDraw(false)
-        mShadowBitmap = Bitmap.createBitmap(sShadowRect.width(), sShadowRect.height(), Bitmap.Config.ARGB_8888)
+        mShadowBitmap = createBitmap(sShadowRect.width(), sShadowRect.height())
         val c = Canvas(mShadowBitmap!!)
         mShadowPaint.maskFilter = BlurMaskFilter(BLUR_RADIUS.toFloat(), Blur.NORMAL)
         c.translate(BLUR_RADIUS.toFloat(), BLUR_RADIUS.toFloat())
@@ -182,13 +184,15 @@ class ShadowLayout : RelativeLayout {
                 continue
             }
             val depthFactor = (80 * mShadowDepth).toInt()
-            canvas.save()
-            canvas.translate((child.left + depthFactor).toFloat(), (child.top + depthFactor).toFloat())
-            canvas.concat(child.matrix)
-            tempShadowRectF.right = child.width.toFloat()
-            tempShadowRectF.bottom = child.height.toFloat()
-            canvas.drawBitmap(mShadowBitmap!!, sShadowRect, tempShadowRectF, mShadowPaint)
-            canvas.restore()
+            canvas.withTranslation(
+                x = (child.left + depthFactor).toFloat(),
+                y = (child.top + depthFactor).toFloat()
+            ) {
+                concat(child.matrix)
+                tempShadowRectF.right = child.width.toFloat()
+                tempShadowRectF.bottom = child.height.toFloat()
+                drawBitmap(mShadowBitmap!!, sShadowRect, tempShadowRectF, mShadowPaint)
+            }
         }
     }
 

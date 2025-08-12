@@ -21,6 +21,7 @@ import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.core.graphics.scale
 
 /**
  * TODO: Add kdoc
@@ -89,7 +90,7 @@ class BitmapUtils {
      */
     fun loadPhotos(resources: Resources?): ArrayList<PictureData> {
         val pictures = ArrayList<PictureData>()
-        for (i in 0..29) {
+        (0..29).forEach { i: Int ->
             val resourceId = mPhotos[(Math.random() * mPhotos.size).toInt()]
             val bitmap = getBitmap(resources, resourceId)
             val thumbnail = getThumbnail(bitmap, 200)
@@ -141,7 +142,7 @@ class BitmapUtils {
             scaledWidth = (scaleFactor * width).toInt()
             scaledHeight = 200
         }
-        return Bitmap.createScaledBitmap(original, scaledWidth, scaledHeight, true)
+        return original.scale(scaledWidth, scaledHeight)
     }
 
     companion object {

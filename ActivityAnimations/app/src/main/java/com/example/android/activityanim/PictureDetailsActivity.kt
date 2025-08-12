@@ -39,6 +39,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * This sub-activity shows a zoomed-in view of a specific photo, along with the
@@ -203,10 +204,10 @@ class PictureDetailsActivity : AppCompatActivity() {
         val thumbnailWidth = bundle.getInt("$PACKAGE_NAME.width")
         val thumbnailHeight = bundle.getInt("$PACKAGE_NAME.height")
         mOriginalOrientation = bundle.getInt("$PACKAGE_NAME.orientation")
-        mBitmapDrawable = BitmapDrawable(resources, bitmap)
+        mBitmapDrawable = bitmap!!.toDrawable(resources)
         mImageView!!.setImageDrawable(mBitmapDrawable)
         mTextView!!.text = description
-        mBackground = ColorDrawable(Color.BLACK)
+        mBackground = Color.BLACK.toDrawable()
         mTopLevelLayout!!.background = mBackground
 
         // Only run the animation if we're coming from the parent activity, not if
@@ -430,6 +431,7 @@ class PictureDetailsActivity : AppCompatActivity() {
      * We call our method `runExitAnimation` with an anonymous `Runnable` to run when the
      * animation ends, whose `run` override just calls the `finish` method to exit the activity.
      */
+    @SuppressLint("GestureBackNavigation")
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         @Suppress("DEPRECATION")

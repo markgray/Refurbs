@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
+    "UnusedImport"
+)
 
 package com.example.android.activityanim
 
@@ -34,6 +36,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * This example shows how to create a custom activity animation when you want something more
@@ -131,7 +134,7 @@ class ActivityAnimations : AppCompatActivity() {
         val pictures = mBitmapUtils.loadPhotos(resources)
         for (i in pictures.indices) {
             val pictureData = pictures[i]
-            val thumbnailDrawable = BitmapDrawable(resources, pictureData.thumbnail)
+            val thumbnailDrawable = pictureData.thumbnail.toDrawable(resources)
             thumbnailDrawable.colorFilter = grayscaleFilter
             val imageView = ImageView(this)
             imageView.setOnClickListener(thumbnailClickListener)
