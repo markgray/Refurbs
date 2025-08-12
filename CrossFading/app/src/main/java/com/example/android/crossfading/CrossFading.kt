@@ -32,6 +32,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * This example shows how to use [TransitionDrawable] to perform a simple cross-fade effect
@@ -95,15 +97,15 @@ class CrossFading : ComponentActivity() {
         val imageView = findViewById<ImageView>(R.id.image_view)
 
         // Create red and green bitmaps to cross-fade between
-        val bitmap0 = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
-        val bitmap1 = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
+        val bitmap0 = createBitmap(width = 500, height = 500)
+        val bitmap1 = createBitmap(width = 500, height = 500)
         var canvas = Canvas(bitmap0)
         canvas.drawColor(Color.RED)
         canvas = Canvas(bitmap1)
         canvas.drawColor(Color.GREEN)
         val drawables: Array<BitmapDrawable?> = arrayOfNulls(size = 2)
-        drawables[0] = BitmapDrawable(resources, bitmap0)
-        drawables[1] = BitmapDrawable(resources, bitmap1)
+        drawables[0] = bitmap0.toDrawable(resources = resources)
+        drawables[1] = bitmap1.toDrawable(resources = resources)
 
         // Add the red/green bitmap drawables to a TransitionDrawable. They are layered
         // in the transition drawable. The cross-fade effect happens by fading one out and the
