@@ -59,15 +59,15 @@ dependencies {
     ksp("androidx.room:room-compiler:2.7.2")
 
     // Android Testing Support Library"s runner and rules
-    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test:rules:1.7.0")
     androidTestImplementation("androidx.room:room-testing:2.7.2")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
 
     // Espresso UI Testing
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1")
-    androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.7.0")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.7.0")
 
     // Resolve conflicts between main and test APK:
     androidTestImplementation("androidx.legacy:legacy-support-v4:1.0.0")

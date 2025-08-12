@@ -117,7 +117,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         /**
          * Returns the [AppDatabase] instance used for the application, creating it if need be. If
-         * our [AppDatabase] field [sInstance] is `null`, we synchronize on [AppDatabase.class], and
+         * our [AppDatabase] field [sInstance] is `null`, we synchronize on the class of [AppDatabase], and
          * if it is still `null`, we initialize it with the value returned from our method [buildDatabase]
          * (which will open our [AppDatabase] or create it if it does not already exist). Then we call
          * the [updateDatabaseCreated] to set to `true` our [MutableLiveData] wrapped [Boolean] flag
@@ -146,7 +146,7 @@ abstract class AppDatabase : RoomDatabase() {
          * returned by [databaseBuilder] only sets up the database configuration and creates a new
          * instance of the database. The SQLite database is only created when it's accessed for the
          * first time. We create a [RoomDatabase.Builder] designed to build a database with the name
-         * DATABASE_NAME ("basic-sample-db") using [AppDatabase.class] for the class which is annotated
+         * DATABASE_NAME ("basic-sample-db") using [AppDatabase] for the class which is annotated
          * with `Database` and extends [RoomDatabase]. We then add an anonymous class as a
          * [RoomDatabase.Callback] to it whose `onOpen` override simply logs the fact that it has
          * been called, and whose `onCreate` override uses the [Executor] of [AppExecutors.diskIO]
@@ -244,7 +244,7 @@ abstract class AppDatabase : RoomDatabase() {
         private fun addDelay() {
             try {
                 Thread.sleep(4000)
-            } catch (ignored: InterruptedException) {
+            } catch (_: InterruptedException) {
             }
         }
     }

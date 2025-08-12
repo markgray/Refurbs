@@ -81,7 +81,7 @@ class DataRepository private constructor(
 
         /**
          * Accessor for our singleton instance of [DataRepository]. If our field [sInstance] is
-         * `null`, we synchronize on [DataRepository.class] and if it is still `null` we create a
+         * `null`, we synchronize on the class of [DataRepository] and if it is still `null` we create a
          * new instance of [DataRepository] using our [AppDatabase] parameter [database] to
          * initialize it. Finally we return [sInstance] to the caller.
          *
