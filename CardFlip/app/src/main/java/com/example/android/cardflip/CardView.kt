@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 @file:Suppress("UNUSED_PARAMETER", "unused",
-    "ReplaceJavaStaticMethodWithKotlinAnalog", "PrivatePropertyName", "MemberVisibilityCanBePrivate", "ReplaceNotNullAssertionWithElvisReturn")
+    "ReplaceJavaStaticMethodWithKotlinAnalog", "PrivatePropertyName", "MemberVisibilityCanBePrivate", "ReplaceNotNullAssertionWithElvisReturn",
+    "RedundantSuppression"
+)
 
 package com.example.android.cardflip
 
@@ -39,6 +41,8 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * This [CardView] object is a view which can flip horizontally about its edges,
@@ -232,10 +236,9 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
      * surrounded by a 1 pixel transparent border.
      */
     private fun bitmapWithBorder(bitmapDrawable: BitmapDrawable): BitmapDrawable {
-        val bitmapWithBorder = Bitmap.createBitmap(
-            bitmapDrawable.intrinsicWidth + ANTIALIAS_BORDER * 2,
-            bitmapDrawable.intrinsicHeight + ANTIALIAS_BORDER * 2,
-            Bitmap.Config.ARGB_8888
+        val bitmapWithBorder = createBitmap(
+            width = bitmapDrawable.intrinsicWidth + ANTIALIAS_BORDER * 2,
+            height = bitmapDrawable.intrinsicHeight + ANTIALIAS_BORDER * 2
         )
         val canvas = Canvas(bitmapWithBorder)
         canvas.drawBitmap(
@@ -244,7 +247,7 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
             ANTIALIAS_BORDER.toFloat(),
             null
         )
-        return BitmapDrawable(resources, bitmapWithBorder)
+        return bitmapWithBorder.toDrawable(resources = resources)
     }
 
     /**
