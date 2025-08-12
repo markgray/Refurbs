@@ -26,6 +26,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import com.example.android.basicsyncadapter.provider.FeedContract
 import com.example.android.common.accounts.GenericAccountService
+import androidx.core.content.edit
 
 /**
  * Static helper methods for working with the sync framework.
@@ -104,8 +105,9 @@ object SyncUtils {
         // the account list, so wee need to check both.)
         if (newAccount || !setupComplete) {
             TriggerRefresh()
-            PreferenceManager.getDefaultSharedPreferences(context).edit()
-                .putBoolean(PREF_SETUP_COMPLETE, true).commit()
+            PreferenceManager.getDefaultSharedPreferences(context).edit(commit = true) {
+                putBoolean(PREF_SETUP_COMPLETE, true)
+            }
         }
     }
 

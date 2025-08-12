@@ -18,6 +18,7 @@ package com.example.android.basicsyncadapter.provider
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.BaseColumns
+import androidx.core.net.toUri
 
 /**
  * Field and table name constants for
@@ -32,7 +33,7 @@ object FeedContract {
     /**
      * Base URI. (content://com.example.android.basicsyncadapter)
      */
-    val BASE_CONTENT_URI: Uri = Uri.parse("content://$CONTENT_AUTHORITY")
+    val BASE_CONTENT_URI: Uri = "content://$CONTENT_AUTHORITY".toUri()
 
     /**
      * Path component for "entry"-type resources..

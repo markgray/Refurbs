@@ -29,6 +29,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.net.Uri
 import android.provider.BaseColumns
 import com.example.android.common.db.SelectionBuilder
+import androidx.core.net.toUri
 
 /**
  * [ContentProvider] class specified as a provider in AndroidManifest.xml, with android:authorities
@@ -201,7 +202,7 @@ class FeedProvider : ContentProvider() {
         result = when (match) {
             ROUTE_ENTRIES -> {
                 val id = db.insertOrThrow(FeedContract.Entry.TABLE_NAME, null, values)
-                Uri.parse(FeedContract.Entry.CONTENT_URI.toString() + "/" + id)
+                (FeedContract.Entry.CONTENT_URI.toString() + "/" + id).toUri()
             }
 
             ROUTE_ENTRIES_ID -> throw UnsupportedOperationException("Insert not supported on URI: $uri")

@@ -45,6 +45,7 @@ import androidx.loader.content.Loader
 import com.example.android.basicsyncadapter.provider.FeedProvider
 import com.example.android.basicsyncadapter.provider.FeedContract
 import com.example.android.common.accounts.GenericAccountService
+import androidx.core.net.toUri
 
 /**
  * List fragment containing a list of Atom entry objects (articles) stored in the local database.
@@ -343,7 +344,7 @@ class EntryListFragment
         }
         Log.i(TAG, "Opening URL: $articleUrlString")
         // Get a Uri object for the URL string
-        val articleURL = Uri.parse(articleUrlString)
+        val articleURL = articleUrlString.toUri()
         val i = Intent(Intent.ACTION_VIEW, articleURL)
         startActivity(i)
     }
