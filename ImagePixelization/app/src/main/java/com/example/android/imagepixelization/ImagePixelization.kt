@@ -43,6 +43,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import java.util.Arrays
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.graphics.scale
 
 /**
  * This application shows three different graphics/animation concepts.
@@ -323,17 +326,17 @@ class ImagePixelization : ComponentActivity() {
         if (mPixelatedBitmap == null ||
             !(width == mPixelatedBitmap!!.width && height == mPixelatedBitmap!!.height)
         ) {
-            mPixelatedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            mPixelatedBitmap = createBitmap(width = width, height = height)
         }
         var xPixels = (pixelizationFactor * width.toFloat()).toInt()
         xPixels = if (xPixels > 0) xPixels else 1
         var yPixels = (pixelizationFactor * height.toFloat()).toInt()
         yPixels = if (yPixels > 0) yPixels else 1
-        var pixel = 0
-        var red = 0
-        var green = 0
-        var blue = 0
-        var numPixels = 0
+        var pixel: Int
+        var red: Int
+        var green: Int
+        var blue: Int
+        var numPixels: Int
         val bitmapPixels = IntArray(width * height)
         bitmap.getPixels(bitmapPixels, 0, width, 0, 0, width, height)
         val pixels = IntArray(yPixels * xPixels)
@@ -367,7 +370,7 @@ class ImagePixelization : ComponentActivity() {
             }
             y += yPixels
         }
-        return BitmapDrawable(resources, mPixelatedBitmap)
+        return mPixelatedBitmap!!.toDrawable(resources = resources)
     }
 
     /**
@@ -413,8 +416,11 @@ class ImagePixelization : ComponentActivity() {
         downScaleFactorHeight = if (downScaleFactorHeight > 0) downScaleFactorHeight else 1
         val downScaledWidth = width / downScaleFactorWidth
         val downScaledHeight = height / downScaleFactorHeight
-        val pixelatedBitmap = Bitmap.createScaledBitmap(bitmap, downScaledWidth,
-            downScaledHeight, false)
+        val pixelatedBitmap: Bitmap = bitmap.scale(
+            width = downScaledWidth,
+            height = downScaledHeight,
+            filter = false
+        )
 
         /* Bitmap's createScaledBitmap method has a filter parameter that can be set to either
          * true or false in order to specify either bilinear filtering or point sampling
@@ -432,12 +438,12 @@ class ImagePixelization : ComponentActivity() {
          * it uses internal optimizations to fit the ImageView.
          */
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            val bitmapDrawable = BitmapDrawable(resources, pixelatedBitmap)
+            val bitmapDrawable = pixelatedBitmap.toDrawable(resources = resources)
             bitmapDrawable.isFilterBitmap = false
             bitmapDrawable
         } else {
-            val upscaled = Bitmap.createScaledBitmap(pixelatedBitmap, width, height, false)
-            BitmapDrawable(resources, upscaled)
+            val upscaled = pixelatedBitmap.scale(width = width, height = height, filter = false)
+            upscaled.toDrawable(resources = resources)
         }
     }
 
