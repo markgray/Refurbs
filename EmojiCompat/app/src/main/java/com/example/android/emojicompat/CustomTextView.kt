@@ -66,7 +66,7 @@ class CustomTextView @JvmOverloads constructor(
      * changed (we are not editable so these are ignored).
      */
     override fun setFilters(filters: Array<InputFilter>) {
-        @Suppress("UsePropertyAccessSyntax")
+        @Suppress("UsePropertyAccessSyntax", "RedundantSuppression")
         super.setFilters(emojiTextViewHelper.getFilters(filters))
     }
 
