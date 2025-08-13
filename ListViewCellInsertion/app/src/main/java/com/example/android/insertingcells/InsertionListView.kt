@@ -50,6 +50,9 @@ import android.widget.ListView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.example.android.insertingcells.CustomArrayAdapter.Companion.getCroppedBitmap
+import androidx.core.view.isEmpty
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * This [ListView] displays a list of [ListItemObject]. Calling [addRow] with a new [ListItemObject]
@@ -606,7 +609,7 @@ class InsertionListView : ListView {
      * which should occur only if our list view is at the very top of its list.
      */
     fun shouldAnimateInNewImage(): Boolean {
-        if (childCount == 0) {
+        if (isEmpty()) {
             return true
         }
         val shouldAnimateInNewRow = shouldAnimateInNewRow()
@@ -627,10 +630,10 @@ class InsertionListView : ListView {
      * @return a [BitmapDrawable] showing a screenshot of the view passed in.
      */
     private fun getBitmapDrawableFromView(v: View): BitmapDrawable {
-        val bitmap = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(width = v.width, height = v.height)
         val canvas = Canvas(bitmap)
         v.draw(canvas)
-        return BitmapDrawable(resources, bitmap)
+        return bitmap.toDrawable(resources = resources)
     }
 
     /**

@@ -36,6 +36,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import androidx.core.graphics.createBitmap
 
 /**
  * This custom array adapter is used to populate the [ListView] in this application. This adapter
@@ -202,7 +203,7 @@ class CustomArrayAdapter(
          */
         @JvmStatic
         fun getCroppedBitmap(bitmap: Bitmap): Bitmap {
-            val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+            val output = createBitmap(width = bitmap.width, height = bitmap.height)
             val rect = Rect(0, 0, bitmap.width, bitmap.height)
             val canvas = Canvas(output)
             val paint = Paint()

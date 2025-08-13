@@ -167,7 +167,7 @@ class InsertingCells : ComponentActivity(), OnRowAdditionAnimationListener {
      * @param view the [View] that was clicked (the [Button] with id `R.id.add_row_button`
      * ("Add Row") calls us when it is clicked thanks to an android:onClick="addRow" attribute).
      */
-    @Suppress("UNUSED_PARAMETER")
+    @Suppress("UNUSED_PARAMETER", "RedundantSuppression")
     fun addRow(view: View?) {
         mButton!!.isEnabled = false
         mItemNum++
