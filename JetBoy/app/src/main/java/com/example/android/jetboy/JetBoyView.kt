@@ -16,7 +16,9 @@
  */
 // Android JET demonstration code:
 // All inline comments related to the use of the JetPlayer class are preceded by "JET info:"
-@file:Suppress("UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "ImplicitThis", "JoinDeclarationAndAssignment", "PrivatePropertyName", "KotlinConstantConditions", "UnnecessaryVariable", "MemberVisibilityCanBePrivate", "PropertyName")
+@file:Suppress("UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "ImplicitThis", "JoinDeclarationAndAssignment", "PrivatePropertyName", "KotlinConstantConditions", "UnnecessaryVariable", "MemberVisibilityCanBePrivate", "PropertyName",
+    "RedundantSuppression"
+)
 
 package com.example.android.jetboy
 
@@ -44,6 +46,7 @@ import java.util.Timer
 import java.util.TimerTask
 import java.util.Vector
 import java.util.concurrent.ConcurrentLinkedQueue
+import androidx.core.graphics.scale
 
 /**
  * The constructor called when the layout file layout/main.xml is inflated in the main [JetBoy]
@@ -1582,22 +1585,16 @@ class JetBoyView(
                         .decodeResource(res, R.drawable.background_a)
 
                     // don't forget to resize the background image
-                    mBackgroundImageFar = Bitmap.createScaledBitmap(
-                        mBackgroundImageFar,
-                        mCanvasWidth * 2,
-                        mCanvasHeight,
-                        true
+                    mBackgroundImageFar = mBackgroundImageFar.scale(
+                        width = mCanvasWidth * 2,
+                        height = mCanvasHeight
                     )
                     mBackgroundImageNear = BitmapFactory
                         .decodeResource(res, R.drawable.background_b)
 
                     // don't forget to resize the background image
-                    mBackgroundImageNear = Bitmap.createScaledBitmap(
-                        mBackgroundImageNear,
-                        mCanvasWidth * 2,
-                        mCanvasHeight,
-                        true
-                    )
+                    mBackgroundImageNear =
+                        mBackgroundImageNear.scale(width = mCanvasWidth * 2, height = mCanvasHeight)
                 } else if (mState == STATE_RUNNING) {
                     // When we enter the running state we should clear any old events in the queue
                     mEventQueue.clear()
@@ -1659,19 +1656,13 @@ class JetBoyView(
                 mCanvasHeight = height
 
                 // don't forget to resize the background image
-                mBackgroundImageFar = Bitmap.createScaledBitmap(
-                    mBackgroundImageFar,
-                    width * 2,
-                    height,
-                    true
-                )
+                mBackgroundImageFar = mBackgroundImageFar.scale(width = width * 2, height = height)
 
                 // don't forget to resize the background image
-                mBackgroundImageNear = Bitmap.createScaledBitmap(
-                    mBackgroundImageNear,
-                    width * 2,
-                    height,
-                    true)
+                mBackgroundImageNear = mBackgroundImageNear.scale(
+                    width = width * 2,
+                    height = height
+                )
             }
         }
 

@@ -203,6 +203,7 @@ class JetBoy : ComponentActivity(), View.OnClickListener {
      * indicate that you have not handled this event and it should continue to be propagated.
      */
     override fun onKeyDown(keyCode: Int, msg: KeyEvent): Boolean {
+        @SuppressLint("GestureBackNavigation") // TODO: Replace with callbacks?
         return if (keyCode == KeyEvent.KEYCODE_BACK) {
             super.onKeyDown(keyCode, msg)
         } else {
@@ -225,6 +226,7 @@ class JetBoy : ComponentActivity(), View.OnClickListener {
      * indicate that you have not handled this event and it should continue to be propagated.
      */
     override fun onKeyUp(keyCode: Int, msg: KeyEvent): Boolean {
+        @SuppressLint("GestureBackNavigation") // TODO: Replace with callbacks?
         return if (keyCode == KeyEvent.KEYCODE_BACK) {
             super.onKeyUp(keyCode, msg)
         } else {
