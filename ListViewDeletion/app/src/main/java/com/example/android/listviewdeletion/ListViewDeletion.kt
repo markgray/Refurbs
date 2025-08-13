@@ -37,6 +37,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import java.util.Collections
+import androidx.core.util.size
 
 /**
  * This example shows how animating [ListView] views can lead to artifacts if those views are
@@ -169,7 +170,7 @@ class ListViewDeletion : ComponentActivity() {
              * parameter: v [View] that has been clicked.
              */
             val checkedItems: SparseBooleanArray = listView.checkedItemPositions
-            val numCheckedItems: Int = checkedItems.size()
+            val numCheckedItems: Int = checkedItems.size
             for (i in numCheckedItems - 1 downTo 0) {
                 if (!checkedItems.valueAt(i)) {
                     continue  // this never happens, but might as well be safe?
