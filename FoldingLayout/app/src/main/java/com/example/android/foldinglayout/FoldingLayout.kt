@@ -17,6 +17,7 @@
 
 package com.example.android.foldinglayout
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -29,6 +30,7 @@ import android.graphics.Shader.TileMode
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.createBitmap
 
 /**
  * The folding layout where the number of folds, the anchor point and the orientation of the fold
@@ -591,7 +593,7 @@ class FoldingLayout : ViewGroup {
         val h = mOriginalHeight
         val w = mOriginalWidth
         if (FoldingLayoutActivity.IS_JBMR2) {
-            mFullBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            mFullBitmap = createBitmap(width = w, height = h)
             val canvas = Canvas(mFullBitmap!!)
             getChildAt(0).draw(canvas)
         }
@@ -1029,11 +1031,14 @@ class FoldingLayout : ViewGroup {
         /* Draws the bitmaps and shadows on the canvas with the appropriate transformations. */
         for (x in 0 until mNumberOfFolds) {
             src = mFoldRectArray[x]
-            /* The canvas is saved and restored for every individual fold*/canvas.save()
+            // The canvas is saved and restored for every individual fold
+            @SuppressLint("UseKtx") // TODO: Canvas.withMatrix(){} Quick fix breaks the code
+            canvas.save()
 
-            /* Concatenates the canvas with the transformation matrix for the
-             *  the segment of the view corresponding to the actual image being
-             *  displayed. */canvas.concat(mMatrix[x])
+            // Concatenates the canvas with the transformation matrix for the
+            // the segment of the view corresponding to the actual image being
+            // displayed.
+            canvas.concat(mMatrix[x])
             if (FoldingLayoutActivity.IS_JBMR2) {
                 mDstRect!![0, 0, src!!.width()] = src.height()
                 canvas.drawBitmap(mFullBitmap!!, src, mDstRect!!, null)
