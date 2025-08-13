@@ -31,6 +31,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * This example shows how to use [AnimationDrawable] to construct a keyframe animation where each
@@ -113,13 +115,13 @@ class KeyframeAnimation : ComponentActivity() {
      * of the frame.
      */
     private fun getDrawableForFrameNumber(frameNumber: Int): BitmapDrawable {
-        val bitmap = Bitmap.createBitmap(400, 400, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(width = 400, height = 400)
         val canvas = Canvas(bitmap)
         canvas.drawColor(Color.GRAY)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
         paint.textSize = 80f
         paint.color = Color.BLACK
         canvas.drawText("Frame $frameNumber", 40f, 220f, paint)
-        return BitmapDrawable(resources, bitmap)
+        return bitmap.toDrawable(resources = resources)
     }
 }
