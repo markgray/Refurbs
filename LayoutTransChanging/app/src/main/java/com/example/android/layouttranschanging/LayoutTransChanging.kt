@@ -30,6 +30,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.isNotEmpty
 
 /**
  * This example shows how to use [LayoutTransition] to animate simple changes in a layout container.
@@ -94,7 +95,7 @@ class LayoutTransChanging : ComponentActivity() {
             container.addView(ColoredView(context), 1)
         }
         removeButton.setOnClickListener {
-            if (container.childCount > 0) {
+            if (container.isNotEmpty()) {
                 // Removing a view will cause a LayoutTransition animation
                 container.removeViewAt(Math.min(1, container.childCount - 1))
             }
