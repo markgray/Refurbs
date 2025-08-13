@@ -846,6 +846,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         drawAxes(canvas)
 
         // Clips the next few drawing operations to the content area
+        @SuppressLint("UseKtx") // TODO: Canvas.withClip(){} Quick fix is broken
         val clipRestoreCount: Int = canvas.save()
         canvas.clipRect(mContentRect)
         drawDataSeriesUnclipped(canvas)
@@ -1229,6 +1230,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         // since EdgeEffectCompat always draws a top-glow at 0,0.
         var needsInvalidate = false
         if (!mEdgeEffectTop.isFinished) {
+            @SuppressLint("UseKtx") // TODO: Canvas.withTransition(){} Quick fix is broken
             val restoreCount: Int = canvas.save()
             canvas.translate(
                 mContentRect.left.toFloat(),
@@ -1241,6 +1243,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             canvas.restoreToCount(restoreCount)
         }
         if (!mEdgeEffectBottom.isFinished) {
+            @SuppressLint("UseKtx") // TODO: Canvas.withTransition(){} Quick fix is broken
             val restoreCount = canvas.save()
             canvas.translate(
                 (2 * mContentRect.left - mContentRect.right).toFloat(),
@@ -1254,6 +1257,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             canvas.restoreToCount(restoreCount)
         }
         if (!mEdgeEffectLeft.isFinished) {
+            @SuppressLint("UseKtx") // TODO: Canvas.withTransition(){} Quick fix is broken
             val restoreCount = canvas.save()
             canvas.translate(
                 mContentRect.left.toFloat(),
@@ -1267,6 +1271,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             canvas.restoreToCount(restoreCount)
         }
         if (!mEdgeEffectRight.isFinished) {
+            @SuppressLint("UseKtx") // TODO: Canvas.withTransition(){} Quick fix is broken
             val restoreCount = canvas.save()
             canvas.translate(
                 mContentRect.right.toFloat(),
@@ -2105,6 +2110,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
                 }
             }
             if (negative) {
+                @Suppress("AssignedValueIsNeverRead")
                 out[index--] = '-'
                 charCount++
             }

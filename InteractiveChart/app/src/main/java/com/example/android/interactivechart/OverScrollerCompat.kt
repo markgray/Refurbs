@@ -16,9 +16,9 @@
 package com.example.android.interactivechart
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.os.Build
 import android.widget.OverScroller
+import androidx.annotation.RequiresApi
 
 /**
  * A utility class for using [android.widget.OverScroller] in a backward-compatible fashion.
@@ -37,7 +37,7 @@ object OverScrollerCompat {
      * @see android.view.ScaleGestureDetector.getCurrentSpanY
      */
     @SuppressLint("ObsoleteSdkInt") // Left in to facilitate reuse of code.
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @RequiresApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     fun getCurrVelocity(overScroller: OverScroller): Float {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             overScroller.currVelocity

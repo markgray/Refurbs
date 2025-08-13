@@ -16,9 +16,9 @@
 package com.example.android.interactivechart
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.os.Build
 import android.view.ScaleGestureDetector
+import androidx.annotation.RequiresApi
 
 /**
  * A utility class for using [android.view.ScaleGestureDetector] in a backward-compatible
@@ -42,7 +42,7 @@ object ScaleGestureDetectorCompat {
      * @see android.view.ScaleGestureDetector.getCurrentSpanX
      */
     @SuppressLint("ObsoleteSdkInt") // Left in to facilitate reuse of code.
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     fun getCurrentSpanX(scaleGestureDetector: ScaleGestureDetector): Float {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             scaleGestureDetector.currentSpanX
@@ -68,7 +68,7 @@ object ScaleGestureDetectorCompat {
      * @see android.view.ScaleGestureDetector.getCurrentSpanY
      */
     @SuppressLint("ObsoleteSdkInt") // Left in to facilitate reuse of code.
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
     fun getCurrentSpanY(scaleGestureDetector: ScaleGestureDetector): Float {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             scaleGestureDetector.currentSpanY
