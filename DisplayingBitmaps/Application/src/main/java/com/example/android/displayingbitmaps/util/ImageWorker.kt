@@ -36,6 +36,7 @@ import com.example.android.displayingbitmaps.ui.ImageGridFragment
 import com.example.android.displayingbitmaps.util.ImageCache.ImageCacheParams
 import java.lang.ref.WeakReference
 import java.net.URL
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * This class wraps up completing some arbitrary long running work when loading a bitmap to an
@@ -385,7 +386,7 @@ abstract class ImageWorker protected constructor(context: Context) {
             if (bitmap != null) {
                 drawable = if (Utils.hasHoneycomb()) {
                     // Running on Honeycomb or newer, so wrap in a standard BitmapDrawable
-                    BitmapDrawable(mResources, bitmap)
+                    bitmap.toDrawable(mResources)
                 } else {
                     // Running on Gingerbread or older, so wrap in a RecyclingBitmapDrawable
                     // which will recycle auto-magically
@@ -545,12 +546,12 @@ abstract class ImageWorker protected constructor(context: Context) {
         if (mFadeInBitmap) {
             // Transition drawable with a transparent drawable and the final drawable
             val td = TransitionDrawable(arrayOf(
-                ColorDrawable(imageView.resources.getColor(android.R.color.transparent)),
+                imageView.resources.getColor(android.R.color.transparent).toDrawable(),
                 drawable
             ))
             // Set background to loading bitmap
             imageView.setBackgroundDrawable(
-                BitmapDrawable(mResources, mLoadingBitmap))
+                mLoadingBitmap!!.toDrawable(mResources))
             imageView.setImageDrawable(td)
             td.startTransition(FADE_IN_TIME)
         } else {

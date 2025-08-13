@@ -16,12 +16,12 @@
 package com.example.android.displayingbitmaps.util
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.os.StrictMode.VmPolicy
+import androidx.annotation.RequiresApi
 import com.example.android.displayingbitmaps.ui.ImageDetailActivity
 import com.example.android.displayingbitmaps.ui.ImageGridActivity
 
@@ -54,7 +54,7 @@ object Utils {
      * policy for actions in the VM process (on any thread) to it.
      */
     @SuppressLint("ObsoleteSdkInt") // Obsolete @TargetApi left to remind if code is reused.
-    @TargetApi(VERSION_CODES.HONEYCOMB)
+    @RequiresApi(VERSION_CODES.HONEYCOMB)
     fun enableStrictMode() {
         if (hasGingerbread()) {
             val threadPolicyBuilder = ThreadPolicy.Builder()

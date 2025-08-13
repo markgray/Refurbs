@@ -18,13 +18,13 @@
 package com.example.android.displayingbitmaps.util
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.android.common.logger.Log
 import com.example.android.displayingbitmaps.BuildConfig
 import java.io.FileDescriptor
@@ -307,7 +307,7 @@ open class ImageResizer : ImageWorker {
          * @param cache [ImageCache] we are to try to fetch reusable bitmaps from.
          */
         @SuppressLint("ObsoleteSdkInt")
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+        @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
         private fun addInBitmapOptions(options: BitmapFactory.Options, cache: ImageCache?) {
             //BEGIN_INCLUDE(add_bitmap_options)
             // inBitmap only works with mutable bitmaps so force the decoder to

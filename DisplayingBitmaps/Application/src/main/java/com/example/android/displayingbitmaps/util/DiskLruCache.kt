@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "SameParameterValue", "UNNECESSARY_NOT_NULL_ASSERTION", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
+@file:Suppress("unused", "SameParameterValue", "UNNECESSARY_NOT_NULL_ASSERTION", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate",
+    "UnusedImport",
+    "RedundantSuppression"
+)
 
 package com.example.android.displayingbitmaps.util
 

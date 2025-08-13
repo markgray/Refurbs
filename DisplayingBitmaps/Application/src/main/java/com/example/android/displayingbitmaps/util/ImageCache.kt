@@ -18,7 +18,6 @@
 package com.example.android.displayingbitmaps.util
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
@@ -28,6 +27,7 @@ import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Environment
 import android.os.StatFs
+import androidx.annotation.RequiresApi
 import androidx.collection.LruCache
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -766,7 +766,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
          * @return `true` if [candidate] can be used for `inBitmap` re-use with [targetOptions].
          */
         @SuppressLint("ObsoleteSdkInt")
-        @TargetApi(VERSION_CODES.KITKAT)
+        @RequiresApi(VERSION_CODES.KITKAT)
         private fun canUseForInBitmap(
             candidate: Bitmap, targetOptions: BitmapFactory.Options): Boolean {
             if (!Utils.hasKitKat()) {
@@ -909,7 +909,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
          * @return [Bitmap] size in bytes.
          */
         @SuppressLint("ObsoleteSdkInt")
-        @TargetApi(VERSION_CODES.KITKAT)
+        @RequiresApi(VERSION_CODES.KITKAT)
         fun getBitmapSize(value: BitmapDrawable): Int {
             val bitmap: Bitmap = value.bitmap
 
@@ -933,7 +933,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
          * @return `true` if external storage is removable (like an SD card), `false`
          * otherwise.
          */
-        @get:TargetApi(VERSION_CODES.GINGERBREAD)
+        @get:RequiresApi(VERSION_CODES.GINGERBREAD)
         val isExternalStorageRemovable: Boolean
             get() = if (Utils.hasGingerbread()) {
                 Environment.isExternalStorageRemovable()
@@ -950,7 +950,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
          * @param context The [Context] to use.
          * @return The external cache dir
          */
-        @TargetApi(VERSION_CODES.FROYO)
+        @RequiresApi(VERSION_CODES.FROYO)
         fun getExternalCacheDir(context: Context): File? {
             if (Utils.hasFroyo()) {
                 return context.externalCacheDir
@@ -975,7 +975,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
          * @return The space available in bytes
          */
         @SuppressLint("UsableSpace")
-        @TargetApi(VERSION_CODES.GINGERBREAD)
+        @RequiresApi(VERSION_CODES.GINGERBREAD)
         fun getUsableSpace(path: File): Long {
             if (Utils.hasGingerbread()) {
                 return path.usableSpace

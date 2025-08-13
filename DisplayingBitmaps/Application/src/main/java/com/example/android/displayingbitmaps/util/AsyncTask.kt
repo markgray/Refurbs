@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNCHECKED_CAST", "UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress("UNCHECKED_CAST", "UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
+    "RedundantSuppression"
+)
 
 package com.example.android.displayingbitmaps.util
 
-import android.annotation.TargetApi
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.os.Process
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.android.displayingbitmaps.util.Utils.hasHoneycomb
 import java.util.ArrayDeque
 import java.util.concurrent.BlockingQueue
@@ -87,7 +89,7 @@ abstract class AsyncTask<Params, Progress, Result> {
      * It appears to be used only to send commands to an instance of `CacheAsyncTask` in
      * `ImageWorker`.
      */
-    @TargetApi(11)
+    @RequiresApi(11)
     private open class SerialExecutor : Executor {
         /**
          * Our queue of `Runnable` tasks.
