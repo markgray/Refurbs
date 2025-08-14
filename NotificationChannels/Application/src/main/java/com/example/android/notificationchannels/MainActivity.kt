@@ -18,7 +18,6 @@
 package com.example.android.notificationchannels
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Notification
 import android.app.NotificationChannel
 import android.content.Intent
@@ -147,7 +146,7 @@ class MainActivity : ComponentActivity() {
      * with this application's package as its value. Then we call [startActivity] to launch the
      * [Intent] `i`.
      */
-    @TargetApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.O)
     fun goToNotificationSettings() {
         @SuppressLint("InlinedApi") val i = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
         i.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
