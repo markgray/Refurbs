@@ -52,7 +52,7 @@ class CustomConfigurationChangeActivity : LoggingActivity() {
      *
      * @param newConfig The new device [Configuration].
      */
-    @Suppress("RedundantOverride")
+    @Suppress("RedundantOverride", "RedundantSuppression")
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
