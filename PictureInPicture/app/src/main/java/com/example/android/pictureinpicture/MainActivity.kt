@@ -28,7 +28,6 @@ import android.content.IntentFilter
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.drawable.Icon
-import android.net.Uri
 import android.os.Bundle
 import android.util.Rational
 import android.view.View
@@ -37,12 +36,20 @@ import android.view.Window
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import androidx.annotation.DrawableRes
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import com.example.android.pictureinpicture.MainActivity.Companion.ACTION_MEDIA_CONTROL
+import com.example.android.pictureinpicture.MainActivity.Companion.CONTROL_TYPE_PAUSE
+import com.example.android.pictureinpicture.MainActivity.Companion.CONTROL_TYPE_PLAY
+import com.example.android.pictureinpicture.MainActivity.Companion.EXTRA_CONTROL_TYPE
+import com.example.android.pictureinpicture.MainActivity.Companion.REQUEST_INFO
+import com.example.android.pictureinpicture.MainActivity.Companion.REQUEST_PAUSE
+import com.example.android.pictureinpicture.MainActivity.Companion.REQUEST_PLAY
 import com.example.android.pictureinpicture.widget.MovieView
 import com.example.android.pictureinpicture.widget.MovieView.MovieListener
 
@@ -196,7 +203,7 @@ class MainActivity : AppCompatActivity() {
                     REQUEST_INFO,
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(getString(R.string.info_uri))),
+                        getString(R.string.info_uri).toUri()),
                     PendingIntent.FLAG_IMMUTABLE)))
         mPictureInPictureParamsBuilder.setActions(actions)
 

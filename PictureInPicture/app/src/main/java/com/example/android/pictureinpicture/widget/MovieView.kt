@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "UNUSED_ANONYMOUS_PARAMETER", "MemberVisibilityCanBePrivate")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "UNUSED_ANONYMOUS_PARAMETER", "MemberVisibilityCanBePrivate",
+    "UnusedImport"
+)
 
 package com.example.android.pictureinpicture.widget
 
@@ -42,6 +44,8 @@ import androidx.annotation.RawRes
 import com.example.android.pictureinpicture.R
 import java.io.IOException
 import java.lang.ref.WeakReference
+import androidx.core.view.isVisible
+import androidx.core.content.withStyledAttributes
 
 /**
  * Provides video playback. There is nothing directly related to Picture-in-Picture here.
@@ -221,17 +225,18 @@ class MovieView @JvmOverloads constructor(
         mFastForward = findViewById(R.id.fast_forward)
         mFastRewind = findViewById(R.id.fast_rewind)
         mMinimize = findViewById(R.id.minimize)
-        val attributes: TypedArray = context.obtainStyledAttributes(
-            attrs,
-            R.styleable.MovieView,
-            defStyleAttr,
-            R.style.Widget_PictureInPicture_MovieView)
-        mVideoResourceId = attributes.getResourceId(R.styleable.MovieView_android_src, 0)
-        setAdjustViewBounds(
-            attributes.getBoolean(R.styleable.MovieView_android_adjustViewBounds, false)
-        )
-        title = attributes.getString(R.styleable.MovieView_android_title)
-        attributes.recycle()
+        context.withStyledAttributes(
+            set = attrs,
+            attrs = R.styleable.MovieView,
+            defStyleAttr = defStyleAttr,
+            defStyleRes = R.style.Widget_PictureInPicture_MovieView
+        ) {
+            mVideoResourceId = getResourceId(R.styleable.MovieView_android_src, 0)
+            setAdjustViewBounds(
+                getBoolean(R.styleable.MovieView_android_adjustViewBounds, false)
+            )
+            title = getString(R.styleable.MovieView_android_title)
+        }
 
         // Bind view events
         val listener = OnClickListener { view: View ->
@@ -739,7 +744,7 @@ class MovieView @JvmOverloads constructor(
      * [showControls].
      */
     fun toggleControls() {
-        if (mShade.visibility == VISIBLE) {
+        if (mShade.isVisible) {
             hideControls()
         } else {
             showControls()

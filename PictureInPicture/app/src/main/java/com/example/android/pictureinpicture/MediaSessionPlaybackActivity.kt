@@ -503,9 +503,9 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
         override fun onSkipToNext() {
             super.onSkipToNext()
             movieView!!.startVideo()
-            if (indexInPlaylist < Companion.PLAYLIST_SIZE) {
+            if (indexInPlaylist < PLAYLIST_SIZE) {
                 indexInPlaylist++
-                if (indexInPlaylist >= Companion.PLAYLIST_SIZE) {
+                if (indexInPlaylist >= PLAYLIST_SIZE) {
                     updatePlaybackState(
                         state = PlaybackStateCompat.STATE_PLAYING,
                         playbackActions = MEDIA_ACTIONS_PLAY_PAUSE
