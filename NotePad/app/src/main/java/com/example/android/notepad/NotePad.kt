@@ -17,6 +17,7 @@ package com.example.android.notepad
 
 import android.net.Uri
 import android.provider.BaseColumns
+import androidx.core.net.toUri
 
 /**
  * Defines a contract between the Note Pad content provider and its clients. A contract defines the
@@ -72,14 +73,14 @@ object NotePad {
          * The content:// style URL for this table
          * content://com.google.provider.NotePad/notes
          */
-        val CONTENT_URI: Uri = Uri.parse(SCHEME + AUTHORITY + PATH_NOTES)
+        val CONTENT_URI: Uri = (SCHEME + AUTHORITY + PATH_NOTES).toUri()
 
         /**
          * The content URI base for a single note. Callers must
          * append a numeric note id to this Uri to retrieve a note
          * content://com.google.provider.NotePad/notes/
          */
-        val CONTENT_ID_URI_BASE: Uri = Uri.parse(SCHEME + AUTHORITY + PATH_NOTE_ID)
+        val CONTENT_ID_URI_BASE: Uri = (SCHEME + AUTHORITY + PATH_NOTE_ID).toUri()
 
         /**
          * The content URI match pattern for a single note, specified by its ID. Use this to match
@@ -87,14 +88,14 @@ object NotePad {
          * content://com.google.provider.NotePad/notes/#
          */
         @Suppress("unused")
-        val CONTENT_ID_URI_PATTERN: Uri = Uri.parse("$SCHEME$AUTHORITY$PATH_NOTE_ID/#")
+        val CONTENT_ID_URI_PATTERN: Uri = "$SCHEME$AUTHORITY$PATH_NOTE_ID/#".toUri()
 
         /**
          * The content Uri pattern for a notes listing for live folders, used only for tests
          * content://com.google.provider.NotePad/live_folders/notes
          */
         @Suppress("unused")
-        val LIVE_FOLDER_URI: Uri = Uri.parse(SCHEME + AUTHORITY + PATH_LIVE_FOLDER)
+        val LIVE_FOLDER_URI: Uri = (SCHEME + AUTHORITY + PATH_LIVE_FOLDER).toUri()
         /*
          * MIME type definitions
          */

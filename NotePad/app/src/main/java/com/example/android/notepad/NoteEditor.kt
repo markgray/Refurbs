@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "RedundantIf")
+@file:Suppress("DEPRECATION", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "RedundantIf",
+    "RedundantSuppression"
+)
 
 package com.example.android.notepad
 
@@ -338,7 +340,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      *
      * We just call our super's implementation of `onPause`
      */
-    @Suppress("RedundantOverride")
+    @Suppress("RedundantOverride", "RedundantSuppression")
     override fun onPause() {
         super.onPause()
     }

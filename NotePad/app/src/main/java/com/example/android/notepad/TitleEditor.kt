@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_PARAMETER", "unused", "ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress("UNUSED_PARAMETER", "unused", "ReplaceNotNullAssertionWithElvisReturn",
+    "RedundantSuppression"
+)
 
 package com.example.android.notepad
 
@@ -117,7 +119,7 @@ class TitleEditor : Activity() {
      * when the Activity comes to the top of the task stack, OR when it is first starting.
      * We just call our super's implementation of `onResume`.
      */
-    @Suppress("RedundantOverride")
+    @Suppress("RedundantOverride", "RedundantSuppression")
     override fun onResume() {
         super.onResume()
     }
@@ -137,7 +139,7 @@ class TitleEditor : Activity() {
      *
      * We just call our super's implementation of `onPause`.
      */
-    @Suppress("RedundantOverride")
+    @Suppress("RedundantOverride", "RedundantSuppression")
     override fun onPause() {
         super.onPause()
     }
