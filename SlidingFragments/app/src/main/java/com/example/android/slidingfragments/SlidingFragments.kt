@@ -299,7 +299,6 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
      *
      * @param listener an unused [AnimatorListener] always null
      */
-    @Suppress("UNUSED_PARAMETER")
     fun slideForward(listener: AnimatorListener?) {
         val movingFragmentView = mImageFragment!!.view
         val rotateX = PropertyValuesHolder.ofFloat("rotationX", 40f)
