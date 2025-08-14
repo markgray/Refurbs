@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_ANONYMOUS_PARAMETER", "MemberVisibilityCanBePrivate",
-    "KDocUnresolvedReference"
-)
+@file:Suppress("UNUSED_ANONYMOUS_PARAMETER", "MemberVisibilityCanBePrivate")
 
 package com.example.android.pictureviewer
 
@@ -34,6 +32,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * This example shows how to use [ViewPropertyAnimator] to get a cross-fade effect as new
@@ -117,7 +116,7 @@ class PictureViewer : ComponentActivity() {
         val drawables = arrayOfNulls<BitmapDrawable>(drawableIDs.size)
         for (i in drawableIDs.indices) {
             val bitmap: Bitmap = BitmapFactory.decodeResource(resources, drawableIDs[i])
-            drawables[i] = BitmapDrawable(resources, bitmap)
+            drawables[i] = bitmap.toDrawable(resources = resources)
         }
         prevImageView.setImageDrawable(drawables[0])
         nextImageView.setImageDrawable(drawables[1])
