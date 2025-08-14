@@ -28,6 +28,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
 import com.example.android.common.view.SlidingTabLayout.TabColorizer
+import androidx.core.view.size
 
 /**
  * Horizontal [LinearLayout] which holds all the tabs for our sliding tab UI.
@@ -275,7 +276,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
             var left: Int = selectedTitle.left
             var right: Int = selectedTitle.right
             var color: Int = tabColorizer.getIndicatorColor(mSelectedPosition)
-            if (mSelectionOffset > 0f && mSelectedPosition < getChildCount() - 1) {
+            if (mSelectionOffset > 0f && mSelectedPosition < size - 1) {
                 val nextColor: Int = tabColorizer.getIndicatorColor(mSelectedPosition + 1)
                 if (color != nextColor) {
                     color = blendColors(
