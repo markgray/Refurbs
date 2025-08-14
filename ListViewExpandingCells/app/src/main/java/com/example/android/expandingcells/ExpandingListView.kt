@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_ANONYMOUS_PARAMETER", "JoinDeclarationAndAssignment", "ReplaceJavaStaticMethodWithKotlinAnalog")
+@file:Suppress("UNUSED_ANONYMOUS_PARAMETER", "JoinDeclarationAndAssignment", "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "UnusedImport"
+)
 
 package com.example.android.expandingcells
 
@@ -31,6 +33,7 @@ import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListView
+import androidx.core.view.size
 
 /**
  * A custom [ListView] which supports the preview of extra content corresponding to each cell
@@ -420,7 +423,7 @@ class ExpandingListView : ListView {
                     var firstVisiblePosition: Int = firstVisiblePosition
                     var deltaTop: Int = currentTop - futureTop
                     var i: Int
-                    val childCountLocal: Int = getChildCount()
+                    val childCountLocal: Int = size
                     i = 0
                     while (i < childCountLocal) {
                         val v = getChildAt(i)
@@ -735,7 +738,7 @@ class ExpandingListView : ListView {
                     var firstVisiblePosition: Int = firstVisiblePosition
                     var deltaTop: Int = currentTop - futureTop
                     var i: Int
-                    val childCountLocal: Int = getChildCount()
+                    val childCountLocal: Int = size
                     i = 0
                     while (i < childCountLocal) {
                         val v: View = getChildAt(i)
@@ -760,7 +763,7 @@ class ExpandingListView : ListView {
                 val yTranslateTop: Int = mTranslate[0]
                 val yTranslateBottom: Int = mTranslate[1]
                 val index: Int = indexOfChild(view)
-                val childCountLocal: Int = getChildCount()
+                val childCountLocal: Int = size
                 for (i in 0 until childCountLocal) {
                     val v: View = getChildAt(i)
                     val old: IntArray? = oldCoordinates[v]

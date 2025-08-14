@@ -35,6 +35,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import androidx.core.graphics.createBitmap
 
 /**
  * This is a custom array adapter used to populate the [ListView] whose items will expand to display
@@ -162,11 +163,7 @@ class CustomArrayAdapter(
      * @return circle [Bitmap] cropped out of our [Bitmap] parameter [bitmap]
      */
     fun getCroppedBitmap(bitmap: Bitmap): Bitmap {
-        val output = Bitmap.createBitmap(
-            bitmap.width,
-            bitmap.height,
-            Bitmap.Config.ARGB_8888
-        )
+        val output = createBitmap(width = bitmap.width, height = bitmap.height)
         val rect = Rect(0, 0, bitmap.width, bitmap.height)
         val canvas = Canvas(output)
         val paint = Paint()
