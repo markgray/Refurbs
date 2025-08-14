@@ -20,6 +20,7 @@ import android.content.SharedPreferences
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
+import androidx.core.content.edit
 
 /**
  * A simple logger that uses shared preferences to log messages, their reads
@@ -64,9 +65,9 @@ internal object MessageLogger {
         var messageVar: String = message
         val prefs: SharedPreferences = getPrefs(context)
         messageVar = DATE_FORMAT.format(Date(System.currentTimeMillis())) + ": " + messageVar
-        prefs.edit()
-            .putString(LOG_KEY, prefs.getString(LOG_KEY, "") + LINE_BREAKS + messageVar)
-            .apply()
+        prefs.edit {
+            putString(LOG_KEY, prefs.getString(LOG_KEY, "") + LINE_BREAKS + messageVar)
+        }
     }
 
     /**
@@ -101,6 +102,6 @@ internal object MessageLogger {
      * @param context the [Context] of the Activity returned by `getActivity()`
      */
     fun clear(context: Context) {
-        getPrefs(context).edit().remove(LOG_KEY).apply()
+        getPrefs(context).edit { remove(LOG_KEY) }
     }
 }
