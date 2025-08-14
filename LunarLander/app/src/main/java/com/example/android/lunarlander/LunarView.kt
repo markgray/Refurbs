@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_PARAMETER", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress("UNUSED_PARAMETER", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
+    "RedundantSuppression"
+)
 
 package com.example.android.lunarlander
 
@@ -39,6 +41,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import android.widget.TextView
+import androidx.core.graphics.scale
 
 /**
  * View that draws, takes keystrokes, etc. for a simple LunarLander game.
@@ -737,7 +740,7 @@ internal class LunarView(
                 mCanvasHeight = height
 
                 // don't forget to resize the background image
-                mBackgroundImage = Bitmap.createScaledBitmap(mBackgroundImage, width, height, true)
+                mBackgroundImage = mBackgroundImage.scale(width = width, height = height)
             }
         }
 
@@ -997,6 +1000,7 @@ internal class LunarView(
 
 
             // Draw the ship with its current rotation
+            @SuppressLint("UseKtx") // TODO: Replace with Canvas.withRotation someday
             canvas.save()
             canvas.rotate(
                 /* degrees = */ mHeading.toFloat(),
