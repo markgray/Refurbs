@@ -40,7 +40,7 @@ class ViewModelFactory(
      * field [mDataSource] as the database for that [UserViewModel] and returning it to the caller.
      * If it is not a proper class we throw [IllegalArgumentException]
      *
-     * @param modelClass [UserViewModel.class]
+     * @param modelClass The [Class] of [UserViewModel]
      * @param <T>        [UserViewModel]
      * @param extras any additional information for this creation request
      * @return new instance of [UserViewModel]
