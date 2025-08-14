@@ -30,6 +30,7 @@ import android.net.Uri
 import com.example.android.contentprovidersample.data.Cheese
 import com.example.android.contentprovidersample.data.CheeseDao
 import com.example.android.contentprovidersample.data.SampleDatabase
+import androidx.core.net.toUri
 
 /**
  * A [ContentProvider] based on a Room database.
@@ -350,9 +351,7 @@ class SampleContentProvider : ContentProvider() {
          * The URI for the Cheese table:
          * "content://com.example.android.contentprovidersample.provider/cheeses"
          */
-        val URI_CHEESE: Uri = Uri.parse(
-            /* uriString = */ "content://" + AUTHORITY + "/" + Cheese.TABLE_NAME
-        )
+        val URI_CHEESE: Uri = ("content://" + AUTHORITY + "/" + Cheese.TABLE_NAME).toUri()
 
         /**
          * The match code for some items in the Cheese table.
