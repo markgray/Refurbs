@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress("UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn")
 
 package com.example.android.pdfrendererbasic
 
@@ -34,6 +34,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import androidx.core.graphics.createBitmap
 
 /**
  * This fragment has a big [ImageView] that shows PDF pages, and 2 [Button]s to move between pages.
@@ -280,11 +281,7 @@ class PdfRendererBasicFragment
         // Use `openPage` to open a specific page in PDF.
         mCurrentPage = mPdfRenderer!!.openPage(index)
         // Important: the destination bitmap must be ARGB (not RGB).
-        val bitmap = Bitmap.createBitmap(
-            /* width = */ mCurrentPage!!.width,
-            /* height = */ mCurrentPage!!.height,
-            /* config = */ Bitmap.Config.ARGB_8888
-        )
+        val bitmap = createBitmap(width = mCurrentPage!!.width, height = mCurrentPage!!.height)
         // Here, we render the page onto the Bitmap.
         // To render a portion of the page, use the second and third parameter. Pass nulls to get
         // the default result.
