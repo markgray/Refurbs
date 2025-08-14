@@ -26,6 +26,7 @@ import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ListView
+import androidx.core.graphics.withTranslation
 
 /**
  * Draws a png [Drawable] in the area where an item in our [ListView] is partially
@@ -162,10 +163,9 @@ class BackgroundContainer : FrameLayout {
             } else {
                 Log.i("BackgroundContainer", "onDraw called with Drawable mUpdateBounds false")
             }
-            canvas.save()
-            canvas.translate(0f, mOpenAreaTop.toFloat())
-            mShadowedBackground!!.draw(canvas)
-            canvas.restore()
+            canvas.withTranslation(x = 0f, y = mOpenAreaTop.toFloat()) {
+                mShadowedBackground!!.draw(this)
+            }
         }
     }
 }
