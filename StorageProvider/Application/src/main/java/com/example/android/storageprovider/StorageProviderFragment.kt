@@ -24,6 +24,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.example.android.common.logger.Log
+import androidx.core.content.edit
 
 /**
  * Toggles the user's login status via a login menu option, and enables/disables the cloud storage
@@ -142,7 +143,7 @@ class StorageProviderFragment : Fragment() {
             /* name = */ getString(R.string.app_name),
             /* mode = */ Context.MODE_PRIVATE
         )
-        sharedPreferences.edit().putBoolean(getString(R.string.key_logged_in), loggedIn).apply()
+        sharedPreferences.edit { putBoolean(getString(R.string.key_logged_in), loggedIn) }
     }
 
     /**
