@@ -26,6 +26,7 @@ import android.widget.ListView
 import androidx.fragment.app.ListFragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import androidx.core.view.isVisible
 
 /**
  * Subclass of [ListFragment] which provides automatic support for providing the 'swipe-to-refresh'
@@ -111,7 +112,7 @@ open class SwipeRefreshListFragment : ListFragment() {
          * Set whether the [SwipeRefreshLayout] should be displaying
          * that it is refreshing or not.
          *
-         * @param refreshing Whether or not the view should show refresh progress.
+         * @param `refreshing` Whether or not the view should show refresh progress.
          * @see SwipeRefreshLayout.setRefreshing
          */
         set(refreshing) {
@@ -161,7 +162,7 @@ open class SwipeRefreshListFragment : ListFragment() {
          */
         override fun canChildScrollUp(): Boolean {
             val listView = listView
-            return listView.visibility == VISIBLE && canListViewScrollUp(listView)
+            return listView.isVisible && canListViewScrollUp(listView)
         }
     }
 
