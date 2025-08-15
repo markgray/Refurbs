@@ -22,6 +22,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import java.util.Arrays
+import androidx.core.content.withStyledAttributes
 
 /**
  * Background View: Draw 4 full-screen RGBY triangles. This is drawn when the layout file
@@ -59,12 +60,12 @@ class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, att
         isFocusable = true
 
         // retrieve colors for 4 segments from styleable properties
-        val a = context.obtainStyledAttributes(attrs, R.styleable.BackgroundView)
-        mColors[0] = a.getColor(R.styleable.BackgroundView_colorSegmentOne, Color.RED)
-        mColors[1] = a.getColor(R.styleable.BackgroundView_colorSegmentTwo, Color.YELLOW)
-        mColors[2] = a.getColor(R.styleable.BackgroundView_colorSegmentThree, Color.BLUE)
-        mColors[3] = a.getColor(R.styleable.BackgroundView_colorSegmentFour, Color.GREEN)
-        a.recycle()
+        context.withStyledAttributes(set = attrs, attrs = R.styleable.BackgroundView) {
+            mColors[0] = getColor(R.styleable.BackgroundView_colorSegmentOne, Color.RED)
+            mColors[1] = getColor(R.styleable.BackgroundView_colorSegmentTwo, Color.YELLOW)
+            mColors[2] = getColor(R.styleable.BackgroundView_colorSegmentThree, Color.BLUE)
+            mColors[3] = getColor(R.styleable.BackgroundView_colorSegmentFour, Color.GREEN)
+        }
     }
 
     /**

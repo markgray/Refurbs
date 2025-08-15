@@ -25,6 +25,8 @@ import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.withStyledAttributes
+import androidx.core.graphics.createBitmap
 
 /**
  * [TileView]: a [View]-variant designed for handling arrays of "icons" or other drawables, it is
@@ -61,9 +63,9 @@ open class TileView : View {
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        val a: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.TileView)
-        mTileSize = a.getDimensionPixelSize(R.styleable.TileView_tileSize, 12)
-        a.recycle()
+        context.withStyledAttributes(set = attrs, attrs = R.styleable.TileView) {
+            mTileSize = getDimensionPixelSize(R.styleable.TileView_tileSize, 12)
+        }
     }
 
     /**
@@ -87,9 +89,9 @@ open class TileView : View {
         attrs: AttributeSet?,
         defStyle: Int
     ) : super(context, attrs, defStyle) {
-        val a: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.TileView)
-        mTileSize = a.getDimensionPixelSize(R.styleable.TileView_tileSize, 12)
-        a.recycle()
+        context.withStyledAttributes(set = attrs, attrs = R.styleable.TileView) {
+            mTileSize = getDimensionPixelSize(R.styleable.TileView_tileSize, 12)
+        }
     }
 
     /**
@@ -120,7 +122,7 @@ open class TileView : View {
      * @param tile the [Drawable] to set the tile to.
      */
     fun loadTile(key: Int, tile: Drawable) {
-        val bitmap = Bitmap.createBitmap(mTileSize, mTileSize, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(width = mTileSize, height = mTileSize)
         val canvas = Canvas(bitmap)
         tile.setBounds(0, 0, mTileSize, mTileSize)
         tile.draw(canvas)
