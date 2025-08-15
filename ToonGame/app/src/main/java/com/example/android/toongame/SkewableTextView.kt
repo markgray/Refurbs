@@ -101,11 +101,11 @@ class SkewableTextView : TextView {
     var skewX: Float
         get() = mSkewX
         /**
-         * Setter for our [Float] field [mSkewX]. If our [Float] parameter [value] is not equal to
-         * our [Float] field [mSkewX] we set [mSkewX] to [value], invalidate our view, then call our
+         * Setter for our [Float] field [mSkewX]. If our [Float] parameter `value` is not equal to
+         * our [Float] field [mSkewX] we set [mSkewX] to `value`, invalidate our view, then call our
          * method [invalidateSkewedBounds] to invalidate the appropriate area of our parent.
          *
-         * @param value new value for our [Float] field [mSkewX].
+         * @param `value` new value for our [Float] field [mSkewX].
          */
         set(value) {
             if (value != mSkewX) {
