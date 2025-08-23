@@ -34,7 +34,9 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -253,6 +255,7 @@ class PictureDetailsActivity : AppCompatActivity() {
                 }
             })
         }
+        addOurOnBackPressedCallback()
     }
 
     /**
@@ -425,20 +428,21 @@ class PictureDetailsActivity : AppCompatActivity() {
     }
 
     /**
-     * Called when the activity has detected the user's press of the back key. The default implementation
-     * simply finishes the current activity, but you can override this to do whatever you want. Overriding
-     * this method allows us to run our exit animation first, exiting the activity when it is complete.
-     * We call our method `runExitAnimation` with an anonymous `Runnable` to run when the
-     * animation ends, whose `run` override just calls the `finish` method to exit the activity.
+     * This method adds an [OnBackPressedCallback] to the [OnBackPressedDispatcher] that replaces the
+     * old `onBackPressed` override. The [OnBackPressedCallback] will be called when the activity has
+     * detected the user's press of the back key. We call our method [runExitAnimation] with an
+     * anonymous `Runnable` to run when the animation ends, whose `run` override just calls the
+     * [finish] method to exit the activity.
      */
-    @SuppressLint("GestureBackNavigation")
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        @Suppress("DEPRECATION")
-        super.onBackPressed()
-        runExitAnimation { // *Now* go ahead and exit the activity
-            finish()
+    private fun addOurOnBackPressedCallback() {
+        val callback = object : OnBackPressedCallback(enabled = true) {
+            override fun handleOnBackPressed() {
+                runExitAnimation { // *Now* go ahead and exit the activity
+                    finish()
+                }
+            }
         }
+        onBackPressedDispatcher.addCallback(owner = this, onBackPressedCallback = callback)
     }
 
     /**
