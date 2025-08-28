@@ -11,7 +11,7 @@ dependencies {
     api("androidx.legacy:legacy-support-v13:1.0.0")
     api("androidx.cardview:cardview:1.0.0")
     api("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.core:core-ktx:1.17.0")
 }
 
 android {
