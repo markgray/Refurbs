@@ -8,7 +8,7 @@ plugins {
 dependencies {
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("androidx.core:core-ktx:1.17.0")
 }
 
 android {
