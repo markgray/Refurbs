@@ -44,11 +44,11 @@ class RequestDuringLayout : ComponentActivity() {
      * `R.id.removeView` ("Remove") and initialize [Button] variable `val forceLayoutButton` by
      * finding the view with id `R.id.forceLayout` ("Layout"). We set the [View.OnClickListener] of
      * `addViewButton` to an anonymous class which sets the [MyLayout.mAddRequestPending] field of
-     * `myLayout` to `true`, then calls its [MyLayout.requestLayout] method, and we set the
+     * `myLayout` to `true`, then calls its `MyLayout.requestLayout` method, and we set the
      * [View.OnClickListener] of `removeViewButton` to an anonymous class which sets the
      * [MyLayout.mRemoveRequestPending] field of `myLayout` to true, then calls its
-     * [MyLayout.requestLayout] method. Finally we set the [View.OnClickListener] of `removeViewButton`
-     * to an anonymous class which calls the [MyLayout.requestLayout] method of `myLayout`.
+     * `MyLayout.requestLayout` method. Finally we set the [View.OnClickListener] of `removeViewButton`
+     * to an anonymous class which calls the `MyLayout.requestLayout` method of `myLayout`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
