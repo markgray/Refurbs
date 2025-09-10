@@ -17,7 +17,6 @@
 
 package com.example.android.pictureinpicture
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
 import android.app.RemoteAction
@@ -28,6 +27,7 @@ import android.content.IntentFilter
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.drawable.Icon
+import android.os.Build
 import android.os.Bundle
 import android.util.Rational
 import android.view.View
@@ -38,6 +38,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
@@ -371,15 +372,14 @@ class MainActivity : AppCompatActivity() {
      * @param newConfig            The new configuration of the activity with the state
      * `isInPictureInPictureMode`.
      */
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean,
         newConfig: Configuration
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
-            // Starts receiving events from action items in PiP mode.
-            @SuppressLint("UnspecifiedRegisterReceiverFlag")
+            // Starts receiving events from action items in PiP mode
             mReceiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent?) {
                     if (intent == null
@@ -396,7 +396,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            registerReceiver(mReceiver, IntentFilter(ACTION_MEDIA_CONTROL))
+            registerReceiver(
+                mReceiver,
+                IntentFilter(ACTION_MEDIA_CONTROL),
+                RECEIVER_NOT_EXPORTED
+            )
         } else {
             // We are out of PiP mode. We can stop receiving events from it.
             unregisterReceiver(mReceiver)
