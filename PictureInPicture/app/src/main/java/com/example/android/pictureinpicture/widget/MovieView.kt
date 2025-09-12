@@ -43,30 +43,98 @@ class MovieView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
-
+    /**
+     * Monitors all events related to [MovieView].
+     */
     abstract class MovieListener {
+        /**
+         * Called when the video is started or resumed.
+         */
         open fun onMovieStarted() {}
+
+        /**
+         * Called when the video is paused or finished.
+         */
         open fun onMovieStopped() {}
+
+        /**
+         * Called when this view should be minimized.
+         */
         open fun onMovieMinimized() {}
     }
 
+    /**
+     * Displays the video playback. Its id is `R.id.surface` in layout `R.layout.view_movie`.
+     */
     val mSurfaceView: SurfaceView
+
+    // Controls
+
+    /**
+     * Play/Pause button with id `R.id.toggle`, its image is toggled in the [adjustToggleState]
+     * method between `R.drawable.ic_pause_64dp`, and `R.drawable.ic_play_arrow_64dp` depending on
+     * whether the movie is paused or playing.
+     */
     val mToggle: ImageButton
+
+    /**
+     * [View] with id `R.id.shade`, it is a translucent GRAY shade which is used to partially
+     * obscure the movie when the controls are visible on top of it.
+     */
     val mShade: View
+
+    /**
+     * [ImageButton] with id `R.id.fast_forward`, it is the fast forward button.
+     */
     val mFastForward: ImageButton
+
+    /**
+     * [ImageButton] with id `R.id.fast_rewind`, it is the fast rewind button.
+     */
     val mFastRewind: ImageButton
+
+    /**
+     * [ImageButton] with id `R.id.minimize`, it is the minimize (enter PiP button).
+     */
     val mMinimize: ImageButton
 
     private var player: Player? = null
     private var mTimeoutHandler: TimeoutHandler? = null
     var mMovieListener: MovieListener? = null
 
+    /**
+     * The resource ID for the video to play.
+     */
     @RawRes
     var mVideoResourceId: Int = 0 // Primarily informational now
+
+    /**
+     * The title of the video to play.
+     */
     var title: String? = null // Primarily informational now
+
+    /**
+     * Whether we adjust our view bounds or we fill the remaining area with black bars
+     */
     var mAdjustViewBounds: Boolean = false
 
+    /**
+     * Listener for changes in a Player.
+     * All methods have no-op default implementations to allow selective overrides.
+     *
+     * If the return value of a Player getter changes due to a change in command availability, the
+     * corresponding listener method(s) will be invoked. If the return value of a Player getter does
+     * not change because the corresponding command is not available, the corresponding listener
+     * method will not be invoked.
+     */
     private val internalPlayerListener: Player.Listener = object : Player.Listener {
+        /**
+         * Called when the value of `isPlaying()` changes.
+         * `onEvents(Player, Player.Events)` will also be called to report this event along with
+         * other events that happen in the same Looper message queue iteration.
+         *
+         * @param isPlaying Whether the player is playing.
+         */
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             adjustToggleState()
             keepScreenOn = isPlaying
@@ -82,6 +150,13 @@ class MovieView @JvmOverloads constructor(
             }
         }
 
+        /**
+         * Called when the value returned from `getPlaybackState()` changes.
+         * `onEvents(Player, Player.Events)` will also be called to report this event along with
+         * other events that happen in the same Looper message queue iteration.
+         *
+         * @param playbackState The new playback `Player.State`.
+         */
         override fun onPlaybackStateChanged(playbackState: Int) {
             adjustToggleState()
             if (playbackState == Player.STATE_ENDED) {
@@ -91,6 +166,13 @@ class MovieView @JvmOverloads constructor(
             }
         }
 
+        /**
+         * Called each time when `getVideoSize()` changes.
+         * `onEvents(Player, Player.Events)` will also be called to report this event along with
+         * other events that happen in the same Looper message queue iteration.
+         *
+         * @param videoSize The new size of the video.
+         */
         override fun onVideoSizeChanged(videoSize: VideoSize) {
             requestLayout() // Trigger onMeasure when video size is known
         }
@@ -165,8 +247,8 @@ class MovieView @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val videoWidth = player?.videoSize?.width ?: 0
-        val videoHeight = player?.videoSize?.height ?: 0
+        val videoWidth: Int = player?.videoSize?.width ?: 0
+        val videoHeight: Int = player?.videoSize?.height ?: 0
 
         if (videoWidth != 0 && videoHeight != 0) {
             val aspectRatio: Float = videoHeight.toFloat() / videoWidth

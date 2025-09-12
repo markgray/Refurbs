@@ -30,6 +30,7 @@ import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.OptIn
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -42,7 +43,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.SessionCommands
-//Futures import is no longer needed as we are not returning ListenableFuture from callback methods other than custom ones.
 
 /**
  * Demonstrates usage of Picture-in-Picture when using Media3.
@@ -53,9 +53,22 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     private var player: ExoPlayer? = null
 
     private val mPictureInPictureParamsBuilder = PictureInPictureParams.Builder()
+
+    /**
+     * This shows the video.
+     */
     private var mMovieView: MovieView? = null
+
+    /**
+     * The bottom half of the screen; hidden on landscape
+     */
     private var mScrollView: ScrollView? = null
 
+    /**
+     * [View.OnClickListener] for the button with id `R.id.pip` ("Enter Picture-in-Picture mode"),
+     * it consists of an anonymous class whose `onClick` override calls our method [minimize]
+     * if the view that was clicked had the id `R.id.pip`.
+     */
     private val mOnClickListener = View.OnClickListener { view: View ->
         if (view.id == R.id.pip) {
             minimize()
@@ -91,8 +104,8 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val rootView = findViewById<LinearLayout>(R.id.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
@@ -108,7 +121,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
         switchExampleButton.text = getString(R.string.switch_custom)
         switchExampleButton.setOnClickListener(SwitchActivityOnClick())
 
-        mMovieView?.setMovieListener(movieViewListener) // Set listener for minimize callback
+        mMovieView?.setMovieListener(movieListener = movieViewListener) // Set listener for minimize callback
         findViewById<View>(R.id.pip).setOnClickListener(mOnClickListener)
     }
 
@@ -130,7 +143,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
 
         if (mMovieView != null && mMovieView!!.mVideoResourceId != 0) { // Use mVideoResourceId from MovieView
             val videoUri = "android.resource://${packageName}/${mMovieView!!.mVideoResourceId}"
-            val mediaItem = MediaItem.Builder()
+            val mediaItem: MediaItem = MediaItem.Builder()
                 .setMediaId(mMovieView!!.mVideoResourceId.toString())
                 .setUri(videoUri)
                 .setMediaMetadata(
@@ -169,13 +182,13 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        adjustFullScreen(newConfig)
+        adjustFullScreen(config = newConfig)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            adjustFullScreen(resources.configuration)
+            adjustFullScreen(config = resources.configuration)
         }
     }
 
@@ -198,9 +211,9 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
             return
         }
         mMovieView!!.hideControls()
-        val movieViewWidth = mMovieView!!.width
-        val movieViewHeight = mMovieView!!.height
-        val rational = if (movieViewWidth > 0 && movieViewHeight > 0) {
+        val movieViewWidth: Int = mMovieView!!.width
+        val movieViewHeight: Int = mMovieView!!.height
+        val rational: Rational = if (movieViewWidth > 0 && movieViewHeight > 0) {
             Rational(movieViewWidth, movieViewHeight)
         } else {
             Rational(16, 9)
@@ -232,9 +245,12 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     private inner class Media3SessionCallback : MediaSession.Callback {
         @OptIn(UnstableApi::class)
         override fun onConnect(session: MediaSession, controller: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
-            val sessionCommands = SessionCommands.Builder().build()
-            val playerCommands = Commands.Builder().build()
-            return MediaSession.ConnectionResult.accept(sessionCommands, playerCommands)
+            val sessionCommands: SessionCommands = SessionCommands.Builder().build()
+            val playerCommands: Commands = Commands.Builder().build()
+            return MediaSession.ConnectionResult.accept(
+                /* availableSessionCommands = */ sessionCommands,
+                /* availablePlayerCommands = */ playerCommands
+            )
         }
 
         // onPlay, onPause, onSetMediaItem, etc., are not typically overridden here

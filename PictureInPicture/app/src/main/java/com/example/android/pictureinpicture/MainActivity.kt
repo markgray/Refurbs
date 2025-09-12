@@ -38,6 +38,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.Insets
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -46,15 +47,43 @@ import com.example.android.pictureinpicture.widget.MovieView
 import com.example.android.pictureinpicture.widget.MovieView.MovieListener
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
 
+/**
+ * Demonstrates usage of Picture-in-Picture mode on phones and tablets.
+ */
 class MainActivity : AppCompatActivity() {
-
+    /**
+     * The arguments to be used for Picture-in-Picture mode.
+     */
     private val mPictureInPictureParamsBuilder = PictureInPictureParams.Builder()
+
+    /**
+     * This shows the video.
+     */
     private var mMovieView: MovieView? = null
+
+    /**
+     * The bottom half of the screen; hidden on landscape
+     */
     private var mScrollView: ScrollView? = null
+
+    /**
+     * A [BroadcastReceiver] to receive action item events from Picture-in-Picture mode.
+     */
     private var mReceiver: BroadcastReceiver? = null
+
+    /**
+     * The string with resource id `R.string.play` ("Play") that we use for the title of the "play"
+     * action item.
+     */
     private var mPlay: String? = null
+
+    /**
+     * The string with resource id `R.string.pause` ("Pause") that we use for the title of the
+     * "pause" action item.
+     */
     private var mPause: String? = null
 
     private var player: ExoPlayer? = null
@@ -65,31 +94,68 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Callbacks from the [MovieView] showing the video playback.
+     */
     private val mMovieListener: MovieListener = object : MovieListener() {
+        /**
+         * Called when the video is started or resumed. Since we are now playing the video
+         * we call our method [updatePictureInPictureActions] to change the action
+         * item to pause the video, using `R.drawable.ic_pause_24dp` as the icon, [mPause]
+         * ("Pause") as the title, [CONTROL_TYPE_PAUSE] as the type of action, and [REQUEST_PAUSE]
+         * as the request code for the pending intent.
+         */
         override fun onMovieStarted() {
+            // We are playing the video now. In PiP mode, we want to show an action item to
+            // pause the video.
             updatePictureInPictureActions(
-                R.drawable.ic_pause_24dp, mPause, CONTROL_TYPE_PAUSE, REQUEST_PAUSE)
+                iconId = R.drawable.ic_pause_24dp,
+                title = mPause,
+                controlType = CONTROL_TYPE_PAUSE,
+                requestCode = REQUEST_PAUSE
+            )
         }
 
+        /**
+         * Called when the video is paused or finished. Since the video has stopped playing we call
+         * our method [updatePictureInPictureActions] to change the action item to play the video,
+         * using `R.drawable.ic_play_arrow_24dp` as the icon, [mPlay] ("Play") as the title,
+         * [CONTROL_TYPE_PLAY] as the type of action, and [REQUEST_PLAY] as the request code for
+         * the pending intent.
+         */
         override fun onMovieStopped() {
             updatePictureInPictureActions(
-                R.drawable.ic_play_arrow_24dp, mPlay, CONTROL_TYPE_PLAY, REQUEST_PLAY)
+                iconId = R.drawable.ic_play_arrow_24dp,
+                title = mPlay,
+                controlType = CONTROL_TYPE_PLAY,
+                requestCode = REQUEST_PLAY
+            )
         }
 
+        /**
+         * Called when this view should be minimized. We just call our method [minimize]
+         * to enter Picture-in-Picture mode.
+         */
         override fun onMovieMinimized() {
             minimize()
         }
     }
 
     fun updatePictureInPictureActions(
-        @DrawableRes iconId: Int, title: String?, controlType: Int, requestCode: Int) {
-        val actions = ArrayList<RemoteAction>()
-        val intent = PendingIntent.getBroadcast(
-            this@MainActivity,
-            requestCode,
-            Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType),
-            PendingIntent.FLAG_IMMUTABLE)
-        val icon = Icon.createWithResource(this@MainActivity, iconId)
+        @DrawableRes iconId: Int,
+        title: String?,
+        controlType: Int,
+        requestCode: Int
+    ) {
+        val actions: ArrayList<RemoteAction> = ArrayList()
+        val intent: PendingIntent = PendingIntent.getBroadcast(
+            /* context = */ this@MainActivity,
+            /* requestCode = */ requestCode,
+            /* intent = */ Intent(ACTION_MEDIA_CONTROL)
+                .putExtra(EXTRA_CONTROL_TYPE, controlType),
+            /* flags = */ PendingIntent.FLAG_IMMUTABLE
+        )
+        val icon: Icon = Icon.createWithResource(this@MainActivity, iconId)
         actions.add(RemoteAction(icon, title!!, title, intent))
 
         actions.add(
@@ -108,25 +174,48 @@ class MainActivity : AppCompatActivity() {
         setPictureInPictureParams(mPictureInPictureParamsBuilder.build())
     }
 
+    /**
+     * Called when the activity is starting. First we call through to our super's implementation of
+     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`. We
+     * then initialize our [String] field [mPlay] by fetching the string with id `R.string.play`
+     * ("Play"), and [String] field [mPause] by fetching the string with id `R.string.pause`
+     * ("Pause"). We initialize our [MovieView] field [mMovieView] by finding the view with id
+     * `R.id.movie`, and [ScrollView] field [mScrollView] by finding the view with id `R.id.scroll`.
+     *
+     * We initialize [Button] variable `val switchExampleButton` by finding the view with id
+     * `R.id.switch_example`, set its text to the string with id `R.string.switch_media_session`
+     * ("Switch to using MediaSession"), and set its [View.OnClickListener] to [mOnClickListener].
+     * We call the [MovieView.setMovieListener]  method of [MovieView] field [mMovieView] to set its
+     * [MovieView.MovieListener] to our [MovieView.MovieListener] field [mMovieListener]. Finally
+     * we find the view with id `R.id.pip` ("Enter Picture-in-Picture mode") and set its
+     * [View.OnClickListener] to our field [mOnClickListener].
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val rootView = findViewById<LinearLayout>(R.id.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
                 topMargin = insets.top
                 bottomMargin = insets.bottom
             }
+            // Return CONSUMED if you don't want want the window insets to keep passing
+            // down to descendant views.
             WindowInsetsCompat.CONSUMED
         }
 
+        // Prepare string resources for Picture-in-Picture actions.
         mPlay = getString(R.string.play)
         mPause = getString(R.string.pause)
 
+        // View references
         mMovieView = findViewById(R.id.movie)
         mScrollView = findViewById(R.id.scroll)
         val switchExampleButton = findViewById<Button>(R.id.switch_example)
@@ -193,7 +282,7 @@ class MainActivity : AppCompatActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
-            adjustFullScreen(resources.configuration)
+            adjustFullScreen(config = resources.configuration)
         }
     }
 
@@ -236,12 +325,12 @@ class MainActivity : AppCompatActivity() {
         }
         mMovieView!!.hideControls()
 
-        val movieViewWidth = mMovieView!!.width
-        val movieViewHeight = mMovieView!!.height
-        val rational = if (movieViewWidth > 0 && movieViewHeight > 0) {
+        val movieViewWidth: Int = mMovieView!!.width
+        val movieViewHeight: Int = mMovieView!!.height
+        val rational: Rational = if (movieViewWidth > 0 && movieViewHeight > 0) {
             Rational(movieViewWidth, movieViewHeight)
         } else {
-            val videoSize = player?.videoSize
+            val videoSize: VideoSize? = player?.videoSize
             if (videoSize != null && videoSize.width > 0 && videoSize.height > 0) {
                 Rational(videoSize.width, videoSize.height)
             } else {
