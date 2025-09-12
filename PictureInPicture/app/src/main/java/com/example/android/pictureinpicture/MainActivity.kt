@@ -26,6 +26,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.drawable.Icon
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Rational
@@ -65,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     private var mMovieView: MovieView? = null
 
     /**
-     * The bottom half of the screen; hidden on landscape
+     * The bottom half of the screen, hidden on landscape
      */
     private var mScrollView: ScrollView? = null
 
@@ -86,8 +87,16 @@ class MainActivity : AppCompatActivity() {
      */
     private var mPause: String? = null
 
+    /**
+     * The [ExoPlayer] instance used for playing the video.
+     * It is initialized in [onStart] and released in [onStop].
+     */
     private var player: ExoPlayer? = null
 
+    /**
+     * A [View.OnClickListener] that enters Picture-in-Picture mode when the view with
+     * id `R.id.pip` is clicked.
+     */
     private val mOnClickListener = View.OnClickListener { view: View ->
         if (view.id == R.id.pip) {
             minimize()
@@ -141,6 +150,53 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Updates the action items to be shown in Picture-in-Picture mode. These are the buttons that
+     * are displayed in the Picture-in-Picture mode window.
+     *
+     * We start by initializing our [ArrayList] of [RemoteAction] variabe `actions` to a new instance.
+     * We initialize our [PendingIntent] variable `val intent` by calling [PendingIntent.getBroadcast]
+     * with the following parameters:
+     *  - `context`: this@MainActivity
+     *  - `requestCode` our [Int] parameter [requestCode].
+     *  - `intent`: an [Intent] whose action is [ACTION_MEDIA_CONTROL] with an extra storing our
+     *  [Int] parameter [controlType] under the key [EXTRA_CONTROL_TYPE].
+     *  - `flags`: [PendingIntent.FLAG_IMMUTABLE]
+     *
+     * The we initialize our [Icon] variable `val icon` by calling [Icon.createWithResource] with the
+     * `context` argument this@MainActivity and the `resid` argument our [Int] parameter [iconId].
+     * We add a [RemoteAction] to our [ArrayList] variable `actions` constructed using the following
+     * arguments:
+     *  - `icon`: the [Icon] we just created, variable `icon`.
+     *  - `title`: our [String] parameter [title].
+     *  - `contentDescription`: our [String] parameter [title].
+     *  - `intent`: the [PendingIntent] we just created, variable `intent`.
+     *
+     * We add a [RemoteAction] to our [ArrayList] variable `actions` constructed using the following
+     * arguments:
+     *  - `icon`: an [Icon] created using [Icon.createWithResource] with the `context` argument
+     *  this@MainActivity and the `resid` argument `R.drawable.ic_info_24dp`.
+     *  - `title`: the string with resource id `R.string.info` ("Info").
+     *  - `contentDescription`: the string with resource id `R.string.info_description`
+     *  ("Information about this video").
+     *  - `intent`: a [PendingIntent] constructed using this@MainActivity as the `context`, the
+     *  `requestCode` [REQUEST_INFO], the `intent` [Intent] constructed using [Intent.ACTION_VIEW]
+     *  as the `action` and the `uri` [Uri] constructed using the string with resource id
+     *  `R.string.info_uri` ("https://peach.blender.org") as the `uri`, and the `flags` argument of
+     *  the [PendingIntent] is [PendingIntent.FLAG_IMMUTABLE].
+     *
+     * Next we call the [PictureInPictureParams.Builder.setActions] method of our
+     * [PictureInPictureParams.Builder] property [mPictureInPictureParamsBuilder] with the
+     * [ArrayList] of [RemoteAction] variable `actions` as the argument. Finally we call the
+     * [setPictureInPictureParams] method of this@MainActivity with the [PictureInPictureParams]
+     * built by calling the [PictureInPictureParams.Builder.build] method of
+     * [mPictureInPictureParamsBuilder].
+     *
+     * @param iconId The icon for the main action item.
+     * @param title The title for the main action item.
+     * @param controlType The type of the control, either [CONTROL_TYPE_PLAY] or [CONTROL_TYPE_PAUSE].
+     * @param requestCode The request code for the [PendingIntent] of the main action item.
+     */
     fun updatePictureInPictureActions(
         @DrawableRes iconId: Int,
         title: String?,
@@ -156,39 +212,65 @@ class MainActivity : AppCompatActivity() {
             /* flags = */ PendingIntent.FLAG_IMMUTABLE
         )
         val icon: Icon = Icon.createWithResource(this@MainActivity, iconId)
-        actions.add(RemoteAction(icon, title!!, title, intent))
+        actions.add(
+            RemoteAction(
+                /* icon = */ icon,
+                /* title = */ title!!,
+                /* contentDescription = */ title,
+                /* intent = */ intent
+            )
+        )
 
         actions.add(
             RemoteAction(
-                Icon.createWithResource(this@MainActivity, R.drawable.ic_info_24dp),
-                getString(R.string.info),
-                getString(R.string.info_description),
-                PendingIntent.getActivity(
+                /* icon = */ Icon.createWithResource(
                     this@MainActivity,
-                    REQUEST_INFO,
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        getString(R.string.info_uri).toUri()),
-                    PendingIntent.FLAG_IMMUTABLE)))
+                    R.drawable.ic_info_24dp
+                ),
+                /* title = */ getString(R.string.info),
+                /* contentDescription = */ getString(R.string.info_description),
+                /* intent = */ PendingIntent.getActivity(
+                    /* context = */ this@MainActivity,
+                    /* requestCode = */ REQUEST_INFO,
+                    /* intent = */ Intent(
+                        /* action = */ Intent.ACTION_VIEW,
+                        /* uri = */ getString(R.string.info_uri).toUri()
+                    ),
+                    /* flags = */ PendingIntent.FLAG_IMMUTABLE
+                )
+            )
+        )
         mPictureInPictureParamsBuilder.setActions(actions)
         setPictureInPictureParams(mPictureInPictureParamsBuilder.build())
     }
 
     /**
-     * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file `R.layout.activity_main`. We
-     * then initialize our [String] field [mPlay] by fetching the string with id `R.string.play`
-     * ("Play"), and [String] field [mPause] by fetching the string with id `R.string.pause`
-     * ("Pause"). We initialize our [MovieView] field [mMovieView] by finding the view with id
-     * `R.id.movie`, and [ScrollView] field [mScrollView] by finding the view with id `R.id.scroll`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge-to-edge
+     * display then we call super's implementation of `onCreate`. We set our content view to our
+     * layout file `R.layout.activity_main`. We intialize our [LinearLayout] variable `rootView`
+     * by calling [findViewById] with the id `R.id.activity_main`. We call the
+     * [ViewCompat.setOnApplyWindowInsetsListener] method with the arguments `rootView` and a
+     * lambda that accepts the [View] passed it in variable `v` and the [WindowInsetsCompat]
+     * passed it in variable `windowInsets`, then it initializes its [Insets] variable `insets`
+     * to the [WindowInsetsCompat.getInsets] of the [WindowInsetsCompat] variable `windowInsets`
+     * for the `typeMask` [WindowInsetsCompat.Type.systemBars], and finally it updates the
+     * [ViewGroup.MarginLayoutParams] of the [View] variable `v` by calling its [updateLayoutParams]
+     * method with a lambda that sets the `leftMargin` to `insets.left`, the `rightMargin` to
+     * `insets.right`, the `topMargin` to `insets.top`, and the `bottomMargin` to `insets.bottom`,
+     * and returns [WindowInsetsCompat.CONSUMED] to indicate that the insets have been consumed.
      *
-     * We initialize [Button] variable `val switchExampleButton` by finding the view with id
-     * `R.id.switch_example`, set its text to the string with id `R.string.switch_media_session`
-     * ("Switch to using MediaSession"), and set its [View.OnClickListener] to [mOnClickListener].
-     * We call the [MovieView.setMovieListener]  method of [MovieView] field [mMovieView] to set its
-     * [MovieView.MovieListener] to our [MovieView.MovieListener] field [mMovieListener]. Finally
-     * we find the view with id `R.id.pip` ("Enter Picture-in-Picture mode") and set its
-     * [View.OnClickListener] to our field [mOnClickListener].
+     * Next we initialize our [String] property `mPlay` to the string with resource id `R.string.play`
+     * ("Play") and our [String] property `mPause` to the string with resource id `R.string.pause`
+     * ("Pause"). We initialize our [MovieView] variable `mMovieView` by calling [findViewById]
+     * with the id `R.id.movie`. We initialize our [ScrollView] variable `mScrollView` by calling
+     * [findViewById] with the id `R.id.scroll`. We initialize our [Button] variable `switchExampleButton`
+     * by calling [findViewById] with the id `R.id.switch_example`. We set the text of the
+     * [Button] variable `switchExampleButton` to the string with resource id `R.string.switch_media_session`
+     * ("Switch to using MediaSession"). We set the [View.OnClickListener] of the [Button]
+     * variable `switchExampleButton` to an instance of [SwitchActivityOnClick]. We call the
+     * [MovieView.setMovieListener] method of the [MovieView] property [mMovieView] with the
+     * [MovieListener] property [mMovieListener]. Finally we find the [View] whose `id` is `R.id.pip`
+     * and set its [View.OnClickListener] to the [View.OnClickListener] property [mOnClickListener].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -226,11 +308,33 @@ class MainActivity : AppCompatActivity() {
         findViewById<View>(R.id.pip).setOnClickListener(mOnClickListener)
     }
 
+    /**
+     * Called when the activity is becoming visible to the user. We call our super's implementation of
+     * `onStart`, then call our method [initializePlayer] to initialize or re-initialize the
+     * [ExoPlayer] and start playback.
+     */
     override fun onStart() {
         super.onStart()
         initializePlayer()
     }
 
+    /**
+     * Initializes the [ExoPlayer] instance if it's not already created.
+     * TODO: Continue here.
+     *
+     * This function performs the following steps:
+     *  1. Checks if the `player` is null. If it is, proceeds with initialization, if it is not
+     *  it returns early.
+     *  2. Creates a new [ExoPlayer] instance using `ExoPlayer.Builder`.
+     *  3. Associates the newly created player with the `mMovieView`.
+     *  4. Checks if `mMovieView` is available and has a valid video resource ID.
+     *  5. Constructs a [MediaItem] with the video's URI (derived from the resource ID),
+     *  a unique media ID, and metadata such as the title.
+     *  6. Sets the [MediaItem] on the player.
+     *  7. Prepares the player for playback.
+     *  8. Sets `playWhenReady` to true to start playback automatically, mimicking the
+     *  original `VideoView` autoplay behavior.
+     */
     private fun initializePlayer() {
         if (player == null) {
             player = ExoPlayer.Builder(this).build()
