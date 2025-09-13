@@ -25,6 +25,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.os.Build
@@ -32,6 +33,7 @@ import android.os.Bundle
 import android.util.Rational
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -321,20 +323,26 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Initializes the [ExoPlayer] instance if it's not already created.
-     * TODO: Continue here.
      *
      * This function performs the following steps:
      *  1. Checks if the `player` is null. If it is, proceeds with initialization, if it is not
      *  it returns early.
-     *  2. Creates a new [ExoPlayer] instance using `ExoPlayer.Builder`.
-     *  3. Associates the newly created player with the `mMovieView`.
-     *  4. Checks if `mMovieView` is available and has a valid video resource ID.
-     *  5. Constructs a [MediaItem] with the video's URI (derived from the resource ID),
-     *  a unique media ID, and metadata such as the title.
-     *  6. Sets the [MediaItem] on the player.
-     *  7. Prepares the player for playback.
-     *  8. Sets `playWhenReady` to true to start playback automatically, mimicking the
-     *  original `VideoView` autoplay behavior.
+     *  2. Creates a new [ExoPlayer] instance using `ExoPlayer.Builder` and saves it to the [ExoPlayer]
+     *  property `player`.
+     *  3. Associates the newly created player with the [MovieView] property [mMovieView] if
+     *  [mMovieView] is not `null`.
+     *  4. Checks if [mMovieView] is not `null` and has a valid video resource ID in its
+     *  [MovieView.mVideoResourceId] property. If it is, proceeds with the following steps
+     *  5. It initializes its [String] variable `videoUri` to a string constructed by concatenating
+     *  the string "android.resource://" with the package name of the current activity, and the
+     *  value of [MovieView.mVideoResourceId].
+     *  6. Initializes its [MediaItem] variable `mediaItem` using the [MediaItem.Builder] class,
+     *  setting the `mediaId` to the value of [MovieView.mVideoResourceId] and the `uri` to the
+     *  [String] variable `videoUri`, and the `mediaMetadata` to a new [MediaMetadata] whose
+     *  `title` is the value of [MovieView.title] or the string "Untitled Video" if it is `null`.
+     *  7. Sets the [MediaItem] on the [ExoPlayer] property [player].
+     *  8. Prepares the player for playback.
+     *  9. Sets the `playWhenReady` property of [player] to true to start playback automatically.
      */
     private fun initializePlayer() {
         if (player == null) {
@@ -343,7 +351,7 @@ class MainActivity : AppCompatActivity() {
 
             if (mMovieView != null && mMovieView!!.mVideoResourceId != 0) {
                 val videoUri = "android.resource://${packageName}/${mMovieView!!.mVideoResourceId}"
-                val mediaItem = MediaItem.Builder()
+                val mediaItem: MediaItem = MediaItem.Builder()
                     .setMediaId(mMovieView!!.mVideoResourceId.toString())
                     .setUri(videoUri)
                     .setMediaMetadata(
@@ -359,18 +367,46 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Called when the activity is no longer visible to the user. This is followed by either
+     * `onRestart()` if the activity is coming back to interact with the user, or by `onDestroy()`
+     * if this activity is going away.
+     *
+     * We first call our super's implementation of `onStop`. Then we pause the [ExoPlayer] instance
+     * in our [player] property and call our [releasePlayer] method to release the player's resources.
+     * This is important as of Android 7.0 (Nougat), multi-window support means that the activity's
+     * `onStop` method could be called at any time.
+     */
     override fun onStop() {
         super.onStop()
         player?.pause() // Ensure player is paused before release
         releasePlayer()
     }
 
+    /**
+     * Releases the [ExoPlayer] instance.
+     *
+     * This function performs the necessary cleanup for the video player. It first detaches the
+     * player from the [MovieView] property [mMovieView] by setting its player to `null`. Then,
+     * it releases the resources held by the [ExoPlayer] instance and sets the [player] property
+     * to `null` to allow for garbage collection and re-initialization later.
+     */
     private fun releasePlayer() {
         mMovieView?.setPlayer(null) // Detach player from MovieView
         player?.release()
         player = null
     }
 
+    /**
+     * Called after `onStop()` when the current activity is being re-displayed to the user
+     * (the user has navigated back to it). It will be followed by `onStart()` and then
+     * `onResume()`.
+     *
+     * We first call our super's implementation of `onRestart`. If the activity is not in
+     * Picture-in-Picture mode, we then call the `showControls()` method of `mMovieView` to
+     * make sure the video controls are visible. The video player itself will be re-initialized
+     * in `onStart()` if it was released in `onStop()`.
+     */
     override fun onRestart() {
         super.onRestart()
         // Player will be re-initialized in onStart if it was released.
@@ -379,11 +415,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Called by the system when the device configuration changes while your activity is running.
+     * Note that this will only be called if you have selected configurations you would like to
+     * handle through the `android:configChanges` attribute in your manifest.
+     *
+     * We first call our super's implementation of `onConfigurationChanged`, then we call our method
+     * [adjustFullScreen] to adjust our UI for the new configuration.
+     *
+     * @param newConfig The new device configuration.
+     */
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         adjustFullScreen(config = newConfig)
     }
 
+    /**
+     * Called when the current [Window] of the activity gains or loses focus. First we call our
+     * super's implementation of `onWindowFocusChanged`, then we check if the `hasFocus` parameter
+     * is `true`. If it is, we call our method [adjustFullScreen] to adjust our UI for the
+     * [Configuration] of the [Resources] instance for the application's package returned by
+     * [getResources].
+     */
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus) {
@@ -391,6 +444,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Called when the activity enters or exits Picture-in-Picture mode.
+     *
+     * We first call our super's implementation of `onPictureInPictureModeChanged`, then we check
+     * if the `isInPictureInPictureMode` parameter is `true`. If it is, we:
+     *  - Initialize our [BroadcastReceiver] property [mReceiver] to a new instance of
+     *  [BroadcastReceiver] whose `onReceive` override checks if its [Intent] parameter `intent`
+     *  is `null` and if its `action` is [ACTION_MEDIA_CONTROL] returning if the test fails.
+     *  Otherwise it initializes its [Int] variable `controlType` to the value stored as an
+     *  extra in the [Intent] parameter `intent` under the key [EXTRA_CONTROL_TYPE]. It then
+     *  branches on the value of `controlType` with [CONTROL_TYPE_PLAY] calling [MovieView.play]
+     *  and [CONTROL_TYPE_PAUSE] calling [MovieView.pause].
+     *  - Register our [BroadcastReceiver] property [mReceiver] with the [IntentFilter] action
+     *  [ACTION_MEDIA_CONTROL], and the `flags` [Context.RECEIVER_NOT_EXPORTED].
+     *
+     * If `isInPictureInPictureMode` is `false`, we:
+     *  - Unregister our [BroadcastReceiver] property [mReceiver].
+     *  - Set [BroadcastReceiver] property [mReceiver] to `null`.
+     *  - If the [MovieView] property [mMovieView] is not `null` and the [ExoPlayer] property
+     *  [player] is not playing, we call the [MovieView.showControls] method to show the controls.
+     *
+     * @param isInPictureInPictureMode True if the activity is in Picture-in-Picture mode.
+     * @param newConfig The new configuration of the activity when in Picture-in-Picture mode.
+     */
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onPictureInPictureModeChanged(
         isInPictureInPictureMode: Boolean,
@@ -403,7 +480,8 @@ class MainActivity : AppCompatActivity() {
                     if (intent == null || ACTION_MEDIA_CONTROL != intent.action) {
                         return
                     }
-                    val controlType = intent.getIntExtra(EXTRA_CONTROL_TYPE, 0)
+                    val controlType: Int = intent
+                        .getIntExtra(/* name = */ EXTRA_CONTROL_TYPE, /* defaultValue = */ 0)
                     when (controlType) {
                         CONTROL_TYPE_PLAY -> mMovieView?.play()
                         CONTROL_TYPE_PAUSE -> mMovieView?.pause()
@@ -411,9 +489,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             registerReceiver(
-                mReceiver,
-                IntentFilter(ACTION_MEDIA_CONTROL),
-                RECEIVER_NOT_EXPORTED
+                /* receiver = */ mReceiver,
+                /* filter = */ IntentFilter(ACTION_MEDIA_CONTROL),
+                /* flags = */ RECEIVER_NOT_EXPORTED
             )
         } else {
             unregisterReceiver(mReceiver)
@@ -424,6 +502,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Enters Picture-in-Picture (PiP) mode.
+     *
+     * This function is called when the user clicks the PiP button or when the `onMovieMinimized`
+     * callback is triggered by the [MovieView]. It performs the following steps:
+     *
+     *  1. Checks if the [MovieView] property [mMovieView] is `null`. If it is, the function returns
+     *  early.
+     *  2. Hides the playback controls on the [MovieView] property [mMovieView] by calling the
+     *  [MovieView.hideControls] method.
+     *  3. Determines the optimal aspect ratio for the PiP window. It prioritizes the current
+     *  dimensions of the [MovieView]. If those are not available, it falls back to the
+     *  video's intrinsic size from the `player`. If that also fails, it defaults to a 16:9
+     *  aspect ratio.
+     *  4. Sets this aspect ratio on the [PictureInPictureParams.Builder] property
+     *  [mPictureInPictureParamsBuilder] by calling its [PictureInPictureParams.Builder.setAspectRatio]
+     *  method.
+     *  5. Calls [enterPictureInPictureMode] with the [PictureInPictureParams] built from
+     *  [mPictureInPictureParamsBuilder] to transition the activity into PiP mode.
+     */
     fun minimize() {
         if (mMovieView == null) { // Player null check is implicitly handled by MovieView
             return
@@ -443,9 +541,42 @@ class MainActivity : AppCompatActivity() {
             }
         }
         mPictureInPictureParamsBuilder.setAspectRatio(rational)
-        enterPictureInPictureMode(mPictureInPictureParamsBuilder.build())
+        enterPictureInPictureMode(/* params = */ mPictureInPictureParamsBuilder.build())
     }
 
+    /**
+     * Adjusts the activity's UI based on the device's orientation.
+     *
+     * This function is called when the device's configuration changes, such as during an orientation
+     * change, or when the window focus changes. It modifies the system UI visibility and the layout
+     * to provide an optimal viewing experience for both landscape and portrait modes.
+     *
+     * In landscape mode, the activity enters a full-screen, immersive state. The system navigation
+     * and status bars are hidden, and the video player ([mMovieView]) is configured to fill the
+     * entire screen. The scrollable content area ([mScrollView]) containing other UI elements
+     * is hidden to maximize the video playback area.
+     *
+     * In portrait mode, the activity reverts to a standard layout. The system UI elements (like the
+     * status bar) are made visible again. The scrollable content area ([mScrollView]) is shown,
+     * and the video player's bounds are adjusted to fit within its layout constraints, allowing
+     * other UI elements to be visible on the screen.
+     *
+     * We initialize our [View] variable `decorView` to the [Window.getDecorView] of the current
+     * [Window] of the activity. We then branch on the value of the [Configuration.orientation]:
+     *  - If it is [Configuration.ORIENTATION_LANDSCAPE], we set the `systemUiVisibility` of
+     *  `decorView` to the result of oring the flags [View.SYSTEM_UI_FLAG_LAYOUT_STABLE],
+     *  [View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION], [View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN],
+     *  [View.SYSTEM_UI_FLAG_HIDE_NAVIGATION], [View.SYSTEM_UI_FLAG_FULLSCREEN], and
+     *  [View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY]. We then set the `visibility` of the [ScrollView]
+     *  property [mScrollView] to [View.GONE], and call the [MovieView.setAdjustViewBounds] method
+     *  of the [MovieView] property [mMovieView] with the value `false`.
+     *  - Otherwise, we set the `systemUiVisibility` of `decorView` to the value
+     *  [View.SYSTEM_UI_FLAG_LAYOUT_STABLE]. We then set the `visibility` of the [ScrollView]
+     *  property [mScrollView] to [View.VISIBLE], and call the [MovieView.setAdjustViewBounds]
+     *  method of the [MovieView] property [mMovieView] with the value `true`.
+     *
+     * @param config The current [Configuration] of the device, which includes orientation information.
+     */
     private fun adjustFullScreen(config: Configuration) {
         val decorView: View = window.decorView
         if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -466,6 +597,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * A [View.OnClickListener] for the button that switches to the [MediaSessionPlaybackActivity]
+     * example. When the button is clicked, this listener starts the [MediaSessionPlaybackActivity]
+     * and finishes the current [MainActivity].
+     */
     private inner class SwitchActivityOnClick : View.OnClickListener {
         override fun onClick(view: View) {
             startActivity(Intent(view.context, MediaSessionPlaybackActivity::class.java))
@@ -474,12 +610,42 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
+        /**
+         * Intent action for media control from Picture-in-Picture mode.
+         * This is used to send commands from the PiP window (e.g., play, pause) back to the
+         * activity through a `BroadcastReceiver`.
+         */
         private const val ACTION_MEDIA_CONTROL = "media_control"
+
+        /**
+         * Extra key for media control type.
+         */
         private const val EXTRA_CONTROL_TYPE = "control_type"
+
+        /**
+         * Request code for media control from Picture-in-Picture mode to have the player play.
+         */
         private const val REQUEST_PLAY = 1
+
+        /**
+         * Request code for media control from Picture-in-Picture mode to have the player pause.
+         */
         private const val REQUEST_PAUSE = 2
+
+        /**
+         * Request code for media control from Picture-in-Picture mode to have the player launch
+         * an [Intent] to view the [Uri] "https://peach.blender.org".
+         */
         private const val REQUEST_INFO = 3
+
+        /**
+         * Media control type for play.
+         */
         private const val CONTROL_TYPE_PLAY = 1
+
+        /**
+         * Media control type for pause.
+         */
         private const val CONTROL_TYPE_PAUSE = 2
     }
 }
