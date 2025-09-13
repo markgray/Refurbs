@@ -154,9 +154,9 @@ class MainActivity : AppCompatActivity() {
      * Updates the action items to be shown in Picture-in-Picture mode. These are the buttons that
      * are displayed in the Picture-in-Picture mode window.
      *
-     * We start by initializing our [ArrayList] of [RemoteAction] variabe `actions` to a new instance.
-     * We initialize our [PendingIntent] variable `val intent` by calling [PendingIntent.getBroadcast]
-     * with the following parameters:
+     * We start by initializing our [ArrayList] of [RemoteAction] variable `actions` to a new
+     * instance. We initialize our [PendingIntent] variable `val intent` by calling
+     * [PendingIntent.getBroadcast] with the following parameters:
      *  - `context`: this@MainActivity
      *  - `requestCode` our [Int] parameter [requestCode].
      *  - `intent`: an [Intent] whose action is [ACTION_MEDIA_CONTROL] with an extra storing our
@@ -248,7 +248,7 @@ class MainActivity : AppCompatActivity() {
      * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge-to-edge
      * display then we call super's implementation of `onCreate`. We set our content view to our
      * layout file `R.layout.activity_main`. We intialize our [LinearLayout] variable `rootView`
-     * by calling [findViewById] with the id `R.id.activity_main`. We call the
+     * by finding the [LinearLayout] with resource id `R.id.activity_main`. We call the
      * [ViewCompat.setOnApplyWindowInsetsListener] method with the arguments `rootView` and a
      * lambda that accepts the [View] passed it in variable `v` and the [WindowInsetsCompat]
      * passed it in variable `windowInsets`, then it initializes its [Insets] variable `insets`
@@ -261,16 +261,17 @@ class MainActivity : AppCompatActivity() {
      *
      * Next we initialize our [String] property `mPlay` to the string with resource id `R.string.play`
      * ("Play") and our [String] property `mPause` to the string with resource id `R.string.pause`
-     * ("Pause"). We initialize our [MovieView] variable `mMovieView` by calling [findViewById]
-     * with the id `R.id.movie`. We initialize our [ScrollView] variable `mScrollView` by calling
-     * [findViewById] with the id `R.id.scroll`. We initialize our [Button] variable `switchExampleButton`
-     * by calling [findViewById] with the id `R.id.switch_example`. We set the text of the
+     * ("Pause"). We initialize our [MovieView] variable `mMovieView` by finding the view with
+     * resource id `R.id.movie`. We initialize our [ScrollView] variable `mScrollView` by finding
+     * the view with id `R.id.scroll`. We initialize our [Button] variable `switchExampleButton`
+     * by finding the view with with the id `R.id.switch_example`. We set the text of the
      * [Button] variable `switchExampleButton` to the string with resource id `R.string.switch_media_session`
      * ("Switch to using MediaSession"). We set the [View.OnClickListener] of the [Button]
      * variable `switchExampleButton` to an instance of [SwitchActivityOnClick]. We call the
      * [MovieView.setMovieListener] method of the [MovieView] property [mMovieView] with the
-     * [MovieListener] property [mMovieListener]. Finally we find the [View] whose `id` is `R.id.pip`
-     * and set its [View.OnClickListener] to the [View.OnClickListener] property [mOnClickListener].
+     * [MovieListener] property [mMovieListener]. Finally we find the [View] whose `id` is
+     * `R.id.pip` and set its [View.OnClickListener] to the [View.OnClickListener] property
+     * [mOnClickListener].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -309,8 +310,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Called when the activity is becoming visible to the user. We call our super's implementation of
-     * `onStart`, then call our method [initializePlayer] to initialize or re-initialize the
+     * Called when the activity is becoming visible to the user. We call our super's implementation
+     * of `onStart`, then call our method [initializePlayer] to initialize or re-initialize the
      * [ExoPlayer] and start playback.
      */
     override fun onStart() {

@@ -39,7 +39,7 @@ import com.example.android.pictureinpicture.R
 import java.lang.ref.WeakReference
 import androidx.core.graphics.drawable.toDrawable
 
-/**inActivity]
+/**
  * A [RelativeLayout] that displays a video. Used by both `MainActivity` and
  * `MediaSessionPlaybackActivity`.
  *
@@ -106,7 +106,7 @@ class MovieView @JvmOverloads constructor(
     val mFastRewind: ImageButton
 
     /**
-     * [ImageButton] with id `R.id.minimize`, it is the minimize (enter PiP button).
+     * [ImageButton] with id `R.id.minimize`, it is the minimize (enter PiP) button.
      */
     val mMinimize: ImageButton
 
@@ -169,7 +169,6 @@ class MovieView @JvmOverloads constructor(
          * [TIMEOUT_CONTROLS] as the delay in milliseconds. If [isPlaying] is `false` we call the
          * [MovieListener.onMovieStopped] callback of our [MovieListener] property [mMovieListener].
          *
-         *
          * @param isPlaying Whether the player is playing.
          */
         override fun onIsPlayingChanged(isPlaying: Boolean) {
@@ -191,6 +190,7 @@ class MovieView @JvmOverloads constructor(
          * Called when the value returned from `getPlaybackState()` changes.
          * `onEvents(Player, Player.Events)` will also be called to report this event along with
          * other events that happen in the same Looper message queue iteration.
+         *
          * First we call our [adjustToggleState] method to update the toggle button image of the
          * play/pause button [mToggle]. If our [Int] parameter [playbackState] is equal to
          * [Player.STATE_ENDED] we call the [setKeepScreenOn] method with `false` to allow the
@@ -232,14 +232,19 @@ class MovieView @JvmOverloads constructor(
      * our [View] properties [mShade] to the view with id `R.id.shade` in the inflated layout and
      * our [ImageButton] properties [mToggle], [mFastForward], [mFastRewind], and [mMinimize] to
      * the views with ids `R.id.toggle`, `R.id.fast_forward`, `R.id.fast_rewind`, and `R.id.minimize`
-     * respectively in the inflated layout. We call the [Context.withStyledAttributes] extension function
-     * of our [Context] parameter [context] with the arguments:
+     * respectively in the inflated layout. We call the [Context.withStyledAttributes] extension
+     * function of our [Context] parameter [context] with the arguments:
      *  - `set`: The base set of attribute values, our [AttributeSet] parameter [attrs].
-     *  - `attrs`: The additions custom attributes to be recognised, the attributes defined in
+     *  - `attrs`: The additional custom attributes to be recognised, the attributes defined in
      *  `R.styleable.MovieView`.
      *  - `defStyleAttr`: An attribute in the current theme that contains a reference to a style
      *  that supplies default values for the [TypedArray] that is used to retrieve the attributes
-     *  in the `block` lambda of the extension function.
+     *  in the `block` lambda of the extension function, our [Int] parameter [defStyleAttr]
+     *  - `defStyleRes`: A resource identifier of a style resource that supplies default values for
+     *  the [TypedArray], used only if defStyleAttr is 0 or can not be found in the theme. Can be 0
+     *  to not look for defaults. We pass the resource ID `R.style.Widget_PictureInPicture_MovieView`
+     *  (a style that sets the attribute `android:src` to `null`, and `android:adjustViewBounds` to
+     *  `false`.
      *
      * In the lambda we set our [Int] property [mVideoResourceId] to the resource value in the
      * [TypedArray] whose index is `R.styleable.MovieView_android_src`. We set our [Boolean] property
@@ -257,7 +262,7 @@ class MovieView @JvmOverloads constructor(
      *  [MovieListener] property [mMovieListener].
      *
      * Then if our [Player] property [player] is not `null` and its [Player.isPlaying] property
-     * is `true` is our [TimeoutHandler] property [mTimeoutHandler] is `null` we set it to a new
+     * is `true`: if our [TimeoutHandler] property [mTimeoutHandler] is `null` we set it to a new
      * instance of [TimeoutHandler]. Then we call the [TimeoutHandler.removeMessages] method with
      * the [TimeoutHandler.MESSAGE_HIDE_CONTROLS] constant to remove any messages that are queued,
      * and call the [TimeoutHandler.sendEmptyMessageDelayed] method with the message
@@ -490,7 +495,7 @@ class MovieView @JvmOverloads constructor(
      * the changes.
      *
      * @param adjustViewBounds `true` to adjust the view's bounds to match the video's aspect ratio,
-     *                         `false` to fill the bounds and letterbox the content.
+     * `false` to fill the bounds and letterbox the content.
      */
     fun setAdjustViewBounds(adjustViewBounds: Boolean) {
         if (mAdjustViewBounds == adjustViewBounds) return
