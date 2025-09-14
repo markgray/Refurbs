@@ -197,8 +197,9 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     }
 
     /**
-     * Called when the activity is becoming visible to the user. First we call super's implementation
-     * of `onStart`. Then we initialize our [MediaSession] by calling our method [initializeMediaSession].
+     * Called when the activity is becoming visible to the user. First we call super's
+     * implementation of `onStart`. Then we initialize our [MediaSession] by calling our
+     * method [initializeMediaSession].
      */
     override fun onStart() {
         super.onStart()
@@ -230,7 +231,8 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
      *  set its `title` property to the string "Untitled Video" if the [MovieView.title] property
      *  is `null`, or the [MovieView.title] property otherwise. We use the [MediaItem.Builder.build]
      *  method to build the [MediaItem]. We use the [ExoPlayer.setMediaItem] method to set the
-     *  [ExoPlayer] property [player] to the [MediaItem] variable `mediaItem`. We use the
+     *  [MediaItem] of [ExoPlayer] property [player] to the [MediaItem] variable `mediaItem`, to
+     *  clear its playlist, and reset the position to the default position. We use the
      *  [ExoPlayer.prepare] method to prepare the [ExoPlayer] property [player].
      *  - If the video resource is not available, we do nothing.
      */
@@ -282,8 +284,8 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
      *  - Releases the [ExoPlayer] instance itself to free up all associated resources,
      *  including decoders and media buffers by calling the [ExoPlayer.release] method of the
      *  [ExoPlayer] property [player].
-     *  - Sets both the player and session references to `null` to ensure they are garbage collected
-     *  and re-initialized correctly if the activity is restarted.
+     *  - Sets both the [player] reference to `null` to ensure it is garbage collected and
+     *  re-initialized correctly if the activity is restarted.
      */
     override fun onStop() {
         super.onStop()
@@ -349,7 +351,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
      * [MovieView] property [mMovieView] to show the controls if [mMovieView] is not `null` and
      * the [ExoPlayer] property [player] is not `null` and its `isPlaying` property is `false`.
      * If [isInPictureInPictureMode] is `true`, we call the [MovieView.hideControls] method of
-     * the [MovieView] property [mMovieView] to hide the controls if it is not `null`.
+     * the [MovieView] property [mMovieView] to hide the controls if [mMovieView] is not `null`.
      *
      * @param isInPictureInPictureMode `true` if the activity is now in Picture-in-Picture mode,
      * `false` otherwise.
@@ -370,7 +372,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     }
 
     /**
-     * Called when the activity want to enter Picture-in-Picture mode. If our [MovieView] property
+     * Called when the activity wants to enter Picture-in-Picture mode. If our [MovieView] property
      * [mMovieView] is `null` or our [ExoPlayer] property [player] is `null`, we return having done
      * nothing. Otherwise we call the [MovieView.hideControls] method of the [MovieView] property
      * [mMovieView] to hide the controls. We initialize our [Int] variable `movieViewWidth` to the
@@ -379,7 +381,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
      * `movieViewHeight` are greater than 0, we initialize our [Rational] variable `rational`
      * to the ratio of `movieViewWidth` to `movieViewHeight`. Otherwise we initialize it to a
      * rational with a numerator of 16 and a denominator of 9. We then call the
-     * [PictureInPictureParams.Builder.setAspectRatio] method or our [PictureInPictureParams.Builder]
+     * [PictureInPictureParams.Builder.setAspectRatio] method of our [PictureInPictureParams.Builder]
      * property [mPictureInPictureParamsBuilder] with the [Rational] variable `rational` as the
      * argument. We then call the [enterPictureInPictureMode] method with the [PictureInPictureParams]
      * built from our [PictureInPictureParams.Builder] property [mPictureInPictureParamsBuilder].

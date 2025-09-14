@@ -322,17 +322,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Initializes the [ExoPlayer] instance if it's not already created.
+     * Creates and initializes the [ExoPlayer] property [player] if it's not already created.
      *
      * This function performs the following steps:
      *  1. Checks if the `player` is null. If it is, proceeds with initialization, if it is not
-     *  it returns early.
-     *  2. Creates a new [ExoPlayer] instance using `ExoPlayer.Builder` and saves it to the [ExoPlayer]
-     *  property `player`.
+     *  `null` it returns having done nothing.
+     *  2. Creates a new [ExoPlayer] instance using [ExoPlayer.Builder] and saves it to the
+     *  [ExoPlayer] property `player`.
      *  3. Associates the newly created player with the [MovieView] property [mMovieView] if
      *  [mMovieView] is not `null`.
      *  4. Checks if [mMovieView] is not `null` and has a valid video resource ID in its
-     *  [MovieView.mVideoResourceId] property. If it is, proceeds with the following steps
+     *  [MovieView.mVideoResourceId] property. If this is `true` it proceeds with the following
+     *  steps (otherwise it returns early).
      *  5. It initializes its [String] variable `videoUri` to a string constructed by concatenating
      *  the string "android.resource://" with the package name of the current activity, and the
      *  value of [MovieView.mVideoResourceId].
@@ -342,7 +343,7 @@ class MainActivity : AppCompatActivity() {
      *  `title` is the value of [MovieView.title] or the string "Untitled Video" if it is `null`.
      *  7. Sets the [MediaItem] on the [ExoPlayer] property [player].
      *  8. Prepares the player for playback.
-     *  9. Sets the `playWhenReady` property of [player] to true to start playback automatically.
+     *  9. Sets the `playWhenReady` property of [player] to `true` to start playback automatically.
      */
     private fun initializePlayer() {
         if (player == null) {
@@ -448,10 +449,11 @@ class MainActivity : AppCompatActivity() {
      * Called when the activity enters or exits Picture-in-Picture mode.
      *
      * We first call our super's implementation of `onPictureInPictureModeChanged`, then we check
-     * if the `isInPictureInPictureMode` parameter is `true`. If it is, we:
+     * if our [isInPictureInPictureMode] parameter is `true`. If it is, we:
      *  - Initialize our [BroadcastReceiver] property [mReceiver] to a new instance of
      *  [BroadcastReceiver] whose `onReceive` override checks if its [Intent] parameter `intent`
-     *  is `null` and if its `action` is [ACTION_MEDIA_CONTROL] returning if the test fails.
+     *  is `null` and if its [Intent.getAction] returns [ACTION_MEDIA_CONTROL] returning to its
+     *  caller if the test fails.
      *  Otherwise it initializes its [Int] variable `controlType` to the value stored as an
      *  extra in the [Intent] parameter `intent` under the key [EXTRA_CONTROL_TYPE]. It then
      *  branches on the value of `controlType` with [CONTROL_TYPE_PLAY] calling [MovieView.play]
@@ -476,6 +478,28 @@ class MainActivity : AppCompatActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         if (isInPictureInPictureMode) {
             mReceiver = object : BroadcastReceiver() {
+                /**
+                 * This method is called when the BroadcastReceiver is receiving an Intent
+                 * broadcast.  During this time you can use the other methods on
+                 * BroadcastReceiver to view/modify the current result values.  This method
+                 * is always called within the main thread of its process, unless you
+                 * explicitly asked for it to be scheduled on a different thread using. When it
+                 * runs on the main thread you should never perform long-running operations in
+                 * it (there is a timeout of 10 seconds that the system allows before considering
+                 * the receiver to be blocked and a candidate to be killed). You cannot launch a
+                 * popup dialog in your implementation of `onReceive`.
+                 *
+                 * First we check if our [Intent] parameter [intent] is `null` and if its
+                 * [Intent.getAction] returns [ACTION_MEDIA_CONTROL], returning to our caller if
+                 * the test fails. Otherwise we initialize our [Int] variable `controlType` to the
+                 * value stored as an extra in the [Intent] parameter `intent` under the key
+                 * [EXTRA_CONTROL_TYPE]. WE then branche on the value of `controlType` with
+                 * [CONTROL_TYPE_PLAY] calling [MovieView.play] and [CONTROL_TYPE_PAUSE] calling
+                 * [MovieView.pause].
+                *
+                 * @param context The Context in which the receiver is running.
+                 * @param intent The Intent being received.
+                 */
                 override fun onReceive(context: Context, intent: Intent?) {
                     if (intent == null || ACTION_MEDIA_CONTROL != intent.action) {
                         return
@@ -509,17 +533,24 @@ class MainActivity : AppCompatActivity() {
      * callback is triggered by the [MovieView]. It performs the following steps:
      *
      *  1. Checks if the [MovieView] property [mMovieView] is `null`. If it is, the function returns
-     *  early.
+     *  having done nothing.
      *  2. Hides the playback controls on the [MovieView] property [mMovieView] by calling the
      *  [MovieView.hideControls] method.
-     *  3. Determines the optimal aspect ratio for the PiP window. It prioritizes the current
-     *  dimensions of the [MovieView]. If those are not available, it falls back to the
-     *  video's intrinsic size from the `player`. If that also fails, it defaults to a 16:9
-     *  aspect ratio.
-     *  4. Sets this aspect ratio on the [PictureInPictureParams.Builder] property
+     *  3. Initializes its [Int] variable `movieViewWidth` to the [View.getWidth] of [MovieView]
+     *  property [mMovieView].
+     *  4. Initializes its [Int] variable `movieViewHeight` to the [View.getHeight] of [MovieView]
+     *  property [mMovieView].
+     *  5. Initializes its [Rational] variable `rational` to a [Rational] of `movieViewWidth` over
+     *  `movieViewHeight` if they are both greater than `0`. Otherwise it initializes its [VideoSize]
+     *  variable `videoSize` to the value returned by the [ExoPlayer.getVideoSize] method of
+     *  [ExoPlayer] property [player], and if that is not `null` and both [VideoSize.width] and
+     *  [VideoSize.height] are greater than `0` it initializes `rational` to a [Rational] of
+     *  [VideoSize.width] over [VideoSize.height]. If that also fails, it defaults to initializing
+     *  `rational` to a [Rational] of `16` over `9`.
+     *  6. Sets this aspect ratio on the [PictureInPictureParams.Builder] property
      *  [mPictureInPictureParamsBuilder] by calling its [PictureInPictureParams.Builder.setAspectRatio]
-     *  method.
-     *  5. Calls [enterPictureInPictureMode] with the [PictureInPictureParams] built from
+     *  method with [Rational] variable `rational`.
+     *  7. Calls [enterPictureInPictureMode] with the [PictureInPictureParams] built from
      *  [mPictureInPictureParamsBuilder] to transition the activity into PiP mode.
      */
     fun minimize() {
@@ -564,7 +595,7 @@ class MainActivity : AppCompatActivity() {
      * We initialize our [View] variable `decorView` to the [Window.getDecorView] of the current
      * [Window] of the activity. We then branch on the value of the [Configuration.orientation]:
      *  - If it is [Configuration.ORIENTATION_LANDSCAPE], we set the `systemUiVisibility` of
-     *  `decorView` to the result of oring the flags [View.SYSTEM_UI_FLAG_LAYOUT_STABLE],
+     *  `decorView` to the result of or'ing the flags [View.SYSTEM_UI_FLAG_LAYOUT_STABLE],
      *  [View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION], [View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN],
      *  [View.SYSTEM_UI_FLAG_HIDE_NAVIGATION], [View.SYSTEM_UI_FLAG_FULLSCREEN], and
      *  [View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY]. We then set the `visibility` of the [ScrollView]
@@ -613,7 +644,7 @@ class MainActivity : AppCompatActivity() {
         /**
          * Intent action for media control from Picture-in-Picture mode.
          * This is used to send commands from the PiP window (e.g., play, pause) back to the
-         * activity through a `BroadcastReceiver`.
+         * activity through our [BroadcastReceiver] property `mReceiver`.
          */
         private const val ACTION_MEDIA_CONTROL = "media_control"
 
