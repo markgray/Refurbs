@@ -244,7 +244,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
         mMovieView?.setPlayer(player) // Provide the player instance to MovieView
 
         mSession = MediaSession.Builder(this, player!!)
-            .setCallback(Media3SessionCallback())
+            .setCallback(Media3SessionCallback()) // TODO: Consider chaining .setAttributionTag("your_attribution_tag")
             .build()
 
         if (mMovieView != null && mMovieView!!.mVideoResourceId != 0) { // Use mVideoResourceId from MovieView
