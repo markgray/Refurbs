@@ -23,7 +23,7 @@ android {
     }
     namespace = "com.example.android.obbapp"
     dependencies {
-        implementation("androidx.activity:activity-ktx:1.10.1")
+        implementation("androidx.activity:activity-ktx:1.11.0")
     }
     buildTypes {
         release {
