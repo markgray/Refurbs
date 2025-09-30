@@ -252,8 +252,8 @@ class MovieView @JvmOverloads constructor(
      * `R.styleable.MovieView_android_adjustViewBounds`. We set our [String] property [title] to the
      * string value in the [TypedArray] whose index is `R.styleable.MovieView_android_title`.
      *
-     * Next we initialize our [OnClickListener] variable `listener` with a lambda that switches on
-     * the [View.id] of the view that was clicked:
+     * Next we initialize our [View.OnClickListener] variable `listener` with a lambda that switches
+     * on the [View.id] of the view that was clicked:
      *  - `R.id.surface`: We call our [toggleControls] method.
      *  - `R.id.toggle`: We call our [toggle] method.
      *  - `R.id.fast_forward`: We call our [fastForward] method.
