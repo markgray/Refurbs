@@ -29,18 +29,18 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 
 /**
  * Sample Activity demonstrating how to connect to the network and fetch raw HTML. It uses a
  * [Fragment] that encapsulates the network operations in an AsyncTask. This sample uses a
  * [TextView] to display output.
  */
-class MainActivity : FragmentActivity(), DownloadCallback {
+class MainActivity : AppCompatActivity(), DownloadCallback {
     /**
      * Reference to the [TextView] showing fetched data, so we can clear it with a button as necessary.
      */
