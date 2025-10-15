@@ -32,6 +32,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }
@@ -50,10 +51,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     annotationProcessor("androidx.lifecycle:lifecycle-common:2.9.4")
-    implementation("androidx.room:room-runtime:2.8.1")
-    annotationProcessor("androidx.room:room-compiler:2.8.1")
-    ksp("androidx.room:room-compiler:2.8.1")
-    implementation("androidx.room:room-rxjava2:2.8.1")
+    implementation("androidx.room:room-runtime:2.8.2")
+    annotationProcessor("androidx.room:room-compiler:2.8.2")
+    ksp("androidx.room:room-compiler:2.8.2")
+    implementation("androidx.room:room-rxjava2:2.8.2")
     implementation("androidx.annotation:annotation:1.9.1")
 
     // RxJava
