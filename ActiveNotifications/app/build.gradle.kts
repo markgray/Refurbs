@@ -35,6 +35,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.txt"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     namespace = "com.example.android.activenotifications"
