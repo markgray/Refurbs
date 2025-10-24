@@ -24,6 +24,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     buildFeatures {
@@ -55,13 +56,13 @@ dependencies {
     implementation("androidx.core:core-ktx:1.17.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4")
     ksp("androidx.lifecycle:lifecycle-common:2.9.4")
-    implementation("androidx.room:room-runtime:2.8.2")
-    ksp("androidx.room:room-compiler:2.8.2")
+    implementation("androidx.room:room-runtime:2.8.3")
+    ksp("androidx.room:room-compiler:2.8.3")
 
     // Android Testing Support Library"s runner and rules
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test:rules:1.7.0")
-    androidTestImplementation("androidx.room:room-testing:2.8.2")
+    androidTestImplementation("androidx.room:room-testing:2.8.3")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
 
     // Espresso UI Testing
