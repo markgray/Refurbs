@@ -458,7 +458,7 @@ class MediaSessionPlaybackActivity : AppCompatActivity() {
     /**
      * The [MediaSession.Callback] we use to handle incoming requests from [MediaController].
      */
-    private inner class Media3SessionCallback : MediaSession.Callback {
+    private class Media3SessionCallback : MediaSession.Callback {
         /**
          * Called when a [MediaController] is created for this session.
          *
