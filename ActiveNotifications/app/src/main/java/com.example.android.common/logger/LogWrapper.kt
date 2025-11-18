@@ -25,16 +25,13 @@ import android.util.Log
  */
 class LogWrapper : LogNode {
     /**
-     * Returns the next LogNode in the linked list.
+     * For piping:  The next node to receive Log data after this one has done its work.
      */
-    /**
-     * Sets the LogNode data will be sent to..
-     */
-    // For piping:  The next node to receive Log data after this one has done its work.
     var next: LogNode? = null
 
     /**
      * Prints data out to the console using Android's native log mechanism.
+     *
      * @param priority Log level of the data being logged.  Verbose, Error, etc.
      * @param tag Tag for for the log data.  Can be used to organize log statements.
      * @param msg The actual message to be logged. The actual message to be logged.

@@ -24,10 +24,7 @@ package com.example.android.common.logger
  */
 class MessageOnlyLogFilter : LogNode {
     /**
-     * Returns the next LogNode in the chain.
-     */
-    /**
-     * Sets the LogNode data will be sent to..
+     * The next [LogNode] in the chain.
      */
     var next: LogNode? = null
 
@@ -43,7 +40,13 @@ class MessageOnlyLogFilter : LogNode {
     constructor()
 
     /**
-     * TODO: Add kdoc
+     * Formats the log data, removing extraneous information and passing it to the next
+     * [LogNode] in the chain.
+     *
+     * @param priority The priority of the log message.
+     * @param tag The tag associated with the log message.
+     * @param msg The message to be logged.
+     * @param tr An exception to be logged.
      */
     override fun println(priority: Int, tag: String?, msg: String?, tr: Throwable?) {
         if (next != null) {

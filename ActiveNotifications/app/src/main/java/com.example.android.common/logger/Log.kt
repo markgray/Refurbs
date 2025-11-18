@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("PublicApiImplicitType", "KDocMissingDocumentation", "unused", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "PublicApiImplicitType",
+    "KDocMissingDocumentation",
+    "unused",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.common.logger
 
@@ -22,11 +28,9 @@ import android.util.Log
 /**
  * Helper class for a list (or tree) of LoggerNodes.
  *
- *
- * When this is set as the head of the list,
- * an instance of it can function as a drop-in replacement for [android.util.Log].
- * Most of the methods in this class server only to map a method call in Log to its equivalent
- * in LogNode.
+ * When this is set as the head of the list, an instance of it can function as a drop-in replacement
+ * for [android.util.Log]. Most of the methods in this class serve only to map a method call in Log
+ * to its equivalent in [LogNode].
  */
 object Log {
     // Grabbing the native values from Android's native logging facilities,
@@ -38,18 +42,15 @@ object Log {
     const val WARN = Log.WARN
     const val ERROR = Log.ERROR
     const val ASSERT = Log.ASSERT
+
     /**
-     * Returns the next LogNode in the linked list.
+     * Stores the beginning of the LogNode topology.
      */
-    /**
-     * Sets the LogNode data will be sent to.
-     */
-    // Stores the beginning of the LogNode topology.
     var logNode: LogNode? = null
 
     /**
-     * Instructs the LogNode to print the log data provided. Other LogNodes can
-     * be chained to the end of the LogNode as desired.
+     * Instructs the [LogNode] property [logNode] to print the log data provided. Other LogNodes can
+     * be chained to the end of the [LogNode] as desired.
      *
      * @param priority Log level of the data being logged. Verbose, Error, etc.
      * @param tag Tag for for the log data. Can be used to organize log statements.
