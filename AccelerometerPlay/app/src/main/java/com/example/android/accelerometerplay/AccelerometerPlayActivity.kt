@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn")
 
 package com.example.android.accelerometerplay
 
@@ -247,7 +247,7 @@ class AccelerometerPlayActivity : ComponentActivity() {
         /**
          * Reference to the default accelerometer sensor (TYPE_ACCELEROMETER).
          */
-        private val mAccelerometer: Sensor
+        private val mAccelerometer: Sensor = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!!
 
         /**
          * Timestamp of the last accelerometer event processed.
@@ -573,8 +573,7 @@ class AccelerometerPlayActivity : ComponentActivity() {
                 updatePositions(sx, sy, now)
 
                 // We do no more than a limited number of iterations
-                @Suppress("LocalVariableName") // A rose is a rose is a rose.
-                val NUM_MAX_ITERATIONS = 10
+                val maxCollisionIterations = 10
 
                 /*
                  * Resolve collisions, each particle is tested against every
@@ -585,7 +584,7 @@ class AccelerometerPlayActivity : ComponentActivity() {
                 var more = true
                 val count = mBalls.size
                 var k = 0
-                while (k < NUM_MAX_ITERATIONS && more) {
+                while (k < maxCollisionIterations && more) {
                     more = false
                     for (i in 0 until count) {
                         val curr = mBalls[i]
@@ -680,7 +679,6 @@ class AccelerometerPlayActivity : ComponentActivity() {
         }
 
         init {
-            mAccelerometer = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!!
             val metrics = DisplayMetrics()
             @Suppress("DEPRECATION") // TODO: Fix getMetrics deprecation
             windowManager.defaultDisplay.getMetrics(metrics)
