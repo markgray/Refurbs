@@ -27,6 +27,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.View
+import android.view.View.OnApplyWindowInsetsListener
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -58,8 +59,39 @@ class MainActivity : AppCompatActivity() {
     private var mSpinner: Spinner? = null
 
     /**
-     * Setup activity state.
-     * TODO: Continue here.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display then we call our super's implementation of `onCreate` and set our content view
+     * to our layout file `R.layout.activity_main`. We initialize [RelativeLayout] variable
+     * `rootView`  to the [View] with resource id `R.id.root_view` and then we use
+     * [ViewCompat.setOnApplyWindowInsetsListener] to set an [OnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to `rootView`, with the `listener` argument a
+     * lambda that accepts the [View] passed the lambda in variable `v` and the [WindowInsetsCompat]
+     * passed the lambda in variable `windowInsets`. It initializes its [Insets] variable `insets`
+     * to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates the layout parameters
+     * of `v` to be a [ViewGroup.MarginLayoutParams] with the `leftMargin` margin set to
+     * `insets.left`, the `rightMargin` margin set to `insets.right`, the `topMargin` margin set to
+     * `insets.top`, and the `bottomMargin` margin set to `insets.bottom`. Finally it returns
+     * [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets will not keep being
+     * passed down to descendant views).
+     *
+     * We initialize our [SharedPreferences] property [mPrefs] to the value returned by the
+     * [PreferenceManager.getDefaultSharedPreferences] method for `this` [MainActivity] (handle to
+     * default shared preferences for this activity). We initialize our [Spinner] property [mSpinner]
+     * to the view with ID `R.id.spinner`, then call its [Spinner.setAdapter] method to set its
+     * adapter to an [ArrayAdapter] whose `context` argument is `this` [MainActivity], whose
+     * `resource` argument is the layout file with resource ID `android.R.layout.simple_list_item_1`,
+     * and whose `objects` argument is an [ArrayList] built from the contents of our [Array] of
+     * [String] property [SPINNER_VALUES]. We initialize our [Int] variable `selection` to the
+     * [Int] retrieved from our shared preference file by the [SharedPreferences.getInt] method of
+     * [SharedPreferences] property [mPrefs] for the `key` [PREF_SPINNER_POS] (defaulting to
+     * [PREF_SPINNER_VALUE_ISNULL] if none is found). Then if `selection` is not
+     * [PREF_SPINNER_VALUE_ISNULL] we call the [Spinner.setSelection] method of [Spinner] property
+     * [mSpinner] to set its currently selected item to `selection`. Finally we call the
+     * [Spinner.setOnItemSelectedListener] method of [mSpinner] to set its [OnItemSelectedListener]
+     * to an anonymous class which will store the value selected in [SharedPreferences] property
+     * [mPrefs].
+     *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,6 +144,20 @@ class MainActivity : AppCompatActivity() {
             //
             // Note: A common mistake here is to forget to call .commit(). Try removing this
             // statement and running the tests to watch them fail.
+
+            /**
+             * Callback method to be invoked when an item in this view has been selected. This
+             * implementation saves the [position] of the selected item in our [SharedPreferences]
+             * file [mPrefs] under the key [PREF_SPINNER_POS]. The `commit` parameter of the [edit]
+             * function is `true` so the save is performed synchronously. We suppress the
+             * "ApplySharedPref" warning because we want to perform a synchronous `commit` rather
+             * than an asynchronous `apply` to prevent race conditions in the tests.
+             *
+             * @param parent The [AdapterView] where the selection happened.
+             * @param view The [View] within the [AdapterView] that was clicked.
+             * @param position The position of the view in the adapter.
+             * @param id The row id of the item that is selected.
+             */
             @SuppressLint("ApplySharedPref")
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -122,6 +168,18 @@ class MainActivity : AppCompatActivity() {
                 mPrefs!!.edit(commit = true) { putInt(PREF_SPINNER_POS, position) }
             }
 
+            /**
+             * Callback method to be invoked when the selection disappears from this
+             * view. The selection can disappear for instance when touch is activated
+             * or when the adapter becomes empty. We remove the value stored under the
+             * key [PREF_SPINNER_POS] from our [SharedPreferences] file [mPrefs]. The
+             * `commit` parameter of the [edit] function is `true` so the removal is
+             * performed synchronously. We suppress the "ApplySharedPref" warning
+             * because we want to perform a synchronous `commit` rather than an
+             * asynchronous `apply` to prevent race conditions in the tests.
+             *
+             * @param parent The [AdapterView] that now contains no selected item.
+             */
             @SuppressLint("ApplySharedPref")
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 mPrefs!!.edit(commit = true) { remove(PREF_SPINNER_POS) }
@@ -143,7 +201,7 @@ class MainActivity : AppCompatActivity() {
         /**
          * Values for display in spinner.
          */
-        private val SPINNER_VALUES = arrayOf(
+        private val SPINNER_VALUES: Array<String> = arrayOf(
             "Select Weather...", "Sunny", "Partly Cloudy", "Cloudy", "Rain", "Snow", "Hurricane"
         )
 
@@ -151,37 +209,37 @@ class MainActivity : AppCompatActivity() {
         // so that they can be accessed from our test suite.
 
         /**
-         * TODO: Add kdoc
+         * Position of the [Spinner] when nothing is selected.
          */
         const val WEATHER_NOSELECTION: Int = 0
 
         /**
-         * TODO: Add kdoc
+         * Position of the [Spinner] when the user selects "Sunny".
          */
         const val WEATHER_SUNNY: Int = 1
 
         /**
-         * TODO: Add kdoc
+         * Position of the [Spinner] when the user selects "Partly Cloudy".
          */
         const val WEATHER_PARTLY_CLOUDY: Int = 2
 
         /**
-         * TODO: Add kdoc
+         * Position of the [Spinner] when the user selects "Cloudy".
          */
         const val WEATHER_CLOUDY: Int = 3
 
         /**
-         * TODO: Add kdoc
+         * Position of the [Spinner] when the user selects "Rain".
          */
         const val WEATHER_RAIN: Int = 4
 
         /**
-         * TODO: Add kdoc
+         * Position of the [Spinner] when the user selects "Snow".
          */
         const val WEATHER_SNOW: Int = 5
 
         /**
-         * TODO: Add kdoc
+         * Position of the [Spinner] when the user selects "Hurricane".
          */
         const val WEATHER_HURRICANE: Int = 6
     }
