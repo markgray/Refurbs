@@ -275,7 +275,7 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
             // Sleep for a small amount of time to simulate a background-task
             try {
                 @Suppress("RemoveRedundantQualifierName")
-                Thread.sleep(Companion.TASK_DURATION.toLong())
+                Thread.sleep(TASK_DURATION.toLong())
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
