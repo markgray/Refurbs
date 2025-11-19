@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog")
+@file:Suppress(
+    "unused",
+    "DEPRECATION",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "ReplaceJavaStaticMethodWithKotlinAnalog"
+)
 // TODO: Migrate from SharedPreferences to Preferences DataStore
 package com.example.android.activityinstrumentation
 
@@ -35,22 +40,27 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import java.util.Arrays
 import androidx.core.content.edit
+import androidx.core.graphics.Insets
 
 /**
  * Basic activity with a spinner. The spinner should persist its position to disk every time a
  * new selection is made.
  */
 class MainActivity : AppCompatActivity() {
-    /** Handle to default shared preferences for this activity.  */
+    /**
+     * Handle to default shared preferences for this activity.
+     */
     private var mPrefs: SharedPreferences? = null
 
-    /** Handle to the spinner in this Activity's layout.  */
+    /**
+     * Handle to the spinner in this Activity's layout.
+     */
     private var mSpinner: Spinner? = null
 
     /**
      * Setup activity state.
-     *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * TODO: Continue here.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -58,14 +68,14 @@ class MainActivity : AppCompatActivity() {
 
         // Inflate UI from res/layout/activity_main.xml
         setContentView(R.layout.sample_main)
-        val rootView = findViewById<RelativeLayout>(R.id.root_view)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView!!) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        val rootView: RelativeLayout = findViewById(R.id.root_view)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
-                topMargin = insets.top+supportActionBar!!.height
+                topMargin = insets.top + supportActionBar!!.height
                 bottomMargin = insets.bottom
             }
             // Return CONSUMED if you don't want want the window insets to keep passing
@@ -80,13 +90,16 @@ class MainActivity : AppCompatActivity() {
         // Populate spinner with sample values from an array
         mSpinner = findViewById(R.id.spinner)
         mSpinner!!.adapter = ArrayAdapter(
-            this,  // Context
-            android.R.layout.simple_list_item_1,  // Layout
-            ArrayList(Arrays.asList(*SPINNER_VALUES)) // Data source
+            /* context = */ this,
+            /* resource = */ android.R.layout.simple_list_item_1,
+            /* objects = */ ArrayList(Arrays.asList(*SPINNER_VALUES))
         )
 
         // Read in a sample value, if it's not set.
-        val selection = mPrefs!!.getInt(PREF_SPINNER_POS, PREF_SPINNER_VALUE_ISNULL)
+        val selection: Int = mPrefs!!.getInt(
+            /* key = */ PREF_SPINNER_POS,
+            /* defValue = */ PREF_SPINNER_VALUE_ISNULL
+        )
         if (selection != PREF_SPINNER_VALUE_ISNULL) {
             mSpinner!!.setSelection(selection)
         }
@@ -100,7 +113,12 @@ class MainActivity : AppCompatActivity() {
             // Note: A common mistake here is to forget to call .commit(). Try removing this
             // statement and running the tests to watch them fail.
             @SuppressLint("ApplySharedPref")
-            override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
                 mPrefs!!.edit(commit = true) { putInt(PREF_SPINNER_POS, position) }
             }
 
@@ -112,15 +130,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        /** Shared preferences key: Holds spinner position. Must not be negative.  */
+        /**
+         * Shared preferences key: Holds spinner position. Must not be negative.
+         */
         private const val PREF_SPINNER_POS = "spinner_pos"
 
-        /** Magic constant to indicate that no value is stored for PREF_SPINNER_POS.  */
+        /**
+         * Magic constant to indicate that no value is stored for PREF_SPINNER_POS.
+         */
         private const val PREF_SPINNER_VALUE_ISNULL = -1
 
-        /** Values for display in spinner.  */
+        /**
+         * Values for display in spinner.
+         */
         private val SPINNER_VALUES = arrayOf(
-            "Select Weather...", "Sunny", "Partly Cloudy", "Cloudy", "Rain", "Snow", "Hurricane")
+            "Select Weather...", "Sunny", "Partly Cloudy", "Cloudy", "Rain", "Snow", "Hurricane"
+        )
 
         // Constants representing each of the options in SPINNER_VALUES. Declared package-private
         // so that they can be accessed from our test suite.
@@ -129,26 +154,32 @@ class MainActivity : AppCompatActivity() {
          * TODO: Add kdoc
          */
         const val WEATHER_NOSELECTION: Int = 0
+
         /**
          * TODO: Add kdoc
          */
         const val WEATHER_SUNNY: Int = 1
+
         /**
          * TODO: Add kdoc
          */
         const val WEATHER_PARTLY_CLOUDY: Int = 2
+
         /**
          * TODO: Add kdoc
          */
         const val WEATHER_CLOUDY: Int = 3
+
         /**
          * TODO: Add kdoc
          */
         const val WEATHER_RAIN: Int = 4
+
         /**
          * TODO: Add kdoc
          */
         const val WEATHER_SNOW: Int = 5
+
         /**
          * TODO: Add kdoc
          */
