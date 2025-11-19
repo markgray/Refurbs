@@ -52,29 +52,30 @@ open class MainActivity : SampleActivityBase() {
     private var mLogShown = false
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge-to-edge
-     * display then we call our super's implementation of `onCreate` and set our content view to our
-     * layout file `R.layout.activity_main`. We initialize [LinearLayout] variable `rootView` to the
-     * [View] with id `R.id.sample_main_layout` and then we use [ViewCompat.setOnApplyWindowInsetsListener]
-     * to Set an [OnApplyWindowInsetsListener] to take over the policy for applying window insets
-     * `rootView`, with the `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda in variable `windowInsets`.
-     * It initializes its [Insets] variable `insets` to the [WindowInsetsCompat.getInsets] of
-     * `windowInsets` with [WindowInsetsCompat.Type.systemBars] as the argument, then it updates the
-     * layout parameters of `v` to be a [ViewGroup.MarginLayoutParams] with the left margin set to
-     * `insets.left`, the right margin set to `insets.right`, the top margin set to `insets.top`,
-     * and the bottom margin set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display then we call our super's implementation of `onCreate` and set our content view
+     * to our layout file `R.layout.activity_main`. We initialize [LinearLayout] variable `rootView`
+     * to the [View] with resource id `R.id.sample_main_layout` and then we use
+     * [ViewCompat.setOnApplyWindowInsetsListener] to Set an [OnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to `rootView`, with the `listener` argument a
+     * lambda that accepts the [View] passed the lambda in variable `v` and the [WindowInsetsCompat]
+     * passed the lambda in variable `windowInsets`. It initializes its [Insets] variable `insets`
+     * to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates the layout parameters
+     * of `v` to be a [ViewGroup.MarginLayoutParams] with the left margin set to `insets.left`, the
+     * right margin set to `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so
+     * that the window insets will not keep passing down to descendant views).
      *
      * If our [Bundle] parameter `savedInstanceState` is `null` this is the first time we have been
-     * called so we initialize a new [FragmentTransaction] variable `transaction` by using the
+     * called so we initialize our [FragmentTransaction] variable `transaction` by using the
      * [FragmentManager.beginTransaction] method of the [FragmentManager] returned by
      * [supportFragmentManager], initialize our [ActiveNotificationsFragment] variable `fragment`
      * with a new instance, then call the [FragmentTransaction.replace] method of `transaction` to
-     * replace the contents of the container with ID `R.id.sample_content_fragment` with the `fragment`,
+     * replace the contents of the container with ID `R.id.sample_content_fragment` with `fragment`,
      * finally calling the [FragmentTransaction.commit] method of `transaction` to apply the
      * transaction. If our [Bundle] parameter `savedInstanceState` is not `null` this is not the
-     * first time we have been called so we do nothing more.
+     * first time we have been called so the fragment already exits so we just return.
      *
      * @param savedInstanceState If this is not null we are being being re-initialized after
      * previously being shut down and our [ActiveNotificationsFragment] still exists.
@@ -123,10 +124,12 @@ open class MainActivity : SampleActivityBase() {
      * Prepare the Screen's standard options menu to be displayed. We initialize [MenuItem] variable
      * `logToggle` by finding the [MenuItem] in our [Menu] parameter [menu] with the id
      * `R.id.menu_toggle_log` ("Show Log"), then we set it to visible if the view with id
-     * `R.id.sample_output` is an instance of [ViewAnimator], and set its title to the string with
-     * id `R.string.sample_hide_log` ("Hide Log") if  [Boolean] property [mLogShown] is `true` or to
-     * the string with id `R.string.sample_show_log` ("Show Log") if it is `false`. Finally we return
-     * the value returned by our super's implementation of `onPrepareOptionsMenu` to the caller.
+     * `R.id.sample_output` is an instance of [ViewAnimator] or invisible if it is not (in the
+     * layout file for `w720dp` it is a [LinearLayout] not a [ViewAnimator]), set its title to the
+     * string with id `R.string.sample_hide_log` ("Hide Log") if  [Boolean] property [mLogShown] is
+     * `true` or to the string with id `R.string.sample_show_log` ("Show Log") if it is `false`.
+     * Finally we return the value returned by our super's implementation of `onPrepareOptionsMenu`
+     * to the caller.
      *
      * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu].
      * @return You must return true for the menu to be displayed;
@@ -173,12 +176,12 @@ open class MainActivity : SampleActivityBase() {
     /**
      * Create a chain of targets that will receive log data. We initialize [LogWrapper] variable
      * `logWrapper` with a new instance, and set it as the [LogNode] that log data will be sent to.
-     * We create a new instance for [MessageOnlyLogFilter] variable `msgFilter` (strips out everything
-     * except the message text) and set it as the [LogNode] that `logWrapper` will next send data to.
-     * We then initialize [LogFragment] variable `logFragment` by using the [FragmentManager] for
-     * interacting with fragments associated with this activity to find the fragment with the resource
-     * id `R.id.log_fragment`, then set its [LogView] as the [LogView] that `msgFilter` will send
-     * data to. Finally we log the message "Ready".
+     * We create a new instance for [MessageOnlyLogFilter] variable `msgFilter` (strips out
+     * everything except the message text) and set it as the [LogNode] that `logWrapper` will next
+     * send data to. We then initialize [LogFragment] variable `logFragment` by using the
+     * [FragmentManager] for interacting with fragments associated with this activity to find the
+     * fragment with the resource id `R.id.log_fragment`, then set its [LogView] as the [LogView]
+     * that `msgFilter` will send data to. Finally we log the message "Ready".
      */
     override fun initializeLogging() {
         // Wraps Android's native log framework.
