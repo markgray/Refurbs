@@ -53,7 +53,7 @@ class Activity3 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Directly set the content view using the layout resource ID
-        setContentView(R.layout.empty_activity)
+        setContentView(R.layout.empty_activity_3)
 
         // Find the root view to apply insets
         val view = findViewById<View>(android.R.id.content)
