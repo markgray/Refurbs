@@ -24,7 +24,7 @@ import android.graphics.BitmapFactory
 import androidx.core.graphics.scale
 
 /**
- * TODO: Add kdoc
+ * TODO: Continue here.
  */
 class BitmapUtils {
     /**
@@ -51,7 +51,8 @@ class BitmapUtils {
             "drunk at the time, and I woke up without my left sock.",
         "Right before I took this picture, there was a busload of school children right " +
             "in my way. I knew the perfect shot was coming, so I quickly yelled 'Free candy!!!' " +
-            "and they scattered.")
+            "and they scattered."
+    )
 
     /**
      * Load pictures and descriptions. A real app wouldn't do it this way, but that's not the point

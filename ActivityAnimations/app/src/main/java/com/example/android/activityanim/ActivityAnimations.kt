@@ -13,26 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
+@file:Suppress(
+    "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
     "UnusedImport"
 )
 
 package com.example.android.activityanim
 
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
+import androidx.core.view.OnApplyWindowInsetsListener
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -50,58 +58,64 @@ import androidx.core.graphics.drawable.toDrawable
  */
 class ActivityAnimations : AppCompatActivity() {
     /**
-     * `GridLayout` in our layout file layout/activity_animations.xml with the id R.id.gridLayout,
+     * [GridLayout] in our layout file layout/activity_animations.xml with the id `R.id.gridLayout`,
      * it is the only view in that layout file and is used to display our thumbnails.
      */
     var mGridLayout: GridLayout? = null
 
     /**
-     * `HashMap` which contains a `PictureData` object for each of our `ImageView`
-     * thumbnails displayed in our `GridLayout`
+     * [HashMap] which contains a [PictureData] object for each of our [ImageView]
+     * thumbnails displayed in our [GridLayout]
      */
     var mPicturesData: HashMap<ImageView, PictureData> = HashMap()
 
     /**
-     * Instance  of `BitmapUtils` which we use for its `loadPhotos` method.
+     * Instance  of [BitmapUtils] which we use for its [BitmapUtils.loadPhotos] method.
      */
     var mBitmapUtils: BitmapUtils = BitmapUtils()
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.activity_animations. We initialize
-     * `ColorMatrix grayMatrix` with a new instance, set its saturation to 0 (0 maps the color
-     * to gray-scale), and create `ColorMatrixColorFilter grayscaleFilter` from it. We initialize
-     * `GridLayout mGridLayout` by finding the view with id R.id.gridLayout, set its column count
-     * to 3, and enable its use of default margins around children based on the child's visual
-     * characteristics. We initialize `Resources resources` with an instance for our application's
-     * package, and initialize `ArrayList<PictureData> pictures` with the random list generated
-     * by the `loadPhotos` method of `BitmapUtils mBitmapUtils` when passed `resources`
-     * as its argument. We not loop over `int i` for all the `PictureData` objects in
-     * `pictures`:
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display then we call our super's implementation of `onCreate` and set our content view
+     * to our layout file `R.layout.activity_animations`. We initialize our [ColorMatrix] variable
+     * `grayMatrix` to a new instance, set its saturation to 0 (0 maps the color to gray-scale), and
+     * create [ColorMatrixColorFilter] variable `grayscaleFilter` from it. We initialize [GridLayout]
+     * variable `mGridLayout` by finding the view with id `R.id.gridLayout`. Then we call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to set an [OnApplyWindowInsetsListener] on
+     * `mGridLayout` to take over the policy for applying window insets to `mGridLayout`, with the
+     * `listener` argument a lambda that accepts the [View] passed the lambda in variable `v` and
+     * the [WindowInsetsCompat] passed the lambda in variable `windowInsets`. It initializes its
+     * [Insets] variable `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates the layout parameters
+     * of `v` to be a [ViewGroup.MarginLayoutParams] with the left margin set to `insets.left`, the
+     * right margin set to `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so
+     * that the window insets will not keep passing down to descendant views).
      *
-     *  *
-     * We initialize `PictureData pictureData` with the `PictureData` in position
-     * `i` of `pictures`.
+     * We set the column count of `mGridLayout` to 3, and enable its use of default margins around
+     * children based on the child's visual characteristics. We initialize [Resources] variable
+     * `resources` with an instance for our application's package, and initialize [ArrayList] of
+     * [PictureData] variable `pictures` with the random list generated by the [BitmapUtils.loadPhotos]
+     * method of [BitmapUtils] property [mBitmapUtils] when passed `resources` as its argument. We
+     * loop over [Int] variable `i` for all the [PictureData] objects in `pictures` and for each:
      *
-     *  *
-     * We create `BitmapDrawable thumbnailDrawable` from the `Bitmap` in the
-     * `thumbnail` field of `pictureData`, and set its color filter to
-     * `grayscaleFilter`.
+     *  * We initialize [PictureData] variable `pictureData` with the [PictureData] in position
+     *  `i` of `pictures`.
      *
-     *  *
-     * We initialize `ImageView imageView` with a new instance, set its `OnClickListener`
-     * to `thumbnailClickListener`, and set its content to `thumbnailDrawable`
+     *  * We create [BitmapDrawable] variable `thumbnailDrawable` from the [Bitmap] in the
+     *  [PictureData.thumbnail] field of `pictureData`, and set its color filter to `grayscaleFilter`.
      *
-     *  *
-     * We then store `pictureData` in `mPicturesData` under the key `imageView`
+     *  * We initialize [ImageView] variable `imageView` with a new instance, set its [OnClickListener]
+     *  to [OnClickListener] to [OnClickListener] property [thumbnailClickListener], and set its
+     *  content to `thumbnailDrawable`
      *
-     *  *
-     * We add `imageView` to `GridLayout mGridLayout` then loop around for the
-     * next `PictureData` in `pictures`.
+     *  * We store `pictureData` in [HashMap] of [ImageView] to [PictureData] property [mPicturesData]
+     *  under the key `imageView`.
      *
+     *  * Finally we add `imageView` to [GridLayout] property [mGridLayout] then loop around for the
+     *  next [PictureData] in `pictures`.
      *
-     *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -113,13 +127,13 @@ class ActivityAnimations : AppCompatActivity() {
         grayMatrix.setSaturation(0f)
         val grayscaleFilter = ColorMatrixColorFilter(grayMatrix)
         mGridLayout = findViewById(R.id.gridLayout)
-        ViewCompat.setOnApplyWindowInsetsListener(mGridLayout!!) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(mGridLayout!!) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
                 rightMargin = insets.right
-                topMargin = insets.top+supportActionBar!!.height
+                topMargin = insets.top + supportActionBar!!.height
                 bottomMargin = insets.bottom
             }
             // Return CONSUMED if you don't want want the window insets to keep passing
@@ -130,11 +144,11 @@ class ActivityAnimations : AppCompatActivity() {
         mGridLayout!!.useDefaultMargins = true
 
         // add all photo thumbnails to layout
-        val resources = resources
-        val pictures = mBitmapUtils.loadPhotos(resources)
+        val resources: Resources = resources
+        val pictures: ArrayList<PictureData> = mBitmapUtils.loadPhotos(resources)
         for (i in pictures.indices) {
-            val pictureData = pictures[i]
-            val thumbnailDrawable = pictureData.thumbnail.toDrawable(resources)
+            val pictureData: PictureData = pictures[i]
+            val thumbnailDrawable: BitmapDrawable = pictureData.thumbnail.toDrawable(resources)
             thumbnailDrawable.colorFilter = grayscaleFilter
             val imageView = ImageView(this)
             imageView.setOnClickListener(thumbnailClickListener)
@@ -145,13 +159,13 @@ class ActivityAnimations : AppCompatActivity() {
     }
 
     /**
-     * Initialize the contents of the Activity's standard options menu. We use a `MenuInflater`
-     * for this context to inflate our menu layout file R.menu.activity_better_window_animations into
-     * our parameter `Menu menu` and return true so that the menu will be displayed.
+     * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater]
+     * for this context to inflate our menu layout file `R.menu.activity_better_window_animations`
+     * into our [Menu] parameter [menu] and return `true` so that the menu will be displayed.
      *
      * @param menu The options menu in which we place our items.
-     * @return You must return true for the menu to be displayed;
-     * if you return false it will not be shown.
+     * @return You must return `true` for the menu to be displayed;
+     * if you return `false` it will not be shown.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_better_window_animations, menu)
@@ -160,13 +174,13 @@ class ActivityAnimations : AppCompatActivity() {
 
     /**
      * This hook is called whenever an item in your options menu is selected. If the item id of our
-     * parameter `MenuItem item` is R.id.menu_slow, we set our field `sAnimatorScale`
+     * [MenuItem] parameter [item] is `R.id.menu_slow`, we set our [Float] property [sAnimatorScale]
      * to 1 if the item is currently checked, or to 5 if it unchecked then toggle the checked state
      * of the item. In any case we return the value returned by our super's implementation of
      * `onOptionsItemSelected` to the caller.
      *
      * @param item The menu item that was selected.
-     * @return boolean Return false to allow normal menu processing to proceed, true to consume it here.
+     * @return Return `false` to allow normal menu processing to proceed, `true` to consume it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_slow) {
@@ -177,58 +191,52 @@ class ActivityAnimations : AppCompatActivity() {
     }
 
     /**
-     * When the user clicks a thumbnail, bundle up information about it and launch the
-     * details activity.
+     * Called when a view has been clicked. When the user clicks a thumbnail, we bundle up information
+     * about it and launch the details activity. We capture the [View] passed us in variable `v`, then
+     * we allocate 2 ints to initialize [IntArray] variable `screenLocation`, and call the
+     * [View.getLocationOnScreen] method of our [View] variable `v` to load it with the coordinates
+     * of this view on the screen. We initialize [PictureData] variable `info` with the object stored
+     * under the key `v` in our [HashMap] of [ImageView] to [PictureData] property [mPicturesData].
+     * We initialize [Intent] variable `subActivity` with an [Intent] intended to launch the activity
+     * [PictureDetailsActivity], and initialize [Int] variable `orientation` with the
+     * [Configuration.orientation] property of the current configuration that is in effect for a
+     * [Resources] instance for our application's package. We then proceed to add as extras to
+     * [Intent] variable `subActivity`, using keys formed by concatenating to our [PACKAGE] name
+     * the strings:
+     *
+     *  * [PACKAGE].orientation holds the value of `orientation`
+     *
+     *  * [PACKAGE].resourceId holds the value of the [PictureData.resourceId] property of `info`
+     *
+     *  * [PACKAGE].left holds the value of `screenLocation[0]`, the X coordinate of `v`
+     *
+     *  * [PACKAGE].top holds the value of `screenLocation[1]`, the Y coordinate of `v`
+     *
+     *  * [PACKAGE].width holds the width of `v`
+     *
+     *  * [PACKAGE].height holds the height of `v`
+     *
+     *  * [PACKAGE].description" the value of the [PictureData.description] property of `info`
+     *
+     * We then start `subActivity` running, and call the [overridePendingTransition] method (using
+     * different overloads for different API levels) to cancel the normal window animation so only
+     * our custom one is used.
+     *
+     * param v The view that was clicked.
      */
-    private val thumbnailClickListener = View.OnClickListener { v ->
-        /**
-         * Called when a view has been clicked. We allocate 2 ints to initialize `int[] screenLocation`,
-         * then call the `getLocationOnScreen` method of our parameter `View v` to load it
-         * with the coordinates of this view on the screen. We initialize `PictureData info` with
-         * the object stored under the key `v` in our field `HashMap<ImageView, PictureData> mPicturesData`.
-         * We initialize `Intent subActivity` with an `Intent` intended to launch the activity
-         * `PictureDetailsActivity`, and `int orientation` with the `orientation` field
-         * of the current configuration that is in effect for a `Resources` instance for our application's
-         * package. We then proceed to add as extras to `subActivity` under keys formed by concatenating
-         * our PACKAGE to the strings:
-         *
-         *  *
-         * ".orientation" the value of `orientation`
-         *
-         *  *
-         * ".resourceId" the value of the `resourceId` field of `info`
-         *
-         *  *
-         * ".left" the value of `screenLocation[0]`, the X coordinate of `v`
-         *
-         *  *
-         * ".top" the value of `screenLocation[1]`, the Y coordinate of `v`
-         *
-         *  *
-         * ".width" the width of `v`
-         *
-         *  *
-         * ".height" the height of `v`
-         *
-         *  *
-         * ".description" the value of the `description` field of `info`
-         *
-         *
-         * We then start `subActivity` running, and call the `overridePendingTransition`
-         * method to cancel the normal window animation so only our custom one is used.
-         *
-         * @param v The view that was clicked.
-         */
+    private val thumbnailClickListener = OnClickListener { v: View ->
         // Interesting data to pass across are the thumbnail size/location, the
         // resourceId of the source bitmap, the picture description, and the
         // orientation (to avoid returning back to an obsolete configuration if
         // the device rotates again in the meantime)
-        val screenLocation = IntArray(2)
+        val screenLocation = IntArray(size = 2)
         v.getLocationOnScreen(screenLocation)
-        val info = mPicturesData[v]
-        val subActivity = Intent(this@ActivityAnimations,
-            PictureDetailsActivity::class.java)
-        val orientation = resources.configuration.orientation
+        val info: PictureData? = mPicturesData[v]
+        val subActivity = Intent(
+            this@ActivityAnimations,
+            PictureDetailsActivity::class.java
+        )
+        val orientation: Int = resources.configuration.orientation
         subActivity.putExtra("$PACKAGE.orientation", orientation)
             .putExtra("$PACKAGE.resourceId", info!!.resourceId)
             .putExtra("$PACKAGE.left", screenLocation[0])
@@ -250,14 +258,14 @@ class ActivityAnimations : AppCompatActivity() {
 
     companion object {
         /**
-         * Package prefix used when adding extras to the `Intent` that launches the activity
-         * `PictureDetailsActivity`
+         * Package prefix used when adding extras to the [Intent] that launches the activity
+         * [PictureDetailsActivity]
          */
         private const val PACKAGE = "com.example.android.activityanim"
 
         /**
          * Amount to multiply the duration of the animation by, toggled between 1 and 5 in the
-         * `onOptionsItemSelected` override if the item id is R.id.menu_slow ("Slow")
+         * `onOptionsItemSelected` override if the item id is `R.id.menu_slow` ("Slow")
          */
         @JvmField
         var sAnimatorScale: Float = 1f
