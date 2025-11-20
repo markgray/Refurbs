@@ -23,3 +23,18 @@ In contrast to bitmap images, adaptive icons can adapt to different use cases:
     provide their own.
 
 See res/mipmap-anydpi/ic_launcher1.xml and res/mipmap-anydpi/ic_launcher2.xml for the adaptive-icon's
+and see AndroidManifest.xml for where they are used.
+
+BTW: If you click on the three icons in the launcher you will observe some puzzling behavior that
+results from having 3 launchable activities in the same application:
+    - If you put one of the activities in the background and click a different icon, the first
+    acctivity will return to the foreground instead of launching the second activity.
+
+    - Even when one of the other activities is not in the background, the launcher will often launch
+    a different activity from the one that the Icon is supposed to launch.
+
+    - Since the activity element for Activity3 lacks a android:label attribute it uses the android:label
+    attribute of the application ("AdaptiveIconSample") but its app bar is sometimes "AdaptiveIconSample"
+    and sometimes "Icon 1" for no reason I can fathom.
+
+Bottom line is if you put multiple launchable activities in the same application expect some oddities.
