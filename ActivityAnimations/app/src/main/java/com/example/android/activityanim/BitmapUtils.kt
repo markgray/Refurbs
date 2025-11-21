@@ -21,10 +21,16 @@ import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.widget.GridLayout
 import androidx.core.graphics.scale
 
 /**
- * TODO: Continue here.
+ * This class has a bunch of static-like utility methods for creating [PictureData] objects
+ * from randomly selected resources. It is used by the [ActivityAnimations] main `Activity` to
+ * create the data that it displays in its [GridLayout]. It also has a method to create a thumbnail
+ * [Bitmap] from an original [Bitmap] which is used by its [loadPhotos] method. The [getBitmap]
+ * method uses a [HashMap] to cache the [Bitmap]'s it decodes from the resources to avoid having
+ * to decode them more than once.
  */
 class BitmapUtils {
     /**
@@ -57,118 +63,116 @@ class BitmapUtils {
     /**
      * Load pictures and descriptions. A real app wouldn't do it this way, but that's not the point
      * of this animation demo. Loading asynchronously is a better way to go for what can be time
-     * consuming operations. First we initialize `ArrayList<PictureData> pictures` with a new
-     * instance. Then we loop over `int i` for 30 repetitions:
+     * consuming operations. First we initialize [ArrayList] of [PictureData] variable `pictures`
+     * with a new instance. Then we loop over [Int] variable `i` for 30 repetitions:
      *
-     *  *
-     * We initialize `int resourceId` with a resource id randomly chosen from our field
-     * `int[] mPhotos`
+     *  * We initialize [Int] variable `resourceId` with a resource id randomly chosen from our
+     *  [IntArray] property [mPhotos].
      *
-     *  *
-     * We initialize `Bitmap bitmap` with the bitmap returned by our method `getBitmap`
-     * for `resourceId` (either from our cache `sBitmapResourceMap` or decoded and
-     * cached if it was not found in the cache)
+     *  * We initialize [Bitmap] variable `bitmap` with the bitmap returned by our method [getBitmap]
+     *  for `resourceId` (either from our [HashMap] of [Int] to [Bitmap] cache [sBitmapResourceMap]
+     *  or decoded and cached if it was not found in the cache)
      *
-     *  *
-     * We initialize `Bitmap thumbnail` with the thumbnail image returned by our method
-     * `getThumbnail` when passed `bitmap` and a maximum dimension of 200.
+     *  * We initialize [Bitmap] variable `thumbnail` with the thumbnail image returned by our method
+     *  [getThumbnail] when passed `bitmap` and a maximum dimension of 200.
      *
-     *  *
-     * We initialize `String description` with a string randomly chosen from our field
-     * `String[] mDescriptions`
+     *  * We initialize [String] variable `description` with a string randomly chosen from our [Array]
+     *  of [String] property [mDescriptions].
      *
-     *  *
-     * We then add a new instance of `PictureData` constructed from `resourceId`,
-     * `description`, and `thumbnail` to `pictures` and loop back to make
-     * the next `PictureData` object
-     *
+     *  * We then add a new instance of [PictureData] constructed from `resourceId`, `description`,
+     *  and `thumbnail` to [ArrayList] of [PictureData] variable `pictures` and loop back to make
+     *  the next [PictureData] object.
      *
      * When done with our loop we return `pictures` to the caller.
      *
      * @param resources `Resources` instance to use to access resources.
-     * @return A list of `PictureData` objects created using randomly chosen jpg's and
+     * @return A list of [PictureData] objects created using randomly chosen jpg's and
      * description strings.
      */
     fun loadPhotos(resources: Resources?): ArrayList<PictureData> {
         val pictures = ArrayList<PictureData>()
         (0..29).forEach { _: Int ->
-            val resourceId = mPhotos[(Math.random() * mPhotos.size).toInt()]
-            val bitmap = getBitmap(resources, resourceId)
-            val thumbnail = getThumbnail(bitmap, 200)
-            val description = mDescriptions[(Math.random() * mDescriptions.size).toInt()]
-            pictures.add(PictureData(resourceId, description, thumbnail))
+            val resourceId: Int = mPhotos[(Math.random() * mPhotos.size).toInt()]
+            val bitmap: Bitmap? = getBitmap(resources = resources, resourceId = resourceId)
+            val thumbnail: Bitmap = getThumbnail(bitmap, 200)
+            val description: String = mDescriptions[(Math.random() * mDescriptions.size).toInt()]
+            pictures.add(
+                PictureData(
+                    resourceId = resourceId,
+                    description = description,
+                    thumbnail = thumbnail
+                )
+            )
         }
         return pictures
     }
 
     /**
      * Create and return a thumbnail image given the original source bitmap and a max dimension
-     * (width or height). We initialize `int width` with the width of our parameter
-     * `Bitmap original` and `int height` with its height. We then declare `scaledWidth`,
-     * and `scaledHeight`. We then branch on whether `width` is greater than or equal to
-     * `height`:
+     * (width or height). We initialize [Int] variable `width` with the width of our [Bitmap]
+     * parameter [original] and initialize [Int] variable `height` with its height. We then declare
+     * [Int] variable `scaledWidth`, and [Int] variable `scaledHeight`. We then branch on whether
+     * `width` is greater than or equal to `height`:
      *
-     *  *
-     * the width of `original` is the controlling dimension: we initialize `float scaleFactor`
-     * to `maxDimension` divided by `width`, set `scaledWidth` to 200, and set
-     * `scaledHeight` to the truncated value of `scaleFactor` times `height`
+     *  * the width of `original` is the controlling dimension: we initialize [Float] variable
+     *  `scaleFactor` to our [Int] parameter [maxDimension] divided by `width`, set `scaledWidth`
+     *  to 200, and set `scaledHeight` to the truncated value of `scaleFactor` times `height`
      *
-     *  *
-     * the height of `original` is the controlling dimension: we initialize `float scaleFactor`
-     * to `maxDimension` divided by `height`, set `scaledWidth` to the truncated value
-     * of `scaleFactor` times `width`, and set `scaledHeight` to 200.
+     *  * the height of `original` is the controlling dimension: we initialize [Float] variable
+     *  `scaleFactor` to [Int] parameter [maxDimension] divided by `height`, set `scaledWidth` to
+     *  the truncated value of `scaleFactor` times `width`, and set `scaledHeight` to 200.
      *
+     * We then create and return the [Bitmap] created using the [Bitmap.createScaledBitmap] method
+     * of our [Bitmap] parameter [original] with its `width` argument `scaledWidth` and its `height`
+     * argument `scaledHeight` (its `filter` argument is `true` by default so the [Bitmap] will be
+     * filtered).
      *
-     * We then create `Bitmap thumbnail` using the `createScaledBitmap` method of `Bitmap`
-     * to scale our parameter `original` to a `scaledWidth` by `scaledHeight` bitmap
-     * specifying that the source bitmap `original` should be filtered.
-     *
-     * @param original original full sized bitmap
+     * @param original original full sized [Bitmap]
      * @param maxDimension maximum dimension of the thumbnail for both width and height
      * @return a thumbnail image created from the original source bitmap whose maximum dimension is
-     * given by our parameter `int maxDimension`
+     * given by our [Int] parameter [maxDimension]
      */
     @Suppress("SameParameterValue")
     private fun getThumbnail(original: Bitmap?, maxDimension: Int): Bitmap {
-        val width = original!!.width
-        val height = original.height
+        val width: Int = original!!.width
+        val height: Int = original.height
         val scaledWidth: Int
         val scaledHeight: Int
         if (width >= height) {
-            val scaleFactor = maxDimension.toFloat() / width
+            val scaleFactor: Float = maxDimension.toFloat() / width
             scaledWidth = 200
             scaledHeight = (scaleFactor * height).toInt()
         } else {
-            val scaleFactor = maxDimension.toFloat() / height
+            val scaleFactor: Float = maxDimension.toFloat() / height
             scaledWidth = (scaleFactor * width).toInt()
             scaledHeight = 200
         }
-        return original.scale(scaledWidth, scaledHeight)
+        return original.scale(width = scaledWidth, height = scaledHeight)
     }
 
     companion object {
         /**
-         * Cache of already decoded `Bitmap`'s of resource jpg's, stored using the resource id
-         * as the key, and used by our `getBitmap` method to avoid decoding images more than once.
+         * Cache of already decoded [Bitmap]'s of resource jpg's, stored using the resource id
+         * as the key, and used by our [getBitmap] method to avoid decoding images more than once.
          */
         @SuppressLint("UseSparseArrays")
         var sBitmapResourceMap: HashMap<Int, Bitmap?> = HashMap()
 
         /**
-         * Utility method to get bitmap from cache or, if not there, load it from our resources. We try
-         * to initialize `Bitmap bitmap` by fetching the bitmap stored under the key `resourceId`
-         * in our cache `HashMap<Integer, Bitmap> sBitmapResourceMap`, and if `bitmap` is still
-         * null (bitmap not found) we set `bitmap` to the result returned by the `decodeResource`
-         * method of `BitmapFactory` for `resourceId` and store it under the key `resourceId`
-         * in `sBitmapResourceMap`. In any case we return `bitmap` to the caller.
+         * Utility method to get bitmap from cache or, if not there, load it from our resources. We
+         * try to initialize [Bitmap] variable `bitmap` by fetching the bitmap stored under the key
+         * [resourceId] in our [HashMap] of [Int] to [Bitmap] cache property [sBitmapResourceMap],
+         * and if `bitmap` is `null ([Bitmap] not found) we set `bitmap` to the result returned by
+         * the [BitmapFactory.decodeResource] method for [resourceId] and store it under the key
+         * [resourceId] in [sBitmapResourceMap]. In any case we return `bitmap` to the caller.
          *
-         * @param resources `Resources` instance to use to access resources
+         * @param resources [Resources] instance to use to access resources
          * @param resourceId the resource id of the jpg we are to return a bitmap of
-         * @return a bitmap decoded from the jpg with resource id `resourceId`
+         * @return a [Bitmap] decoded from the jpg with resource id [resourceId]
          */
         @JvmStatic
         fun getBitmap(resources: Resources?, resourceId: Int): Bitmap? {
-            var bitmap = sBitmapResourceMap[resourceId]
+            var bitmap: Bitmap? = sBitmapResourceMap[resourceId]
             if (bitmap == null) {
                 bitmap = BitmapFactory.decodeResource(resources, resourceId)
                 sBitmapResourceMap[resourceId] = bitmap

@@ -16,30 +16,19 @@
 package com.example.android.activityanim
 
 import android.graphics.Bitmap
+import android.widget.GridLayout
 
 /**
- * Container for information about the thumbnail pictures displayed by `ActivityAnimations` in
- * its `GridView`.
- */
-class PictureData
-/**
- * Our constructor, just saves its parameters in their respective fields
+ * Container for information about the thumbnail pictures displayed by [ActivityAnimations] in
+ * its [GridLayout].
  *
  * @param resourceId resource id of the jpg we represent.
  * @param description random description string for this jpg
- * @param thumbnail thumbnail version of the jpg to display in the `GridView` of
- * `ActivityAnimations`
- */(
-    /**
-     * Resource id of the jpg used to create the thumbnail, and which will be used by the activity
-     * `PictureDetailsActivity` to display the full sized jpg
-     */
+ * @param thumbnail thumbnail version of the jpg to display in the [GridLayout] of
+ * [ActivityAnimations]
+ */
+class PictureData(
     var resourceId: Int,
-    /**
-     * Description string to be displayed by `PictureDetailsActivity`
-     */
     var description: String,
-    /**
-     * Thumbnail image that `ActivityAnimations` displays in its `GridView`.
-     */
-    var thumbnail: Bitmap)
+    var thumbnail: Bitmap
+)

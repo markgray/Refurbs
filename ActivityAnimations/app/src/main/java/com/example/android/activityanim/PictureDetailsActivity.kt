@@ -20,6 +20,8 @@ package com.example.android.activityanim
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
@@ -27,21 +29,26 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.OnApplyWindowInsetsListener
 
 /**
  * This sub-activity shows a zoomed-in view of a specific photo, along with the
@@ -55,20 +62,19 @@ import androidx.core.graphics.drawable.toDrawable
  */
 class PictureDetailsActivity : AppCompatActivity() {
     /**
-     * `BitmapDrawable` we display in our `ImageView`, it is created from the extra passed
+     * [BitmapDrawable] we display in our [ImageView], it is created from the extra passed
      * us in the `Intent` that launched us that is stored under the key ".resourceId"
      */
     private var mBitmapDrawable: BitmapDrawable? = null
 
     /**
-     * `ColorMatrix` whose  is animated "saturation" property is animated, it is used to create
-     * the `ColorMatrixColorFilter` which is then set on `BitmapDrawable mBitmapDrawable`
+     * [ColorMatrix] "saturation" property is animated, it is used to create the
+     * [ColorMatrixColorFilter` which is then set on [BitmapDrawable] property [mBitmapDrawable].
      */
     private val colorizerMatrix = ColorMatrix()
 
     /**
-     * `ColorDrawable` which is used as our background, its alpha is animated as we enter and
-     * exit.
+     * [ColorDrawable] which is used as our background, its alpha is animated as we enter and exit.
      */
     var mBackground: ColorDrawable? = null
 
@@ -93,31 +99,31 @@ class PictureDetailsActivity : AppCompatActivity() {
     var mHeightScale: Float = 0f
 
     /**
-     * The `ImageView` with id R.id.imageView in which we display our picture.
+     * The [ImageView] with id `R.id.imageView` in which we display our picture.
      */
     private var mImageView: ImageView? = null
 
     /**
-     * The `R.id.imageView` with id R.id.description which we use to display the description
-     * of the picture (the description string is passed to use as an extra in the `Intent` that
-     * launched us stored under the key ".description"
+     * The [TextView] with id `R.id.description` which we use to display the description of the
+     * picture (the description string is passed to use as an extra in the [Intent] that
+     * launched us, stored under the key ".description"
      */
     private var mTextView: TextView? = null
 
     /**
-     * `FrameLayout` with id R.id.topLevelLayout, it is the container for our `ShadowLayout`
+     * [FrameLayout] with id `R.id.topLevelLayout`, it is the container for our [ShadowLayout]
      */
     private var mTopLevelLayout: FrameLayout? = null
 
     /**
-     * `ShadowLayout` in our layout with id R.id.shadowLayout, it is a custom `RelativeLayout`
+     * [ShadowLayout] in our layout with id `R.id.shadowLayout`, it is a custom [RelativeLayout]
      * which paints a drop shadow behind all children.
      */
     private var mShadowLayout: ShadowLayout? = null
 
     /**
-     * This is the orientation of the screen when `ActivityAnimations` launched us, it is passed
-     * to us as an extra in the `Intent` that launched us stored under the key ".orientation",
+     * This is the orientation of the screen when [ActivityAnimations] launched us, it is passed
+     * to us as an extra in the [Intent] that launched us stored under the key ".orientation",
      * if the orientation of the screen is different when we are exiting we do not try to animate the
      * image back to the thumbnail position, we just animate the scale around the center, and fade it
      * out since it won't match up with whatever's actually in the center
@@ -125,53 +131,66 @@ class PictureDetailsActivity : AppCompatActivity() {
     private var mOriginalOrientation = 0
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file R.layout.picture_info. We initialize our field
-     * `ImageView mImageView` by finding the view with id R.id.imageView, our field
-     * `FrameLayout mTopLevelLayout` by finding the view with id R.id.topLevelLayout, our field
-     * `ShadowLayout mShadowLayout` by finding the view with id R.id.shadowLayout, and our field
-     * `TextView mTextView` by finding the view with id R.id.description.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display then we call our super's implementation of `onCreate` and set our content view
+     * to our layout file `R.layout.picture_info`. We initialize our [ImageView] property [mImageView]
+     * by finding the view with id `R.id.imageView`, and our [FrameLayout] property [mTopLevelLayout]
+     * by finding the view with id `R.id.topLevelLayout`. Next we use the method
+     * [ViewCompat.setOnApplyWindowInsetsListener] to set an [OnApplyWindowInsetsListener] on
+     * [mTopLevelLayout] to take over the policy for applying window insets to [mTopLevelLayout],
+     * with the `listener` argument a lambda that accepts the [View] passed the lambda in variable
+     * `v` and the [WindowInsetsCompat] passed the lambda in variable `windowInsets`. It initializes
+     * its [Insets] variable `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates the layout parameters
+     * of `v` to be a [ViewGroup.MarginLayoutParams] with the left margin set to `insets.left`, the
+     * right margin set to `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so
+     * that the window insets will not keep passing down to descendant views).
      *
+     * We our [ShadowLayout] property [mShadowLayout] by finding the view with id `R.id.shadowLayout`,
+     * and our [TextView] property [mTextView] by finding the view with id R.id.description.
      *
-     * We initialize `Bundle bundle` by retrieving the map of all extras previously added with
-     * `putExtra()` from the intent that started this activity. We initialize `Bitmap bitmap`
-     * by using the `getBitmap` method of our `BitmapUtils` class to either return a cached
-     * bitmap or decode the jpg whose resource id is stored under the key ".resourceId" in `bundle`,
-     * then cache and return it. We initialize `String description` by retrieving the string stored
-     * under the key ".description" in `bundle`, `int thumbnailTop` by retrieving the int stored
-     * under the key ".top", `int thumbnailLeft` by retrieving the int stored under the key ".left",
-     * `int thumbnailWidth` by retrieving the int stored under the key ".width", `int thumbnailHeight`
-     * by retrieving the int stored under the key ".height", and our field `int mOriginalOrientation`
-     * by retrieving the int stored under the key ".orientation".
+     * We initialize [Bundle] variable `bundle` by retrieving the map of all extras previously added
+     * with `putExtra()` from the [Intent] that started this activity. We initialize [Bitmap] variable
+     * `bitmap` by using the [BitmapUtils.getBitmap] method to either return a cached [Bitmap] or
+     * the [Bitmap] it decodes from the jpg whose resource id is stored under the key ".resourceId"
+     * in `bundle`. We initialize [String] variable `description` by retrieving the string stored
+     * under the key ".description" in `bundle`, [Int] variable `thumbnailTop` by retrieving the [Int]
+     * stored under the key ".top", [Int] variable `thumbnailLeft` by retrieving the [Int] stored
+     * under the key ".left", [Int] variable `thumbnailWidth` by retrieving the [Int] stored under
+     * the key ".width", [Int] variable `thumbnailHeight` by retrieving the [Int] stored under the
+     * key ".height", and our [Int] property [mOriginalOrientation] by retrieving the [Int] stored
+     * under the key ".orientation".
      *
+     * We initialize our [BitmapDrawable] property [mBitmapDrawable] with an instance constructed
+     * from `bitmap`, set it to be the content of [ImageView] property [mImageView] and set
+     * `description` as the text of [TextView] property [mTextView]. We initialize our [ColorDrawable]
+     * property [mBackground] with a BLACK instance and set it to be the background of [FrameLayout]
+     * property [mTopLevelLayout].
      *
-     * We initialize our field `BitmapDrawable mBitmapDrawable` with an instance constructed from
-     * `bitmap`, set it to be the content of `mImageView` and set `description` as the
-     * text of `mTextView`. We initialize our field `ColorDrawable mBackground` with a BLACK
-     * instance and set it to be the background of `mTopLevelLayout`.
-     *
-     * Now if our parameter `Bundle savedInstanceState` is not null we are being recreated
-     * automatically by the window manager (e.g., device rotation) so we skip any animation and return.
-     * If it is null we are being started by `ActivityAnimations` and we want to animate this
-     * transition, so we initialize `ViewTreeObserver observer` with a handle to the
-     * `ViewTreeObserver` for the hierarchy of `ImageView mImageView` and add an anonymous
-     * `OnPreDrawListener` whose `onPreDraw` override first removes itself as an
-     * `OnPreDrawListener`, then allocates 2 ints for `int[] screenLocation` and loads them
-     * with the X and Y coordinates of `mImageView` on the screen. It sets `mLeftDelta` to
-     * `thumbnailLeft` minus `screenLocation[0]` (which is the distance between the X location
-     * of the thumbnail and the X location of the full size version), and sets `mTopDelta` to
-     * `thumbnailTop` minus `screenLocation[1]` (which is the distance between the Y location
-     * of the thumbnail and the Y location of the full size version). It then sets `mWidthScale` to
-     * `thumbnailWidth` divided by the width of `mImageView` (which is how much the width of
-     * the full size version needs to be scaled down to be the same size as the thumbnail) and sets
-     * `mHeightScale` to `thumbnailHeight` divided by the height of `mImageView` (which
-     * is how much the height of the full size version needs to be scaled down to be the same size as the
-     * thumbnail). It then calls our method `runEnterAnimation` to construct and run the animations
+     * Now if our [Bundle] parameter [savedInstanceState] is not `null` we are being recreated
+     * automatically by the window manager (e.g., device rotation) so we skip any animation and
+     * return. If it is `null` we are being started by [ActivityAnimations] and we want to animate this
+     * transition, so we initialize [ViewTreeObserver] variable `observer` with a handle to the
+     * [ViewTreeObserver] for the hierarchy of [ImageView] property [mImageView] and add an anonymous
+     * [OnPreDrawListener] whose [OnPreDrawListener.onPreDraw] override first removes itself as an
+     * [OnPreDrawListener], then allocates 2 ints for [IntArray] variable `screenLocation` and loads
+     * them with the X and Y coordinates of [mImageView] on the screen. It sets [Int] property
+     * [mLeftDelta] to [Int] variable `thumbnailLeft` minus `screenLocation[0]` (which is the distance
+     * between the X location of the thumbnail and the X location of the full size version), and sets
+     * [Int] property [mTopDelta] to [Int] variable `thumbnailTop` minus `screenLocation[1]` (which
+     * is the distance between the Y location of the thumbnail and the Y location of the full size
+     * version). It then sets [Float] property [mWidthScale] to `thumbnailWidth` divided by the width
+     * of [ImageView] property [mImageView] (which is how much the width of the full size version
+     * needs to be scaled down to be the same size as the thumbnail) and sets [Float] property
+     * [mHeightScale] to `thumbnailHeight` divided by the height of [mImageView] (which is how much
+     * the height of the full size version needs to be scaled down to be the same size as the
+     * thumbnail). It then calls our method [runEnterAnimation] to construct and run the animations
      * that transition to our layout, and returns true to allow drawing to proceed.
      *
      * @param savedInstanceState we just use this to only run the animation if we're coming from the
-     * parent activity (it is null), not if we're recreated automatically
-     * by the window manager (e.g., device rotation, not null)
+     * parent activity (it is `null`), not if we're recreated automatically by the window manager
+     * (e.g., device rotation, it is not `null`)
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -197,14 +216,16 @@ class PictureDetailsActivity : AppCompatActivity() {
 
         // Retrieve the data we need for the picture/description to display and
         // the thumbnail to animate it from
-        val bundle = intent.extras
-        val bitmap = BitmapUtils.getBitmap(resources,
-            bundle!!.getInt("$PACKAGE_NAME.resourceId"))
-        val description = bundle.getString("$PACKAGE_NAME.description")
-        val thumbnailTop = bundle.getInt("$PACKAGE_NAME.top")
-        val thumbnailLeft = bundle.getInt("$PACKAGE_NAME.left")
-        val thumbnailWidth = bundle.getInt("$PACKAGE_NAME.width")
-        val thumbnailHeight = bundle.getInt("$PACKAGE_NAME.height")
+        val bundle: Bundle? = intent.extras
+        val bitmap: Bitmap? = BitmapUtils.getBitmap(
+            resources = resources,
+            resourceId = bundle!!.getInt("$PACKAGE_NAME.resourceId")
+        )
+        val description: String? = bundle.getString("$PACKAGE_NAME.description")
+        val thumbnailTop: Int = bundle.getInt("$PACKAGE_NAME.top")
+        val thumbnailLeft: Int = bundle.getInt("$PACKAGE_NAME.left")
+        val thumbnailWidth: Int = bundle.getInt("$PACKAGE_NAME.width")
+        val thumbnailHeight: Int = bundle.getInt("$PACKAGE_NAME.height")
         mOriginalOrientation = bundle.getInt("$PACKAGE_NAME.orientation")
         mBitmapDrawable = bitmap!!.toDrawable(resources)
         mImageView!!.setImageDrawable(mBitmapDrawable)
@@ -215,25 +236,27 @@ class PictureDetailsActivity : AppCompatActivity() {
         // Only run the animation if we're coming from the parent activity, not if
         // we're recreated automatically by the window manager (e.g., device rotation)
         if (savedInstanceState == null) {
-            val observer = mImageView!!.viewTreeObserver
+            val observer: ViewTreeObserver = mImageView!!.viewTreeObserver
             observer.addOnPreDrawListener(object : OnPreDrawListener {
                 /**
-                 * Callback method to be invoked when the view tree is about to be drawn. At this point, all
-                 * views in the tree have been measured and given a frame. Clients can use this to adjust
-                 * their scroll bounds or even to request a new layout before drawing occurs. First we
-                 * remove ourselves as a `OnPreDrawListener`, then we allocate 2 ints for
-                 * `int[] screenLocation` and load them with the X and Y coordinates of `mImageView`
-                 * on the screen. We set `mLeftDelta` to `thumbnailLeft` minus `screenLocation[0]`
-                 * (which is the distance between the X location of the thumbnail and the X location of the full
-                 * size version), and set `mTopDelta` to `thumbnailTop` minus `screenLocation[1]`
-                 * (which is the distance between the Y location of the thumbnail and the Y location of the full
-                 * size version). We then set `mWidthScale` to `thumbnailWidth` divided by the width
-                 * of `mImageView` (which is how much the width of the full size version needs to be scaled
-                 * down to be the same size as the thumbnail) and set `mHeightScale` to `thumbnailHeight`
-                 * divided by the height of `mImageView` (which is how much the height of the full size version
-                 * needs to be scaled down to be the same size as the thumbnail). We then call our method
-                 * `runEnterAnimation` to construct and run the animations that transition to our layout,
-                 * and return true to allow drawing to proceed.
+                 * Callback method to be invoked when the view tree is about to be drawn. At this
+                 * point, all views in the tree have been measured and given a frame. Clients can
+                 * use this to adjust their scroll bounds or even to request a new layout before
+                 * drawing occurs. First we remove ourselves as a [OnPreDrawListener], then we
+                 * allocate 2 [Int]'s for [IntArray] variable `screenLocation` and load them with
+                 * the X and Y coordinates of [ImageView] property [mImageView] on the screen. We set
+                 * [Int] property [mLeftDelta] to `thumbnailLeft` minus `screenLocation[0]` (which
+                 * is the distance between the X location of the thumbnail and the X location of the
+                 * full size version), and set [Int] property [mTopDelta] to `thumbnailTop` minus
+                 * `screenLocation[1]` (which is the distance between the Y location of the thumbnail
+                 * and the Y location of the full size version). We then set [Float] property
+                 * [mWidthScale] to `thumbnailWidth` divided by the width of [mImageView] (which is
+                 * how much the width of the full size version needs to be scaled down to be the same
+                 * size as the thumbnail) and set [Float] property [mHeightScale] to `thumbnailHeight`
+                 * divided by the height of [mImageView] (which is how much the height of the full
+                 * size version needs to be scaled down to be the same size as the thumbnail). We
+                 * then call our method [runEnterAnimation] to construct and run the animations that
+                 * transition to our layout, and return true to allow drawing to proceed.
                  *
                  * @return Return true to proceed with the current drawing pass, or false to cancel.
                  */
@@ -259,6 +282,7 @@ class PictureDetailsActivity : AppCompatActivity() {
     }
 
     /**
+     * TODO: Continue here.
      * The enter animation scales the picture in from its previous thumbnail size/location, colorizing
      * it in parallel. In parallel, the background of the activity is fading in. When the picture is
      * in place, the text description drops down. We initialize `long duration` to ANIM_DURATION
@@ -293,7 +317,7 @@ class PictureDetailsActivity : AppCompatActivity() {
      */
     @SuppressLint("ObjectAnimatorBinding")
     fun runEnterAnimation() {
-        val duration = (ANIM_DURATION * ActivityAnimations.sAnimatorScale).toLong()
+        val duration: Long = (ANIM_DURATION * ActivityAnimations.sAnimatorScale).toLong()
 
         // Set starting values for properties we're going to animate. These
         // values scale and position the full size version down to the thumbnail
@@ -322,19 +346,30 @@ class PictureDetailsActivity : AppCompatActivity() {
             }
 
         // Fade in the black background
-        val bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0, 255)
+        val bgAnim: ObjectAnimator = ObjectAnimator.ofInt(
+            /* target = */ mBackground,
+            /* propertyName = */ "alpha",
+            /* ...values = */  0, 255
+        )
         bgAnim.duration = duration
         bgAnim.start()
 
         // Animate a color filter to take the image from grayscale to full color.
         // This happens in parallel with the image scaling and moving into place.
-        val colorizer = ObjectAnimator.ofFloat(this@PictureDetailsActivity,
-            "saturation", 0f, 1f)
+        val colorizer: ObjectAnimator = ObjectAnimator.ofFloat(
+            /* target = */ this@PictureDetailsActivity,
+            /* propertyName = */ "saturation",
+            /* ...values = */ 0f, 1f
+        )
         colorizer.duration = duration
         colorizer.start()
 
         // Animate a drop-shadow of the image
-        val shadowAnim = ObjectAnimator.ofFloat(mShadowLayout, "shadowDepth", 0f, 1f)
+        val shadowAnim: ObjectAnimator = ObjectAnimator.ofFloat(
+            /* target = */ mShadowLayout,
+            /* propertyName = */ "shadowDepth",
+            /* ...values = */ 0f, 1f
+        )
         shadowAnim.duration = duration
         shadowAnim.start()
     }
@@ -370,7 +405,7 @@ class PictureDetailsActivity : AppCompatActivity() {
      */
     @SuppressLint("ObjectAnimatorBinding")
     fun runExitAnimation(endAction: Runnable?) {
-        val duration = (ANIM_DURATION * ActivityAnimations.sAnimatorScale).toLong()
+        val duration: Long = (ANIM_DURATION * ActivityAnimations.sAnimatorScale).toLong()
 
         // No need to set initial values for the reverse animation; the image is at the
         // starting size/location that we want to start from. Just animate to the
@@ -408,20 +443,30 @@ class PictureDetailsActivity : AppCompatActivity() {
                     mImageView!!.animate().alpha(0f)
                 }
                 // Fade out background
-                val bgAnim = ObjectAnimator.ofInt(mBackground, "alpha", 0)
+                val bgAnim: ObjectAnimator = ObjectAnimator.ofInt(
+                    /* target = */ mBackground,
+                    /* propertyName = */ "alpha",
+                    /* ...values = */ 0
+                )
                 bgAnim.duration = duration
                 bgAnim.start()
 
                 // Animate the shadow of the image
-                val shadowAnim = ObjectAnimator.ofFloat(mShadowLayout,
-                    "shadowDepth", 1f, 0f)
+                val shadowAnim: ObjectAnimator = ObjectAnimator.ofFloat(
+                    /* target = */ mShadowLayout,
+                    /* propertyName = */ "shadowDepth",
+                    /* ...values = */ 1f, 0f
+                )
                 shadowAnim.duration = duration
                 shadowAnim.start()
 
                 // Animate a color filter to take the image back to grayscale,
                 // in parallel with the image scaling and moving into place.
-                val colorizer = ObjectAnimator.ofFloat(this@PictureDetailsActivity,
-                    "saturation", 1f, 0f)
+                val colorizer: ObjectAnimator = ObjectAnimator.ofFloat(
+                    /* target = */ this@PictureDetailsActivity,
+                    /* propertyName = */ "saturation",
+                    /* ...values = */ 1f, 0f
+                )
                 colorizer.duration = duration
                 colorizer.start()
             }
@@ -455,8 +500,7 @@ class PictureDetailsActivity : AppCompatActivity() {
      *
      * @param value value to set the saturation to
      */
-    // actually used by the animation of the "saturation" property
-    @Suppress("unused")
+    @Suppress("unused") // actually used by the animation of the "saturation" property
     fun setSaturation(value: Float) {
         colorizerMatrix.setSaturation(value)
         val colorizerFilter = ColorMatrixColorFilter(colorizerMatrix)
@@ -464,9 +508,9 @@ class PictureDetailsActivity : AppCompatActivity() {
     }
 
     /**
-     * Call this when your activity is done and should be closed. First we call our super's implementation
-     * of `finish` then we call the `overridePendingTransition` method to skip the standard
-     * window animations.
+     * Call this when your activity is done and should be closed. First we call our super's
+     * implementation of `finish` then we call the [overridePendingTransition] method to skip the
+     * standard window animations (using different overloads depending on the SDK version).
      */
     override fun finish() {
         super.finish()
