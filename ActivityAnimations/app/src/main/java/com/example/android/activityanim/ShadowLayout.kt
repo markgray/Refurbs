@@ -27,6 +27,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.view.View
 import android.widget.RelativeLayout
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withTranslation
@@ -37,13 +38,13 @@ import androidx.core.graphics.withTranslation
  */
 class ShadowLayout : RelativeLayout {
     /**
-     * `Paint` used in our `onDraw` override to draw the shadows on the canvas.
+     * [Paint] used in our [onDraw] override to draw the shadows on the canvas.
      */
     var mShadowPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     /**
-     * Value is used to calculate the alpha to use for `Paint mShadowPaint` as well as the offset
-     * to move the `Canvas` before drawing in order to simulate a shadow effect.
+     * Value used to calculate the alpha to use for [Paint] property [mShadowPaint] as well as
+     * the offset to move the [Canvas] before drawing in order to simulate a shadow effect.
      */
     var mShadowDepth: Float = 0f
 
@@ -54,7 +55,7 @@ class ShadowLayout : RelativeLayout {
 
     /**
      * Perform inflation from XML and apply a class-specific base style from a theme attribute or
-     * style resource. We call our super's constructor then call our method `init` to initialize
+     * style resource. We call our super's constructor then call our method [init] to initialize
      * our instance. UNUSED
      *
      * @param context The Context the view is running in, through which it can
@@ -64,7 +65,11 @@ class ShadowLayout : RelativeLayout {
      * reference to a style resource that supplies default values for
      * the view. Can be 0 to not look for defaults.
      */
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         init()
     }
 
@@ -92,6 +97,7 @@ class ShadowLayout : RelativeLayout {
     }
 
     /**
+     * TODO: Continue here.
      * Called by the constructors - sets up the drawing parameters for the drop shadow. We set the
      * color of our field `Paint mShadowPaint` to BLACK, and its style to FILL. We call the
      * `setWillNotDraw(false)` to clear the will not draw flag since our `onDraw` override
@@ -114,8 +120,10 @@ class ShadowLayout : RelativeLayout {
         val c = Canvas(mShadowBitmap!!)
         mShadowPaint.maskFilter = BlurMaskFilter(BLUR_RADIUS.toFloat(), Blur.NORMAL)
         c.translate(BLUR_RADIUS.toFloat(), BLUR_RADIUS.toFloat())
-        c.drawRoundRect(sShadowRectF, sShadowRectF.width() / 40,
-            sShadowRectF.height() / 40, mShadowPaint)
+        c.drawRoundRect(
+            sShadowRectF, sShadowRectF.width() / 40,
+            sShadowRectF.height() / 40, mShadowPaint
+        )
     }
 
     /**
@@ -179,11 +187,11 @@ class ShadowLayout : RelativeLayout {
      */
     override fun onDraw(canvas: Canvas) {
         for (i in 0 until childCount) {
-            val child = getChildAt(i)
+            val child: View = getChildAt(i)
             if (child.visibility != VISIBLE || child.alpha == 0f) {
                 continue
             }
-            val depthFactor = (80 * mShadowDepth).toInt()
+            val depthFactor: Int = (80 * mShadowDepth).toInt()
             canvas.withTranslation(
                 x = (child.left + depthFactor).toFloat(),
                 y = (child.top + depthFactor).toFloat()
@@ -207,15 +215,21 @@ class ShadowLayout : RelativeLayout {
         /**
          * `RectF` we use when drawing a round rect offset by BLUR_RADIUS into `Bitmap mShadowBitmap`
          */
-        val sShadowRectF: RectF = RectF(0f, 0f, 200f, 200f)
+        val sShadowRectF: RectF = RectF(
+            /* left = */ 0f,
+            /* top = */ 0f,
+            /* right = */ 200f,
+            /* bottom = */ 200f
+        )
 
         /**
          * The `Rect` which includes the blur radius, it is used to size `Bitmap mShadowBitmap`
          */
         val sShadowRect: Rect = Rect(
-            0, 0,
-            200 + 2 * BLUR_RADIUS,
-            200 + 2 * BLUR_RADIUS
+            /* left = */ 0,
+            /* top = */ 0,
+            /* right = */ 200 + 2 * BLUR_RADIUS,
+            /* bottom = */ 200 + 2 * BLUR_RADIUS
         )
 
         /**
@@ -223,6 +237,11 @@ class ShadowLayout : RelativeLayout {
          * translated to fit into when drawing it in our `onDraw` override, its coordinates are
          * calculated for each of our children.
          */
-        var tempShadowRectF: RectF = RectF(0f, 0f, 0f, 0f)
+        var tempShadowRectF: RectF = RectF(
+            /* left = */ 0f,
+            /* top = */ 0f,
+            /* right = */ 0f,
+            /* bottom = */ 0f
+        )
     }
 }

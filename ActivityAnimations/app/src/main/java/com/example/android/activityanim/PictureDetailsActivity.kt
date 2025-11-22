@@ -21,6 +21,8 @@ import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ColorMatrix
@@ -29,8 +31,10 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.view.animation.AccelerateInterpolator
@@ -285,38 +289,37 @@ class PictureDetailsActivity : AppCompatActivity() {
     }
 
     /**
-     * TODO: Continue here.
      * The enter animation scales the picture in from its previous thumbnail size/location, colorizing
      * it in parallel. In parallel, the background of the activity is fading in. When the picture is
-     * in place, the text description drops down. We initialize `long duration` to ANIM_DURATION
-     * (500) multiplied by the `sAnimatorScale` field of `ActivityAnimations` (`sAnimatorScale`
-     * is either 1 or 5 depending on whether the "Slow" `CheckBox` in the options menu of
-     * `ActivityAnimations` is unchecked or checked respectively). We set the X location of the
-     * point around which `ImageView mImageView` is scaled (or rotated) to 0 and the Y location
-     * of the point around which `ImageView mImageView` is scaled (or rotated) to 0 as well.
-     * We the scale the X dimension of `mImageView` down to `mWidthScale` and the Y dimension
-     * of `mImageView` down to `mHeightScale` (this shrinks the full size version down to be
-     * the same size as the thumbnail). We translate the horizontal location of `mImageView` by
-     * `mLeftDelta` and the vertical location of `mImageView` by `mTopDelta` (this
-     * places the now shrunken full sized version over the location of the thumbnail). We set the
-     * alpha of `TextView mTextView` to 0 (we'll fade the text in after the animation of `mImageView`
-     * ends).
+     * in place, the text description drops down. We initialize [Long] variable `duration` to
+     * [ANIM_DURATION] (500) multiplied by the [ActivityAnimations.sAnimatorScale] property of
+     * [ActivityAnimations] (`sAnimatorScale` is either 1 or 5 depending on whether the "Slow"
+     * [MenuItem] in the options menu of [ActivityAnimations] is unchecked or checked respectively).
+     * We set the X location of the point around which [ImageView] property [mImageView] is scaled
+     * (or rotated) to 0 and the Y location of the point around which [mImageView] is scaled (or
+     * rotated) to 0 as well. We the scale the X dimension of [mImageView] down to [Float] property
+     * [mWidthScale] and the Y dimension of [mImageView] down to [Float] property [mHeightScale]
+     * (this shrinks the full size version down to be the same size as the thumbnail). We translate
+     * the horizontal location of [mImageView] by [Int] property [mLeftDelta] and the vertical
+     * location of [mImageView] by [Int] property [mTopDelta] (this places the now shrunken full
+     * sized version over the location of the thumbnail). We set the alpha of [TextView] property
+     * [mTextView] to 0 (we'll fade the text in after the animation of [mImageView] ends).
      *
+     * We use the [View.animate] method of [mImageView] to fetch a [ViewPropertyAnimator] for it,
+     * set its duration to [Long] variable `duration`, have it animate the X and the Y size of
+     * [mImageView] both to 1, have it animate the X and Y translation both to 0, set its
+     * [TimeInterpolator] to [TimeInterpolator] property [sDecelerator] and specify an anonymous
+     * [Runnable] to be run when the animation ends whose [Runnable.run] override animates the
+     * translation and alpha property of [TextView] property [mTextView] to its final values.
      *
-     * We fetch a `ViewPropertyAnimator` for `mImageView`, set its duration to `duration`,
-     * have it animate the X and the Y size of `mImageView` both to 1, have it animate the X and
-     * Y translation both to 0, set its `TimeInterpolator` to `sDecelerator` and specify an
-     * anonymous `Runnable` to be run when the animation ends whose `run` override animates
-     * the translation and alpha property of `mTextView` to its final values.
-     *
-     *
-     * We now initialize `ObjectAnimator bgAnim` with an instance which will animate the "alpha"
-     * property of `ColorDrawable mBackground` from 0 to 255, set its duration to `duration`
-     * and start it running. We initialize `ObjectAnimator colorizer` with an instance which will
-     * animate the "saturation" property of this `PictureDetailsActivity` from 0 to 1, set its
-     * duration to `duration` and start it running. We initialize `ObjectAnimator shadowAnim`
-     * with an instance which will animate the "shadowDepth" property of `ShadowLayout mShadowLayout`
-     * from 0 to 1, set its duration to `duration` and start it running.
+     * We now initialize [ObjectAnimator] variable `bgAnim` with an instance which will animate the
+     * "alpha" property of [ColorDrawable] property [mBackground] from 0 to 255, set its duration to
+     * `duration` and start it running. We initialize [ObjectAnimator] variable `colorizer` with an
+     * instance which will animate the "saturation" property of this [PictureDetailsActivity] from
+     * 0 to 1, set its duration to `duration` and start it running. We initialize [ObjectAnimator]
+     * variable `shadowAnim` with an instance which will animate the "shadowDepth" property of
+     * [ShadowLayout] property [mShadowLayout] from 0 to 1, set its duration to `duration` and start
+     * it running.
      */
     @SuppressLint("ObjectAnimatorBinding")
     fun runEnterAnimation() {
@@ -379,29 +382,32 @@ class PictureDetailsActivity : AppCompatActivity() {
 
     /**
      * The exit animation is basically a reverse of the enter animation, except that if the orientation
-     * has changed we simply scale the picture back into the center of the screen. First we declare
-     * `boolean fadeOut`. If the `orientation` field of the current configuration that is
-     * in effect for the `Resources` of our application's package is not equal to our field
-     * `mOriginalOrientation` (we were rotated since we were launched by `ActivityAnimations`)
-     * we set the X,Y location of the pivot point of `mImageView` to the center of the view, set
-     * `mLeftDelta` and `mTopDelta` both to 0 and set `fadeOut` to true. If the orientation
-     * is the same as when we were launched we just set `fadeOut` to false.
+     * has changed we simply scale the picture back into the center of the screen. We initialize
+     * [Long] variable `duration` to [ANIM_DURATION] (500) multiplied by the
+     * [ActivityAnimations.sAnimatorScale] property of [ActivityAnimations] (`sAnimatorScale` is
+     * either 1 or 5 depending on whether the "Slow" [MenuItem] in the options menu of
+     * [ActivityAnimations] is unchecked or checked respectively). Next we declare [Boolean]
+     * variable `fadeOut`. If the [Configuration.orientation] property of the current [Configuration]
+     * that is in effect for the [Resources] of our application's package is not equal to our [Int]
+     * property [mOriginalOrientation] (we were rotated since we were launched by [ActivityAnimations])
+     * we set the X, Y location of the pivot point of [mImageView] to the center of the view, set
+     * [Int] properties [mLeftDelta] and [mTopDelta] both to 0 and set `fadeOut` to true. If the
+     * orientation is the same as when we were launched we just set `fadeOut` to false.
      *
-     *
-     * Now we we animate the Y translation of our `mTextView` to minus its height, and its alpha
-     * property to 0 with a duration of half of `duration`, an `TimeInterpolator` of
-     * `sAccelerator` and an anonymous `Runnable` as its end action which animates the
-     * scale of `mImageView` back to the size of the thumbnail, its X translation to `mLeftDelta`
-     * its Y translation to `mTopDelta` and our parameter `Runnable endAction` as its end
-     * action. If `fadeOut` is true it also animates the alpha property of `mImageView` to
-     * 0. The `run` override initializes `ObjectAnimator bgAnim` with an instance which will
-     * animate the "alpha" property of `ColorDrawable mBackground` to 0, set its duration to
-     * `duration` and start it running. It then initializes `ObjectAnimator shadowAnim` with
-     * an instance which will animate the "shadowDepth" property of `ShadowLayout mShadowLayout`
-     * from 1 to 0, set its duration to `duration` and start it running. Finally it initializes
-     * `ObjectAnimator colorizer` with an instance which will animate the "saturation" property
-     * of this `PictureDetailsActivity` from 1 to 0 (from full color back to black and white),
-     * set its duration to `duration` and start it running.
+     * Now we we animate the Y translation of our [mTextView] to minus its height, and its alpha
+     * property to 0 with a duration of half of `duration`, a [TimeInterpolator] of [TimeInterpolator]
+     * property [sAccelerator] and an anonymous [Runnable] as its end action which animates the
+     * scale of [mImageView] back to the size of the thumbnail, its X translation to [mLeftDelta]
+     * its Y translation to [mTopDelta] and our [Runnable] parameter [endAction] as its end
+     * action. If `fadeOut` is true it also animates the alpha property of [mImageView] to 0. The
+     * [Runnable.run] override initializes [ObjectAnimator] variable `bgAnim` with an instance which
+     * will animate the "alpha" property of [ColorDrawable] property [mBackground] to 0, sets its
+     * duration to `duration` and starts it running. It then initializes [ObjectAnimator] variable
+     * `shadowAnim` with an instance which will animate the "shadowDepth" property of [ShadowLayout]
+     * property [mShadowLayout] from 1 to 0, sets its duration to `duration` and starts it running.
+     * Finally it initializes [ObjectAnimator] variable `colorizer` with an instance which will
+     * animate the "saturation" property of this [PictureDetailsActivity] from 1 to 0 (from full
+     * color back to black and white), sets its duration to `duration` and starts it running.
      *
      * @param endAction This action gets run after the animation completes (this is when we actually
      * switch activities)
@@ -479,8 +485,8 @@ class PictureDetailsActivity : AppCompatActivity() {
      * This method adds an [OnBackPressedCallback] to the [OnBackPressedDispatcher] that replaces the
      * old `onBackPressed` override. The [OnBackPressedCallback] will be called when the activity has
      * detected the user's press of the back key. We call our method [runExitAnimation] with an
-     * anonymous `Runnable` to run when the animation ends, whose `run` override just calls the
-     * [finish] method to exit the activity.
+     * anonymous [Runnable] to run when the animation ends, whose [Runnable.run] override just calls
+     * the [finish] method to exit the activity.
      */
     private fun addOurOnBackPressedCallback() {
         val callback = object : OnBackPressedCallback(enabled = true) {
@@ -495,11 +501,11 @@ class PictureDetailsActivity : AppCompatActivity() {
 
     /**
      * This is called by the colorizing animator. It sets a saturation factor that is then passed
-     * onto a filter on the picture's drawable. We call the `setSaturation` method of
-     * `ColorMatrix colorizerMatrix` to set the matrix to affect the saturation of colors by
-     * our parameter `value`, initialize `ColorMatrixColorFilter colorizerFilter` with an
-     * instance created from `colorizerMatrix`, and set the color filter for `BitmapDrawable mBitmapDrawable`
-     * to `colorizerFilter`.
+     * onto a filter on the picture's drawable. We call the [ColorMatrix.setSaturation]  method of
+     * [ColorMatrix] property [colorizerMatrix] to set the matrix to affect the saturation of colors
+     * by our [Float] parameter [value], initialize [ColorMatrixColorFilter] variable `colorizerFilter`
+     * with an instance created from [colorizerMatrix], and set the color filter for [BitmapDrawable]
+     * property [mBitmapDrawable] to `colorizerFilter`.
      *
      * @param value value to set the saturation to
      */
@@ -529,25 +535,25 @@ class PictureDetailsActivity : AppCompatActivity() {
 
     companion object {
         /**
-         * `DecelerateInterpolator` which is used for the animation from thumbnail to full size, as
+         * [DecelerateInterpolator] which is used for the animation from thumbnail to full size, as
          * well as the translation and alpha animation of the picture's text description.
          */
         private val sDecelerator: TimeInterpolator = DecelerateInterpolator()
 
         /**
-         * `AccelerateInterpolator` used for the slide/fade text out of the way animation performed
+         * [AccelerateInterpolator] used for the slide/fade text out of the way animation performed
          * as part of our exit animation.
          */
         private val sAccelerator: TimeInterpolator = AccelerateInterpolator()
 
         /**
-         * Package prefix used when adding extras to the `Intent` that launches this activity
+         * Package prefix used when adding extras to the [Intent] that launches this activity
          */
         private const val PACKAGE_NAME = "com.example.android.activityanim"
 
         /**
-         * Base animation duration which is multiplied by the `sAnimatorScale` field of
-         * `ActivityAnimations` to calculate the duration used for all of the animations
+         * Base animation duration which is multiplied by the [ActivityAnimations.sAnimatorScale]
+         * property of [ActivityAnimations] to calculate the duration used for all of the animations
          * for both enter and exit animations.
          */
         private const val ANIM_DURATION = 500
