@@ -94,7 +94,7 @@ class BitmapUtils {
         (0..29).forEach { _: Int ->
             val resourceId: Int = mPhotos[(Math.random() * mPhotos.size).toInt()]
             val bitmap: Bitmap? = getBitmap(resources = resources, resourceId = resourceId)
-            val thumbnail: Bitmap = getThumbnail(bitmap, 200)
+            val thumbnail: Bitmap = getThumbnail(original = bitmap, maxDimension = 200)
             val description: String = mDescriptions[(Math.random() * mDescriptions.size).toInt()]
             pictures.add(
                 PictureData(

@@ -62,14 +62,15 @@ import androidx.core.view.OnApplyWindowInsetsListener
  */
 class PictureDetailsActivity : AppCompatActivity() {
     /**
-     * [BitmapDrawable] we display in our [ImageView], it is created from the extra passed
-     * us in the `Intent` that launched us that is stored under the key ".resourceId"
+     * [BitmapDrawable] we display in our [ImageView]. It is created from the drawable resource ID
+     * that is passed as an extra in the [Intent] that launched us that is stored in the [Intent]
+     * under the key ".resourceId"
      */
     private var mBitmapDrawable: BitmapDrawable? = null
 
     /**
-     * [ColorMatrix] "saturation" property is animated, it is used to create the
-     * [ColorMatrixColorFilter` which is then set on [BitmapDrawable] property [mBitmapDrawable].
+     * [ColorMatrix] whose "saturation" property is animated. It is used to create the
+     * [ColorMatrixColorFilter] which is then set on [BitmapDrawable] property [mBitmapDrawable].
      */
     private val colorizerMatrix = ColorMatrix()
 
@@ -147,8 +148,9 @@ class PictureDetailsActivity : AppCompatActivity() {
      * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so
      * that the window insets will not keep passing down to descendant views).
      *
-     * We our [ShadowLayout] property [mShadowLayout] by finding the view with id `R.id.shadowLayout`,
-     * and our [TextView] property [mTextView] by finding the view with id R.id.description.
+     * We initialize our [ShadowLayout] property [mShadowLayout] by finding the view with id
+     * `R.id.shadowLayout`, and our [TextView] property [mTextView] by finding the view with id
+     * `R.id.description`.
      *
      * We initialize [Bundle] variable `bundle` by retrieving the map of all extras previously added
      * with `putExtra()` from the [Intent] that started this activity. We initialize [Bitmap] variable
@@ -165,13 +167,13 @@ class PictureDetailsActivity : AppCompatActivity() {
      * We initialize our [BitmapDrawable] property [mBitmapDrawable] with an instance constructed
      * from `bitmap`, set it to be the content of [ImageView] property [mImageView] and set
      * `description` as the text of [TextView] property [mTextView]. We initialize our [ColorDrawable]
-     * property [mBackground] with a BLACK instance and set it to be the background of [FrameLayout]
-     * property [mTopLevelLayout].
+     * property [mBackground] with a [Color.BLACK] instance and set it to be the background of
+     * [FrameLayout] property [mTopLevelLayout].
      *
      * Now if our [Bundle] parameter [savedInstanceState] is not `null` we are being recreated
      * automatically by the window manager (e.g., device rotation) so we skip any animation and
-     * return. If it is `null` we are being started by [ActivityAnimations] and we want to animate this
-     * transition, so we initialize [ViewTreeObserver] variable `observer` with a handle to the
+     * return. If it is `null` we are being started by [ActivityAnimations] and we want to animate
+     * this transition, so we initialize [ViewTreeObserver] variable `observer` with a handle to the
      * [ViewTreeObserver] for the hierarchy of [ImageView] property [mImageView] and add an anonymous
      * [OnPreDrawListener] whose [OnPreDrawListener.onPreDraw] override first removes itself as an
      * [OnPreDrawListener], then allocates 2 ints for [IntArray] variable `screenLocation` and loads
@@ -186,11 +188,11 @@ class PictureDetailsActivity : AppCompatActivity() {
      * [mHeightScale] to `thumbnailHeight` divided by the height of [mImageView] (which is how much
      * the height of the full size version needs to be scaled down to be the same size as the
      * thumbnail). It then calls our method [runEnterAnimation] to construct and run the animations
-     * that transition to our layout, and returns true to allow drawing to proceed.
+     * that transition to our layout, and returns `true` to allow drawing to proceed.
      *
      * @param savedInstanceState we just use this to only run the animation if we're coming from the
      * parent activity (it is `null`), not if we're recreated automatically by the window manager
-     * (e.g., device rotation, it is not `null`)
+     * (e.g., device rotation, when it is not `null`)
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -227,6 +229,7 @@ class PictureDetailsActivity : AppCompatActivity() {
         val thumbnailWidth: Int = bundle.getInt("$PACKAGE_NAME.width")
         val thumbnailHeight: Int = bundle.getInt("$PACKAGE_NAME.height")
         mOriginalOrientation = bundle.getInt("$PACKAGE_NAME.orientation")
+
         mBitmapDrawable = bitmap!!.toDrawable(resources)
         mImageView!!.setImageDrawable(mBitmapDrawable)
         mTextView!!.text = description
