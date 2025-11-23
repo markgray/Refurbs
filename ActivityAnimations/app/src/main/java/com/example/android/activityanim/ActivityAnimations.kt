@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 @file:Suppress(
-    "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
-    "UnusedImport"
+    "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate"
 )
 
 package com.example.android.activityanim

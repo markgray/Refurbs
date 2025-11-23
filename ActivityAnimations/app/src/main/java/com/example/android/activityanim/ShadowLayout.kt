@@ -23,6 +23,7 @@ import android.graphics.BlurMaskFilter
 import android.graphics.BlurMaskFilter.Blur
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.MaskFilter
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
@@ -97,19 +98,18 @@ class ShadowLayout : RelativeLayout {
     }
 
     /**
-     * TODO: Continue here.
      * Called by the constructors - sets up the drawing parameters for the drop shadow. We set the
-     * color of our field `Paint mShadowPaint` to BLACK, and its style to FILL. We call the
-     * `setWillNotDraw(false)` to clear the will not draw flag since our `onDraw` override
-     * will do some drawing. We initialize our field `Bitmap mShadowBitmap` with an instance that
-     * is the same size as our field `Rect sShadowRect` and uses ARGB_8888 as its config. We
-     * initialize `Canvas c` with an instance which will draw into `mShadowBitmap`. We
-     * set the `MaskFilter` of `mShadowPaint` to a new instance of `BlurMaskFilter`
-     * whose blur radius is BLUR_RADIUS and whose blur style is NORMAL (blur inside and outside the
-     * original border). We translate `Canvas c` by BLUR_RADIUS horizontally and vertically,
-     * then draw a round rectangle on it (and thus into `mShadowBitmap`) whose rectangular bounds
-     * are given by `sShadowRectF`, with the width of `sShadowRectF` divided by 40 for the
-     * x-radius of the corners ovals, and the height of  `sShadowRectF` divided by 40 for the
+     * color of our [Paint] property [mShadowPaint] to [Color.BLACK], and its style to FILL. We call
+     * the [setWillNotDraw] method to clear the will not draw flag since our [onDraw] override
+     * will do some drawing. We initialize our [Bitmap] property [mShadowBitmap] with an instance
+     * that is the same size as our [Rect] property [sShadowRect] and uses ARGB_8888 as its config.
+     *  initialize [Canvas] variable `c` with an instance which will draw into [mShadowBitmap]. We
+     * set the [MaskFilter] of [mShadowPaint] to a new instance of [BlurMaskFilter] whose blur radius
+     * is [BLUR_RADIUS] and whose blur style is NORMAL (blur inside and outside the original border).
+     * We translate [Canvas] variable `c` by [BLUR_RADIUS] horizontally and vertically, then draw a
+     * round rectangle on it (and thus into [mShadowBitmap]) whose rectangular bounds are given by
+     * [RectF] property [sShadowRectF], with the width of [sShadowRectF] divided by 40 for the
+     * x-radius of the corners ovals, and the height of  [sShadowRectF] divided by 40 for the
      * y-radius of the corners ovals.
      */
     private fun init() {
@@ -127,17 +127,16 @@ class ShadowLayout : RelativeLayout {
     }
 
     /**
-     * The "depth" factor determines the offset distance and opacity of the shadow (shadows that
+     * The [depth] factor determines the offset distance and opacity of the shadow (shadows that
      * are further away from the source are offset greater and are more translucent). If the new
-     * `depth` is equal to our field `float mShadowDepth` we do nothing, otherwise we
-     * set `mShadowDepth` to `depth`, and set the alpha of our field `Paint mShadowPaint`
-     * to 1 minus `mShadowDepth` times 150 plus 100, then we call the `invalidate` method
-     * so that our `onDraw` override will be called to redraw.
+     * [depth] is equal to our field [Float] property [mShadowDepth] we do nothing, otherwise we
+     * set [mShadowDepth] to [depth], and set the alpha of our [Paint] property [mShadowPaint]
+     * to 1 minus [mShadowDepth] times 150 plus 100, then we call the [invalidate] method
+     * so that our [onDraw] override will be called to redraw.
      *
      * @param depth offset distance and opacity of the shadow
      */
-    // it is actually used by the animations
-    @Suppress("unused")
+    @Suppress("unused") // it is actually used by the animations
     fun setShadowDepth(depth: Float) {
         if (depth != mShadowDepth) {
             mShadowDepth = depth
@@ -147,41 +146,30 @@ class ShadowLayout : RelativeLayout {
     }
 
     /**
-     * We implement this to do our drawing. Overriding onDraw allows us to draw shadows behind every
-     * child of this container. onDraw() is called to draw a layout's content before the children are
-     * drawn, so the shadows will be drawn first, behind the children (which is what we want). We loop
-     * over `int i` for each of our children:
+     * We implement this to do our drawing. Overriding [onDraw] allows us to draw shadows behind
+     * every child of this container. [onDraw] is called to draw a layout's content before the
+     * children are drawn, so the shadows will be drawn first, behind the children (which is what
+     * we want). We loop over `int i` for each of our children:
      *
-     *  *
-     * We initialize `View child` with the `i`'th child, and if the visibility
-     * of the `child` is not VISIBLE, or its alpha is 0 we skip it.
+     *  * We initialize [View] variable `child` with the `i`'th child, and if the visibility of the
+     *  `child` is not VISIBLE, or its alpha is 0 we skip it.
      *
-     *  *
-     * We initialize `int depthFactor` with 80 times our field `mShadowDepth`.
+     *  * We initialize [Int] variable `depthFactor` with 80 times our property [mShadowDepth].
      *
-     *  *
-     * We save the state of our parameter `Canvas canvas` on its private stack, then
-     * translate it to the left side of `child` plus `depthFactor` in the X
-     * direction, and the top side of `child` plus `depthFactor` in the X direction.
+     *  * We use the [Canvas.withTranslation] extension function to save the state of our [Canvas]
+     *  variable `canvas`, then translate it to the left side of `child` plus `depthFactor` in the
+     *  X direction, and the top side of `child` plus `depthFactor` in the X direction. Then in its
+     *  [Canvas] `block` lambda argument we pre-concatenate the current matrix of `canvas` with the
+     *  transform matrix of `child`, then set the [RectF.right] property of our [RectF] property
+     *  [tempShadowRectF] to the [View.width] of `child` and its [RectF.bottom] property to the
+     *  [View.height] of `child`. Then we draw our [Bitmap] property [mShadowBitmap] on `canvas` using
+     *  [Rect] property [sShadowRect] to define the subset of the bitmap to be drawn (the entire
+     *  bitmap), [tempShadowRectF] as the rectangle that the bitmap will be scaled/translated to fit
+     *  into, and our [Paint] property [mShadowPaint] as the paint. The [Canvas.withTranslation]
+     *  extension function will restore the state of `canvas` to its previous state when the lambda
+     *  argument returns.
      *
-     *  *
-     * We pre-concatenate the current matrix of `canvas` with the transform matrix of
-     * `child`.
-     *
-     *  *
-     * We set the `right` field of our field `RectF tempShadowRectF` to the
-     * width of `child` and its `bottom` field to the height of `child`
-     *
-     *  *
-     * We draw our field `Bitmap mShadowBitmap` on `canvas` using `Rect sShadowRect`
-     * to define the subset of the bitmap to be drawn (the entire bitmap), `tempShadowRectF`
-     * as the rectangle that the bitmap will be scaled/translated to fit into, and using our
-     * field `Paint mShadowPaint` as the paint.
-     *
-     *  *
-     * Then we loop around to handle the next child.
-     *
-     *
+     *  * Then we loop around to handle the next child.
      *
      * @param canvas the canvas on which the background will be drawn
      */
@@ -206,14 +194,15 @@ class ShadowLayout : RelativeLayout {
 
     companion object {
         /**
-         * Radius to extend the blur from the original mask when constructing the `BlurMaskFilter`
-         * we use as the `MaskFilter` object for `Paint mShadowPaint` (a `BlurMaskFilter`
+         * Radius to extend the blur from the original mask when constructing the [BlurMaskFilter]
+         * we use as the [MaskFilter] object for [Paint] property [mShadowPaint] (a [BlurMaskFilter]
          * blurs the edge of the alpha-channel mask before drawing it).
          */
         const val BLUR_RADIUS: Int = 6
 
         /**
-         * `RectF` we use when drawing a round rect offset by BLUR_RADIUS into `Bitmap mShadowBitmap`
+         * [RectF] we use when drawing a round rect offset by [BLUR_RADIUS] into [Bitmap] property
+         * [mShadowBitmap]
          */
         val sShadowRectF: RectF = RectF(
             /* left = */ 0f,
@@ -223,7 +212,8 @@ class ShadowLayout : RelativeLayout {
         )
 
         /**
-         * The `Rect` which includes the blur radius, it is used to size `Bitmap mShadowBitmap`
+         * The [Rect] which includes the blur radius, it is used to size [Bitmap] property
+         * [mShadowBitmap]
          */
         val sShadowRect: Rect = Rect(
             /* left = */ 0,
@@ -233,8 +223,8 @@ class ShadowLayout : RelativeLayout {
         )
 
         /**
-         * `RectF` we use as the rectangle that the `Bitmap mShadowBitmap` will be scaled or
-         * translated to fit into when drawing it in our `onDraw` override, its coordinates are
+         * [RectF] we use as the rectangle that the [Bitmap] property [mShadowBitmap] will be scaled
+         * or translated to fit into when drawing it in our [onDraw] override, its coordinates are
          * calculated for each of our children.
          */
         var tempShadowRectF: RectF = RectF(
