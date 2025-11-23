@@ -289,21 +289,21 @@ class PictureDetailsActivity : AppCompatActivity() {
     }
 
     /**
-     * The enter animation scales the picture in from its previous thumbnail size/location, colorizing
-     * it in parallel. In parallel, the background of the activity is fading in. When the picture is
-     * in place, the text description drops down. We initialize [Long] variable `duration` to
-     * [ANIM_DURATION] (500) multiplied by the [ActivityAnimations.sAnimatorScale] property of
-     * [ActivityAnimations] (`sAnimatorScale` is either 1 or 5 depending on whether the "Slow"
-     * [MenuItem] in the options menu of [ActivityAnimations] is unchecked or checked respectively).
-     * We set the X location of the point around which [ImageView] property [mImageView] is scaled
-     * (or rotated) to 0 and the Y location of the point around which [mImageView] is scaled (or
-     * rotated) to 0 as well. We the scale the X dimension of [mImageView] down to [Float] property
-     * [mWidthScale] and the Y dimension of [mImageView] down to [Float] property [mHeightScale]
-     * (this shrinks the full size version down to be the same size as the thumbnail). We translate
-     * the horizontal location of [mImageView] by [Int] property [mLeftDelta] and the vertical
-     * location of [mImageView] by [Int] property [mTopDelta] (this places the now shrunken full
-     * sized version over the location of the thumbnail). We set the alpha of [TextView] property
-     * [mTextView] to 0 (we'll fade the text in after the animation of [mImageView] ends).
+     * The enter animation scales the picture in from its previous thumbnail size/location,
+     * colorizing it in parallel. In parallel, the background of the activity is fading in. When
+     * the picture is in place, the text description drops down. We initialize [Long] variable
+     * `duration` to [ANIM_DURATION] (500) multiplied by the [ActivityAnimations.sAnimatorScale]
+     * property of [ActivityAnimations] (`sAnimatorScale` is either 1 or 5 depending on whether the
+     * "Slow" [MenuItem] in the options menu of [ActivityAnimations] is unchecked or checked
+     * respectively). We set the X location of the point around which [ImageView] property
+     * [mImageView] is scaled (or rotated) to 0 and the Y location of the point around which
+     * [mImageView] is scaled (or rotated) to 0 as well. We then scale the X dimension of [mImageView]
+     * down to [Float] property [mWidthScale] and the Y dimension of [mImageView] down to [Float]
+     * property [mHeightScale] (this shrinks the full size version down to be the same size as the
+     * thumbnail). We translate the horizontal location of [mImageView] by [Int] property [mLeftDelta]
+     * and the vertical location of [mImageView] by [Int] property [mTopDelta] (this places the now
+     * shrunken full sized version over the location of the thumbnail). We set the alpha of [TextView]
+     * property [mTextView] to 0 (we'll fade the text in after the animation of [mImageView] ends).
      *
      * We use the [View.animate] method of [mImageView] to fetch a [ViewPropertyAnimator] for it,
      * set its duration to [Long] variable `duration`, have it animate the X and the Y size of
@@ -398,7 +398,7 @@ class PictureDetailsActivity : AppCompatActivity() {
      * property to 0 with a duration of half of `duration`, a [TimeInterpolator] of [TimeInterpolator]
      * property [sAccelerator] and an anonymous [Runnable] as its end action which animates the
      * scale of [mImageView] back to the size of the thumbnail, its X translation to [mLeftDelta]
-     * its Y translation to [mTopDelta] and our [Runnable] parameter [endAction] as its end
+     * its Y translation to [mTopDelta] and add our [Runnable] parameter [endAction] as its end
      * action. If `fadeOut` is true it also animates the alpha property of [mImageView] to 0. The
      * [Runnable.run] override initializes [ObjectAnimator] variable `bgAnim` with an instance which
      * will animate the "alpha" property of [ColorDrawable] property [mBackground] to 0, sets its
