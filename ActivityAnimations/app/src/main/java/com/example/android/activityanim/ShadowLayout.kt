@@ -102,13 +102,13 @@ class ShadowLayout : RelativeLayout {
      * color of our [Paint] property [mShadowPaint] to [Color.BLACK], and its style to FILL. We call
      * the [setWillNotDraw] method to clear the will not draw flag since our [onDraw] override
      * will do some drawing. We initialize our [Bitmap] property [mShadowBitmap] with an instance
-     * that is the same size as our [Rect] property [sShadowRect] and uses ARGB_8888 as its config.
-     *  initialize [Canvas] variable `c` with an instance which will draw into [mShadowBitmap]. We
-     * set the [MaskFilter] of [mShadowPaint] to a new instance of [BlurMaskFilter] whose blur radius
-     * is [BLUR_RADIUS] and whose blur style is NORMAL (blur inside and outside the original border).
-     * We translate [Canvas] variable `c` by [BLUR_RADIUS] horizontally and vertically, then draw a
-     * round rectangle on it (and thus into [mShadowBitmap]) whose rectangular bounds are given by
-     * [RectF] property [sShadowRectF], with the width of [sShadowRectF] divided by 40 for the
+     * that is the same size as our [Rect] property [sShadowRect] and uses ARGB_8888 as its config,
+     * and we initialize [Canvas] variable `c` with an instance which will draw into [mShadowBitmap].
+     * We set the [MaskFilter] of [mShadowPaint] to a new instance of [BlurMaskFilter] whose blur
+     * radius is [BLUR_RADIUS] and whose blur style is NORMAL (blur inside and outside the original
+     * border). We translate [Canvas] variable `c` by [BLUR_RADIUS] horizontally and vertically, then
+     * draw a round rectangle on it (and thus into [mShadowBitmap]) whose rectangular bounds are given
+     * by [RectF] property [sShadowRectF], with the width of [sShadowRectF] divided by 40 for the
      * x-radius of the corners ovals, and the height of  [sShadowRectF] divided by 40 for the
      * y-radius of the corners ovals.
      */
@@ -149,7 +149,7 @@ class ShadowLayout : RelativeLayout {
      * We implement this to do our drawing. Overriding [onDraw] allows us to draw shadows behind
      * every child of this container. [onDraw] is called to draw a layout's content before the
      * children are drawn, so the shadows will be drawn first, behind the children (which is what
-     * we want). We loop over `int i` for each of our children:
+     * we want). We loop over [Int] variable `i` for each of our children:
      *
      *  * We initialize [View] variable `child` with the `i`'th child, and if the visibility of the
      *  `child` is not VISIBLE, or its alpha is 0 we skip it.
