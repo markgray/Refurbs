@@ -9,7 +9,7 @@ android {
     compileSdk = 36
     defaultConfig {
         applicationId = "com.example.android.activityanim"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 36
     }
     buildTypes {
@@ -34,7 +34,7 @@ android {
     namespace = "com.example.android.activityanim"
 }
 dependencies {
-    implementation("androidx.activity:activity-ktx:1.11.0")
+    implementation("androidx.activity:activity-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.core:core-ktx:1.17.0")
 }
