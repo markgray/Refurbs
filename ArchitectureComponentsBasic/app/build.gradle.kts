@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.activity:activity-ktx:1.11.0")
+    implementation("androidx.activity:activity-ktx:1.12.0")
     // Support libraries
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
@@ -51,18 +51,18 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
 
     // Architecture components
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4")
-    ksp("androidx.lifecycle:lifecycle-common:2.9.4")
-    implementation("androidx.room:room-runtime:2.8.3")
-    ksp("androidx.room:room-compiler:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
+    ksp("androidx.lifecycle:lifecycle-common:2.10.0")
+    implementation("androidx.room:room-runtime:2.8.4")
+    ksp("androidx.room:room-compiler:2.8.4")
 
     // Android Testing Support Library"s runner and rules
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test:rules:1.7.0")
-    androidTestImplementation("androidx.room:room-testing:2.8.3")
+    androidTestImplementation("androidx.room:room-testing:2.8.4")
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
 
     // Espresso UI Testing
