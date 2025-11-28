@@ -24,11 +24,13 @@ import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -54,15 +56,34 @@ class MainActivity : AppCompatActivity() {
     private var mLogFragment: LogFragment? = null
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file `R.layout.sample_main`. We initialize
-     * [SimpleTextFragment] variable `val introFragment` by finding the fragment that was identified
-     * by the id `R.id.intro_fragment` when our layout file was inflated from XML. We then call its
-     * [SimpleTextFragment.setText] method to have it set its text the the string with resource id
-     * `R.string.intro_message` and then we retrieve its [TextView] to call its [TextView.setTextSize]
-     * method to set its text size to 16.0 DIP. Finally we call our method [initializeLogging] to
-     * create a chain of targets that will receive log data and display them in the [LogFragment]
-     * which has id `R.id.log_fragment` in our layout file.
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's implementation
+     * of `onCreate`, and set our content view to our layout file
+     * `R.layout.sample_main`.
+     *
+     * We initialize our [LinearLayout] variable `rootView`
+     * to the view with ID `R.id.root_view` then call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
+     * for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We initialize [SimpleTextFragment] variable `val introFragment` by finding the fragment
+     * that was identified by the id `R.id.intro_fragment` when our layout file was inflated
+     * from XML. We then call its [SimpleTextFragment.setText] method to have it set its text
+     * to the string with resource id `R.string.intro_message` and then we retrieve its [TextView]
+     * to call its [TextView.setTextSize] method to set its text size to 16.0 DIP. Finally we call
+     * our method [initializeLogging] to create a chain of targets that will receive log data and
+     * display them in the [LogFragment] which has id `R.id.log_fragment` in our layout file.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
@@ -71,8 +92,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sample_main)
         val rootView = findViewById<LinearLayout>(R.id.root_view)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
