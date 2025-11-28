@@ -9,7 +9,7 @@ android {
     compileSdk = 36
     defaultConfig {
         applicationId = "com.example.android.crossfading"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 36
     }
     compileOptions {
@@ -33,6 +33,6 @@ android {
         }
     }
     dependencies {
-        implementation("androidx.activity:activity-ktx:1.11.0")
+        implementation("androidx.activity:activity-ktx:1.12.0")
     }
 }
