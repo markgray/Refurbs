@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    implementation("androidx.activity:activity-ktx:1.11.0")
+    implementation("androidx.activity:activity-ktx:1.12.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.legacy:legacy-support-v13:1.0.0")
     implementation("androidx.cardview:cardview:1.0.0")
