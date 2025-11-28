@@ -38,6 +38,7 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -94,17 +95,19 @@ class AccelerometerPlayActivity : ComponentActivity() {
     private var mWakeLock: WakeLock? = null
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`.
-     * Then we initialize our fields `SensorManager mSensorManager` with an instance of the system
-     * level service SENSOR_SERVICE (used for accessing sensors), and `PowerManager mPowerManager`
-     * with an instance of the system level service POWER_SERVICE (used for controlling power management,
-     * including "wake locks"), and `WindowManager mWindowManager` with an instance of the system
-     * level service WINDOW_SERVICE (used for accessing the system's window manager). We then use
-     * `mWindowManager` to retrieve the [Display] upon which this [WindowManager] instance
-     * will create new windows and save it in our field `Display mDisplay`. We use `mPowerManager`
-     * to create a PARTIAL_WAKE_LOCK using our class name string as the tag and save it in our field
-     * `WakeLock mWakeLock`. We initialize our field `SimulationView mSimulationView` with a
-     * new instance and set it as our content view. Finally we retrieve the current [android.view.Window]
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`.
+     * Next we initialize our [SensorManager] property [mSensorManager] with an instance of the
+     * system level service SENSOR_SERVICE (used for accessing sensors), and [PowerManager] property
+     * [mPowerManager] with an instance of the system level service POWER_SERVICE (used for
+     * controlling power management, including "wake locks"), and [WindowManager] property
+     * [mWindowManager] with an instance of the system level service WINDOW_SERVICE (used for
+     * accessing the system's window manager). We then use [mWindowManager] to retrieve the
+     * [Display] upon which this [WindowManager] instance will create new windows and save it
+     * in our [Display] property [mDisplay]. We use [mPowerManager] to create a PARTIAL_WAKE_LOCK
+     * using our class name string as the tag and save it in our [WakeLock] property [mWakeLock].
+     * We initialize our [SimulationView] property [mSimulationView] with a new instance and set
+     * it as our content view. Finally we retrieve the current [android.view.Window]
      * for this activity and add the following flags to it:
      *  * FLAG_SHOW_WHEN_LOCKED: special flag to let windows be shown when the screen is locked.
      *  This will let application windows take precedence over key guard or any other lock screens
@@ -128,7 +131,20 @@ class AccelerometerPlayActivity : ComponentActivity() {
      *  * FLAG_ALLOW_LOCK_WHILE_SCREEN_ON: as long as this window is visible to the user, allow
      *  the lock screen to activate while the screen is on.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
+     * We initialize our [FrameLayout] variable `rootView` to the view with ID `android.R.id.content`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the listener argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `insets` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument, then it updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `insets.left`,
+     * the right margin set to `insets.right`, the top margin set to `insets.top`,
+     * and the bottom margin set to `insets.bottom`. Finally it returns
+     * [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
+     *
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -162,8 +178,8 @@ class AccelerometerPlayActivity : ComponentActivity() {
             or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
             or WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON)
         val rootView = window.decorView.findViewById<FrameLayout>(android.R.id.content)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
@@ -757,7 +773,7 @@ class AccelerometerPlayActivity : ComponentActivity() {
          * current time in nanosecond) to the current value of the running Java Virtual Machine's
          * high-resolution time source, in nanoseconds.
          *
-         * @param event the [SensorEvent][android.hardware.SensorEvent].
+         * @param event the [SensorEvent][SensorEvent].
          */
         override fun onSensorChanged(event: SensorEvent) {
             if (event.sensor.type != Sensor.TYPE_ACCELEROMETER) return
