@@ -26,12 +26,14 @@ import android.view.GestureDetector
 import android.view.GestureDetector.OnGestureListener
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.RelativeLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -113,22 +115,42 @@ class CardFlip : ComponentActivity(), CardFlipListener {
     var gDetector: GestureDetector? = null
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file `R.layout.main`. We initialize our [List] of
-     * [ArrayList] of [CardView] field [mStackCards] with a new instance, and add two new instances
-     * of [ArrayList] of [CardView] to it. We allocate 2 [Boolean]'s for our [BooleanArray] field
-     * [mIsStackEnabled] and set both entries to `true`. We initialize our [Int] field [mVerticalPadding]
-     * by fetching the integer resource with ID `R.integer.vertical_card_margin`, and our [Int] field
-     * [mHorizontalPadding] by fetching the integer resource with ID `R.integer.horizontal_card_margin`
-     * (these are both 30). We initialize our [GestureDetector] field [gDetector] with a new instance
-     * which uses as its [OnGestureListener] our [SimpleOnGestureListener] field [mGestureListener]
-     * (it overrides the methods `onSingleTapUp` and `onFling` in order to do the card deck animations
-     * in response to user gestures). We initialize our [RelativeLayout] field [mLayout] by finding
-     * the view with ID `R.id.main_relative_layout` and initialize our [ViewTreeObserver] variable
-     * `val observer` with a handle to the [ViewTreeObserver] for its hierarchy. We then add to
-     * `observer` an anonymous [OnGlobalLayoutListener] whose [OnGlobalLayoutListener.onGlobalLayout]
-     * override creates and adds the [CardView] objects to [mLayout] (as well as adding them to the
-     * [RIGHT_STACK] of our [List] of [ArrayList] of [CardView] field [mStackCards].
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's implementation
+     * of `onCreate`, and set our content view to our layout file
+     * `R.layout.main`.
+     *
+     * We initialize our [RelativeLayout] property [mLayout]
+     * to the view with ID `R.id.main_relative_layout` then call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
+     * for applying window insets to [mLayout], with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We initialize our [List] of [ArrayList] of [CardView] field [mStackCards] with a new
+     * instance, and add two new instances of [ArrayList] of [CardView] to it. We allocate 2
+     * [Boolean]'s for our [BooleanArray] field [mIsStackEnabled] and set both entries to `true`.
+     * We initialize our [Int] field [mVerticalPadding] by fetching the integer resource with ID
+     * `R.integer.vertical_card_margin`, and our [Int] field [mHorizontalPadding] by fetching the
+     * integer resource with ID `R.integer.horizontal_card_margin` (these are both 30).
+     * We initialize our [GestureDetector] field [gDetector] with a new instance which uses as
+     * its [OnGestureListener] our [SimpleOnGestureListener] field [mGestureListener] (it overrides
+     * the methods `onSingleTapUp` and `onFling` in order to do the card deck animations in
+     * response to user gestures). We initialize our [ViewTreeObserver] variable `val observer`
+     * with a handle to the [ViewTreeObserver] for the hierarchy of [RelativeLayout] property
+     * [mLayout]. We then add to `observer` an anonymous [OnGlobalLayoutListener] whose
+     * [OnGlobalLayoutListener.onGlobalLayout] override creates and adds the [CardView] objects
+     * to [mLayout] (as well as adding them to the [RIGHT_STACK] of our [List] of [ArrayList] of
+     * [CardView] field [mStackCards].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -137,8 +159,8 @@ class CardFlip : ComponentActivity(), CardFlipListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
         mLayout = findViewById(R.id.main_relative_layout)
-        ViewCompat.setOnApplyWindowInsetsListener(mLayout!!) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(mLayout!!) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
@@ -166,7 +188,7 @@ class CardFlip : ComponentActivity(), CardFlipListener {
              * within the view tree changes. First we remove `this` as an [OnGlobalLayoutListener]
              * of our [RelativeLayout] field [mLayout]. Then we initialize our [Int] field [mCardHeight]
              * with the height of [mLayout] and [Int] field [mCardWidth] with half of its width.
-             * Finally we loop over [Int] variable `x` for [STARTING_NUMBER_CARDS] calling our method
+             * Finally we [repeat] for [STARTING_NUMBER_CARDS] `times` calling our method
              * [addNewCard] to add a new card to the [RIGHT_STACK] of our [List] of [ArrayList] of
              * [CardView] field [mStackCards].
              */
@@ -174,7 +196,7 @@ class CardFlip : ComponentActivity(), CardFlipListener {
                 mLayout!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 mCardHeight = mLayout!!.height
                 mCardWidth = mLayout!!.width / 2
-                for (x in 0 until STARTING_NUMBER_CARDS) {
+                repeat(times = STARTING_NUMBER_CARDS) {
                     addNewCard(RIGHT_STACK)
                 }
             }
