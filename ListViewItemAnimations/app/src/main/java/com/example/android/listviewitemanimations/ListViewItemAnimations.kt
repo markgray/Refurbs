@@ -41,6 +41,7 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -106,16 +107,35 @@ class ListViewItemAnimations : ComponentActivity() {
     var mCurrentAlpha: Float = 1f
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file `R.layout.activity_list_view_item_animations`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's implementation
+     * of `onCreate`, and set our content view to our layout file
+     * `R.layout.activity_list_view_item_animations`.
+     *
+     * We initialize our [LinearLayout] variable `rootView`
+     * to the view with ID `R.id.root_view` then call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
+     * for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
      * We initialize our [BackgroundContainer] field [mBackgroundContainer] by finding the view with
      * id `R.id.listViewBackground`, and [ListView] field [mListView] by finding the view with id
      * `R.id.list_view`. We allocate a new instance for [ArrayList] of [String] to initialize variable
-     * `val cheeseList` then add all the cheeses in the [Array] of [String] field [Cheeses.sCheeseStrings]
-     * to it. We initialize our [StableArrayAdapter] field [mAdapter] with a new instance which will
-     * use `cheeseList` as its dataset, displaying them using the layout `R.layout.opaque_text_view`
-     * with our [OnTouchListener] field [mTouchListener] as its [OnTouchListener]. Finally we set the adapter
-     * of `mListView` to be `mAdapter`.
+     * `val cheeseList` then add all the cheeses in the [Array] of [String] field
+     * [Cheeses.sCheeseStrings] to it. We initialize our [StableArrayAdapter] field [mAdapter] with
+     * a new instance which will use `cheeseList` as its dataset, displaying them using the layout
+     * `R.layout.opaque_text_view` with our [OnTouchListener] field [mTouchListener] as its
+     * [OnTouchListener]. Finally we set the adapter of `mListView` to be `mAdapter`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -124,8 +144,8 @@ class ListViewItemAnimations : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_view_item_animations)
         val rootView = findViewById<LinearLayout>(R.id.root_view)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
