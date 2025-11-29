@@ -43,10 +43,12 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.ColorRes
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import com.example.android.jobscheduler.service.MyJobService
+import java.lang.Long
 import java.lang.ref.WeakReference
 
 /**
@@ -113,9 +115,26 @@ class MainActivity : ComponentActivity() {
     private var mHandler: IncomingMessageHandler? = null
 
     /**
-     * Called when the activity is starting. We call our super's implementation of `onCreate`
-     * then set our content view to our layout file R.layout.sample_main. We then proceed to initialize
-     * our various UI widget references by finding them in our layout:
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge
+     * to edge display, then we call our super's implementation of `onCreate`, and set our
+     * content view to our layout file `R.layout.sample_main`.
+     *
+     * We initialize our [ScrollView] variable `rootView` to the view with ID
+     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to
+     * take over the policy for applying window insets to `rootView`, with the
+     * `listener` argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We then proceed to initialize our various widget references by finding them in our layout:
      *
      *  * [mDelayEditText] is the [EditText] with ID `R.id.delay_time`
      *  * [mDurationTimeEditText] is the [EditText] with ID `R.id.duration_time`
@@ -135,8 +154,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sample_main)
         val rootView = findViewById<ScrollView>(R.id.root_view)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
@@ -236,11 +255,11 @@ class MainActivity : ComponentActivity() {
         val builder = JobInfo.Builder(mJobId++, mServiceComponent!!)
         val delay = mDelayEditText!!.text.toString()
         if (!TextUtils.isEmpty(delay)) {
-            builder.setMinimumLatency(java.lang.Long.valueOf(delay) * 1000)
+            builder.setMinimumLatency(Long.valueOf(delay) * 1000)
         }
         val deadline = mDeadlineEditText!!.text.toString()
         if (!TextUtils.isEmpty(deadline)) {
-            builder.setOverrideDeadline(java.lang.Long.valueOf(deadline) * 1000)
+            builder.setOverrideDeadline(Long.valueOf(deadline) * 1000)
         }
         val requiresUnmetered = mWiFiConnectivityRadioButton!!.isChecked
         val requiresAnyConnectivity = mAnyConnectivityRadioButton!!.isChecked
@@ -258,7 +277,7 @@ class MainActivity : ComponentActivity() {
         if (TextUtils.isEmpty(workDuration)) {
             workDuration = "1"
         }
-        extras.putLong(WORK_DURATION_KEY, java.lang.Long.valueOf(workDuration) * 1000)
+        extras.putLong(WORK_DURATION_KEY, Long.valueOf(workDuration) * 1000)
         builder.setExtras(extras)
 
         // Schedule job
