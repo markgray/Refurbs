@@ -20,10 +20,6 @@
     android:layout_height="match_parent"
     tools:context=".ListViewRemovalAnimation" >
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="64dp"/>
-
     <view
         class="com.example.android.listviewremovalanimation.BackgroundContainer"
         android:layout_width="match_parent"
