@@ -9,7 +9,7 @@ android {
     compileSdk = 36
     defaultConfig {
         applicationId = "com.example.android.lunarlander"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 36
         testApplicationId = "com.example.android.lunarlander.tests"
         testInstrumentationRunner = "android.test.InstrumentationTestRunner"
@@ -35,6 +35,6 @@ android {
     }
     namespace = "com.example.android.lunarlander"
     dependencies {
-        implementation("androidx.activity:activity-ktx:1.11.0")
+        implementation("androidx.activity:activity-ktx:1.12.0")
     }
 }
