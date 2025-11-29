@@ -31,6 +31,7 @@ import android.widget.Button
 import android.widget.RelativeLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -57,12 +58,31 @@ class LiveButton : ComponentActivity() {
     var sOvershooter: OvershootInterpolator = OvershootInterpolator(10f)
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file `R.layout.activity_overshoot`. We initialize
-     * our [Button] variable `val clickMeButton` by finding the view with id `R.id.clickMe`
-     * ("Click me!") and set the duration of its [ViewPropertyAnimator] to 200ms. Finally we set its
-     * [OnTouchListener] to an anonymous class which animates its scaling properties when an
-     * ACTION_DOWN or ACTION_UP [MotionEvent] is received.
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's implementation
+     * of `onCreate`, and set our content view to our layout file
+     * `R.layout.activity_main`.
+     *
+     * We initialize our [RelativeLayout] variable `rootView`
+     * to the view with ID `R.id.root_view` then call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
+     * for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We initialize our [Button] variable `val clickMeButton` by finding the view with id
+     * `R.id.clickMe` ("Click me!") and set the duration of its [ViewPropertyAnimator] to 200ms.
+     * Finally we set its [OnTouchListener] to an anonymous class which animates its scaling
+     * properties when an ACTION_DOWN or ACTION_UP [MotionEvent] is received.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
@@ -72,8 +92,8 @@ class LiveButton : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_overshoot)
         val rootView = findViewById<RelativeLayout>(R.id.root_view)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
@@ -87,7 +107,7 @@ class LiveButton : ComponentActivity() {
         }
         val clickMeButton = findViewById<Button>(R.id.clickMe)
         clickMeButton.animate().duration = 200
-        clickMeButton.setOnTouchListener { arg0, arg1 ->
+        clickMeButton.setOnTouchListener { _, arg1 ->
 
             /**
              * Called when a touch event is dispatched to a view. This allows listeners to get a
@@ -101,7 +121,7 @@ class LiveButton : ComponentActivity() {
              * property to 1f as well. Whether the action was one we wanted or not we return
              * `false` to the caller so that the event will be passed on to the view.
              *
-             * @param arg0 The [View] the touch event has been dispatched to.
+             * @param _ The [View] the touch event has been dispatched to.
              * @param arg1 The [MotionEvent] object containing full information about the event.
              * @return `true` if the listener has consumed the event, `false` otherwise.
              */
