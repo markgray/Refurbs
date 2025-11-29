@@ -30,6 +30,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -70,20 +71,39 @@ class JetBoy : ComponentActivity(), View.OnClickListener {
     private var mTimerView: TextView? = null
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file `R.layout.main`. We initialize our [JetBoyView]
-     * field [mJetBoyView] by finding the view with id R.id.JetBoyView, and our [JetBoyThread] field
-     * [mJetBoyThread] with the value of the [JetBoyView.thread] property of [mJetBoyView] (it is
-     * the thread that actually draws the animation). We initialize [Button] field [mButton] by
-     * finding the view with id `R.id.Button01` ("START!") and set its [View.OnClickListener] to
-     * 'this', initialize [Button] field [mButtonRetry] by finding the view with id `R.id.Button02`
-     * ("RETRY") and set its [View.OnClickListener] to 'this'. We then initialize [TextView] field
-     * [mTextView] by finding the view with id `R.id.text`, and [TextView] field [mTimerView] by
-     * finding the view with id `R.id.timer`. We call the [JetBoyView.setTimerView] method of
-     * [mJetBoyView] to set the timer view widget it updates to [mTimerView], call the
-     * [JetBoyView.setButtonView] method of [mJetBoyView] to set the button to start game over to
-     * [mButtonRetry], and call the [JetBoyView.setTextView] method of [mJetBoyView] to set the end
-     * game screen to [mTextView] (it reuses the help screen for this).
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
+     * edge to edge display, then we call our super's implementation of `onCreate`, and
+     * set our content view to our layout file `R.layout.main`.
+     *
+     * We initialize our [FrameLayout] variable `rootView` to the view with ID
+     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to
+     * take over the policy for applying window insets to `rootView`, with the
+     * `listener` argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `insets` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We initialize our [JetBoyView] field [mJetBoyView] by finding the view with id
+     * `R.id.JetBoyView`, and our [JetBoyThread] field [mJetBoyThread] with the value of
+     * the [JetBoyView.thread] property of [mJetBoyView] (it is the thread that actually
+     * draws the animation). We initialize [Button] field [mButton] by finding the view
+     * with id `R.id.Button01` ("START!") and set its [View.OnClickListener] to 'this',
+     * initialize [Button] field [mButtonRetry] by finding the view with id `R.id.Button02`
+     * ("RETRY") and set its [View.OnClickListener] to 'this'. We then initialize [TextView]
+     * field [mTextView] by finding the view with id `R.id.text`, and [TextView] field
+     * [mTimerView] by finding the view with id `R.id.timer`. We call the
+     * [JetBoyView.setTimerView] method of [mJetBoyView] to set the timer view widget it
+     * updates to [mTimerView], call the [JetBoyView.setButtonView] method of [mJetBoyView]
+     * to set the button to start game over to [mButtonRetry], and call the
+     * [JetBoyView.setTextView] method of [mJetBoyView] to set the end game screen to
+     * [mTextView] (it reuses the help screen for this).
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
@@ -93,8 +113,8 @@ class JetBoy : ComponentActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
         val rootView = findViewById<FrameLayout>(R.id.root_view)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
