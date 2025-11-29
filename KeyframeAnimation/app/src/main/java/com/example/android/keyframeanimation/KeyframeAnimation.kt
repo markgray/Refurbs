@@ -22,12 +22,14 @@ import android.graphics.Paint
 import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -43,18 +45,35 @@ import androidx.core.graphics.drawable.toDrawable
  */
 class KeyframeAnimation : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file `R.layout.activity_keyframe_animation`, and
-     * we initialize [ImageView] variable `val imageview` by finding the view with id `R.id.imageview`.
-     * We initialize our [AnimationDrawable] variable `val animationDrawable` to a new instance then
-     * loop for [Int] variable `var i` from 0 to 9 calling the [AnimationDrawable.addFrame] method
-     * of `animationDrawable` to add the [BitmapDrawable] returned by our method
-     * [getDrawableForFrameNumber] for `i` to it with a duration of 300ms. We call the
-     * [AnimationDrawable.setOneShot] method (kotlin `isOneShot` property) of `animationDrawable`
-     * with `false` so that it will run until it stops, and set the content of `imageview` to
-     * `animationDrawable`. Finally we set the [OnClickListener] of `imageview` to an anonymous
-     * class whose [OnClickListener.onClick] override stops `animationDrawable` if it is currently
-     * running or starts it running if it is not running.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge
+     * to edge display, then we call our super's implementation of `onCreate`, and set our
+     * content view to our layout file `R.layout.activity_keyframe_animation`.
+     *
+     * We initialize our [RelativeLayout] variable `rootView` to the view with ID
+     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * Next we initialize [ImageView] variable `val imageview` by finding the view with id
+     * `R.id.imageview`. We initialize our [AnimationDrawable] variable `val animationDrawable`
+     * to a new instance then loop for [Int] variable `var i` from 0 to 9 calling the
+     * [AnimationDrawable.addFrame] method of `animationDrawable` to add the [BitmapDrawable]
+     * returned by our method [getDrawableForFrameNumber] for `i` to it with a duration of 300ms.
+     * We call the [AnimationDrawable.setOneShot] method (kotlin `isOneShot` property) of
+     * `animationDrawable` with `false` so that it will run until it stops, and set the content
+     * of `imageview` to `animationDrawable`. Finally we set the [OnClickListener] of `imageview`
+     * to an anonymous class whose [OnClickListener.onClick] override stops `animationDrawable`
+     * if it is currently running or starts it running if it is not running.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -63,8 +82,8 @@ class KeyframeAnimation : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_keyframe_animation)
         val rootView = findViewById<RelativeLayout>(R.id.root_view)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
