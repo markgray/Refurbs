@@ -24,9 +24,11 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -53,25 +55,44 @@ class MainActivity : FragmentActivity() {
     var mNM : NotificationManager? = null
 
     /**
-     * Called when the activity is starting (or restarting after an orientation change). First we
-     * call through to our super's implementation of onCreate, then we set our content view to our
-     * layout file `R.layout.activity_main`. We initialize our [NotificationManager] field [mNM]
-     * by using the [getSystemService] method to get a handle to the system-level service with the
-     * name [Context.NOTIFICATION_SERVICE] ("notification"). We initialize our [NotificationChannel]
-     * variable `val chan1` to a new instance whose `id` is our [PRIMARY_CHANNEL] constant ("default"),
-     * whose `name` is [PRIMARY_CHANNEL], and whose `importance` is [NotificationManager.IMPORTANCE_DEFAULT].
-     * We call the [NotificationChannel.setLightColor] method of `chan1` (kotlin `lightColor` property)
-     * to set the notification light color for notifications posted to the channel to [Color.GREEN],
-     * and call its [NotificationChannel.setLockscreenVisibility] method (kotlin `lockscreenVisibility`
+     * Called when the activity is starting (or restarting after an orientation change).
+     * First we call [enableEdgeToEdge] to enable edge to edge display, then we call our
+     * super's implementation of `onCreate`, and set our content view to our layout file
+     * `R.layout.activity_main`.
+     *
+     * We initialize our [FrameLayout] variable `rootView` to the view with ID
+     * `R.id.container` then call [ViewCompat.setOnApplyWindowInsetsListener] to
+     * take over the policy for applying window insets to `rootView`, with the
+     * `listener` argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We initialize our [NotificationManager] field [mNM] by using the [getSystemService]
+     * method to get a handle to the system-level service with the name
+     * [Context.NOTIFICATION_SERVICE] ("notification"). We initialize our [NotificationChannel]
+     * variable `val chan1` to a new instance whose `id` is our [PRIMARY_CHANNEL] constant
+     * ("default"), whose `name` is [PRIMARY_CHANNEL], and whose `importance` is
+     * [NotificationManager.IMPORTANCE_DEFAULT]. We call the [NotificationChannel.setLightColor]
+     * method of `chan1` (kotlin `lightColor` property) to set the notification light color for
+     * notifications posted to the channel to [Color.GREEN], and call its
+     * [NotificationChannel.setLockscreenVisibility] method (kotlin `lockscreenVisibility`
      * property) to set whether notifications posted to this channel appear on the lockscreen to
      * [Notification.VISIBILITY_PRIVATE] (Show this notification on all lockscreens, but conceal
      * sensitive or private information on secure lockscreens). We then call the method
      * [NotificationManager.createNotificationChannel] of [mNM] to create a notification channel
      * from `chan1`. Then if our [Bundle] parameter [savedInstanceState] is `null` (first time we
-     * are running) we use the [FragmentManager] for interacting with fragments associated with this
-     * activity to begin a [FragmentTransaction] which we use to add a new instance of our fragment
-     * [MessagingFragment] to the container view with ID `R.id.container` and commit that
-     * [FragmentTransaction].
+     * are running) we use the [FragmentManager] for interacting with fragments associated with
+     * this activity to begin a [FragmentTransaction] which we use to add a new instance of our
+     * fragment [MessagingFragment] to the container view with ID `R.id.container` and commit
+     * that [FragmentTransaction].
      *
      * @param savedInstanceState we use it only to decide if we are running for the first time (it
      * is `null` then, otherwise it contains info that the [FragmentManager] is concerned with.
@@ -82,8 +103,8 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val rootView = findViewById<FrameLayout>(R.id.container)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
