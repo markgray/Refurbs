@@ -31,6 +31,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -92,9 +93,25 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
     var mIsAnimating: Boolean = false
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file `R.layout.sliding_fragments_layout`. We
-     * initialize [View] field [mDarkHoverView] by finding the view with id `R.id.dark_hover_view`
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
+     * edge to edge display, then we call our super's implementation of `onCreate`, and
+     * set our content view to our layout file `R.layout.sliding_fragments_layout`.
+     *
+     * We initialize our [FrameLayout] variable `rootView` to the view with ID
+     * `R.id.move_to_back_container` then call [ViewCompat.setOnApplyWindowInsetsListener]
+     * to take over the policy for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda in variable `v` and the
+     * [WindowInsetsCompat] passed the lambda in variable `windowInsets`. It initializes its
+     * [Insets] variable `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We initialize [View] field [mDarkHoverView] by finding the view with id `R.id.dark_hover_view`
      * and set its alpha to 0. We initialize [ImageFragment] field [mImageFragment] by using the
      * [FragmentManager] for interacting with fragments associated with this activity to find the
      * fragment that was identified by the id `R.id.move_fragment` when inflated from XML. We
@@ -115,8 +132,8 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sliding_fragments_layout)
         val rootView = findViewById<FrameLayout>(R.id.move_to_back_container)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
@@ -299,6 +316,7 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
      *
      * @param listener an unused [AnimatorListener] always null
      */
+    @Suppress("unused")
     fun slideForward(listener: AnimatorListener?) {
         val movingFragmentView = mImageFragment!!.view
         val rotateX = PropertyValuesHolder.ofFloat("rotationX", 40f)
