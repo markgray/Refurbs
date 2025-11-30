@@ -36,6 +36,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.graphics.Insets
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -106,33 +107,51 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
     private lateinit var mPlanetTitles: Array<String>
 
     /**
-     * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file `R.layout.activity_navigation_drawer`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge
+     * to edge display, then we call our super's implementation of `onCreate`, and set our
+     * content view to our layout file `R.layout.activity_navigation_drawer`.
+     *
+     * We initialize our [DrawerLayout] variable `rootView` to the view with ID
+     * `R.id.drawer_layout` then call [ViewCompat.setOnApplyWindowInsetsListener]
+     * to take over the policy for applying window insets to `rootView`, with the
+     * `listener` argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
      * We initialize [CharSequence] field [mTitle] and [CharSequence] field [mDrawerTitle] with the
-     * action bar title. We initialize [Array] of [String] field [mPlanetTitles] by using a [Resources]
-     * instance for the application's package to read the string array associated with the resource
-     * ID `R.array.planets_array` (a list of the planet names). We initialize [DrawerLayout] field
-     * [mDrawerLayout] by finding the view with id `R.id.drawer_layout`, and [RecyclerView] field
-     * [mDrawerList] by finding the view with id `R.id.left_drawer`. We set the nine patch png with
-     * resource id `R.drawable.drawer_shadow` to be a custom shadow that overlays the main content
-     * of [mDrawerLayout] when the drawer opens. We call the [RecyclerView.setHasFixedSize] method
-     * of [RecyclerView] field [mDrawerList] with `true` to improve performance by indicating that
-     * the list has fixed size. We set the adapter of [mDrawerList] to be a new instance of
-     * [PlanetAdapter] constructed to use [Array] of [String] field [mPlanetTitles] as its data set,
-     * and `this` as its [PlanetAdapter.OnItemClickListener]. We retrieve a reference to this
-     * activity's [ActionBar], to set home to be displayed as an "up" affordance, and enable the
-     * "home" button. We initialize our [ActionBarDrawerToggle] field [mDrawerToggle] with a new
-     * instance which uses our [DrawerLayout] field [mDrawerLayout] as its [DrawerLayout] object,
-     * the icon with resource id `R.drawable.ic_drawer` as the drawer image to replace 'Up' caret,
-     * the string with resource id `R.string.drawer_open` for the "open drawer" description for
-     * accessibility, and the string with resource id `R.string.drawer_close` as the "close drawer"
-     * description for accessibility. In this [ActionBarDrawerToggle] we override both
-     * [DrawerLayout.DrawerListener.onDrawerClosed] and [DrawerLayout.DrawerListener.onDrawerOpened]
-     * in order to set the title of the action bar to [mTitle] and invalidate the options menu so
-     * that our [onPrepareOptionsMenu] override will be called. We then set the
-     * [DrawerLayout.DrawerListener] of [DrawerLayout]field [mDrawerLayout] to [mDrawerToggle].
-     * If our [Bundle] parameter [savedInstanceState] is `null` this is the first time we were
-     * called so we call our [selectItem] method to select position 0 to display (Mercury).
+     * action bar title. We initialize [Array] of [String] field [mPlanetTitles] by using a
+     * [Resources] instance for the application's package to read the string array associated with
+     * the resource ID `R.array.planets_array` (a list of the planet names). We initialize
+     * [DrawerLayout] field [mDrawerLayout] by finding the view with id `R.id.drawer_layout`, and
+     * [RecyclerView] field [mDrawerList] by finding the view with id `R.id.left_drawer`. We set
+     * the nine patch png with resource id `R.drawable.drawer_shadow` to be a custom shadow that
+     * overlays the main content of [mDrawerLayout] when the drawer opens. We call the
+     * [RecyclerView.setHasFixedSize] method of [RecyclerView] field [mDrawerList] with `true` to
+     * improve performance by indicating that the list has fixed size. We set the adapter of
+     * [mDrawerList] to be a new instance of [PlanetAdapter] constructed to use [Array] of [String]
+     * field [mPlanetTitles] as its data set, and `this` as its [PlanetAdapter.OnItemClickListener].
+     * We retrieve a reference to this activity's [ActionBar], to set home to be displayed as an
+     * "up" affordance, and enable the "home" button. We initialize our [ActionBarDrawerToggle]
+     * field [mDrawerToggle] with a new instance which uses our [DrawerLayout] field [mDrawerLayout]
+     * as its [DrawerLayout] object, the icon with resource id `R.drawable.ic_drawer` as the drawer
+     * image to replace 'Up' caret, the string with resource id `R.string.drawer_open` for the
+     * "open drawer" description for accessibility, and the string with resource id
+     * `R.string.drawer_close` as the "close drawer" description for accessibility. In this
+     * [ActionBarDrawerToggle] we override both [DrawerLayout.DrawerListener.onDrawerClosed] and
+     * [DrawerLayout.DrawerListener.onDrawerOpened] in order to set the title of the action bar to
+     * [mTitle] and invalidate the options menu so that our [onPrepareOptionsMenu] override will be
+     * called. We then set the [DrawerLayout.DrawerListener] of [DrawerLayout]field [mDrawerLayout]
+     * to [mDrawerToggle]. If our [Bundle] parameter [savedInstanceState] is `null` this is the
+     * first time we were called so we call our [selectItem] method to select position 0 to display
+     * (Mercury).
      *
      * @param savedInstanceState If this is `null`, it is the first time we have been called, so we
      * select item 0 in our drawer.
@@ -142,8 +161,8 @@ class NavigationDrawerActivity : FragmentActivity(), PlanetAdapter.OnItemClickLi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation_drawer)
         val rootView = findViewById<DrawerLayout>(R.id.drawer_layout)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
