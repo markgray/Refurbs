@@ -45,10 +45,12 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -166,8 +168,9 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
 
     /**
      * This method is called by Android when the Activity is first started. From the incoming
-     * [Intent], it determines what kind of editing is desired, and then does it. First we call our
-     * super's implementation of `onCreate`. If our [Bundle] parameter [savedInstanceState] is not
+     * [Intent], it determines what kind of editing is desired, and then does it. First we call
+     * the [enableEdgeToEdge] method to enable edge to edge display, then we call our super's
+     * implementation of `onCreate`. If our [Bundle] parameter [savedInstanceState] is not
      * `null` we set our [String] field [mOriginalContent] to the string stored under the key
      * [ORIGINAL_CONTENT] ("origContent") in it. We initialize [Intent] variable `val intent` with
      * the [Intent] that launched this activity, and [String] variable `val action` with the action
@@ -193,9 +196,22 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      * in the state of the loader (our [onCreateLoader], [onLoadFinished], and [onLoaderReset]
      * overloads will be called). If `action` is [Intent.ACTION_PASTE] we call our [performPaste]
      * method to replace the note's data with the contents of the clipboard, and set our [Int] state
-     * field [mState] to [STATE_EDIT]. Finally we set our content view to our layout file
-     * `R.layout.note_editor`, and initialize our [EditText] field [mText] by finding the view in
-     * it with id `R.id.note`.
+     * field [mState] to [STATE_EDIT]. We set our content view to our layout file
+     * `R.layout.note_editor`.
+     *
+     * We initialize our [EditText] variable `rootView` to the view with ID `R.id.note` then call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying window
+     * insets to `rootView`, with the `listener` argument a lambda that accepts the [View] passed
+     * the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `insets` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument, then it updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `insets.left`, the right margin
+     * set to `insets.right`, the top margin set to `insets.top`, and the bottom margin set to
+     * `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED] to the caller
+     * (so that the window insets will not keep passing down to descendant views).
+     *
+     * Finally we set our [EditText] field [mText] to `rootView` (the view with ID `R.id.note`).
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
      * down then this Bundle contains the data it most recently supplied in [onSaveInstanceState].
@@ -281,8 +297,8 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
         // Sets the layout for this Activity. See res/layout/note_editor.xml
         setContentView(R.layout.note_editor)
         val rootView = findViewById<EditText>(R.id.note)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
@@ -662,6 +678,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
 
                 // Sets the title by getting a substring of the text that is 31 characters long
                 // or the number of characters in the note plus one, whichever is smaller.
+                @Suppress("ReplaceSubstringWithTake")
                 titleVar = text.substring(0, Math.min(30, length))
 
                 // If the resulting length is more than 30 characters, chops off any
@@ -669,6 +686,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
                 if (length > 30) {
                     val lastSpace = titleVar.lastIndexOf(' ')
                     if (lastSpace > 0) {
+                        @Suppress("ReplaceSubstringWithTake")
                         titleVar = titleVar.substring(0, lastSpace)
                     }
                 }
