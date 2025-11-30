@@ -30,6 +30,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -59,24 +60,41 @@ class ObbMountActivity : ComponentActivity() {
     private var mSM: StorageManager? = null
 
     /**
-     * Called with the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file `R.layout.obb_mount_activity`. Next we set
-     * the [View.OnClickListener] of the [View] with id `R.id.mount` ("Mount" [Button]) to our field
-     * [mMountListener] and the [View.OnClickListener] of the view with id `R.id.unmount` ("Unmount"
-     * [Button]) to our field [mUnmountListener]. We initialize our [TextView] field [mStatus] by
-     * finding the view with id `R.id.status` and our [TextView] field [mPath] by finding the view
-     * with id `R.id.path`. We then initialize our [ObbState] variable `val state` by using the
-     * [getLastNonConfigurationInstance] method (kotlin `lastNonConfigurationInstance` property) to
-     * retrieve the [ObbState] object that our [onRetainNonConfigurationInstance] override may have
-     * saved if we are being restarted after a configuration change. If `state` is not `null` (we
-     * are being restarted) we set our [StorageManager] field [mSM] to the value stored in the
-     * [ObbState.storageManager] field of `state`, set the text of [mStatus] to the value stored in
-     * the [ObbState.status] field, and set the text of [mPath] to the value stored in the
-     * [ObbState.path] field of `state`. If `state` is null on the other hand (we are just being
-     * started from scratch) we initialize our [StorageManager] field [mSM] with a handle to the
-     * [Context.STORAGE_SERVICE] system level service. Finally we initialize our [String] field
-     * [mObbPath] to the pathname string of the [File] "test1.obb" in the primary shared/external
-     * storage directory.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
+     * edge to edge display, then we call our super's implementation of `onCreate`, and
+     * set our content view to our layout file `R.layout.obb_mount_activity`.
+     *
+     * We initialize our [RelativeLayout] variable `rootView` to the view with ID
+     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to
+     * take over the policy for applying window insets to `rootView`, with the
+     * `listener` argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `insets` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * Next we set the [View.OnClickListener] of the [View] with id `R.id.mount` ("Mount" [Button])
+     * to our field [mMountListener] and the [View.OnClickListener] of the view with id
+     * `R.id.unmount` ("Unmount" [Button]) to our field [mUnmountListener]. We initialize our
+     * [TextView] field [mStatus] by finding the view with id `R.id.status` and our [TextView] field
+     * [mPath] by finding the view with id `R.id.path`. We then initialize our [ObbState] variable
+     * `val state` by using the [getLastNonConfigurationInstance] method (kotlin
+     * `lastNonConfigurationInstance` property) to retrieve the [ObbState] object that our
+     * [onRetainNonConfigurationInstance] override may have saved if we are being restarted after
+     * a configuration change. If `state` is not `null` (we are being restarted) we set our
+     * [StorageManager] field [mSM] to the value stored in the [ObbState.storageManager] field of
+     * `state`, set the text of [mStatus] to the value stored in the [ObbState.status] field, and
+     * set the text of [mPath] to the value stored in the [ObbState.path] field of `state`. If
+     * `state` is `null` on the other hand (we are just being started from scratch) we initialize
+     * our [StorageManager] field [mSM] with a handle to the [Context.STORAGE_SERVICE] system level
+     * service. Finally we initialize our [String] field [mObbPath] to the pathname string of the
+     * [File] "test1.obb" in the primary shared/external storage directory.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      * (we use the [getLastNonConfigurationInstance] method instead which returns the
@@ -90,9 +108,8 @@ class ObbMountActivity : ComponentActivity() {
         // Inflate our UI from its XML layout description.
         setContentView(R.layout.obb_mount_activity)
         val rootView = findViewById<RelativeLayout>(R.id.root_view)
-        // TODO: Position buttons here instead of in xml
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
