@@ -27,6 +27,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -50,14 +51,31 @@ class MainActivity : AppCompatActivity() {
     private var mCheeseAdapter: CheeseAdapter? = null
 
     /**
-     * Called when our [AppCompatActivity] is starting. First we call our super's implementation
-     * of `onCreate`, then we set our content view to our layout file `R.layout.main_activity`
-     * (it consists of a single [RecyclerView]). We initialize [RecyclerView] variable `val list`
-     * by finding the view with id `R.id.list`, and set its layout manager to a new instance of
-     * [LinearLayoutManager] created to use the context of `list`. We initialize our [CheeseAdapter]
-     * field [mCheeseAdapter] with a new instance and set the adapter of `list` to it. Finally we
-     * call the [LoaderManager.initLoader] method of the activity's [LoaderManager] to initialize
-     * (or reuse) a loader with id [LOADER_CHEESES] using our [LoaderManager.LoaderCallbacks] field
+     * Called when the [AppCompatActivity] is starting. First we call [enableEdgeToEdge] to
+     * enable edge to edge display, then we call our super's implementation of `onCreate`,
+     * and set our content view to our layout file `R.layout.main_activity` (it consists of
+     * a single [RecyclerView]).
+     *
+     * We initialize our [RecyclerView] variable `rootView` to the view with ID `R.id.list`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for
+     * applying window insets to `rootView`, with the `listener` argument a lambda that
+     * accepts the [View] passed the lambda in variable `v` and the [WindowInsetsCompat]
+     * passed the lambda in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We initialize [RecyclerView] variable `val list` to `rootView` (the view with ID `R.id.list`
+     * recall), and set its layout manager to a new instance of [LinearLayoutManager] created to
+     * use the context of `list`. We initialize our [CheeseAdapter] field [mCheeseAdapter] with a
+     * new instance and set the adapter of `list` to it. Finally we call the
+     * [LoaderManager.initLoader] method of the activity's [LoaderManager] to initialize (or reuse)
+     * a loader with id [LOADER_CHEESES] using our [LoaderManager.LoaderCallbacks] field
      * [mLoaderCallbacks] as the interface for the the [LoaderManager] to use to report changes in
      * the state of the loader.
      *
@@ -68,8 +86,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
         val rootView = findViewById<RecyclerView>(R.id.list)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
