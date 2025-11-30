@@ -31,6 +31,7 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -51,25 +52,43 @@ class PropertyAnimations : ComponentActivity() {
     var mCheckBox: CheckBox? = null
 
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * then we set our content view to our layout file `R.layout.activity_property_animations`. We
-     *  our [CheckBox] field [mCheckBox] by finding the view with id `R.id.checkbox` ("Use Animation
-     * Resources"), then initialize [Button] variable `val alphaButton` by finding the view with id
-     * `R.id.alphaButton` ("Alpha"), [Button] variable `val translateButton` by finding the view with
-     * id `R.id.translateButton` ("Translate"), [Button] variable `val rotateButton` by finding the
-     * view with id `R.id.rotateButton` ("Rotate"), [Button] variable `val scaleButton` by finding
-     * the view with id `R.id.scaleButton` ("Scale"), and [Button] variable `val setButton` by finding
-     * the view with id `R.id.setButton` ("Set"). We initialize [ObjectAnimator] variable
-     * `val alphaAnimation` with an instance which will animate the [View.ALPHA] property of
-     * `alphaButton` to 0, set its repeat count to 1, and set its repeat mode to [ValueAnimator.REVERSE].
-     * We initialize [ObjectAnimator] variable `val translateAnimation` with an instance which will
-     * animate the [View.TRANSLATION_X] property of `translateButton` to 800, set its repeat count
-     * to 1, and set its repeat mode to [ValueAnimator.REVERSE]. We initialize [ObjectAnimator] variable
-     * `val rotateAnimation` with an instance which will animate the [View.ROTATION] property of
-     * `rotateButton` to 360, set its repeat count to 1, and set its repeat mode to [ValueAnimator.REVERSE].
-     * We initialize [PropertyValuesHolder] variable `val pvhX` with an instance which will animate
-     * the [View.SCALE_X] property to 2, initialize [PropertyValuesHolder] variable `val pvhY` with
-     * an instance which will animate the [View.SCALE_Y] property to 2, then initialize [ObjectAnimator]
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
+     * edge to edge display, then we call our super's implementation of `onCreate`, and
+     * set our content view to our layout file `R.layout.activity_property_animations`.
+     *
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID
+     * `R.id.container` then call [ViewCompat.setOnApplyWindowInsetsListener] to
+     * take over the policy for applying window insets to `rootView`, with the
+     * `listener` argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `insets` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We initialize our [CheckBox] field [mCheckBox] by finding the view with id `R.id.checkbox`
+     * ("Use Animation Resources"), then initialize [Button] variable `val alphaButton` by finding
+     * the view with id `R.id.alphaButton` ("Alpha"), [Button] variable `val translateButton` by
+     * finding the view with id `R.id.translateButton` ("Translate"), [Button] variable
+     * `val rotateButton` by finding the view with id `R.id.rotateButton` ("Rotate"), [Button]
+     * variable `val scaleButton` by finding the view with id `R.id.scaleButton` ("Scale"), and
+     * [Button] variable `val setButton` by finding the view with id `R.id.setButton` ("Set").
+     * We initialize [ObjectAnimator] variable `val alphaAnimation` with an instance which will
+     * animate the [View.ALPHA] property of `alphaButton` to 0, set its repeat count to 1, and set
+     * its repeat mode to [ValueAnimator.REVERSE]. We initialize [ObjectAnimator] variable
+     * `val translateAnimation` with an instance which will animate the [View.TRANSLATION_X]
+     * property of `translateButton` to 800, set its repeat count to 1, and set its repeat mode
+     * to [ValueAnimator.REVERSE]. We initialize [ObjectAnimator] variable `val rotateAnimation`
+     * with an instance which will animate the [View.ROTATION] property of `rotateButton` to 360,
+     * set its repeat count to 1, and set its repeat mode to [ValueAnimator.REVERSE]. We initialize
+     * [PropertyValuesHolder] variable `val pvhX` with an instance which will animate the
+     * [View.SCALE_X] property to 2, initialize [PropertyValuesHolder] variable `val pvhY` with an
+     * instance which will animate the [View.SCALE_Y] property to 2, then initialize [ObjectAnimator]
      * `val scaleAnimation` with an instance which will apply the animations `pvhX` and `pvhY` to
      * `scaleButton`, set its repeat count to 1, and set its repeat mode to [ValueAnimator.REVERSE].
      * We initialize [AnimatorSet] variable `val setAnimation` with a new instance, create a
@@ -101,8 +120,8 @@ class PropertyAnimations : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_property_animations)
         val rootView = findViewById<LinearLayout>(R.id.container)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
