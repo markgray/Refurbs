@@ -29,6 +29,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -42,19 +43,39 @@ import androidx.core.view.updateLayoutParams
  */
 class WindowAnimations : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call our super's implementation of `onCreate`,
-     * and set our content view to our layout file `R.layout.activity_window_animations`. We
-     * initialize [Button] variable `val defaultButton` by finding the view with id `R.id.defaultButton`
-     * ("Default Animations"), initialize [Button] variable `val translateButton` by finding the view
-     * with id `R.id.translateButton` ("Translate Animations") initialize [Button] variable
-     * `val scaleButton` by finding the view with id `R.id.scaleButton` ("Scale Animations"), and
-     * initialize [ImageView] variable `val thumbnail` by finding the view with id `R.id.thumbnail`
-     * (displays the thumbnail drawable-nodpi/thumbnail.png). We set the [View.OnClickListener] of
-     * `defaultButton` to an anonymous class whose [View.OnClickListener.onClick] override just
-     * creates an [Intent] to launch the activity [SubActivity] and starts it running (relying on
-     * the default transition animations). We set the [View.OnClickListener] of `translateButton` to
-     * an anonymous class whose [View.OnClickListener.onClick] override creates an [Intent] to
-     * launch [AnimatedSubActivity], then creates a [Bundle] variable `val translateBundle` from an
+     * Called when the activity is starting. First we call [enableEdgeToEdge]
+     * to enable edge to edge display, then we call our super's implementation
+     * of `onCreate`, and set our content view to our layout file
+     * `R.layout.activity_window_animations`.
+     *
+     * We initialize our [LinearLayout] variable `rootView`
+     * to the view with ID `R.id.root_view` then call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
+     * for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We initialize [Button] variable `val defaultButton` by finding the view with id
+     * `R.id.defaultButton` ("Default Animations"), initialize [Button] variable
+     * `val translateButton` by finding the view with id `R.id.translateButton` ("Translate
+     * Animations") initialize [Button] variable `val scaleButton` by finding the view with id
+     * `R.id.scaleButton` ("Scale Animations"), and initialize [ImageView] variable `val thumbnail`
+     * by finding the view with id `R.id.thumbnail` (displays the thumbnail
+     * drawable-nodpi/thumbnail.png). We set the [View.OnClickListener] of `defaultButton` to an
+     * anonymous class whose [View.OnClickListener.onClick] override just creates an [Intent] to
+     * launch the activity [SubActivity] and starts it running (relying on the default transition
+     * animations). We set the [View.OnClickListener] of `translateButton` to an anonymous class
+     * whose [View.OnClickListener.onClick] override creates an [Intent] to launch
+     * [AnimatedSubActivity], then creates a [Bundle] variable `val translateBundle` from an
      * [ActivityOptions] instance which specifies the use of the xml animation with resource id
      * `R.anim.slide_in_left` as the animation to use for the incoming activity, and
      * `R.anim.slide_out_left` as the animation to use for the outgoing activity, and finally
@@ -82,8 +103,8 @@ class WindowAnimations : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_window_animations)
         val rootView = findViewById<LinearLayout>(R.id.root_view)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
@@ -101,7 +122,7 @@ class WindowAnimations : ComponentActivity() {
         val thumbnail: ImageView = findViewById(R.id.thumbnail)
 
         // By default, launching a sub-activity uses the system default for window animations
-        defaultButton.setOnClickListener { v: View? ->
+        defaultButton.setOnClickListener { _: View? ->
             val subActivity = Intent(
                 /* packageContext = */ this@WindowAnimations,
                 /* cls = */ SubActivity::class.java
@@ -111,7 +132,7 @@ class WindowAnimations : ComponentActivity() {
 
         // Custom animations allow us to do things like slide the next activity in as we
         // slide this activity out
-        translateButton.setOnClickListener { v: View? ->
+        translateButton.setOnClickListener { _: View? ->
             // Using the AnimatedSubActivity also allows us to animate exiting that
             // activity - see that activity for details
             val subActivity = Intent(
@@ -149,7 +170,7 @@ class WindowAnimations : ComponentActivity() {
         // Starting in Jellybean, you can also provide an animation that scales up the new
         // activity from a given bitmap, cross-fading between the starting and ending
         // representations. Here, we scale up from a thumbnail image of the final sub-activity
-        thumbnail.setOnClickListener { v: View? ->
+        thumbnail.setOnClickListener { _: View? ->
             val drawable = thumbnail.drawable as BitmapDrawable
             val bm: Bitmap = drawable.bitmap
             val subActivity = Intent(
