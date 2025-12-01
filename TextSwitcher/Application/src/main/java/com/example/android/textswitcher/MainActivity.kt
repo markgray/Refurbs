@@ -33,6 +33,7 @@ import android.widget.ViewSwitcher
 import android.widget.ViewSwitcher.ViewFactory
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
@@ -54,20 +55,40 @@ class MainActivity : ComponentActivity() {
     private var mCounter = 0
 
     /**
-     * Called when the activity is starting. First we call through to our super's implementation of
-     * `onCreate`, then we set our content view to our layout file `R.layout.sample_main`. We
-     * initialize our [TextSwitcher] field [mSwitcher] by finding the view with id `R.id.switcher`,
-     * then set the factory used to create the two views between which [mSwitcher] will flip to
-     * our [ViewFactory] field  [mFactory]. We load [Animation] variable `val fadeIn` with the
-     * animation with resource id [android.R.anim.fade_in], and [Animation] variable `val fadeOut`
-     * with the animation with resource id [android.R.anim.fade_out]. We then set the animation
-     * started when a [View] enters the screen of [mSwitcher] to `fadeIn` and the animation started
-     * when a [View] exits the screen to `fadeOut`. We initialize [Button] variable `val nextButton`
-     * by finding the view in our layout with id `R.id.button` and set its [View.OnClickListener] to
-     * a lambda which increments our [Int] field [mCounter], then sets the text of the next view of
-     * [mSwitcher] to the string value of [mCounter] and switches to the next view (this will animate
-     * the old text out and animate the next text in). Finally we set the text of the text view that
-     * is currently showing to the string value of [mCounter] (this does not perform the animations).
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
+     * edge to edge display, then we call our super's implementation of `onCreate`, and
+     * set our content view to our layout file `R.layout.sample_main`.
+     *
+     * We initialize our [LinearLayout] variable `rootView`
+     * to the view with ID `R.id.LinearLayout1` then call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
+     * for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `insets.left`, the right margin set to
+     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
+     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * We initialize our [TextSwitcher] field [mSwitcher] by finding the view with id
+     * `R.id.switcher`, then set the factory used to create the two views between which
+     * [mSwitcher] will flip to our [ViewFactory] field  [mFactory]. We load [Animation]
+     * variable `val fadeIn` with the animation with resource id [android.R.anim.fade_in],
+     * and [Animation] variable `val fadeOut` with the animation with resource id
+     * [android.R.anim.fade_out]. We then set the animation started when a [View] enters
+     * the screen of [mSwitcher] to `fadeIn` and the animation started when a [View] exits
+     * the screen to `fadeOut`. We initialize [Button] variable `val nextButton` by finding
+     * the view in our layout with id `R.id.button` and set its [View.OnClickListener] to a
+     * lambda which increments our [Int] field [mCounter], then sets the text of the next view of
+     * [mSwitcher] to the string value of [mCounter] and switches to the next view (this will
+     * animate the old text out and animate the next text in). Finally we set the text of the
+     * text view that is currently showing to the string value of [mCounter] (this does not perform
+     * the animations).
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -76,8 +97,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sample_main)
         val rootView = findViewById<LinearLayout>(R.id.LinearLayout1)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 leftMargin = insets.left
