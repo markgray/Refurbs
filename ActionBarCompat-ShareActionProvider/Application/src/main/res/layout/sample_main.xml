@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:text="@string/intro_message"
         android:padding="16dp"
+        android:layout_weight="1"
         android:textAppearance="?android:textAppearanceMedium"
         android:lineSpacingMultiplier="1.1"
         android:background="#fb3"/>
