@@ -40,11 +40,27 @@ class Activity1 : AppCompatActivity() {
      *
      * We first call [enableEdgeToEdge] to allow our app to draw behind the system bars. Then we call
      * our super's implementation of `onCreate` and set our content view to our layout file
-     * `R.layout.empty_activity`. We then find the root content view and set an
-     * [ViewCompat.setOnApplyWindowInsetsListener] on it. This listener receives the window insets
-     * (like the status bar and navigation bar sizes) and applies them as margins to the actual
-     * content layout, preventing our UI from being obscured by the system bars. Finally, we log
-     * that the activity has been created.
+     * `R.layout.empty_activity`.
+     *
+     * We initialize our [View] variable `rootView`
+     * to the view with ID `android.R.id.content` then call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
+     * for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
+     * IME (keyboard) using `WindowInsetsCompat.Type.ime()`. It then updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `systemBars.left`, the right margin set to
+     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
+     * set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
+     *
+     * Finally, we log that the activity has been created.
      *
      * @param savedInstanceState We do not override [onSaveInstanceState] so do not use.
      */
@@ -56,21 +72,19 @@ class Activity1 : AppCompatActivity() {
         setContentView(R.layout.empty_activity_1)
 
         // Find the root view to apply insets
-        val view = findViewById<View>(android.R.id.content)
+        val rootView = window.decorView.findViewById<View>(android.R.id.content)
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+            val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
 
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v: View, windowInsets: WindowInsetsCompat ->
-            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-            // Apply the insets as a margin to the view's first child,
-            // which is the actual content layout.
-            (v as? ViewGroup)?.getChildAt(0)?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin = insets.left
-                rightMargin = insets.right
-                topMargin = insets.top
-                bottomMargin = insets.bottom
+            // Apply the insets as a margin to the view.
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                leftMargin = systemBars.left
+                rightMargin = systemBars.right
+                topMargin = systemBars.top
+                bottomMargin = systemBars.bottom.coerceAtLeast(ime.bottom)
             }
-
-            // Return CONSUMED if you don't want the window insets to keep passing
+            // Return CONSUMED if you don't want want the window insets to keep passing
             // down to descendant views.
             WindowInsetsCompat.CONSUMED
         }
