@@ -66,7 +66,7 @@ open class MainActivity : SampleActivityBase() {
      * in variable `windowInsets`. It initializes its [Insets] variable
      * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
      * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using `WindowInsetsCompat.Type.ime()`. It then updates
+     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
      * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
      * with the left margin set to `systemBars.left`, the right margin set to
      * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
