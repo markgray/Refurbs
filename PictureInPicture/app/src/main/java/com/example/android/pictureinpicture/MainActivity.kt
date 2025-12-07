@@ -250,16 +250,22 @@ class MainActivity : AppCompatActivity() {
      * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge-to-edge
      * display then we call super's implementation of `onCreate`. We set our content view to our
      * layout file `R.layout.activity_main`. We intialize our [LinearLayout] variable `rootView`
-     * by finding the [LinearLayout] with resource id `R.id.activity_main`. We call the
-     * [ViewCompat.setOnApplyWindowInsetsListener] method with the arguments `rootView` and a
-     * lambda that accepts the [View] passed it in variable `v` and the [WindowInsetsCompat]
-     * passed it in variable `windowInsets`, then it initializes its [Insets] variable `insets`
-     * to the [WindowInsetsCompat.getInsets] of the [WindowInsetsCompat] variable `windowInsets`
-     * for the `typeMask` [WindowInsetsCompat.Type.systemBars], and finally it updates the
-     * [ViewGroup.MarginLayoutParams] of the [View] variable `v` by calling its [updateLayoutParams]
-     * method with a lambda that sets the `leftMargin` to `insets.left`, the `rightMargin` to
-     * `insets.right`, the `topMargin` to `insets.top`, and the `bottomMargin` to `insets.bottom`,
-     * and returns [WindowInsetsCompat.CONSUMED] to indicate that the insets have been consumed.
+     * by finding the [LinearLayout] with resource id `R.id.activity_main` then call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
+     * for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda
+     * in variable `v` and the [WindowInsetsCompat] passed the lambda
+     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
+     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
+     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
+     * with the left margin set to `systemBars.left`, the right margin set to
+     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
+     * set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED]
+     * to the caller (so that the window insets will not keep passing down to
+     * descendant views).
      *
      * Next we initialize our [String] property `mPlay` to the string with resource id `R.string.play`
      * ("Play") and our [String] property `mPause` to the string with resource id `R.string.pause`
@@ -283,13 +289,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val rootView = findViewById<LinearLayout>(R.id.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
-            val insets: Insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+
             // Apply the insets as a margin to the view.
             v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                leftMargin = insets.left
-                rightMargin = insets.right
-                topMargin = insets.top
-                bottomMargin = insets.bottom
+                leftMargin = systemBars.left
+                rightMargin = systemBars.right
+                topMargin = systemBars.top
+                bottomMargin = systemBars.bottom.coerceAtLeast(ime.bottom)
             }
             // Return CONSUMED if you don't want want the window insets to keep passing
             // down to descendant views.
