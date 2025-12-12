@@ -21,6 +21,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -53,9 +54,7 @@ import kotlin.math.sqrt
  * by the device's accelerometer.
  *
  * @see SensorManager
- *
  * @see SensorEvent
- *
  * @see Sensor
  */
 class AccelerometerPlayActivity : ComponentActivity() {
@@ -131,23 +130,19 @@ class AccelerometerPlayActivity : ComponentActivity() {
      *  * FLAG_ALLOW_LOCK_WHILE_SCREEN_ON: as long as this window is visible to the user, allow
      *  the lock screen to activate while the screen is on.
      *
-     * We initialize our [FrameLayout] variable `rootView`
-     * to the view with ID `android.R.id.content` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [FrameLayout] variable `rootView` to the view with ID `android.R.id.content`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -241,27 +236,27 @@ class AccelerometerPlayActivity : ComponentActivity() {
     }
 
     /**
-     * `View` which draws our simulation.
-     * Our constructor, called from the `onCreate` override of `AccelerometerPlayActivity`.
-     * First we call our super's constructor. Then we initialize our field `Sensor mAccelerometer`
-     * with a reference to the default accelerometer sensor returned by the `getDefaultSensor`
-     * method of the SENSOR_SERVICE system level service `SensorManager mSensorManager`. We
-     * initialize `DisplayMetrics metrics` with a new instance, then fetch the window manager
-     * for showing custom windows, call its `getDefaultDisplay` method to retrieve the window
-     * it is managing, and call the `getMetrics` method of that window to load `metrics`
-     * with the display metrics that describe the size and density of the display. We then initialize
-     * our field `float mXDpi` with the exact physical pixels per inch of the screen in the X
-     * dimension from the `xdpi` field of `metrics`, and `float mYDpi` with the
-     * exact physical pixels per inch of the screen in the Y dimension from the `ydpi` field
-     * of `metrics`. We convert `mXDpi` to meters to set `mMetersToPixelsX` and
-     * `mYDpi` to meters to set `mMetersToPixelsY`. We initialize `Bitmap ball`
-     * by decoding the png with resource id R.drawable.ball, calculate `int dstWidth` and
-     * `int dstHeight` to be approximately 0.5 cm given the value of `mMetersToPixelsX`
-     * and `mMetersToPixelsY`, then set `Bitmap mBitmap` to a new bitmap created from
-     * `ball` by scaling it to `int dstWidth` by `int dstHeight`. We initialize
-     * `Options opts` with a new instance, set its `inDither` field to true (ignored),
-     * and set its `inPreferredConfig` field to RGB_565. We then use `opts` as the
-     * options when we load the jpg with resource id R.drawable.wood into `Bitmap mWood`.
+     * [View] which draws our simulation. Our constructor, called from the [onCreate] override of
+     * [AccelerometerPlayActivity]. First we call our super's constructor. Then we initialize our
+     * [Sensor] field [mAccelerometer] with a reference to the default accelerometer sensor returned
+     * by the  [SensorManager.getDefaultSensor] method of the SENSOR_SERVICE system level service
+     * [SensorManager] field [mSensorManager]. In our `init` block We initialize [DisplayMetrics]
+     * variable `metrics` with a new instance, then fetch the window manager for showing custom
+     * windows, call its [WindowManager.getDefaultDisplay]  method to retrieve the window it is
+     * managing, and call the  [Display.getMetrics] method of that window to load `metrics` with the
+     * display metrics that describe the size and density of the display. We then initialize our
+     * [Float] field [mXDpi] with the exact physical pixels per inch of the screen in the X dimension
+     * from the `xdpi` field of `metrics`, and [Float] field [mYDpi] with the exact physical pixels
+     * per inch of the screen in the Y dimension from the `ydpi` field of `metrics`. We convert
+     * [mXDpi] to meters to set [Float] field [mMetersToPixelsX] and [mYDpi] to meters to set [Float]
+     * field  [mMetersToPixelsY]. We initialize [Bitmap] variable `ball` by decoding the png with
+     * resource id `R.drawable.ball`, calculate [Int] variable `dstWidth` and [Int] variable
+     * `dstHeight` to be approximately 0.5 cm given the value of [mMetersToPixelsX] and
+     * [mMetersToPixelsY], then set [Bitmap] field [mBitmap] to a new bitmap created from `ball` by
+     * scaling it to `dstWidth` by `dstHeight`. We initialize [BitmapFactory.Options] variable `opts`
+     * with a new instance, set its `inDither` field to `true` (ignored as of Android `N`), and set
+     * its `inPreferredConfig` field to RGB_565. We then use `opts` as the options when we load the
+     * jpg with resource id `R.drawable.wood` into [Bitmap] field [mWood].
      *
      * @param context the [Context] to use to access resources.
      */
@@ -269,7 +264,8 @@ class AccelerometerPlayActivity : ComponentActivity() {
         /**
          * Reference to the default accelerometer sensor (TYPE_ACCELEROMETER).
          */
-        private val mAccelerometer: Sensor = mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!!
+        private val mAccelerometer: Sensor =
+            mSensorManager!!.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)!!
 
         /**
          * Timestamp of the last accelerometer event processed.
@@ -400,8 +396,8 @@ class AccelerometerPlayActivity : ComponentActivity() {
             private val mOneMinusFriction: Float
 
             /**
-             * Our constructor. We just initialize our field `float mOneMinusFriction` with a
-             * random coefficient of friction.
+             * Executed as part of our constructor. We just initialize our [Float] field
+             * [mOneMinusFriction] with a random coefficient of friction.
              */
             init {
                 // make each particle a bit different by randomizing its
@@ -411,20 +407,22 @@ class AccelerometerPlayActivity : ComponentActivity() {
             }
 
             /**
-             * Applies physics model to this `Particle` given the current accelerometer reading.
-             * We initialize the mass of our virtual object `float m` to 1_000, initialize the
-             * X component of the force of gravity `float gx` to minus the X component of the
-             * current accelerometer reading `sx` times `m`, and initialize the Y component
-             * of the force of gravity `float gy` to minus the Y component of the current accelerometer
-             * reading `sy` times `m`. We initialize the inverse of the mass of the object
-             * `float invm` to 1.0 over `m`, then initialize `float ax` to `gx`
-             * times `invm` and `float ay` to `gy` times `invm`.
+             * Applies physics model to this [Particle] given the current accelerometer reading.
+             * We initialize the mass of our virtual object [Float] variable `m` to 1_000,
+             * initialize the X component of the force of gravity [Float] variable `gx` to minus
+             * the X component of the current accelerometer reading [Float] parameter [sx] times
+             * `m`, and initialize the Y component of the force of gravity [Float] variable `gy`
+             * to minus the Y component of the current accelerometer reading [Float] parameter [sy]
+             * times `m`. We initialize the inverse of the mass of the object [Float] variable
+             * `invm` to 1.0 over `m`, then initialize [Float] variable `ax` to `gx` times `invm`
+             * and [Float] variable `ay` to `gy` times `invm`.
              *
              * Now we calculate the time-corrected Verlet integration to calculate the new position
-             * of the `Particle` `float x` and `float y`, set `mLastPosX` to
-             * `mPosX` and `mLastPosY` to `mPosY` then update `mPosX` and
-             * `mPosY` with `x` and `y` respectively. Finally we save the acceleration
-             * components `ax` and `ay` in `mAccelX` and `mAccelY`.
+             * of the [Particle], [Float] variable `x` and [Float] variable `y`, set [Float] field
+             * [mLastPosX] to [Float] field [mPosX] and [Float] field [mLastPosY] to [Float] field
+             * [mPosY] then update [mPosX] and [mPosY] with `x` and `y` respectively. Finally we
+             * save the acceleration components `ax` and `ay` in [Float] field [mAccelX] and [Float]
+             * field [mAccelY].
              *
              * @param sx X component of the current accelerometer reading.
              * @param sy Y component of the current accelerometer reading.
@@ -469,16 +467,16 @@ class AccelerometerPlayActivity : ComponentActivity() {
             /**
              * Resolving constraints and collisions with the Verlet integrator can be very simple,
              * we simply need to move a colliding or constrained particle in such way that the
-             * constraint is satisfied. To do this we initialize `float xmax` to the value
-             * of the X coordinate of the far edge of the playing field in meters `mHorizontalBound`,
-             * and `float ymax` to the value of the Y coordinate of the far edge of the playing
-             * field in meters `mVerticalBound`. We initialize `float x` to the current
-             * X coordinate of the position of the ball `mPosX` and `float y` to the current
-             * Y coordinate of the position of the ball `mPosY`. If `x` is greater than
-             * `xmax` we set `mPosX` to `xmax` and if it is less the minus `xmax`
-             * we set `mPosX` to minus `xmax`. If `x` is greater than `ymax`
-             * we set `mPosY` to `ymax` and if it is less the minus `ymax` we set
-             * `mPosY` to minus `ymax`.
+             * constraint is satisfied. To do this we initialize [Float] variable `xmax` to the
+             * value of the X coordinate of the far edge of the playing field in meters [Float]
+             * field [mHorizontalBound], and [Float] variable `ymax` to the value of the Y
+             * coordinate of the far edge of the playing field in meters [Float] field
+             * [mVerticalBound]. We initialize [Float] variable `x` to the current X coordinate
+             * of the position of the ball [Float] field [mPosX] and [Float] variable `y` to the
+             * current Y coordinate of the position of the ball [Float] field [mPosY]. If `x` is
+             * greater than `xmax` we set [mPosX] to `xmax` and if it is less then minus `xmax`
+             * we set [mPosX] to minus `xmax`. If `y` is greater than `ymax` we set [mPosY] to
+             * `ymax` and if it is less the minus `ymax` we set [mPosY] to minus `ymax`.
              */
             fun resolveCollisionWithBounds() {
                 val xmax = mHorizontalBound
@@ -508,8 +506,8 @@ class AccelerometerPlayActivity : ComponentActivity() {
             private val mBalls = arrayOfNulls<Particle>(NUM_PARTICLES)
 
             /**
-             * Our constructor. We loop through our array `Particle mBalls[]` creating a new
-             * instance of `Particle` for each.
+             * Our constructor. We loop through our array of [Particle] field [Particle] creating
+             * a new instance of [Particle] for each.
              */
             init {
                 /*
@@ -521,17 +519,17 @@ class AccelerometerPlayActivity : ComponentActivity() {
             }
 
             /**
-             * Update the position of each particle in the system using the Verlet integrator. We copy
-             * our parameter `long timestamp` to initialize our variable `long t` and if
-             * our field `mLastT` is not zero (we have been called before) we initialize our
-             * variable `float dT` to the delta time between `t` and `mLastT` divided
-             * by 1 billion (converting nanoseconds to seconds). Then if `mLastDeltaT` is not 0
-             * we calculate the corrected delta time `float dTC` to be `dT` over `mLastDeltaT`,
-             * initialize `int count` to the size of our array `mBalls` in order to use it
-             * to loop through all the `Particle ball` in `mBalls` calling this `computePhysics`
-             * method with `sx`, `sy`, `dT` and `dTC`. When done (or if `mLastT`
-             * was 0) we set `mLastDeltaT` to `dT`, and then whether `mLastT` was 0
-             * or not we set `mLastT` to `t`.
+             * Update the position of each particle in the system using the Verlet integrator. We
+             * copy our [Long] parameter [timestamp] to initialize our [Long] variable `t` and if
+             * our [Long] field [mLastT] is not zero (we have been called before) we initialize our
+             * [Float] variable `dT` to the delta time between `t` and [mLastT] divided by 1 billion
+             * (converting nanoseconds to seconds). Then if [mLastDeltaT] is not 0 we calculate the
+             * corrected delta time [Float] variable `dTC` to be `dT` over [mLastDeltaT], initialize
+             * [Int] variable `count` to the size of our array [mBalls] in order to use it to loop
+             * through all the [Particle] `ball` in [mBalls] calling its [Particle.computePhysics]
+             * method with [Float] parameter [sx], [Float] parameter [sy], `dT` and `dTC`. When done
+             * (or if [mLastT] was 0) we set [mLastDeltaT] to `dT`, and then whether [mLastT] was 0
+             * or not we set [mLastT] to `t`.
              *
              * @param sx X component of the current accelerometer reading.
              * @param sy Y component of the current accelerometer reading.
@@ -556,35 +554,35 @@ class AccelerometerPlayActivity : ComponentActivity() {
             /**
              * Performs one iteration of the simulation. First updating the position of all the
              * particles and resolving the constraints and collisions. First we call our method
-             * `updatePositions` with our parameters to update the position of all of the
-             * `Particle` objects in our system. We initialize NUM_MAX_ITERATIONS to 10 (this
+             * [updatePositions] with our parameters to update the position of all of the
+             * [Particle] objects in our system. We initialize `maxCollisionIterations` to 10 (this
              * is the maximum number of collision resolution passes we perform) and initialize our
-             * flag `boolean more` to true (it is set to true whenever a collision has been
-             * detected, and is false if no collisions were detected in the last loop through the
-             * balls in the system). We then initialize `int count` with the length of our
-             * array `Particle mBalls[]`.
+             * [Boolean] flag variable `more` to `true` (it is set to `true` whenever a collision
+             * has been detected, and is `false` if no collisions were detected in the last loop
+             * through the balls in the system). We then initialize [Int] variable `count` with the
+             * length of our array of [Particle] field [mBalls].
              *
              * We now loop while `more` is true (a collision was detected the last time) and
              * while we have not looped for more the NUM_MAX_ITERATIONS:
+             *
              *  * We set `more` to false.
              *
-             *  * We loop over `i` for all the `mBalls[ i ]` setting `Particle curr`
-             *  to `mBalls[ i ]` then loop over `j` from `i+1` to `count`:
+             *  * We loop over `i` for all the [mBalls] setting [Particle] variable `curr` to the
+             *  [Particle] at index `i` in [mBalls] then loop over `j` from `i+1` to `count`:
              *
-             *  * Setting `Particle ball` to `mBalls[ j ]` then calculating the
-             *  distance in the X coordinate between `ball` and `curr` (the
-             *  difference of their two `mPosX` fields) to be `float dx` and
-             *  the distance in the Y coordinate between `ball` and `curr` to
-             *  be `float dy`. The square of the distance between them (the sum of
-             *  `dx` times `dx` and `dy` times `dy`) is calculated
-             *  to set `float dd`. If `dd` is less than or equal to `sBallDiameter2`
-             *  (a collision has occurred), we update the `mPosX` and `mPosY`
-             *  fields of both `curr` and `ball` to simulate a springy bounce
-             *  with a bit randomness to it, and set `more` to true.
+             *  * Setting [Particle] `ball` to the [Particle] at index `j` in [mBalls] then
+             *  calculating the distance in the X coordinate between `ball` and `curr` (the
+             *  difference of their two [Particle.mPosX] fields) to be [Float] variable `dx` and
+             *  the distance in the Y coordinate between `ball` and `curr` to be  [Float]
+             *  variable `dy`. The square of the distance between them (the sum of `dx` times
+             *  `dx` and `dy` times `dy`) is calculated to set [Float] variable `dd`. If `dd`
+             *  is less than or equal to [Float] constant [S_BAL_DIAMETER2] (a collision has
+             *  occurred), we update the [Particle.mPosX] and [Particle.mPosY] fields of both
+             *  `curr` and `ball` to simulate a springy bounce with a bit of randomness to it,
+             *  and set `more` to true.
              *
-             *  * We call the `resolveCollisionWithBounds` method of `curr` to
-             *  make sure any position changes made to it leave it inside the bounds of
-             *  the simulation.
+             *  * We call the `resolveCollisionWithBounds` method of `curr` to make sure any position
+             *  changes made to it leave it inside the bounds of the simulation.
              *
              * @param sx X component of the current accelerometer reading.
              * @param sy Y component of the current accelerometer reading.
@@ -645,17 +643,18 @@ class AccelerometerPlayActivity : ComponentActivity() {
             }
 
             /**
-             * Returns the number of `Particle` objects in our `ParticleSystem`, which is
-             * just the length of our array `Particle mBalls[]`.
+             * Returns the number of [Particle] objects in our [ParticleSystem], which is
+             * just the length of our array of [Particle] field [mBalls]`.
              *
-             * @return the number of `Particle` objects in our `ParticleSystem`
+             * @return the number of [Particle] objects in our [ParticleSystem]
              */
             fun getParticleCount(): Int {
                 return mBalls.size
             }
 
             /**
-             * Getter for the `mPosX` field of the `i`'th entry in our array `mBalls[i]`.
+             * Getter for the [Particle.mPosX] field of the `i`'th entry in our array of
+             * [Particle] field [mBalls]`.
              *
              * @param i which `Particle` in our array `Particle mBalls[]`.
              * @return the `mPosX` field of `mBalls[i]`
@@ -665,7 +664,8 @@ class AccelerometerPlayActivity : ComponentActivity() {
             }
 
             /**
-             * Getter for the `mPosY` field of the `i`'th entry in our array `mBalls[i]`.
+             * Getter for the [Particle.mPosY] field of the `i`'th entry in our array
+             * [Particle] field [mBalls]`.
              *
              * @param i which `Particle` in our array `Particle mBalls[]`.
              * @return the `mPosY` field of `mBalls[i]`
@@ -677,8 +677,8 @@ class AccelerometerPlayActivity : ComponentActivity() {
         }
 
         /**
-         * Starts the simulation running. We just register 'this' as a `SensorEventListener` for
-         * `Sensor mAccelerometer` (our `onSensorChanged` override will be called) with a
+         * Starts the simulation running. We just register 'this' as a [SensorEventListener] for
+         * [Sensor] field [mAccelerometer] (our `onSensorChanged` override will be called) with a
          * sampling period of SENSOR_DELAY_UI (rate suitable for the user interface).
          */
         fun startSimulation() {
@@ -689,12 +689,16 @@ class AccelerometerPlayActivity : ComponentActivity() {
              * of the acceleration. As an added benefit, we use less power and
              * CPU resources.
              */
-            mSensorManager!!.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI)
+            mSensorManager!!.registerListener(
+                /* listener = */ this,
+                /* sensor = */ mAccelerometer,
+                /* samplingPeriodUs = */ SensorManager.SENSOR_DELAY_UI
+            )
         }
 
         /**
          * Called to stop our simulation running (called from our `onPause` override). We just
-         * unregister 'this' as a `SensorEventListener` for all sensors.
+         * unregister 'this' as a [SensorEventListener] for all sensors.
          */
         fun stopSimulation() {
             mSensorManager!!.unregisterListener(this)
@@ -724,18 +728,18 @@ class AccelerometerPlayActivity : ComponentActivity() {
         /**
          * This is called during layout when the size of this view has changed. If you were just
          * added to the view hierarchy, you're called with the old values of 0. We calculate the
-         * value of `mXOrigin` (X coordinate of the origin of the screen relative to the
-         * origin of the background bitmap) by subtracting the width of `mBitmap` from our
-         * parameter `w` and multiplying by 0.5f, and the value of `mYOrigin` (Y
-         * coordinate of the origin of the screen relative to the origin of the background bitmap)
-         * by subtracting the height of `mBitmap` from our parameter `h` and multiplying
-         * by 0.5f. We then calculate the value of `mHorizontalBound` (X coordinate of the far
-         * edge of the playing field in meters relative to the center) by dividing our parameter
-         * `w` by `mMetersToPixelsX`, subtracting off `sBallDiameter` (diameter
-         * of the balls in meters) then multiplying the result by 0.5f, and likewise we calculate
-         * the value of `mVerticalBound` (Y coordinate of the far edge of the playing field in
-         * meters relative to the center) by dividing our parameter `h` by `mMetersToPixelsX`,
-         * subtracting off `sBallDiameter` then multiplying the result by 0.5f.
+         * value of [Float] field [mXOrigin] (X coordinate of the origin of the screen relative
+         * to the origin of the background bitmap) by subtracting the width of [mBitmap] from our
+         * [Int] parameter [w] and multiplying by 0.5f, and the value of [Float] field [mYOrigin]
+         * (Y coordinate of the origin of the screen relative to the origin of the background
+         * bitmap) by subtracting the height of [mBitmap] from our parameter [h] and multiplying
+         * by 0.5f. We then calculate the value of [Float] field [mHorizontalBound] (X coordinate
+         * of the far edge of the playing field in meters relative to the center) by dividing our
+         * parameter [w] by [Float] field [mMetersToPixelsX], subtracting off [S_BAL_DIAMETER]
+         * (diameter of the balls in meters) then multiplying the result by 0.5f, and likewise we
+         * calculate the value of [Float] field [mVerticalBound] (Y coordinate of the far edge of
+         * the playing field in meters relative to the center) by dividing our parameter [h] by
+         * [mMetersToPixelsX], subtracting off [S_BAL_DIAMETER] then multiplying the result by 0.5f.
          *
          * @param w Current width of this view.
          * @param h Current height of this view.
@@ -754,29 +758,30 @@ class AccelerometerPlayActivity : ComponentActivity() {
         /**
          * Called when there is a new sensor event. Note that "on changed" is somewhat of a misnomer,
          * as this will also be called if we have a new reading from a sensor with the exact same
-         * sensor values (but a newer timestamp). If the type of sensor of our parameter
-         * `SensorEvent event` is not TYPE_ACCELEROMETER (constant describing an accelerometer
+         * sensor values (but a newer timestamp). If the type of sensor of our [SensorEvent]
+         * parameter [event] is not `TYPE_ACCELEROMETER` (constant describing an accelerometer
          * sensor type) we return having done nothing. Otherwise we switch on the rotation of the
          * screen from its "natural" orientation:
-         *  * ROTATION_0 (0 degree rotation (natural orientation)) we set `mSensorX` to the
-         *  `values[0]` field of our parameter `SensorEvent event`, and `mSensorY`
-         *  to the `values[1]` field and break.
          *
-         *  * ROTATION_90 (90 degree rotation) we set `mSensorX` to minus the `values[1]`
-         *  field of our parameter `SensorEvent event`, and `mSensorY` to the
-         *  `values[0]` field and break.
+         *  * ROTATION_0 (0 degree rotation (natural orientation)) we set [mSensorX] to the
+         *  `values[ 0 ]` field of our [SensorEvent] parameter [event], and `mSensorY`
+         *  to the `values[ 1 ]` field and break.
          *
-         *  * ROTATION_180 (180 degree rotation) we set `mSensorX` to minus the `values[0]`
-         *  field of our parameter `SensorEvent event`, and `mSensorY` to minus the
-         *  `values[1]` field and break.
+         *  * ROTATION_90 (90 degree rotation) we set [mSensorX] to minus the `values[ 1 ]`
+         *  field of our [SensorEvent] parameter [event], and [mSensorY] to the
+         *  `values[ 0 ]` field and break.
          *
-         *  * ROTATION_270 (270 degree rotation) we set `mSensorX` to the `values[1]`
-         *  field of our parameter `SensorEvent event`, and `mSensorY` to minus the
-         *  `values[0]` field and break.
+         *  * ROTATION_180 (180 degree rotation) we set [mSensorX] to minus the `values[ 0 ]`
+         *  field of our [SensorEvent] parameter [event], and [mSensorY] to minus the
+         *  `values[ 1 ]` field and break.
          *
-         * Finally we set `mSensorTimeStamp` (time in nanoseconds at which the current event
-         * happened) to the `timestamp` field of `event` and `mCpuTimeStamp` (the
-         * current time in nanosecond) to the current value of the running Java Virtual Machine's
+         *  * ROTATION_270 (270 degree rotation) we set [mSensorX] to the `values[ 1 ]`
+         *  field of our [SensorEvent] parameter [event], and [mSensorY] to minus the
+         *  `values[ 0 ]` field and break.
+         *
+         * Finally we set [mSensorTimeStamp] (time in nanoseconds at which the current event
+         * happened) to the `timestamp` field of [event] and [mCpuTimeStamp] (the current time
+         * in nanosecond) to the current value of the running Java Virtual Machine's
          * high-resolution time source, in nanoseconds.
          *
          * @param event the [SensorEvent][SensorEvent].
@@ -809,52 +814,53 @@ class AccelerometerPlayActivity : ComponentActivity() {
         }
 
         /**
-         * We implement this to do our drawing. First we have our parameter `Canvas canvas` draw
-         * our woody background bitmap `mWood` starting at (0,0) with null as the `Paint`.
-         * We initialize `ParticleSystem particleSystem` with a copy of of `mParticleSystem`,
-         * initialize `long now` by adding the time elapsed since our `onSensorChanged`
-         * override processed the current accelerometer sensor event to the time in nanoseconds at
-         * which the event happened in `mSensorTimeStamp`. We initialize `sx` by copying
-         * the value of `mSensorX` (X component of the current SensorEvent, after taking into
-         * account the rotation of the screen with respect to the sensors) to it, and `sy` by
-         * copying the value of `mSensorY` (Y component of the current SensorEvent, after taking
-         * into account the rotation of the screen with respect to the sensors) to it. We then call
-         * the `update` method of `particleSystem` with  `sx`, `sy`, and `now` to have it update
-         * all of the positions of the particles in it given the current sensor event.
+         * We implement this to do our drawing. First we have our [Canvas] parameter [canvas] draw
+         * our woody background bitmap [mWood] starting at (0,0) with `null` as the [Paint].
+         * We initialize [ParticleSystem] variable `particleSystem` with a copy of [ParticleSystem]
+         * field [mParticleSystem], initialize [Long] variable `now` by adding the time elapsed
+         * since our [onSensorChanged] override processed the current accelerometer sensor event to
+         * the time in nanoseconds at which the event happened in [Long] field [mSensorTimeStamp].
+         * We initialize [Float] variable `sx` by copying the value of [mSensorX] (X component of
+         * the current [SensorEvent], after taking into account the rotation of the screen with
+         * respect to the sensors) to it, and [Float] variable `sy` by copying the value of
+         * [mSensorY] (Y component of the current [SensorEvent], after taking into account the
+         * rotation of the screen with respect to the sensors) to it. We then call the `update`
+         * method of `particleSystem` with  `sx`, `sy`, and `now` to have it update all of the
+         * positions of the particles in it given the current sensor event.
          *
          * We now create copies of our fields as follows:
-         *  * `float xc` gets `mXOrigin` (X coordinate of the origin of the screen
+         *  * [Float] variable `xc` gets [mXOrigin] (X coordinate of the origin of the screen
          *  relative to the origin of the bitmap
          *
-         *  * `float yc` gets `mYOrigin` (Y coordinate of the origin of the screen
+         *  * [Float] variable `yc` gets [mYOrigin] (Y coordinate of the origin of the screen
          *  relative to the origin of the bitmap
          *
-         *  * `float xs` gets `mMetersToPixelsX` (exact physical pixels per meters
+         *  * [Float] variable `xs` gets [mMetersToPixelsX] (exact physical pixels per meters
          *  of the screen in the X dimension)
          *
-         *  * `float ys` gets `mMetersToPixelsY` (exact physical pixels per meters
+         *  * [Float] variable `ys` gets [mMetersToPixelsY] (exact physical pixels per meters
          *  of the screen in the Y dimension)
          *
-         *  * `Bitmap bitmap` gets `mBitmap` (scaled Bitmap containing our ball)
+         *  * [Bitmap] variable `bitmap` gets [mBitmap] (scaled Bitmap containing our ball)
          *
-         * We then initialize `int count` with the number of balls in `particleSystem` in
-         * order to use it as the limit in a for loop over `int i`, where we:
-         *  * Initialize `float x` by adding `xc` to `xs` times the X position
-         *  of the `Particle` in `particleSystem` at position `i`
+         * We then initialize [Int] variable `count` with the number of balls in `particleSystem` in
+         * order to use it as the limit in a for loop over [Int] variable `i`, where we:
          *
-         *  * Initialize `float y` by adding `yc` to `xs` times the Y position of the `Particle`
-         *  in `particleSystem` at position `i`
+         *  * Initialize [Float] variable `x` by adding `xc` to `xs` times the X position
+         *  of the [Particle] in `particleSystem` at position `i`
          *
-         *  * We then have our parameter `canvas` draw `bitmap` at `(x,y)` with
-         *  a null paint.
+         *  * Initialize [Float] variable `y` by adding `yc` to `xs` times the Y position of the
+         *  [Particle] in `particleSystem` at position `i`
          *
-         * Having drawn all the balls we call the `invalidate` method to ensure that we will be
+         *  * We then have our [Canvas] parameter [canvas] draw `bitmap` at `(x,y)` with
+         *  a `null` paint.
+         *
+         * Having drawn all the balls we call the [invalidate] method to ensure that we will be
          * called again at some point in the future.
          *
          * @param canvas the canvas on which the background will be drawn
          */
         override fun onDraw(canvas: Canvas) {
-
             /*
              * draw the background
              */
@@ -865,16 +871,16 @@ class AccelerometerPlayActivity : ComponentActivity() {
              * data and present time.
              */
             val particleSystem = mParticleSystem
-            val now = mSensorTimeStamp + (System.nanoTime() - mCpuTimeStamp)
-            val sx = mSensorX
-            val sy = mSensorY
+            val now: Long = mSensorTimeStamp + (System.nanoTime() - mCpuTimeStamp)
+            val sx: Float = mSensorX
+            val sy: Float = mSensorY
             particleSystem.update(sx, sy, now)
-            val xc = mXOrigin
-            val yc = mYOrigin
-            val xs = mMetersToPixelsX
-            val ys = mMetersToPixelsY
-            val bitmap = mBitmap
-            val count = particleSystem.getParticleCount()
+            val xc: Float = mXOrigin
+            val yc: Float = mYOrigin
+            val xs: Float = mMetersToPixelsX
+            val ys: Float = mMetersToPixelsY
+            val bitmap: Bitmap = mBitmap
+            val count: Int = particleSystem.getParticleCount()
             for (i in 0 until count) {
                 /*
                  * We transform the canvas so that the coordinate system matches
@@ -904,6 +910,7 @@ class AccelerometerPlayActivity : ComponentActivity() {
  * Timeout for our wakelock.
  */
 private const val WAKE_LOCK_TIMEOUT = 1000000L
+
 /**
  * diameter of the balls in meters
  */
@@ -918,6 +925,7 @@ private const val S_BAL_DIAMETER2 = S_BAL_DIAMETER * S_BAL_DIAMETER
  * friction of the virtual table and air
  */
 private const val S_FRICTION = 0.1f
+
 /**
  * Number of balls in our particle system.
  */
