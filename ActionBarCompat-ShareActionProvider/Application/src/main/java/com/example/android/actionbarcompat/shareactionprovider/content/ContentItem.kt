@@ -48,8 +48,8 @@ class ContentItem {
      * parameters in our fields [contentType] and [contentResourceId] respectively, and set our
      * field [contentAssetFilePath] to null.
      *
-     * @param type       - One of [CONTENT_TYPE_IMAGE] or [CONTENT_TYPE_TEXT]
-     * @param resourceId - Resource ID to use for this item's content
+     * @param type One of [CONTENT_TYPE_IMAGE] or [CONTENT_TYPE_TEXT]
+     * @param resourceId Resource ID to use for this item's content
      */
     constructor(type: Int, resourceId: Int) {
         contentType = type
@@ -62,8 +62,8 @@ class ContentItem {
      * parameters in our fields [contentType] and [contentAssetFilePath] respectively and set our
      * field [contentResourceId] to 0.
      *
-     * @param type          - One of [CONTENT_TYPE_IMAGE] or [CONTENT_TYPE_TEXT]
-     * @param assetFilePath - File path from the application's asset for this item's content
+     * @param type One of [CONTENT_TYPE_IMAGE] or [CONTENT_TYPE_TEXT]
+     * @param assetFilePath File path from the application's asset for this item's content
      */
     constructor(type: Int, assetFilePath: String?) {
         contentType = type
@@ -89,6 +89,7 @@ class ContentItem {
      * Returns an [Intent] which can be used to share this item's content with other applications.
      * First we initialize our [Intent] variable `val intent` with a new instance with action
      * ACTION_SEND. Then we switch on our field [contentType]:
+     *
      *  * [CONTENT_TYPE_IMAGE] - we set the type of `intent` to "image/jpg", and add the content
      *  [Uri] returned from our property [contentUri] as an extra under the key EXTRA_STREAM.
      *

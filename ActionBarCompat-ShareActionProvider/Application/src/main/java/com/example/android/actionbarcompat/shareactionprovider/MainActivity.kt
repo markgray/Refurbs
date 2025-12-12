@@ -67,27 +67,23 @@ class MainActivity : AppCompatActivity() {
     private var mShareActionProvider: ShareActionProvider? = null
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file `R.layout.sample_main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.sample_main`.
      *
-     * We initialize our [ContentFrameLayout] variable `rootView`
-     * to the view with ID `android.R.id.content` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [ContentFrameLayout] variable `rootView` to the view with ID
+     * `android.R.id.content` then call [ViewCompat.setOnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to `rootView`, with the `listener argument
+     * a lambda that accepts the [View] passed the lambda in variable `v` and the
+     * [WindowInsetsCompat] passed the lambda in variable `windowInsets`. It initializes its
+     * [Insets] variable `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets`
+     * with [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
+     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates the layout parameters
+     * of `v` to be a [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`,
+     * the right margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the
+     * bottom margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We find the view with id `R.id.viewpager` to set our [ViewPager] variable `val vp`,
      * and add our [OnPageChangeListener] field [mOnPageChangeListener] as an
@@ -217,6 +213,7 @@ class MainActivity : AppCompatActivity() {
          * for the [Context] of this [MainActivity]. We then set [ContentItem] variable `val item`
          * to the item in position [position] in our list of [ContentItem] field [mItems]. We switch
          * on the value of the [ContentItem.contentType] field of `item`:
+         *
          *  * `CONTENT_TYPE_TEXT` - We use [mInflater] to inflate the layout file with resource ID
          *  `R.layout.item_text` into our [TextView] variable `val tv`, set its `text` to the string
          *  resource indicated by the [ContentItem.contentResourceId] field of `item`, and add `tv`
@@ -310,7 +307,11 @@ class MainActivity : AppCompatActivity() {
          * @param positionOffset Value from [0, 1) indicating the offset from the page at [position].
          * @param positionOffsetPixels Value in pixels indicating the offset from position.
          */
-        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
             // NO-OP
         }
 
@@ -332,10 +333,8 @@ class MainActivity : AppCompatActivity() {
          * or when it is fully stopped/idle. We ignore.
          *
          * @param state The new scroll state.
-         * @see ViewPager.SCROLL_STATE_IDLE
-         *
-         * @see ViewPager.SCROLL_STATE_DRAGGING
-         *
+         * @see ViewPager.SCROLL_STATE_IDLE         *
+         * @see ViewPager.SCROLL_STATE_DRAGGING         *
          * @see ViewPager.SCROLL_STATE_SETTLING
          */
         override fun onPageScrollStateChanged(state: Int) {
@@ -345,20 +344,50 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         /**
-         * Fills an `ArrayList` of `ContentItem` objects with sample data, and returns it
+         * Fills an [ArrayList] of [ContentItem] objects with sample data, and returns it
          * to the caller.
          *
-         * @return An ArrayList of ContentItem's to be displayed in this sample
+         * @return An [ArrayList] of [ContentItem]'s to be displayed in this sample
          */
         val sampleContent: ArrayList<ContentItem>
             get() {
                 val items = ArrayList<ContentItem>()
-                items.add(ContentItem(ContentItem.CONTENT_TYPE_IMAGE, "photo_1.jpg"))
-                items.add(ContentItem(ContentItem.CONTENT_TYPE_TEXT, R.string.quote_1))
-                items.add(ContentItem(ContentItem.CONTENT_TYPE_TEXT, R.string.quote_2))
-                items.add(ContentItem(ContentItem.CONTENT_TYPE_IMAGE, "photo_2.jpg"))
-                items.add(ContentItem(ContentItem.CONTENT_TYPE_TEXT, R.string.quote_3))
-                items.add(ContentItem(ContentItem.CONTENT_TYPE_IMAGE, "photo_3.jpg"))
+                items.add(
+                    ContentItem(
+                        type = ContentItem.CONTENT_TYPE_IMAGE,
+                        assetFilePath = "photo_1.jpg"
+                    )
+                )
+                items.add(
+                    ContentItem(
+                        type = ContentItem.CONTENT_TYPE_TEXT,
+                        resourceId = R.string.quote_1
+                    )
+                )
+                items.add(
+                    ContentItem(
+                        type = ContentItem.CONTENT_TYPE_TEXT,
+                        resourceId = R.string.quote_2
+                    )
+                )
+                items.add(
+                    ContentItem(
+                        type = ContentItem.CONTENT_TYPE_IMAGE,
+                        assetFilePath = "photo_2.jpg"
+                    )
+                )
+                items.add(
+                    ContentItem(
+                        type = ContentItem.CONTENT_TYPE_TEXT,
+                        resourceId = R.string.quote_3
+                    )
+                )
+                items.add(
+                    ContentItem(
+                        type = ContentItem.CONTENT_TYPE_IMAGE,
+                        assetFilePath = "photo_3.jpg"
+                    )
+                )
                 return items
             }
     }

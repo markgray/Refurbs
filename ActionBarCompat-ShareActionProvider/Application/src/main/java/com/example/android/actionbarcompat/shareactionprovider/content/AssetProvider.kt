@@ -28,12 +28,12 @@ import java.io.FileNotFoundException
 import java.io.IOException
 
 /**
- * A simple ContentProvider which can serve files from this application's assets. The majority of
+ * A simple [ContentProvider] which can serve files from this application's assets. The majority of
  * functionality is in [openAssetFile].
  */
 class AssetProvider : ContentProvider() {
     /**
-     * We implement this to initialize our content provider on startup. We just return true.
+     * We implement this to initialize our content provider on startup. We just return `true`.
      *
      * @return `true` to indicate this provider was successfully loaded.
      */
@@ -44,8 +44,8 @@ class AssetProvider : ContentProvider() {
     /**
      * Implement this to handle requests to delete one or more rows. We do nothing, and return 0.
      *
-     * @param uri           The full [Uri] to query, including a row ID (if a specific record is requested).
-     * @param selection     An optional restriction to apply to rows when deleting.
+     * @param uri The full [Uri] to query, including a row ID (if a specific record is requested).
+     * @param selection An optional restriction to apply to rows when deleting.
      * @param selectionArgs an optional array of strings to replace "?" entries in `selection`
      * @return The number of rows affected.
      */
@@ -69,7 +69,7 @@ class AssetProvider : ContentProvider() {
     /**
      * Implement this to handle requests to insert a new row. We do nothing and return `null`.
      *
-     * @param uri    The content:// [Uri] of the insertion request. This must not be `null`.
+     * @param uri The content:// [Uri] of the insertion request. This must not be `null`.
      * @param values A set of column_name/value pairs to add to the database.
      * This must not be `null`.
      * @return The [Uri] for the newly inserted item, we just return `null`.
@@ -82,23 +82,28 @@ class AssetProvider : ContentProvider() {
     /**
      * Implement this to handle query requests from clients. We do nothing and return `null`.
      *
-     * @param uri           The [Uri] to query. This will be the full [Uri] sent by the client;
+     * @param uri The [Uri] to query. This will be the full [Uri] sent by the client;
      * if the client is requesting a specific record, the [Uri] will end in a record number
      * that the implementation should parse and add to a WHERE or HAVING clause, specifying
      * that _id value.
-     * @param projection    The list of columns to put into the [Cursor]. If
+     * @param projection The list of columns to put into the [Cursor]. If
      * `null` all columns are included.
-     * @param selection     A selection criteria to apply when filtering rows.
+     * @param selection A selection criteria to apply when filtering rows.
      * If `null` then all rows are included.
      * @param selectionArgs You may include ?s in selection, which will be replaced by
      * the values from [selectionArgs], in order that they appear in the selection.
      * The values will be bound as [String]'s.
-     * @param sortOrder     How the rows in the [Cursor] should be sorted.
+     * @param sortOrder How the rows in the [Cursor] should be sorted.
      * If `null` then the provider is free to define the sort order.
      * @return a [Cursor] or `null`, we return `null`
      */
-    override fun query(uri: Uri, projection: Array<String>?, selection: String?,
-                       selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
+    override fun query(
+        uri: Uri,
+        projection: Array<String>?,
+        selection: String?,
+        selectionArgs: Array<String>?,
+        sortOrder: String?
+    ): Cursor? {
         // Do not support query requests.
         return null
     }
@@ -106,15 +111,20 @@ class AssetProvider : ContentProvider() {
     /**
      * Implement this to handle requests to update one or more rows. We do nothing and return 0.
      *
-     * @param uri           The [Uri] to query. This can potentially have a record ID if this
+     * @param uri The [Uri] to query. This can potentially have a record ID if this
      * is an update request for a specific record.
-     * @param values        A set of column_name/value pairs to update in the database.
+     * @param values A set of column_name/value pairs to update in the database.
      * This must not be `null`.
-     * @param selection     An optional filter to match rows to update.
+     * @param selection An optional filter to match rows to update.
      * @param selectionArgs An optional array of strings to replace "?" in `selection`
      * @return the number of rows affected.
      */
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
+    override fun update(
+        uri: Uri,
+        values: ContentValues?,
+        selection: String?,
+        selectionArgs: Array<String>?
+    ): Int {
         // Do not support update requests.
         return 0
     }
@@ -128,7 +138,7 @@ class AssetProvider : ContentProvider() {
      * an instance for our application's package, and use it to open a file descriptor for `assetName`
      * which we return to the caller.
      *
-     * @param uri  The [Uri] whose file is to be opened.
+     * @param uri The [Uri] whose file is to be opened.
      * @param mode Access mode for the file.  May be "r" for read-only access,
      * "w" for write-only access (erasing whatever data is currently in
      * the file), "wa" for write-only access to append to any existing data,
