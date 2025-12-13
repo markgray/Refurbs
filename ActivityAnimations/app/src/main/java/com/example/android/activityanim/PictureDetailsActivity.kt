@@ -128,36 +128,33 @@ class PictureDetailsActivity : AppCompatActivity() {
 
     /**
      * This is the orientation of the screen when [ActivityAnimations] launched us, it is passed
-     * to us as an extra in the [Intent] that launched us stored under the key ".orientation",
-     * if the orientation of the screen is different when we are exiting we do not try to animate the
-     * image back to the thumbnail position, we just animate the scale around the center, and fade it
-     * out since it won't match up with whatever's actually in the center
+     * to us as an extra in the [Intent] that launched us stored under the key ".orientation", if
+     * the orientation of the screen is different when we are exiting we do not try to animate the
+     * image back to the thumbnail position, we just animate the scale around the center, and fade
+     * it out since it won't match up with whatever's actually in the center
      */
     private var mOriginalOrientation = 0
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
-     * edge display then we call our super's implementation of `onCreate` and set our content view
-     * to our layout file `R.layout.picture_info`. We initialize our [ImageView] property [mImageView]
-     * by finding the view with id `R.id.imageView`, and our [FrameLayout] property [mTopLevelLayout]
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to edge
+     * display then we call our super's implementation of `onCreate` and set our content view to our
+     * layout file `R.layout.picture_info`. We initialize our [ImageView] property [mImageView] by
+     * finding the view with id `R.id.imageView`, and our [FrameLayout] property [mTopLevelLayout]
      * by finding the view with id `R.id.topLevelLayout`.
      *
      * Next we use the method [ViewCompat.setOnApplyWindowInsetsListener] to set an
-     * [OnApplyWindowInsetsListener] on [mTopLevelLayout] to take over the policy for
-     * applying window insets to [mTopLevelLayout], with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * [OnApplyWindowInsetsListener] on [mTopLevelLayout] to take over the policy for applying
+     * window insets to [mTopLevelLayout], with the `listener` argument a lambda that accepts the
+     * [View] passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in
+     * variable `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [ShadowLayout] property [mShadowLayout] by finding the view with id
      * `R.id.shadowLayout`, and our [TextView] property [mTextView] by finding the view with id
@@ -178,8 +175,8 @@ class PictureDetailsActivity : AppCompatActivity() {
      * We initialize our [BitmapDrawable] property [mBitmapDrawable] with an instance constructed
      * from `bitmap`, set it to be the content of [ImageView] property [mImageView] and set
      * `description` as the text of [TextView] property [mTextView]. We initialize our [ColorDrawable]
-     * property [mBackground] with a [Color.BLACK] instance and set it to be the background of
-     * [FrameLayout] property [mTopLevelLayout].
+     * property [mBackground] with an instance created from [Color.BLACK] and set it to be the
+     * background of [FrameLayout] property [mTopLevelLayout].
      *
      * Now if our [Bundle] parameter [savedInstanceState] is not `null` we are being recreated
      * automatically by the window manager (e.g., device rotation) so we skip any animation and
@@ -390,9 +387,9 @@ class PictureDetailsActivity : AppCompatActivity() {
     }
 
     /**
-     * The exit animation is basically a reverse of the enter animation, except that if the orientation
-     * has changed we simply scale the picture back into the center of the screen. We initialize
-     * [Long] variable `duration` to [ANIM_DURATION] (500) multiplied by the
+     * The exit animation is basically a reverse of the enter animation, except that if the
+     * orientation has changed we simply scale the picture back into the center of the screen.
+     * We initialize [Long] variable `duration` to [ANIM_DURATION] (500) multiplied by the
      * [ActivityAnimations.sAnimatorScale] property of [ActivityAnimations] (`sAnimatorScale` is
      * either 1 or 5 depending on whether the "Slow" [MenuItem] in the options menu of
      * [ActivityAnimations] is unchecked or checked respectively). Next we declare [Boolean]
@@ -528,17 +525,21 @@ class PictureDetailsActivity : AppCompatActivity() {
     /**
      * Call this when your activity is done and should be closed. First we call our super's
      * implementation of `finish` then we call the [overridePendingTransition] method to skip the
-     * standard window animations (using different overloads depending on the SDK version).
+     * standard window animations (using a different overload for SDK's older than SDK 34).
      */
     override fun finish() {
         super.finish()
 
         // override transitions to skip the standard window animations
         if (Build.VERSION.SDK_INT >= 34) {
-            overrideActivityTransition(OVERRIDE_TRANSITION_CLOSE, 0, 0)
+            overrideActivityTransition(
+                /* overrideType = */ OVERRIDE_TRANSITION_CLOSE,
+                /* enterAnim = */ 0,
+                /* exitAnim = */ 0
+            )
         } else {
             @Suppress("DEPRECATION") // Needed for SDK older than 34
-            overridePendingTransition(0, 0)
+            overridePendingTransition(/* enterAnim = */ 0, /* exitAnim = */ 0)
         }
     }
 

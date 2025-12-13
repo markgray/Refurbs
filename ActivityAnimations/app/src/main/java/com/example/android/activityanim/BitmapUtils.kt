@@ -64,7 +64,7 @@ class BitmapUtils {
      * Load pictures and descriptions. A real app wouldn't do it this way, but that's not the point
      * of this animation demo. Loading asynchronously is a better way to go for what can be time
      * consuming operations. First we initialize [ArrayList] of [PictureData] variable `pictures`
-     * with a new instance. Then we loop over [Int] variable `i` for 30 repetitions:
+     * with a new instance. Then we loop for 30 repetitions:
      *
      *  * We initialize [Int] variable `resourceId` with a resource id randomly chosen from our
      *  [IntArray] property [mPhotos].
@@ -85,7 +85,7 @@ class BitmapUtils {
      *
      * When done with our loop we return `pictures` to the caller.
      *
-     * @param resources `Resources` instance to use to access resources.
+     * @param resources [Resources] instance to use to access resources.
      * @return A list of [PictureData] objects created using randomly chosen jpg's and
      * description strings.
      */

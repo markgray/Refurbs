@@ -107,9 +107,9 @@ class ShadowLayout : RelativeLayout {
      * We set the [MaskFilter] of [mShadowPaint] to a new instance of [BlurMaskFilter] whose blur
      * radius is [BLUR_RADIUS] and whose blur style is NORMAL (blur inside and outside the original
      * border). We translate [Canvas] variable `c` by [BLUR_RADIUS] horizontally and vertically, then
-     * draw a round rectangle on it (and thus into [mShadowBitmap]) whose rectangular bounds are given
-     * by [RectF] property [sShadowRectF], with the width of [sShadowRectF] divided by 40 for the
-     * x-radius of the corners ovals, and the height of  [sShadowRectF] divided by 40 for the
+     * draw a round rectangle on it (and thus into [mShadowBitmap]) whose rectangular bounds are
+     * given by [RectF] property [sShadowRectF], with the width of [sShadowRectF] divided by 40 for
+     * the x-radius of the corners ovals, and the height of  [sShadowRectF] divided by 40 for the
      * y-radius of the corners ovals.
      */
     private fun init() {
@@ -121,8 +121,10 @@ class ShadowLayout : RelativeLayout {
         mShadowPaint.maskFilter = BlurMaskFilter(BLUR_RADIUS.toFloat(), Blur.NORMAL)
         c.translate(BLUR_RADIUS.toFloat(), BLUR_RADIUS.toFloat())
         c.drawRoundRect(
-            sShadowRectF, sShadowRectF.width() / 40,
-            sShadowRectF.height() / 40, mShadowPaint
+            /* rect = */ sShadowRectF,
+            /* rx = */ sShadowRectF.width() / 40,
+            /* ry = */ sShadowRectF.height() / 40,
+            /* paint = */ mShadowPaint
         )
     }
 
@@ -187,7 +189,11 @@ class ShadowLayout : RelativeLayout {
                 concat(child.matrix)
                 tempShadowRectF.right = child.width.toFloat()
                 tempShadowRectF.bottom = child.height.toFloat()
-                drawBitmap(mShadowBitmap!!, sShadowRect, tempShadowRectF, mShadowPaint)
+                drawBitmap(
+                    /* bitmap = */ mShadowBitmap!!,
+                    /* src = */ sShadowRect,
+                    /* dst = */ tempShadowRectF,
+                    /* paint = */ mShadowPaint)
             }
         }
     }

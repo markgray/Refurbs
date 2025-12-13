@@ -82,21 +82,18 @@ class ActivityAnimations : AppCompatActivity() {
      * create [ColorMatrixColorFilter] variable `grayscaleFilter` from it. We initialize [GridLayout]
      * property [mGridLayout] by finding the view with id `R.id.gridLayout`.
      *
-     * Then we call [ViewCompat.setOnApplyWindowInsetsListener] to take over
-     * the policy for applying window insets to [mGridLayout], with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * Then we call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to [mGridLayout], with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We set the column count of [mGridLayout] to 3, and enable its use of default margins around
      * children based on the child's visual characteristics. We initialize [Resources] variable
@@ -169,7 +166,8 @@ class ActivityAnimations : AppCompatActivity() {
     /**
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater]
      * for this context to inflate our menu layout file `R.menu.activity_better_window_animations`
-     * into our [Menu] parameter [menu] and return `true` so that the menu will be displayed.
+     * (contains the single checkable option "Slow") into our [Menu] parameter [menu] and return
+     * `true` so that the menu will be displayed.
      *
      * @param menu The options menu in which we place our items.
      * @return You must return `true` for the menu to be displayed; if you return `false` it will
@@ -183,8 +181,8 @@ class ActivityAnimations : AppCompatActivity() {
     /**
      * This hook is called whenever an item in your options menu is selected. If the item id of our
      * [MenuItem] parameter [item] is `R.id.menu_slow`, we set our [Float] property [sAnimatorScale]
-     * to 1 if the item is currently checked, or to 5 if it unchecked then toggle the checked state
-     * of the item. In any case we return the value returned by our super's implementation of
+     * to 1 if the item is currently checked, or to 5 if it is unchecked, then toggle the checked
+     * state of the item. In any case we return the value returned by our super's implementation of
      * `onOptionsItemSelected` to the caller.
      *
      * @param item The menu item that was selected.
@@ -227,8 +225,8 @@ class ActivityAnimations : AppCompatActivity() {
      *  * [PACKAGE].description" hold the value of the [PictureData.description] property of `info`
      *
      * We then start `subActivity` running, and call the [overridePendingTransition] method (using
-     * different overloads for different API levels) to cancel the normal window animation so only
-     * our custom one is used.
+     * different overloads for SDK's after and before SDK `34`) to cancel the normal window animation
+     * so only our custom one is used.
      *
      * param v The view that was clicked.
      */
@@ -257,10 +255,14 @@ class ActivityAnimations : AppCompatActivity() {
         // Override transitions: we don't want the normal window animation in addition
         // to our custom one
         if (Build.VERSION.SDK_INT >= 34) {
-            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, 0, 0)
+            overrideActivityTransition(
+                /* overrideType = */ OVERRIDE_TRANSITION_OPEN,
+                /* enterAnim = */ 0,
+                /* exitAnim = */ 0
+            )
         } else {
             @Suppress("DEPRECATION") // Needed for SDK older than 34
-            overridePendingTransition(0, 0)
+            overridePendingTransition(/* enterAnim = */ 0, /* exitAnim = */ 0)
         }
     }
 
