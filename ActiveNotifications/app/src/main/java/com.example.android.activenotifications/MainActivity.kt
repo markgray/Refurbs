@@ -57,26 +57,23 @@ open class MainActivity : SampleActivityBase() {
      * edge display then we call our super's implementation of `onCreate` and set our content view
      * to our layout file `R.layout.activity_main`.
      *
-     * We initialize our [FrameLayout] variable `rootView`
-     * to the view with ID `android.R.id.content` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [FrameLayout] variable `rootView` to the view with ID
+     * `android.R.id.content` then call [ViewCompat.setOnApplyWindowInsetsListener] to
+     * take over the policy for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda in variable `v` and
+     * the [WindowInsetsCompat] passed the lambda in variable `windowInsets`. It initializes
+     * its [Insets] variable `systemBars` to the [WindowInsetsCompat.getInsets] of
+     * `windowInsets` with [WindowInsetsCompat.Type.systemBars] as the argument. It then
+     * gets the insets for the IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then
+     * updates the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams] with the
+     * left margin set to `systemBars.left`, the right margin set to `systemBars.right`,
+     * the top margin set to `systemBars.top`, and the bottom margin set to the maximum of
+     * the system bars bottom inset and the IME bottom inset. Finally it returns
+     * [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets will not
+     * keep passing down to descendant views).
      *
-     * If our [Bundle] parameter `savedInstanceState` is `null` this is the first time we have been
-     * called so we initialize our [FragmentTransaction] variable `transaction` by using the
+     * If our [Bundle] parameter `savedInstanceState` is `null` this is the first time we have
+     * been called so we initialize our [FragmentTransaction] variable `transaction` by using the
      * [FragmentManager.beginTransaction] method of the [FragmentManager] returned by
      * [supportFragmentManager], initialize our [ActiveNotificationsFragment] variable `fragment`
      * with a new instance, then call the [FragmentTransaction.replace] method of `transaction` to
@@ -118,8 +115,9 @@ open class MainActivity : SampleActivityBase() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater]
-     * with this context to inflate our menu layout file `R.menu.main` into our [Menu] parameter
-     * [menu] and return true so that the menu will be displayed.
+     * with this context to inflate our menu layout file `R.menu.main` (contains the single option
+     * "Show Log") into our [Menu] parameter [menu] and return `true` so that the menu will be
+     * displayed.
      *
      * @param menu The options menu in which you place your items.
      * @return You must return true for the menu to be displayed;
@@ -131,15 +129,15 @@ open class MainActivity : SampleActivityBase() {
     }
 
     /**
-     * Prepare the Screen's standard options menu to be displayed. We initialize [MenuItem] variable
-     * `logToggle` by finding the [MenuItem] in our [Menu] parameter [menu] with the id
-     * `R.id.menu_toggle_log` ("Show Log"), then we set it to visible if the view with id
+     * Prepare the Screen's standard options menu to be displayed. We initialize [MenuItem]
+     * variable `logToggle` by finding the [MenuItem] in our [Menu] parameter [menu] with the
+     * id `R.id.menu_toggle_log` ("Show Log"), then we set it to visible if the view with id
      * `R.id.sample_output` is an instance of [ViewAnimator] or invisible if it is not (in the
-     * layout file for `w720dp` it is a [LinearLayout] not a [ViewAnimator]), set its title to the
-     * string with id `R.string.sample_hide_log` ("Hide Log") if  [Boolean] property [mLogShown] is
-     * `true` or to the string with id `R.string.sample_show_log` ("Show Log") if it is `false`.
-     * Finally we return the value returned by our super's implementation of `onPrepareOptionsMenu`
-     * to the caller.
+     * layout file for `w720dp` it is a [LinearLayout] not a [ViewAnimator]), set its title to
+     * the string with id `R.string.sample_hide_log` ("Hide Log") if  [Boolean] property
+     * [mLogShown] is `true` or to the string with id `R.string.sample_show_log` ("Show Log")
+     * if it is `false`. Finally we return the value returned by our super's implementation of
+     * `onPrepareOptionsMenu` to the caller.
      *
      * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu].
      * @return You must return true for the menu to be displayed;
@@ -155,18 +153,19 @@ open class MainActivity : SampleActivityBase() {
     /**
      * This hook is called whenever an item in your options menu is selected. If the
      * [MenuItem.getItemId] of our [MenuItem] parameter `item` is `R.id.menu_toggle_log`
-     * ("Show Log" or "Hide Log") we toggle the value of our [Boolean] property [mLogShown], then
-     * initialize our [ViewAnimator] variable `output` by finding the view with id
-     * `R.id.sample_output` and if [mLogShown] is now `true` we set the child view to be displayed
-     * to child 1, if is false we set the child view to be displayed to child 0. We then call the
-     * [invalidateOptionsMenu] method to declare that the options menu has changed, so should be
-     * recreated, and return `true` to consume the event here.
+     * ("Show Log" or "Hide Log") we toggle the value of our [Boolean] property [mLogShown],
+     * then initialize our [ViewAnimator] variable `output` by finding the view with id
+     * `R.id.sample_output` and if [mLogShown] is now `true` we set the child view to be
+     * displayed to child 1, if is false we set the child view to be displayed to child 0.
+     * We then call the [invalidateOptionsMenu] method to declare that the options menu has
+     * changed, so should be recreated, and return `true` to consume the event here.
      *
      * If it is not our `R.id.menu_toggle_log` [MenuItem] we return the value returned by our
      * super's implementation of `onOptionsItemSelected` to the caller.
      *
      * @param item The menu item that was selected.
-     * @return Return `false` to allow normal menu processing to proceed, `true` to consume it here.
+     * @return Return `false` to allow normal menu processing to proceed, `true` to consume
+     * it here.
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_toggle_log) {

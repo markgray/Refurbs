@@ -83,7 +83,11 @@ open class ActiveNotificationsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_notification_builder, container, false)
+        return inflater.inflate(
+            /* resource = */ R.layout.fragment_notification_builder,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
     }
 
     /**
@@ -99,8 +103,9 @@ open class ActiveNotificationsFragment : Fragment() {
 
     /**
      * Called immediately after [onCreateView] has returned, but before any saved state has been
-     * restored to the view. First we call our super's implementation of `onViewCreated`, and then
-     * we initialize our [NotificationManager] property [mNM] with a handle to the system level
+     * restored to the view. First we call our super's implementation of `onViewCreated`, and call
+     * our [requestNotificationPermission] method to request permission to post notifictations. We
+     * then initialize our [NotificationManager] property [mNM] with a handle to the system level
      * service `NOTIFICATION_SERVICE`. We initialize [NotificationChannel] variable `chan1` with a
      * new instance whose ID is [PRIMARY_CHANNEL], ("default") whose user visible name is also
      * [PRIMARY_CHANNEL], and whose importance is [NotificationManager.IMPORTANCE_DEFAULT]
@@ -166,15 +171,17 @@ open class ActiveNotificationsFragment : Fragment() {
      *
      * This function checks if the app has been granted the [POST_NOTIFICATIONS] permission.
      * If the permission has not been granted, it launches a system permission request dialog
-     * using the [ActivityResultLauncher] property [actionRequestPermission] launcher. If the
+     * using our [ActivityResultLauncher] property [actionRequestPermission] launcher. If the
      * permission is already granted, the function does nothing. This is necessary for apps targeting
      * Android 13 (API level 33) or higher to be able to post notifications.
      */
     private fun requestNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), POST_NOTIFICATIONS)
-            != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(
+                /* context = */ requireContext(),
+                /* permission = */ POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
-            actionRequestPermission.launch(arrayOf(POST_NOTIFICATIONS))
+            actionRequestPermission.launch(input = arrayOf(POST_NOTIFICATIONS))
             return
         }
     }
@@ -193,8 +200,8 @@ open class ActiveNotificationsFragment : Fragment() {
      */
     private val actionRequestPermission: ActivityResultLauncher<Array<String>> =
         registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) {}
+            /* contract = */ ActivityResultContracts.RequestMultiplePermissions()
+        ) { /* callBack = No action required */ }
 
     /**
      * Adds a new [Notification] with sample data and sends it to the system. Then updates the

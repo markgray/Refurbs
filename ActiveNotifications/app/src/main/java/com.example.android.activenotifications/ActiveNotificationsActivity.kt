@@ -102,15 +102,17 @@ class ActiveNotificationsActivity : MainActivity() {
      * resumed. First we call our super's implementation then we call the [registerReceiver]
      * method to register our [BroadcastReceiver] property [mDeleteReceiver] as a [BroadcastReceiver]
      * with a new instance of [IntentFilter] for the action [ACTION_NOTIFICATION_DELETE] as the
-     * [Intent] broadcasts to be received.
+     * [Intent] broadcasts to be received. Note that for devices running `TIRAMISU` or above we
+     * call the three argument override of [registerReceiver] with the `flags` argument
+     * [Context.RECEIVER_EXPORTED].
      */
     override fun onResume() {
         super.onResume()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(
-                mDeleteReceiver,
-                IntentFilter(ACTION_NOTIFICATION_DELETE),
-                RECEIVER_EXPORTED
+                /* receiver = */ mDeleteReceiver,
+                /* filter = */ IntentFilter(ACTION_NOTIFICATION_DELETE),
+                /* flags = */ RECEIVER_EXPORTED
             )
         } else {
             @SuppressLint("UnspecifiedRegisterReceiverFlag") // Needed for SDK older than TIRAMISU
