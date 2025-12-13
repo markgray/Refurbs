@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "UNUSED_ANONYMOUS_PARAMETER", "MemberVisibilityCanBePrivate",
-    "UnusedImport"
+@file:Suppress(
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "UNUSED_ANONYMOUS_PARAMETER",
+    "MemberVisibilityCanBePrivate"
 )
 
 package com.example.android.anticipation
@@ -30,7 +32,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
@@ -91,7 +92,11 @@ class AnticiButton : AppCompatButton {
      * attribute values serve as default values for the button. Set this parameter
      * to 0 to avoid use of default values.
      */
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context!!, attrs, defStyle) {
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+        context!!,
+        attrs,
+        defStyle
+    ) {
         init()
     }
 
@@ -133,9 +138,9 @@ class AnticiButton : AppCompatButton {
      */
     override fun draw(canvas: Canvas) {
         if (mSkewX != 0f) {
-            canvas.translate(0f, height.toFloat())
-            canvas.skew(mSkewX, 0f)
-            canvas.translate(0f, -height.toFloat())
+            canvas.translate(/* dx = */ 0f, /* dy = */ height.toFloat())
+            canvas.skew(/* sx = */ mSkewX, /* sy = */ 0f)
+            canvas.translate(/* dx = */ 0f, /* dy = */ -height.toFloat())
         }
         super.draw(canvas)
     }
@@ -150,7 +155,11 @@ class AnticiButton : AppCompatButton {
      */
     private fun runPressAnim() {
         Log.i(TAG, "Right: $right Bottom: $bottom")
-        downAnim = ObjectAnimator.ofFloat(this, "skewX", if (mOnLeft) .5f else -.5f)
+        downAnim = ObjectAnimator.ofFloat(
+            /* target = */ this,
+            /* propertyName = */ "skewX",
+            /* ...values = */ if (mOnLeft) .5f else -.5f
+        )
         downAnim!!.duration = 2500
         downAnim!!.interpolator = sDecelerator
         downAnim!!.start()
@@ -163,16 +172,16 @@ class AnticiButton : AppCompatButton {
      * field [downAnim] is not null, and is currently running, we call its `cancel` method to cancel
      * it, set `finishDownAnim` to an instance which animates the "skewX" property of 'this' to .5f
      * if [mOnLeft] is true (our button is on the left of the screen) or to -.5f if it is on the
-     * right side, set its duration to 150, and set its `TimeInterpolator` to our [DecelerateInterpolator]
-     * field [sQuickDecelerator].
+     * right side, set its duration to 150, and set its `TimeInterpolator` to our
+     * [DecelerateInterpolator] field [sQuickDecelerator].
      *
      * Having taken care of any [downAnim] that may have been running (or not running) we initialize
      * [ObjectAnimator] variable `val moveAnim` with an instance which will animate the TRANSLATION_X
      * property of 'this' to 400 if [mOnLeft] is `true`, or to 0 if it is `false`, set its
-     * `TimeInterpolator` to our [LinearInterpolator] field [sLinearInterpolator], and set its duration
-     * to 150. We initialize [ObjectAnimator] variable `val skewAnim` with an instance which will
-     * animate the "skewX" property of 'this' to -.5f if [mOnLeft] is `true`, or to .5f if it is
-     * `false`, set its `TimeInterpolator` to [DecelerateInterpolator] field [sQuickDecelerator],
+     * `TimeInterpolator` to our [LinearInterpolator] field [sLinearInterpolator], and set its
+     * duration to 150. We initialize [ObjectAnimator] variable `val skewAnim` with an instance which
+     * will animate the "skewX" property of 'this' to -.5f if [mOnLeft] is `true`, or to .5f if it
+     * is `false`, set its `TimeInterpolator` to [DecelerateInterpolator] field [sQuickDecelerator],
      * and set its duration to 100. We initialize [ObjectAnimator] variable `val wobbleAnim` to an
      * instance which will animate the "skewX" property of 'this' to 0, set its `TimeInterpolator`
      * to our [OvershootInterpolator] field [sOvershooter], and set its duration to 150.
@@ -189,8 +198,11 @@ class AnticiButton : AppCompatButton {
         if (downAnim != null && downAnim!!.isRunning) {
             // finish the skew animation quickly
             downAnim!!.cancel()
-            finishDownAnim = ObjectAnimator.ofFloat(this, "skewX",
-                if (mOnLeft) .5f else -.5f)
+            finishDownAnim = ObjectAnimator.ofFloat(
+                /* target = */ this,
+                /* propertyName = */ "skewX",
+                /* ...values = */ if (mOnLeft) .5f else -.5f
+            )
             finishDownAnim.duration = 150
             finishDownAnim.interpolator = sQuickDecelerator
         }
@@ -198,21 +210,33 @@ class AnticiButton : AppCompatButton {
         // Slide. Use LinearInterpolator in this rare situation where we want to start
         // and end fast (no acceleration or deceleration, since we're doing that part
         // during the anticipation and overshoot phases).
-        val moveAnim = ObjectAnimator.ofFloat(this, TRANSLATION_X, (if (mOnLeft) 400 else 0).toFloat())
+        val moveAnim = ObjectAnimator.ofFloat(
+            /* target = */ this,
+            /* property = */ TRANSLATION_X,
+            /* ...values = */ (if (mOnLeft) 400 else 0).toFloat()
+        )
         moveAnim.interpolator = sLinearInterpolator
         moveAnim.duration = 150
 
         // Then overshoot by stopping the movement but skewing the button as if it couldn't
         // all stop at once
-        val skewAnim = ObjectAnimator.ofFloat(this, "skewX", if (mOnLeft) -.5f else .5f)
+        val skewAnim = ObjectAnimator.ofFloat(
+            /* target = */ this,
+            /* propertyName = */ "skewX",
+            /* ...values = */ if (mOnLeft) -.5f else .5f
+        )
         skewAnim.interpolator = sQuickDecelerator
         skewAnim.duration = 100
         // and wobble it
-        val wobbleAnim = ObjectAnimator.ofFloat(this, "skewX", 0f)
+        val wobbleAnim = ObjectAnimator.ofFloat(
+            /* target = */ this,
+            /* propertyName = */ "skewX",
+            /* ...values = */ 0f
+        )
         wobbleAnim.interpolator = sOvershooter
         wobbleAnim.duration = 150
         val set = AnimatorSet()
-        set.playSequentially(moveAnim, skewAnim, wobbleAnim)
+        set.playSequentially(/* ...items = */ moveAnim, skewAnim, wobbleAnim)
         if (finishDownAnim != null) {
             set.play(finishDownAnim).before(moveAnim)
         }
@@ -232,7 +256,11 @@ class AnticiButton : AppCompatButton {
     private fun runCancelAnim() {
         if (downAnim != null && downAnim!!.isRunning) {
             downAnim!!.cancel()
-            val reverser = ObjectAnimator.ofFloat(this, "skewX", 0f)
+            val reverser = ObjectAnimator.ofFloat(
+                /* target = */ this,
+                /* propertyName = */ "skewX",
+                /* ...values = */ 0f
+            )
             reverser.duration = 200
             reverser.interpolator = sAccelerator
             reverser.start()
@@ -244,7 +272,7 @@ class AnticiButton : AppCompatButton {
      * Handle touch events directly since we want to react on down/up events, not just
      * button clicks
      */
-    private val mTouchListener = OnTouchListener { v: View, event: MotionEvent ->
+    private val mTouchListener = OnTouchListener { _: View, event: MotionEvent ->
 
         /**
          * Called when a touch event is dispatched to `this` `View`. We switch on the action
@@ -272,7 +300,7 @@ class AnticiButton : AppCompatButton {
          *
          * We then return `true` to consume the event.
          *
-         * @param v The [View] the touch event has been dispatched to.
+         * @param _ The [View] the touch event has been dispatched to.
          * @param event The [MotionEvent] object containing full information about the event.
          * @return `true` if the listener has consumed the event, `false` otherwise.
          */
@@ -357,10 +385,18 @@ class AnticiButton : AppCompatButton {
     private fun invalidateSkewedBounds() {
         if (mSkewX != 0f) {
             val matrix = Matrix()
-            matrix.setSkew(-mSkewX, 0f)
-            mTempRect[0f, 0f, right.toFloat()] = bottom.toFloat()
+            matrix.setSkew(/* kx = */ -mSkewX, /* ky = */ 0f)
+            mTempRect = RectF(
+                /* left = */ 0f,
+                /* top = */ 0f,
+                /* right = */ 0f,
+                /* bottom = */ right.toFloat()
+            )
             matrix.mapRect(mTempRect)
-            mTempRect.offset(left + translationX, top + translationY)
+            mTempRect.offset(
+                /* dx = */ left + translationX,
+                /* dy = */ top + translationY
+            )
             (parent as View).invalidate()
         }
     }
@@ -396,8 +432,8 @@ class AnticiButton : AppCompatButton {
 
         /**
          * `TimeInterpolator` for the animation of the "skewX" property when the button is released
-         * before the "skewX" animation of the button press has completed, as well the animation of the
-         * "skewX" overshoot at the end of the buttons travel.
+         * before the "skewX" animation of the button press has completed, as well the animation of
+         * the "skewX" overshoot at the end of the buttons travel.
          */
         private val sQuickDecelerator = DecelerateInterpolator()
     }
