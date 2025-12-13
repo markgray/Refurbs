@@ -40,7 +40,8 @@ object DateConverter {
      *
      * @param date [Date] instance we wish to convert to milliseconds since January 1, 1970,
      * 00:00:00 GMT
-     * @return milliseconds since January 1, 1970, 00:00:00 GMT version of our [Date] parameter [date]
+     * @return milliseconds since January 1, 1970, 00:00:00 GMT version of our [Date]
+     * parameter [date]
      */
     @JvmStatic
     @TypeConverter
