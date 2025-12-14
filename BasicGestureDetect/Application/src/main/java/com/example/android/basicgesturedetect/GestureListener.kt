@@ -200,7 +200,7 @@ class GestureListener : SimpleOnGestureListener() {
          *
          *  * `TOOL_TYPE_STYLUS`: we append the string "(stylus, " to `touchTypeDescription`. We
          *  then initialize [Float] variable `val stylusPressure` with the current pressure of [e]
-         *  row its first pointer index, and then append the string formed by concatenating the
+         *  of its first pointer index, and then append the string formed by concatenating the
          *  string "pressure: " and the string value of `stylusPressure` to `touchTypeDescription`.
          *  If we are running on a device whose SDK is greater than or equal to 21 we append the
          *  string formed by concatenating the string ", buttons pressed: " to the list of buttons

@@ -99,16 +99,17 @@ class BasicGestureDetectFragment : Fragment() {
          * an event, it will use the callbacks you created in the [SimpleOnGestureListener] to
          * alert your application.
          */
-        gestureView.setOnTouchListener { viewTouched: View, motionEvent: MotionEvent ->
+        @Suppress("Unused")
+        gestureView.setOnTouchListener { view: View, motionEvent: MotionEvent ->
 
             /**
-             * Called when a touch event is dispatched to our [View] parameter [viewTouched]. This
-             * allows listeners to get a chance to respond before the target [viewTouched]. We just
+             * Called when a touch event is dispatched to our [View] parameter [view]. This
+             * allows listeners to get a chance to respond before the target [view]. We just
              * call the `onTouchEvent` method of [GestureDetector] variable `gd` with our [MotionEvent]
-             * parameter [motionEvent] and return `false` so that the [viewTouched] will also receive
+             * parameter [motionEvent] and return `false` so that the [view] will also receive
              * the touch event.
              *
-             * @param viewTouched The [View] the touch event has been dispatched to.
+             * @param view The [View] the touch event has been dispatched to.
              * @param motionEvent The [MotionEvent] object containing full information about the event.
              * @return `true` if the listener has consumed the event, `false` otherwise.
              */
