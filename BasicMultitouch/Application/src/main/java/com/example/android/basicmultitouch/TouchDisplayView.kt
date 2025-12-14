@@ -168,7 +168,7 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
             /**
              * Our [Pool] of [MAX_POOL_SIZE] instances of [TouchHistory].
              */
-            private val sPool = Pools.SimplePool<TouchHistory>(MAX_POOL_SIZE)
+            private val sPool = Pools.SimplePool<TouchHistory>(maxPoolSize = MAX_POOL_SIZE)
 
             /**
              * Returns a [TouchHistory] instance initialized to hold our parameters, recycling from
@@ -264,11 +264,11 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
                  * the pointer identifier of this touch from the first index
                  * within the MotionEvent object.
                  */
-                val id = event.getPointerId(0)
+                val id = event.getPointerId(/* pointerIndex = */ 0)
                 val data = TouchHistory.obtain(
-                    x = event.getX(0),
-                    y = event.getY(0),
-                    pressure = event.getPressure(0)
+                    x = event.getX(/* pointerIndex = */ 0),
+                    y = event.getY(/* pointerIndex = */ 0),
+                    pressure = event.getPressure(/* pointerIndex = */ 0)
                 )
                 data.label = "id: " + 0
 
@@ -296,9 +296,9 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
                 val index: Int = event.actionIndex
                 val id: Int = event.getPointerId(index)
                 val data: TouchHistory = TouchHistory.obtain(
-                    event.getX(index),
-                    event.getY(index),
-                    event.getPressure(index)
+                    x = event.getX(/* pointerIndex = */ index),
+                    y = event.getY(/* pointerIndex = */ index),
+                    pressure = event.getPressure(/* pointerIndex = */ index)
                 )
                 data.label = "id: $id"
 
@@ -325,7 +325,7 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
                  */
                 val id: Int = event.getPointerId(0)
                 val data: TouchHistory = mTouches[id]
-                mTouches.remove(id)
+                mTouches.remove(/* key = */ id)
                 data.recycle()
                 mHasTouch = false
             }
@@ -343,9 +343,9 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
                  * is stored.
                  */
                 val index: Int = event.actionIndex
-                val id: Int = event.getPointerId(index)
+                val id: Int = event.getPointerId(/* pointerIndex = */ index)
                 val data: TouchHistory = mTouches[id]
-                mTouches.remove(id)
+                mTouches.remove(/* key = */ id)
                 data.recycle()
             }
 
@@ -372,14 +372,18 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
                 while (index < event.pointerCount) {
 
                     // get pointer id for data stored at this index
-                    val id: Int = event.getPointerId(index)
+                    val id: Int = event.getPointerId(/* pointerIndex = */ index)
 
                     // get the data stored externally about this pointer.
                     val data: TouchHistory = mTouches[id]
 
                     // add previous position to history and add new values
-                    data.addHistory(data.x, data.y)
-                    data.setTouch(event.getX(index), event.getY(index), event.getPressure(index))
+                    data.addHistory(x = data.x, y = data.y)
+                    data.setTouch(
+                        x = event. getX(/* pointerIndex = */ index),
+                        y = event.getY(/* pointerIndex = */ index),
+                        pressure = event.getPressure(/* pointerIndex = */ index)
+                    )
                     index++
                 }
             }
@@ -417,11 +421,11 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
         } else {
             // draw inactive border
             canvas.drawRect(
-                mBorderWidth,
-                mBorderWidth,
-                width - mBorderWidth,
-                height - mBorderWidth,
-                mBorderPaint
+                /* left = */ mBorderWidth,
+                /* top = */ mBorderWidth,
+                /* right = */ width - mBorderWidth,
+                /* bottom = */ height - mBorderWidth,
+                /* paint = */ mBorderPaint
             )
         }
 
@@ -433,7 +437,7 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
             val data: TouchHistory = mTouches.valueAt(i)
 
             // draw the data and its history to the canvas
-            drawCircle(canvas, id, data)
+            drawCircle(canvas = canvas, id = id, data = data)
         }
     }
 
@@ -470,7 +474,7 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
 
     init {
         // Allocate space for our SparseArray of touch events, indexed by touch id
-        mTouches = SparseArray(10)
+        mTouches = SparseArray(/* initialCapacity = */ 10)
         initialisePaint()
     }
 
@@ -549,7 +553,12 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
          */
         val pressure: Float = Math.min(data.pressure, 1f)
         val radius: Float = pressure * mCircleRadius
-        canvas.drawCircle(data.x, data.y - radius / 2f, radius, mCirclePaint)
+        canvas.drawCircle(
+            /* cx = */ data.x,
+            /* cy = */ data.y - radius / 2f,
+            /* radius = */ radius,
+            /* paint = */ mCirclePaint
+        )
 
         // draw all historical points with a lower alpha value
         mCirclePaint.alpha = 125
@@ -561,7 +570,12 @@ class TouchDisplayView(context: Context?, attrs: AttributeSet?) : View(context, 
         }
 
         // draw its label next to the main circle
-        canvas.drawText(data.label!!, data.x + radius, data.y - radius, mTextPaint)
+        canvas.drawText(
+            /* text = */ data.label!!,
+            /* x = */ data.x + radius,
+            /* y = */ data.y - radius,
+            /* paint = */ mTextPaint
+        )
     }
 
     companion object {

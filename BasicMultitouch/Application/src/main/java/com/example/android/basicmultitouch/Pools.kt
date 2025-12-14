@@ -94,10 +94,10 @@ private constructor() {
         }
 
         /**
-         * Tries to return a `T` object removed from our [Array] of [Any] field [mPool] if there are
+         * Tries to return a [T] object removed from our [Array] of [Any] field [mPool] if there are
          * any there. If [mPoolSize] is greater than 0, we set [Int] variable `val lastPooledIndex`
          * to [mPoolSize] minus 1, initialize [T] variable `val instance` with the object at index
-         * `lastPooledIndex` the [mPool] pool, set that entry to null, decrement [mPoolSize] and
+         * `lastPooledIndex` in the [mPool] pool, set that entry to null, decrement [mPoolSize] and
          * return `instance`. If [mPoolSize] is not greater than 0 we return `null`.
          *
          * @return a [T] object if there were any in our [Array] of [Any] pool  [mPool] or `null`
