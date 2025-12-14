@@ -106,7 +106,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Initialize text fragment that displays intro text.
-        val introFragment = supportFragmentManager.findFragmentById(R.id.intro_fragment) as SimpleTextFragment?
+        val introFragment =
+            supportFragmentManager.findFragmentById(R.id.intro_fragment) as SimpleTextFragment?
         introFragment!!.setText(R.string.intro_message)
         introFragment.textView!!.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16.0f)
 
@@ -118,7 +119,7 @@ class MainActivity : AppCompatActivity() {
      * Initialize the contents of the Activity's standard options menu. We fetch a [MenuInflater]
      * for our activity's context and use it to inflate our menu layout `R.menu.main` into our [Menu]
      * parameter [menu] and return `true` to the caller so that the menu will be displayed.
-     * TODO: Continue here.
+     *
      * @param menu The options [Menu] in which to place our items.
      * @return We return `true` so the menu will be displayed
      */
@@ -132,8 +133,8 @@ class MainActivity : AppCompatActivity() {
      * our parameter `MenuItem item`:
      *
      *  * `R.id.test_action`: we call our method [checkNetworkConnection] to check whether the
-     *  device is connected, and if so, whether the connection is wifi or mobile. We then return
-     *  `true` to the caller to consume the event.
+     *  device is connected, and if so, whether the connection is wifi or mobile and to log the
+     *  information. We then return `true` to the caller to consume the event.
      *
      *  * `R.id.clear_action`: We fetch the [LogView] from our [LogFragment] field [mLogFragment]
      *  and call its [LogView.setText] method (aka kotlin `text` property) to set its text the empty
@@ -169,13 +170,13 @@ class MainActivity : AppCompatActivity() {
      * `val activeInfo`. If this is not `null`, and its [NetworkInfo.isConnected] method returns
      * `true` to indicate that network connectivity exists we set our [Boolean] field [wifiConnected]
      * to `true` if the the `type` of network to which the info in `activeInfo` pertains is TYPE_WIFI,
-     * and our [Boolean] field [mobileConnected] to `true` if its type is TYPE_MOBILE. If:
+     * and our [Boolean] field [mobileConnected] to `true` if its type is TYPE_MOBILE. Then if:
      *
-     *      * [wifiConnected] is true, we log the string `R.string.wifi_connection` ("The active
-     *      connection is wifi")
+     *  * [wifiConnected] is true, we log the string `R.string.wifi_connection` ("The active
+     *  connection is wifi")
      *
-     *      * [mobileConnected] is true, we log the string R.string.mobile_connection ("The active
-     *      connection is mobile")
+     *  * [mobileConnected] is true, we log the string R.string.mobile_connection ("The active
+     *  connection is mobile")
      *
      * If we are not connected we log the string `R.string.no_wifi_or_mobile` ("No wireless or mobile
      * connection")

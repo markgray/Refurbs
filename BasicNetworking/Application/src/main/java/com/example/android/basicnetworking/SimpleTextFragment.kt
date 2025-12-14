@@ -47,7 +47,7 @@ class SimpleTextFragment
 
     /**
      * Access to the [TextView] which is returned from our [onCreateView] override to serve as the
-     * [View] for the fragment's UI. Public to allow the rest of the app wants to modify its text or
+     * [View] for the fragment's UI. Public to allow the rest of the app to modify its text or
      * [TextView] options at Runtime.
      */
     var textView: TextView? = null
@@ -101,8 +101,8 @@ class SimpleTextFragment
     }
 
     /**
-     * Processes the arguments passed into this [Fragment] via [setArguments] method. Currently the
-     * method only looks for text or a textID, nothing else. If the [getArguments] method (aka
+     * Processes the arguments passed into this [Fragment] via the [setArguments] method. Currently
+     * the method only looks for text or a textID, nothing else. If the [getArguments] method (aka
      * kotlin `arguments` property) returns `null` we do nothing, otherwise we set [Bundle] variable
      * `val args` to the arguments supplied when the fragment was instantiated and if `args` contains
      * a string under the key [TEXT_KEY] we set our [String] field [mText] to that string, and log
