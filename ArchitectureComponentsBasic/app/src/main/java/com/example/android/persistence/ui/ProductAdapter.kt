@@ -17,7 +17,6 @@
 
 package com.example.android.persistence.ui
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,23 +75,58 @@ class ProductAdapter(
             notifyItemRangeInserted(0, productList.size)
         } else {
             val result: DiffUtil.DiffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                /**
+                 * Returns the size of the old [List] (in our case [mProductList]).
+                 *
+                 *  @return size of the old [List].
+                 */
                 override fun getOldListSize(): Int {
                     return mProductList!!.size
                 }
 
+                /**
+                 * Returns the size of the new [List] (in our case [productList]).
+                 *
+                 * @return size of the new [List]
+                 */
                 override fun getNewListSize(): Int {
                     return productList.size
                 }
 
+                /**
+                 * Called by the [DiffUtil] to decide whether two objects represent the same Item.
+                 * We return `true` if the id of the [Product] at position [oldItemPosition] in
+                 * [mProductList] is equal to the id of the [Product] at position [newItemPosition]
+                 * in [productList].
+                 *
+                 * @param oldItemPosition The position of the item in the old [List]
+                 * @param newItemPosition The position of the item in the new [List]
+                 * @return `true` if the two items represent the same object or `false` if they are
+                 * different.
+                 */
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                     return mProductList!![oldItemPosition].getId() ==
                         productList[newItemPosition].getId()
                 }
 
-                @SuppressLint("NewApi")
+                /**
+                 * Called by the [DiffUtil] when it wants to check whether two items have the same
+                 * data. [DiffUtil] uses this information to detect if the contents of an item has
+                 * changed. We retrieve [Product] variable `val newProduct` from position
+                 * [newItemPosition] in [productList], and [Product] variable `val oldProduct` from
+                 * position [oldItemPosition]. We return `true` if the [Product.getId] are the same,
+                 * and the [Product.getDescription] are the same. and the [Product.getName] are the
+                 * same, and the [Product.getPrice] are the same
+                 *
+                 * @param oldItemPosition The position of the [Product] in the old list.
+                 * @param newItemPosition The position of the [Product] in the new list which
+                 * replaces the old [Product].
+                 * @return `true` if the contents of the items are the same or `false` if they
+                 * are different.
+                 */
                 override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    val newProduct = productList[newItemPosition]
-                    val oldProduct = mProductList!![oldItemPosition]
+                    val newProduct: Product = productList[newItemPosition]
+                    val oldProduct: Product = mProductList!![oldItemPosition]
                     return newProduct.getId() == oldProduct.getId()
                         && newProduct.getDescription() == oldProduct.getDescription()
                         && newProduct.getName() == oldProduct.getName()
@@ -111,10 +145,11 @@ class ProductAdapter(
      * is a view data binding class generated from the inflated layout, Data-binding layout files
      * are slightly different and start with a root tag of layout followed by a data element and a
      * view root element. This view element is what your root would be in a non-binding layout file.)
-     * We then set the "callback" variable defined in the layout of `binding` to our [ProductClickCallback]
-     * field [mProductClickCallback] which is set by our constructor when called from [ProductListFragment]
-     * to a class which implements the interface [ProductClickCallback] by defining an `onClick` method.
-     * Finally we return a [ProductViewHolder] constructed using `binding`.
+     * We then set the "callback" variable defined in the layout of `binding` to our
+     * [ProductClickCallback] field [mProductClickCallback] which is set by our constructor when
+     * called from [ProductListFragment] to a class which implements the interface
+     * [ProductClickCallback] by defining an `onClick` method. Finally we return a
+     * [ProductViewHolder] constructed using `binding`.
      *
      * @param parent   The [ViewGroup] into which the new View will be added after it is bound to
      * an adapter position.
@@ -123,13 +158,13 @@ class ProductAdapter(
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val binding: ProductItemBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            R.layout.product_item,
-            parent,
-            false
+            /* inflater = */ LayoutInflater.from(parent.context),
+            /* layoutId = */ R.layout.product_item,
+            /* parent = */ parent,
+            /* attachToParent = */ false
         )
         binding.callback = mProductClickCallback
-        return ProductViewHolder(binding)
+        return ProductViewHolder(binding = binding)
     }
 
     /**

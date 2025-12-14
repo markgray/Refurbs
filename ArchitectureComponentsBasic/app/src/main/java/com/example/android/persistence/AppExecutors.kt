@@ -30,9 +30,9 @@ class AppExecutors
 /**
  * Constructor which uses its parameters to initialize our fields.
  *
- * @param mDiskIO     [Executor] to use for our `mDiskIO` field
- * @param mNetworkIO  `Executor` to use for our `mNetworkIO` field
- * @param mMainThread `Executor` to use for our `mMainThread` field
+ * @property mDiskIO     [Executor] to use for our `mDiskIO` field
+ * @property mNetworkIO  [Executor] to use for our `mNetworkIO` field
+ * @property mMainThread [Executor] to use for our `mMainThread` field
  */
 private constructor(
     /**

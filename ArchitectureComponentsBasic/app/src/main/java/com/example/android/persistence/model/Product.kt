@@ -15,8 +15,10 @@
  */
 package com.example.android.persistence.model
 
+import com.example.android.persistence.db.entity.ProductEntity
+
 /**
- * Interface for a `Product` object, it is implemented by the `ProductEntity` class
+ * Interface for a [Product] object, it is implemented by the [ProductEntity] class
  */
 interface Product {
     /**

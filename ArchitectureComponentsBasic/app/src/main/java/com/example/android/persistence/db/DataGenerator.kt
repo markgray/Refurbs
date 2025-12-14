@@ -21,7 +21,6 @@ import java.util.Date
 import java.util.Random
 import java.util.concurrent.TimeUnit
 
-// TODO: Continue here.
 /**
  * Generates data to pre-populate the database
  */

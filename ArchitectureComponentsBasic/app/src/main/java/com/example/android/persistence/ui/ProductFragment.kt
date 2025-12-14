@@ -76,10 +76,15 @@ class ProductFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate this data binding layout
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.product_fragment, container, false)
+        mBinding = DataBindingUtil.inflate(
+            /* inflater = */ inflater,
+            /* layoutId = */ R.layout.product_fragment,
+            /* parent = */ container,
+            /* attachToParent = */ false
+        )
 
         // Create and set the adapter for the RecyclerView.
-        mCommentAdapter = CommentAdapter(mCommentClickCallback)
+        mCommentAdapter = CommentAdapter(mCommentClickCallback = mCommentClickCallback)
         mBinding!!.commentList.adapter = mCommentAdapter
         return mBinding!!.root
     }
@@ -109,7 +114,7 @@ class ProductFragment : Fragment() {
      * was instantiated as the product id. We use `factory` to create [ProductViewModel] variable
      * `val model` (a [ViewModelProvider], which retains ViewModels while a scope our fragment is
      * alive is created to use `factory`, and this is used to create a ViewModel with the class
-     * []). We then use [mBinding] to set the "productViewModel" variable in our
+     * [ProductViewModel]). We then use [mBinding] to set the "productViewModel" variable in our
      * layout file to this. Finally we call our method [subscribeToModel] to add [Observer]
      * callbacks to the [ProductViewModel] `model` for the observable field `product` of the
      * [ProductEntity] we display, and the list of [CommentEntity] objects we display for our
@@ -123,8 +128,8 @@ class ProductFragment : Fragment() {
         @Suppress("DEPRECATION")
         super.onActivityCreated(savedInstanceState)
         val factory = ProductViewModel.Factory(
-            requireActivity().application,
-            requireArguments().getInt(KEY_PRODUCT_ID)
+            mApplication = requireActivity().application,
+            mProductId = requireArguments().getInt(KEY_PRODUCT_ID)
         )
         val model = ViewModelProvider(this, factory)[ProductViewModel::class.java]
         mBinding!!.productViewModel = model

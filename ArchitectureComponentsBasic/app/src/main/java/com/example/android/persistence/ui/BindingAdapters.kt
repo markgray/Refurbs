@@ -18,12 +18,14 @@ package com.example.android.persistence.ui
 import android.view.View
 import androidx.databinding.BindingAdapter
 import androidx.databinding.DataBindingUtil
+import com.example.android.persistence.databinding.ListFragmentBinding
+import com.example.android.persistence.databinding.ProductFragmentBinding
 
 /**
  * This class contains the binding adapter for the attribute app:visibleGone, it is used by both
  * layout/product_fragment.xml, and layout/list_fragment.xml. It is accessed by using
- * [DataBindingUtil.inflate] to create either a `ProductFragmentBinding` or a
- * `ListFragmentBinding` and then using the `setIsLoading` method of that binding to
+ * [DataBindingUtil.inflate] to create either a [ProductFragmentBinding] or a
+ * [ListFragmentBinding] and then using the `setIsLoading` method of that binding to
  * set it to true or false.
  */
 object BindingAdapters {

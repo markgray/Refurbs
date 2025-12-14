@@ -90,8 +90,8 @@ class ProductViewModel(
      * how to inject dependencies into ViewModels. It's not actually necessary in this case, as
      * the product ID can be passed in a public method.
      *
-     * Our constructor. We save our parameters in our fields `mApplication` and
-     * `mProductId`, then initialize our field `DataRepository mRepository` by
+     * Our constructor. We save our parameters in our fields [mApplication] and
+     * [mProductId], then initialize our [DataRepository] field [mRepository] by
      * calling the `getRepository` method of our parameter `application`.
      *
      * @param mApplication [Application] to use for the scope of the [ProductViewModel] we create

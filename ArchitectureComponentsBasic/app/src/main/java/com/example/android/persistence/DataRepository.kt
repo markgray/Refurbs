@@ -92,7 +92,7 @@ class DataRepository private constructor(
             if (sInstance == null) {
                 synchronized(DataRepository::class.java) {
                     if (sInstance == null) {
-                        sInstance = DataRepository(database)
+                        sInstance = DataRepository(mDatabase = database)
                     }
                 }
             }

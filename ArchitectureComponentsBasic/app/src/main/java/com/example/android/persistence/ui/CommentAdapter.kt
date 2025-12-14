@@ -166,10 +166,10 @@ class CommentAdapter
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val binding: CommentItemBinding = DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context),
-            R.layout.comment_item,
-            parent,
-            false
+            /* inflater = */ LayoutInflater.from(parent.context),
+            /* layoutId = */ R.layout.comment_item,
+            /* parent = */ parent,
+            /* attachToParent = */ false
         )
         binding.callback = mCommentClickCallback
         return CommentViewHolder(binding)
@@ -184,7 +184,7 @@ class CommentAdapter
      * field of [holder] to evaluate the pending bindings, updating any Views that have expressions
      * bound to modified variables.
      *
-     * @param holder   The [CommentViewHolder] which should be updated to represent the contents of
+     * @param holder The [CommentViewHolder] which should be updated to represent the contents of
      * the item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */

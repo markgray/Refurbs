@@ -41,7 +41,7 @@ import com.example.android.persistence.ui.ProductListFragment
 class ProductListViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * [MediatorLiveData] can observe other [LiveData] objects and react on their emissions. Our
-     * init block adds an [Observer] to the list of products from the database (which geta notified
+     * init block adds an [Observer] to the list of products from the database (which gets notified
      * when the data changes) and the `subscribeUi` method of `ProductListFragment` also adds an
      * [Observer] which updates the UI when this data is changed.
      */

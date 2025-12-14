@@ -43,28 +43,23 @@ import com.example.android.persistence.model.Product
  */
 class MainActivity : AppCompatActivity() {
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.main_activity`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to edge
+     * display, then we call our super's implementation of `onCreate`, and set our content view to
+     * our layout file `R.layout.main_activity`.
      *
-     * We initialize our [FrameLayout] variable `rootView`
-     * to the view with ID `R.id.fragment_container` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [FrameLayout] variable `rootView` to the view with ID
+     * `R.id.fragment_container` then call [ViewCompat.setOnApplyWindowInsetsListener] to
+     * take over the policy for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda in variable `v` and the
+     * [WindowInsetsCompat] passed the lambda in variable `windowInsets`. It initializes its
+     * [Insets] variable `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets`
+     * with [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for
+     * the IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates the layout
+     * parameters of `v` to be a [ViewGroup.MarginLayoutParams] with the left margin set to
+     * `systemBars.left`, the right margin set to `systemBars.right`, the top margin set to
+     * `systemBars.top`, and the bottom margin set to the maximum of the system bars bottom
+     * inset and the IME bottom inset. Finally it returns [WindowInsetsCompat.CONSUMED] to the
+     * caller (so that the window insets will not keep passing down to descendant views).
      *
      * Then if our parameter [savedInstanceState] is `null` we initialize our [ProductListFragment]
      * variable `val fragment` with a new instance. We fetch the [FragmentManager] used for
@@ -106,7 +101,11 @@ class MainActivity : AppCompatActivity() {
             val fragment = ProductListFragment()
             supportFragmentManager
                 .beginTransaction()
-                .add(R.id.fragment_container, fragment, ProductListFragment.TAG)
+                .add(
+                    /* containerViewId = */ R.id.fragment_container,
+                    /* fragment = */ fragment,
+                    /* tag = */ ProductListFragment.TAG
+                )
                 .commit()
         }
     }
@@ -130,7 +129,11 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager
             .beginTransaction()
             .addToBackStack("product")
-            .replace(R.id.fragment_container, productFragment, null)
+            .replace(
+                /* containerViewId = */ R.id.fragment_container,
+                /* fragment = */ productFragment,
+                /* tag = */ null
+            )
             .commit()
     }
 }

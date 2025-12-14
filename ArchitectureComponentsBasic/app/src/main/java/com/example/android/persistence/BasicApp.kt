@@ -46,7 +46,7 @@ class BasicApp : Application() {
      * @return [AppDatabase] instance used for the application, creating it if need be
      */
     val database: AppDatabase
-        get() = AppDatabase.getInstance(this, mAppExecutors!!)!!
+        get() = AppDatabase.getInstance(context = this, executors = mAppExecutors!!)!!
 
     /**
      * Fetches the [DataRepository] we use to access the [AppDatabase] instance used for the
@@ -56,5 +56,5 @@ class BasicApp : Application() {
      * @return [DataRepository] to use to access the [AppDatabase] instance used for the application
      */
     val repository: DataRepository
-        get() = DataRepository.getInstance(database)!!
+        get() = DataRepository.getInstance(database = database)!!
 }
