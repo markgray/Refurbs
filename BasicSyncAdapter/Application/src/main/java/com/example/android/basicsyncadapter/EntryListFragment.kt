@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("SENSELESS_COMPARISON", "unused", "DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "SENSELESS_COMPARISON",
+    "unused",
+    "DEPRECATION",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.basicsyncadapter
 
@@ -142,46 +148,47 @@ class EntryListFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mAdapter = SimpleCursorAdapter(
-            activity,  // Current context
-            android.R.layout.simple_list_item_activated_2,  // Layout for individual rows
-            null,  // Cursor
-            FROM_COLUMNS,  // Cursor columns to use
-            TO_FIELDS,  // Layout fields to use
-            0 // No flags
+            /* context = */ activity,
+            /* layout = */ android.R.layout.simple_list_item_activated_2,
+            /* c = */ null,
+            /* from = */ FROM_COLUMNS,
+            /* to = */ TO_FIELDS,
+            /* flags = */ 0
         )
-        mAdapter!!.viewBinder = SimpleCursorAdapter.ViewBinder { viewToBind: View, cursor: Cursor, i: Int ->
+        mAdapter!!.viewBinder =
+            SimpleCursorAdapter.ViewBinder { viewToBind: View, cursor: Cursor, i: Int ->
 
-            /**
-             * Binds the Cursor column defined by the specified index to the specified `viewToBind`.
-             * When binding is handled by this `ViewBinder`, this method must return `true`. If this
-             * method returns `false`, SimpleCursorAdapter will attempt to handle the binding on its
-             * own.
-             *
-             * If the column `i` is [COLUMN_PUBLISHED] we initialize [Time] variable `val t` with a
-             * new instance, and set its fields in accordance to the UTC milliseconds of the long
-             * value stored in the [Cursor] `cursor` under the key `i`. We then set the text of
-             * the [View] `viewToBind` to a formatted string created from `t` using the format
-             * "%Y-%m-%d %H:%M", and return true to the caller.
-             *
-             * If the column `i` is not [COLUMN_PUBLISHED] we return `false` to the caller so that
-             * [SimpleCursorAdapter] will display the data.
-             *
-             * @param viewToBind the [View] to bind the data to
-             * @param cursor the [Cursor] to get the data from
-             * @param i the column at which the data can be found in the cursor
-             * @return `true` if the data was bound to the viewToBind, `false` otherwise
-             */
-            if (i == COLUMN_PUBLISHED) {
-                // Convert timestamp to human-readable date
-                val t = Time()
-                t.set(cursor.getLong(i))
-                (viewToBind as TextView).text = t.format("%Y-%m-%d %H:%M")
-                true
-            } else {
-                // Let SimpleCursorAdapter handle other fields automatically
-                false
+                /**
+                 * Binds the Cursor column defined by the specified index to the specified `viewToBind`.
+                 * When binding is handled by this `ViewBinder`, this method must return `true`. If this
+                 * method returns `false`, SimpleCursorAdapter will attempt to handle the binding on its
+                 * own.
+                 *
+                 * If the column `i` is [COLUMN_PUBLISHED] we initialize [Time] variable `val t` with a
+                 * new instance, and set its fields in accordance to the UTC milliseconds of the long
+                 * value stored in the [Cursor] `cursor` under the key `i`. We then set the text of
+                 * the [View] `viewToBind` to a formatted string created from `t` using the format
+                 * "%Y-%m-%d %H:%M", and return true to the caller.
+                 *
+                 * If the column `i` is not [COLUMN_PUBLISHED] we return `false` to the caller so that
+                 * [SimpleCursorAdapter] will display the data.
+                 *
+                 * @param viewToBind the [View] to bind the data to
+                 * @param cursor the [Cursor] to get the data from
+                 * @param i the column at which the data can be found in the cursor
+                 * @return `true` if the data was bound to the viewToBind, `false` otherwise
+                 */
+                if (i == COLUMN_PUBLISHED) {
+                    // Convert timestamp to human-readable date
+                    val t = Time()
+                    t.set(cursor.getLong(i))
+                    (viewToBind as TextView).text = t.format("%Y-%m-%d %H:%M")
+                    true
+                } else {
+                    // Let SimpleCursorAdapter handle other fields automatically
+                    false
+                }
             }
-        }
         listAdapter = mAdapter
         setEmptyText(getText(R.string.loading))
         loaderManager.initLoader(0, null, this)
@@ -214,6 +221,7 @@ class EntryListFragment
      * `onPause`, then if our [Any] field [mSyncObserverHandle] is not `null` we call the
      * [ContentResolver.removeStatusChangeListener] method to remove our [SyncStatusObserver] and
      * set [mSyncObserverHandle] to `null`.
+     * TODO: Continue here.
      */
     override fun onPause() {
         super.onPause()
@@ -240,12 +248,14 @@ class EntryListFragment
     override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor> {
         // We only have one loader, so we can ignore the value of i.
         // (It'll be '0', as set in onCreate().)
-        return CursorLoader(requireActivity(),  // Context
+        return CursorLoader(
+            requireActivity(),  // Context
             FeedContract.Entry.CONTENT_URI,  // URI
             PROJECTION,  // Projection
             null,  // Selection
             null,  // Selection args
-            FeedContract.Entry.COLUMN_NAME_PUBLISHED + " desc") // Sort
+            FeedContract.Entry.COLUMN_NAME_PUBLISHED + " desc"
+        ) // Sort
     }
 
     /**
@@ -384,7 +394,7 @@ class EntryListFragment
      * button. If a sync is active or pending, the Refresh button is replaced by an indeterminate
      * ProgressBar; otherwise, the button itself is displayed.
      */
-    private val mSyncStatusObserver = SyncStatusObserver  {
+    private val mSyncStatusObserver = SyncStatusObserver {
         requireActivity().runOnUiThread(Runnable {
             // Create a handle to the account that was created by
             // SyncService.CreateSyncAccount(). This will be used to query the system to
@@ -400,9 +410,11 @@ class EntryListFragment
             // Test the ContentResolver to see if the sync adapter is active or pending.
             // Set the state of the refresh button accordingly.
             val syncActive = ContentResolver.isSyncActive(
-                account, FeedContract.CONTENT_AUTHORITY)
+                account, FeedContract.CONTENT_AUTHORITY
+            )
             val syncPending = ContentResolver.isSyncPending(
-                account, FeedContract.CONTENT_AUTHORITY)
+                account, FeedContract.CONTENT_AUTHORITY
+            )
             setRefreshActionButtonState(syncActive || syncPending)
         })
     }
@@ -459,6 +471,7 @@ class EntryListFragment
          */
         private val TO_FIELDS = intArrayOf(
             android.R.id.text1,
-            android.R.id.text2)
+            android.R.id.text2
+        )
     }
 }

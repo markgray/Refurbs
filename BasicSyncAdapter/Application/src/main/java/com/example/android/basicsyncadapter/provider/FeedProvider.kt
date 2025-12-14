@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "RedundantNullableReturnType", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "DEPRECATION",
+    "RedundantNullableReturnType",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "JoinDeclarationAndAssignment",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.basicsyncadapter.provider
 
@@ -114,8 +120,6 @@ class FeedProvider : ContentProvider() {
      *
      *  * default: We throw [UnsupportedOperationException].
      *
-     *
-     *
      * @param uri The [Uri] to query. This will be the full URI sent by the client; if the client
      * is requesting a specific record, the URI will end in a record number that the implementation
      * should parse and add to a WHERE or HAVING clause, specifying that _id value.
@@ -201,7 +205,11 @@ class FeedProvider : ContentProvider() {
         val result: Uri
         result = when (match) {
             ROUTE_ENTRIES -> {
-                val id = db.insertOrThrow(FeedContract.Entry.TABLE_NAME, null, values)
+                val id = db.insertOrThrow(
+                    /* table = */ FeedContract.Entry.TABLE_NAME,
+                    /* nullColumnHack = */ null,
+                    /* values = */ values
+                )
                 (FeedContract.Entry.CONTENT_URI.toString() + "/" + id).toUri()
             }
 
@@ -246,8 +254,8 @@ class FeedProvider : ContentProvider() {
      * @param uri The full [Uri] to query, including a row ID (if a specific record is requested).
      * @param selection An optional restriction to apply to rows when deleting.
      * @param selectionArgs You may include ?s in selection, which will be replaced by the values
-     * from selectionArgs, in order that they appear in the selection. The values will be bound as
-     * [String]'s.
+     * from selectionArgs, in the order that they appear in the selection. The values will be bound
+     * as [String]'s.
      * @return The number of rows affected.
      */
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
@@ -316,7 +324,12 @@ class FeedProvider : ContentProvider() {
      * [String]'s.
      * @return the number of rows affected.
      */
-    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
+    override fun update(
+        uri: Uri,
+        values: ContentValues?,
+        selection: String?,
+        selectionArgs: Array<String>?
+    ): Int {
         val db: SQLiteDatabase = mDatabaseHelper!!.writableDatabase
         val builder = SelectionBuilder()
         val match: Int = sUriMatcher.match(uri)
@@ -343,7 +356,7 @@ class FeedProvider : ContentProvider() {
     }
 
     /**
-     * SQLite backend for [FeedProvider]. Provides access to an disk-backed, SQLite data-store which
+     * SQLite backend for [FeedProvider]. Provides access to a disk-backed, SQLite data-store which
      * is utilized by [FeedProvider]. This database should never be accessed by other parts of the
      * application directly.
      */
@@ -354,7 +367,7 @@ class FeedProvider : ContentProvider() {
      *
      * @param context Context the provider is running in.
      */
-    (context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+        (context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
         /**
          * Called when the database is created for the first time. This is where the
          * creation of tables and the initial population of the tables should happen.
@@ -404,17 +417,19 @@ class FeedProvider : ContentProvider() {
             /**
              * SQL statement to create "entry" table.
              */
-            private const val SQL_CREATE_ENTRIES = "CREATE TABLE " + FeedContract.Entry.TABLE_NAME + " (" +
-                BaseColumns._ID + " INTEGER PRIMARY KEY," +
-                FeedContract.Entry.COLUMN_NAME_ENTRY_ID + TYPE_TEXT + COMMA_SEP +
-                FeedContract.Entry.COLUMN_NAME_TITLE + TYPE_TEXT + COMMA_SEP +
-                FeedContract.Entry.COLUMN_NAME_LINK + TYPE_TEXT + COMMA_SEP +
-                FeedContract.Entry.COLUMN_NAME_PUBLISHED + TYPE_INTEGER + ")"
+            private const val SQL_CREATE_ENTRIES =
+                "CREATE TABLE " + FeedContract.Entry.TABLE_NAME + " (" +
+                    BaseColumns._ID + " INTEGER PRIMARY KEY," +
+                    FeedContract.Entry.COLUMN_NAME_ENTRY_ID + TYPE_TEXT + COMMA_SEP +
+                    FeedContract.Entry.COLUMN_NAME_TITLE + TYPE_TEXT + COMMA_SEP +
+                    FeedContract.Entry.COLUMN_NAME_LINK + TYPE_TEXT + COMMA_SEP +
+                    FeedContract.Entry.COLUMN_NAME_PUBLISHED + TYPE_INTEGER + ")"
 
             /**
              * SQL statement to drop "entry" table.
              */
-            private const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS " + FeedContract.Entry.TABLE_NAME
+            private const val SQL_DELETE_ENTRIES =
+                "DROP TABLE IF EXISTS " + FeedContract.Entry.TABLE_NAME
         }
     }
 
@@ -423,6 +438,7 @@ class FeedProvider : ContentProvider() {
          * Content authority for this provider.
          */
         private const val AUTHORITY = FeedContract.CONTENT_AUTHORITY
+
         // The constants below represent individual URI routes, as IDs. Every URI pattern recognized
         // by this ContentProvider is defined using sUriMatcher.addURI(), and associated with one of
         // these IDs. When a incoming URI is run through sUriMatcher, it will be tested against the

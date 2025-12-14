@@ -47,17 +47,20 @@ object FeedContract {
         /**
          * MIME type for lists of entries.
          */
-        const val CONTENT_TYPE: String = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.basicsyncadapter.entries"
+        const val CONTENT_TYPE: String =
+            ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd.basicsyncadapter.entries"
 
         /**
          * MIME type for individual entries.
          */
-        const val CONTENT_ITEM_TYPE: String = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.basicsyncadapter.entry"
+        const val CONTENT_ITEM_TYPE: String =
+            ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd.basicsyncadapter.entry"
 
         /**
          * Fully qualified URI for "entry" resources.
          */
-        val CONTENT_URI: Uri = BASE_CONTENT_URI.buildUpon().appendPath(PATH_ENTRIES).build()
+        val CONTENT_URI: Uri =
+            BASE_CONTENT_URI.buildUpon().appendPath(PATH_ENTRIES).build()
 
         /**
          * Table name where records are stored for "entry" resources.

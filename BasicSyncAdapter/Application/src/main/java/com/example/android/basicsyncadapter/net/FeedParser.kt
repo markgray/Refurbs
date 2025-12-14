@@ -35,10 +35,11 @@ import java.text.ParseException
 class FeedParser {
     /**
      * Parse an Atom feed, returning a collection of [Entry] objects. First we initialize our
-     * [XmlPullParser] variable `val parser` with a new instance. We disable its FEATURE_PROCESS_NAMESPACES
-     * feature, set the input stream it is going to process to [inputStream], and skip white space
-     * until it has reached the first xml start tag or end tag. Finally we return the list of [Entry]
-     * objects returned by our method [readFeed] when it is called for `parser`.
+     * [XmlPullParser] variable `val parser` with a new instance. We disable its
+     * `FEATURE_PROCESS_NAMESPACES` feature, set the input stream it is going to process to our
+     * [InputStream] parameter [inputStream], and skip white space until it has reached the first
+     * xml start tag or end tag. Finally we return the list of [Entry] objects returned by our
+     * method [readFeed] when it is called for `parser`.
      *
      * @param inputStream Atom feed, as a stream.
      * @return [List] of [Entry] objects.
@@ -59,11 +60,11 @@ class FeedParser {
     /**
      * Decode a feed attached to an [XmlPullParser]. First we initialize [List] of [Entry] variable
      * `val entries` with a new instance of [ArrayList]. Next we check if the current event is a
-     * START_TAG with the name "feed" (throwing [XmlPullParserException] if it is not) then while
-     * the next parsing event is not a END_TAG we loop, setting [String] variable `val name` to the
+     * `START_TAG` with the name "feed" (throwing [XmlPullParserException] if it is not) then while
+     * the next parsing event is not a `END_TAG` we loop, setting [String] variable `val name` to the
      * name of the current element. If this `name` is equal to "entry" we add the value returned by
      * our method [readEntry] when it reads from [parser], otherwise we skip this tag. When we reach
-     * the END_TAG for the "feed" element we stop looping and return `entries` to the caller.
+     * the `END_TAG` for the "feed" element we stop looping and return `entries` to the caller.
      *
      * @param parser Incoming XMl
      * @return [List] of [Entry] objects.
@@ -117,12 +118,12 @@ class FeedParser {
      * Parses the contents of an entry. If it encounters a "title", "summary", or "link" tag, hands
      * them off to their respective "read" methods for processing. Otherwise, skips the tag.
      *
-     * First we check if the current event is a START_TAG with the name "entry" (throwing
+     * First we check if the current event is a `START_TAG` with the name "entry" (throwing
      * [XmlPullParserException] if it is not). Then we initialize [String] variable `var id`,
      * [String] variable `var title`, and [String] variable `var link` to `null` and [Long] variable
      * `var publishedOn` to 0.
      *
-     * We then loop while the next event of [parser] is not END_TAG. If the event type is not
+     * We then loop while the next event of [parser] is not `END_TAG`. If the event type is not
      * START_TAG we skip the event, otherwise we set [String] variable `val name` to the name of
      * the current element and execute a `when` statement on `name`:
      *
@@ -143,7 +144,7 @@ class FeedParser {
      *
      *  * `else` - we skip this tag since we are not interested in it.
      *
-     * When we reach the END_TAG of this "entry" element, we return a new instance of [Entry]
+     * When we reach the `END_TAG` of this "entry" element, we return a new instance of [Entry]
      * constructed using `id`, `title`, `link`, and `publishedOn`.
      *
      * @param parser Incoming XMl
