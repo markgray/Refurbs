@@ -45,7 +45,7 @@ import com.example.android.cardflip.CardView.Corner
  * can be flipped horizontally from left to right or right to left depending on which stack the
  * animating card currently belongs to.
  *
- * This application demonstrates an animation where a stack of cards can either be
+ * This application also demonstrates an animation where a stack of cards can either be
  * be rotated out or back in about their bottom left corner in a counter-clockwise direction.
  *
  *  * Rotate out: Down fling on stack of cards
@@ -115,28 +115,23 @@ class CardFlip : ComponentActivity(), CardFlipListener {
     var gDetector: GestureDetector? = null
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.main`.
      *
-     * We initialize our [RelativeLayout] property [mLayout]
-     * to the view with ID `R.id.main_relative_layout` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to [mLayout], with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
+     * We initialize our [RelativeLayout] property [mLayout] to the view with ID
+     * `R.id.main_relative_layout` then call [ViewCompat.setOnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to [mLayout], with the `listener` argument a
+     * lambda that accepts the [View] passed the lambda in variable `v` and the [WindowInsetsCompat]
+     * passed the lambda in variable `windowInsets`. It initializes its [Insets] variable
      * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
      * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates the layout parameters
+     * of `v` to be a [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`,
+     * the right margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the
+     * bottom margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [List] of [ArrayList] of [CardView] field [mStackCards] with a new
      * instance, and add two new instances of [ArrayList] of [CardView] to it. We allocate 2
@@ -190,11 +185,11 @@ class CardFlip : ComponentActivity(), CardFlipListener {
             /**
              * Callback method to be invoked when the global layout state or the visibility of views
              * within the view tree changes. First we remove `this` as an [OnGlobalLayoutListener]
-             * of our [RelativeLayout] field [mLayout]. Then we initialize our [Int] field [mCardHeight]
-             * with the height of [mLayout] and [Int] field [mCardWidth] with half of its width.
-             * Finally we [repeat] for [STARTING_NUMBER_CARDS] `times` calling our method
-             * [addNewCard] to add a new card to the [RIGHT_STACK] of our [List] of [ArrayList] of
-             * [CardView] field [mStackCards].
+             * of our [RelativeLayout] field [mLayout]. Then we initialize our [Int] field
+             * [mCardHeight] with the height of [mLayout] and [Int] field [mCardWidth] with half
+             * of its width. Finally we [repeat] for [STARTING_NUMBER_CARDS] `times` calling our
+             * method [addNewCard] to add a new card to the [RIGHT_STACK] of our [List] of
+             * [ArrayList] of [CardView] field [mStackCards].
              */
             override fun onGlobalLayout() {
                 mLayout!!.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -208,19 +203,19 @@ class CardFlip : ComponentActivity(), CardFlipListener {
     }
 
     /**
-     * Adds a new card to the specified stack. Also performs all the necessary layout setup to place
-     * the card in the correct position. First we initialize our [CardView] variable `val view` with
-     * a new instance, call its [CardView.updateTranslation] method to set the appropriate translation
-     * of the card depending on how many cards are in the pile underneath it, set its [CardFlipListener]
-     * to `this`, and set its padding to [mHorizontalPadding] for both left and right and [mVerticalPadding]
-     * for both top and bottom.
+     * Adds a new card to the specified stack. Also performs all the necessary layout setup to
+     * place the card in the correct position. First we initialize our [CardView] variable
+     * `val view` with a new instance, call its [CardView.updateTranslation] method to set the
+     * appropriate translation of the card depending on how many cards are in the pile underneath
+     * it, set its [CardFlipListener] to `this`, and set its padding to [mHorizontalPadding] for
+     * both left and right and [mVerticalPadding] for both top and bottom.
      *
      * We initialize [RelativeLayout.LayoutParams] variable `val params` with a [mCardWidth] by
      * [mCardHeight] instance, set its `topMargin` field to 0, and set its `leftMargin` field to
      * [mCardWidth] if our parameter [stack] is [RIGHT_STACK], or to 0 if it is not. We then add
-     * `view` to the [stack] stack of our [List] of [ArrayList] of [CardView] field [mStackCards],
-     * and add it to our [RelativeLayout] field [mLayout] with `params` as the layout parameters
-     * to set on it.
+     * `view` to the [Int] parameter [stack] stack of our [List] of [ArrayList] of [CardView] field
+     * [mStackCards], and add it to our [RelativeLayout] field [mLayout] with `params` as the layout
+     * parameters to set on it.
      *
      * @param stack the stack to add the card to, either [RIGHT_STACK] or [LEFT_STACK]
      */
@@ -245,9 +240,9 @@ class CardFlip : ComponentActivity(), CardFlipListener {
         /**
          * Notified when a tap occurs with the up [MotionEvent] that triggered it. We initialize our
          * [Int] variable `val stack` with the stack number that our [getStack] method determines
-         * experienced the [MotionEvent] parameter [motionEvent], then call our [rotateCardsFullRotation]
-         * to rotate that stack around the [Corner.BOTTOM_LEFT] corner. We then return `true` to
-         * consume the event.
+         * experienced the [MotionEvent] parameter [motionEvent], then call our
+         * [rotateCardsFullRotation] method to rotate that stack around the [Corner.BOTTOM_LEFT]
+         * corner. We then return `true` to consume the event.
          *
          * @param motionEvent The up motion event that completed the first tap
          * @return `true` if the event is consumed, else `false`
@@ -293,7 +288,7 @@ class CardFlip : ComponentActivity(), CardFlipListener {
 
     /**
      * Returns the appropriate stack corresponding to the [MotionEvent]. We initialize [Boolean]
-     * variable `val isLeft` to `true` iff the the X coordinate for the first pointer index of our
+     * variable `val isLeft` to `true` iff the X coordinate for the first pointer index of our
      * [MotionEvent] parameter [ev] is less than or equal to our field [mCardWidth] (the width of
      * a card) and to `false` if it is not. Then we return [LEFT_STACK] if `isLeft` is `true`, or
      * [RIGHT_STACK] if it is `false`.
@@ -327,30 +322,31 @@ class CardFlip : ComponentActivity(), CardFlipListener {
      *  of [RelativeLayout] field [mLayout] to change the z order of [cardView] so it's on top of
      *  all other children, then call its [RelativeLayout.requestLayout] method to schedule a layout
      *  pass of its view tree. We then remove the top [CardView] from `rightStack` and add `cardView`
-     *  to `leftStack`. Finally we call the [CardView.flipRightToLeft] method of [cardView] to animate
-     *  the flip from the right to left stack using [velocityX] to determine how fast the animation
-     *  should run, and then we break. On the other hand we check whether `xGreaterThanY` is `false`
-     *  (a vertical fling) and if so we initialize [Boolean] variable `val rotateCardsOut` to `true`
-     *  if [velocityY] is greater than 0 (a downward fling) and to `false` if it is not (an upward
-     *  fling). We then call our method [rotateCards] to rotate the [RIGHT_STACK] stack around the
-     *  [Corner.BOTTOM_LEFT] corner, rotating the stack out if `rotateCardsOut` is `true`, or back
-     *  in if it is `false`.
+     *  to `leftStack`. Finally we call the [CardView.flipRightToLeft] method of [cardView] to
+     *  animate the flip from the right to left stack using [velocityX] to determine how fast the
+     *  animation should run, and then we break. On the other hand we check whether `xGreaterThanY`
+     *  is `false` (a vertical fling) and if so we initialize [Boolean] variable `val rotateCardsOut`
+     *  to `true` if [velocityY] is greater than 0 (a downward fling) and to `false` if it is not
+     *  (an upward fling). We then call our method [rotateCards] to rotate the [RIGHT_STACK] stack
+     *  around the [Corner.BOTTOM_LEFT] corner, rotating the stack out if `rotateCardsOut` is `true`,
+     *  or back in if it is `false`.
      *
      *  * [LEFT_STACK]: If [velocityX] is greater than 0 (left to right fling) and `xGreaterThanY`
      *  is also `true` (horizontal fling) we first check that `bothStacksEnabled` is `true` (breaking
      *  without doing anything if one or the other stack is disabled). Having decided we do need to
-     *  flip the top card of [LEFT_STACK] to [RIGHT_STACK], we call the [RelativeLayout.bringChildToFront]
-     *  method of [RelativeLayout] field [mLayout] to change the z order of [cardView] so it's on top
-     *  of all other children, then call its [RelativeLayout.requestLayout] method to schedule a layout
-     *  pass of its view tree. We then remove the top [CardView] from `leftStack` and add [cardView]
-     *  to `rightStack`. Finally we call the [CardView.flipLeftToRight] method of [cardView] to animate
-     *  the flip from the left to right stack using [velocityX] to determine how fast the animation
-     *  should run, and then we break. On the other hand we check whether `xGreaterThanY` is `false`
-     *  (a vertical fling) and if so we initialize [Boolean] variable `val rotateCardsOut` to `true`
-     *  if [velocityY] is greater than 0 (a downward fling) and to `false` if it is not (an upward
-     *  fling). We then call our method [rotateCards] to rotate the [LEFT_STACK] stack around the
-     *  [Corner.BOTTOM_LEFT] corner, rotating the stack out if `rotateCardsOut` is `true`, or back
-     *  in if it is `false`. We then break.
+     *  flip the top card of [LEFT_STACK] to [RIGHT_STACK], we call the
+     *  [RelativeLayout.bringChildToFront] method of [RelativeLayout] field [mLayout] to change the
+     *  z order of [cardView] so it's on top of all other children, then call its
+     *  [RelativeLayout.requestLayout] method to schedule a layout pass of its view tree. We then
+     *  remove the top [CardView] from `leftStack` and add [cardView] to `rightStack`. Finally we
+     *  call the [CardView.flipLeftToRight] method of [cardView] to animate the flip from the left
+     *  to right stack using [velocityX] to determine how fast the animation should run, and then we
+     *  break. On the other hand we check whether `xGreaterThanY` is `false` (a vertical fling) and
+     *  if so we initialize [Boolean] variable `val rotateCardsOut` to `true` if [velocityY] is
+     *  greater than 0 (a downward fling) and to `false` if it is not (an upward fling). We then
+     *  call our method [rotateCards] to rotate the [LEFT_STACK] stack around the [Corner.BOTTOM_LEFT]
+     *  corner, rotating the stack out if `rotateCardsOut` is `true`, or back in if it is `false`.
+     *  We then break.
      *
      *  * default: we just break.
      *
@@ -435,6 +431,7 @@ class CardFlip : ComponentActivity(), CardFlipListener {
     }
 
     /**
+     * TODO: Continue here.
      * Retrieves an animator object for each card in the specified stack that either rotates it in
      * or out depending on its current state. All of these animations are then played together. First
      * we initialize our [List] of [Animator] variable `val animations` with a new instance, then we
