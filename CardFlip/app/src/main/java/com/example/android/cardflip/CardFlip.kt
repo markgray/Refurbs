@@ -431,7 +431,6 @@ class CardFlip : ComponentActivity(), CardFlipListener {
     }
 
     /**
-     * TODO: Continue here.
      * Retrieves an animator object for each card in the specified stack that either rotates it in
      * or out depending on its current state. All of these animations are then played together. First
      * we initialize our [List] of [Animator] variable `val animations` with a new instance, then we
@@ -458,7 +457,7 @@ class CardFlip : ComponentActivity(), CardFlipListener {
      * sets the [mIsStackEnabled] flag of stack [stack] to the inverse of our [Boolean] parameter
      * [isRotatingOut], disabling the flipping of cards from one stack to the other while this stack
      * is rotated out or enabling it if it just rotated back in (the other stack is free to rotate
-     * in or out whatever the setting or this flag might be). Finally we start `set` running.
+     * in or out whatever the setting of this flag might be). Finally we start `set` running.
      *
      * @param stack stack number, either [RIGHT_STACK] or [LEFT_STACK]
      * @param corner corner, always [Corner.BOTTOM_LEFT] in our usage.

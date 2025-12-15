@@ -13,8 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_PARAMETER", "unused",
-    "ReplaceJavaStaticMethodWithKotlinAnalog", "PrivatePropertyName", "MemberVisibilityCanBePrivate", "ReplaceNotNullAssertionWithElvisReturn",
+@file:Suppress(
+    "UNUSED_PARAMETER",
+    "unused",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "PrivatePropertyName",
+    "MemberVisibilityCanBePrivate",
+    "ReplaceNotNullAssertionWithElvisReturn",
     "RedundantSuppression"
 )
 
@@ -216,8 +221,22 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
     fun initialize(context: Context?) {
         mHorizontalFlipMatrix = Matrix()
         cameraDistance = CAMERA_DISTANCE.toFloat()
-        mFrontBitmapDrawable = bitmapWithBorder(ResourcesCompat.getDrawable(resources, R.drawable.red, null) as BitmapDrawable)
-        mBackBitmapDrawable = bitmapWithBorder(ResourcesCompat.getDrawable(resources, R.drawable.blue, null) as BitmapDrawable)
+        mFrontBitmapDrawable =
+            bitmapWithBorder(
+                ResourcesCompat.getDrawable(
+                    /* res = */ resources,
+                    /* id = */ R.drawable.red,
+                    /* theme = */ null
+                ) as BitmapDrawable
+            )
+        mBackBitmapDrawable =
+            bitmapWithBorder(
+                ResourcesCompat.getDrawable(
+                    /* res = */ resources,
+                    /* id = */ R.drawable.blue,
+                    /* theme = */ null
+                ) as BitmapDrawable
+            )
         updateDrawableBitmap()
     }
 
@@ -242,10 +261,10 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
         )
         val canvas = Canvas(bitmapWithBorder)
         canvas.drawBitmap(
-            bitmapDrawable.bitmap,
-            ANTIALIAS_BORDER.toFloat(),
-            ANTIALIAS_BORDER.toFloat(),
-            null
+            /* bitmap = */ bitmapDrawable.bitmap,
+            /* left = */ ANTIALIAS_BORDER.toFloat(),
+            /* top = */ ANTIALIAS_BORDER.toFloat(),
+            /* paint = */ null
         )
         return bitmapWithBorder.toDrawable(resources = resources)
     }
@@ -264,7 +283,7 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
      */
     fun flipRightToLeft(numberInPile: Int, velocity: Int) {
         pivotX = 0f
-        flipHorizontally(numberInPile, false, velocity)
+        flipHorizontally(numberInPile = numberInPile, clockwise = false, velocity = velocity)
     }
 
     /**
@@ -281,7 +300,7 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
      */
     fun flipLeftToRight(numberInPile: Int, velocity: Int) {
         pivotX = width.toFloat()
-        flipHorizontally(numberInPile, true, velocity)
+        flipHorizontally(numberInPile = numberInPile, clockwise = true, velocity = velocity)
     }
 
     /**
@@ -315,13 +334,13 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
      * value of our [Int] parameter [velocity] divided by the constant [VELOCITY_TO_DURATION_CONSTANT]
      * (15) from the constant [MAX_FLIP_DURATION] (700). If this is less than the constant
      * [MIN_FLIP_DURATION] (300) we set `duration` to [MIN_FLIP_DURATION]. We then set the duration
-     * of `set` to `duration`, set it up to play `cardAnimator` and `colorizer` together, add an
-     * [AnimatorListenerAdapter] whose [AnimatorListenerAdapter.onAnimationEnd] override calls our
-     * [toggleIsHorizontallyFlipped] method to toggle the [mIsHorizontallyFlipped] flag and
-     * invalidate our view, calls our [updateDrawableBitmap] method to update our image, calls our
-     * [updateLayoutParams] method to update our layout parameters to their new values, and finally
-     * calls the [CardFlipListener.onCardFlipEnd] override of our [CardFlipListener] field
-     * [mCardFlipListener]`
+     * of `set` to `duration`, set it up to play `cardAnimator` and `colorizer` together, set its
+     * interpolator to an [AccelerateDecelerateInterpolator], and add an [AnimatorListenerAdapter]
+     * whose [AnimatorListenerAdapter.onAnimationEnd] override calls our [toggleIsHorizontallyFlipped]
+     * method to toggle the [mIsHorizontallyFlipped] flag and invalidate our view, calls our
+     * [updateDrawableBitmap] method to update our image, calls our [updateLayoutParams] method to
+     * update our layout parameters to their new values, and finally calls the
+     * [CardFlipListener.onCardFlipEnd] override of our [CardFlipListener] field [mCardFlipListener]`.
      *
      * Having done all this, we start `set` running.
      *
@@ -335,44 +354,43 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
     fun flipHorizontally(numberInPile: Int, clockwise: Boolean, velocity: Int) {
         toggleFrontShowing()
         val rotation: PropertyValuesHolder = PropertyValuesHolder.ofFloat(
-            ROTATION_Y,
-            (if (clockwise) 180 else -180).toFloat()
+            /* property = */ ROTATION_Y,
+            /* ...values = */ (if (clockwise) 180 else -180).toFloat()
         )
         val xOffset = PropertyValuesHolder.ofFloat(
-            TRANSLATION_X,
-            (numberInPile * CardFlip.CARD_PILE_OFFSET).toFloat()
+            /* property = */ TRANSLATION_X,
+            /* ...values = */ (numberInPile * CardFlip.CARD_PILE_OFFSET).toFloat()
         )
         val yOffset = PropertyValuesHolder.ofFloat(
-            TRANSLATION_Y,
-            (numberInPile * CardFlip.CARD_PILE_OFFSET).toFloat()
+            /* property = */ TRANSLATION_Y,
+            /* ...values = */ (numberInPile * CardFlip.CARD_PILE_OFFSET).toFloat()
         )
         val cardAnimator = ObjectAnimator.ofPropertyValuesHolder(
-            this,
-            rotation,
-            xOffset,
-            yOffset
+            /* target = */ this,
+            /* ...values = */ rotation, xOffset, yOffset
         )
         cardAnimator.addUpdateListener { valueAnimator: ValueAnimator ->
             if (valueAnimator.animatedFraction >= 0.5) {
                 updateDrawableBitmap()
             }
         }
-        val shadowKeyFrameStart = Keyframe.ofFloat(0f, 0f)
-        val shadowKeyFrameMid = Keyframe.ofFloat(0.5f, 1f)
-        val shadowKeyFrameEnd = Keyframe.ofFloat(1f, 0f)
+        val shadowKeyFrameStart = Keyframe.ofFloat(/* fraction = */ 0f, /* value = */ 0f)
+        val shadowKeyFrameMid = Keyframe.ofFloat(/* fraction = */ 0.5f, /* value = */ 1f)
+        val shadowKeyFrameEnd = Keyframe.ofFloat(/* fraction = */ 1f, /* value = */ 0f)
         val shadowPropertyValuesHolder = PropertyValuesHolder.ofKeyframe(
-            "shadow",
-            shadowKeyFrameStart,
-            shadowKeyFrameMid,
-            shadowKeyFrameEnd
+            /* propertyName = */ "shadow",
+            /* ...values = */ shadowKeyFrameStart, shadowKeyFrameMid, shadowKeyFrameEnd
         )
-        val colorizer = ObjectAnimator.ofPropertyValuesHolder(this, shadowPropertyValuesHolder)
+        val colorizer = ObjectAnimator.ofPropertyValuesHolder(
+            /* target = */ this,
+            /* ...values = */ shadowPropertyValuesHolder
+        )
         mCardFlipListener!!.onCardFlipStart()
         val set = AnimatorSet()
         var duration = MAX_FLIP_DURATION - (Math.abs(velocity) / VELOCITY_TO_DURATION_CONSTANT)
         duration = if (duration < MIN_FLIP_DURATION) MIN_FLIP_DURATION else duration
         set.duration = duration.toLong()
-        set.playTogether(cardAnimator, colorizer)
+        set.playTogether(/* ...items = */ cardAnimator, colorizer)
         set.interpolator = AccelerateDecelerateInterpolator()
         set.addListener(object : AnimatorListenerAdapter() {
             /**
@@ -405,7 +423,10 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
      */
     fun setShadow(value: Float) {
         val colorValue: Int = (255 - 200 * value).toInt()
-        setColorFilter(Color.rgb(colorValue, colorValue, colorValue), PorterDuff.Mode.MULTIPLY)
+        setColorFilter(
+            /* color = */ Color.rgb(colorValue, colorValue, colorValue),
+            /* mode = */ PorterDuff.Mode.MULTIPLY
+        )
     }
 
     /**
@@ -425,6 +446,7 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     /**
+     * TODO: Continue here.
      * This is called during layout when the size of this view has changed. If you were just added
      * to the view hierarchy, you're called with the old values of 0. First we call our super's
      * implementation of `onSizeChanged`, then we set [Matrix] field [mHorizontalFlipMatrix] to
