@@ -64,28 +64,24 @@ class BitmapAllocation : AppCompatActivity() {
     var mBitmapOptions: BitmapFactory.Options? = null
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.activity_bitmap_allocation`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge
+     * to edge display, then we call our super's implementation of `onCreate`, and set our
+     * content view to our layout file `R.layout.activity_bitmap_allocation`.
      *
-     * We initialize our [LinearLayout] variable `rootView`
-     * to the view with ID `R.id.root_view` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID
+     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to `rootView`, with the `listener`
+     * argument a lambda that accepts the [View] passed the lambda in variable `v` and
+     * the [WindowInsetsCompat] passed the lambda in variable `windowInsets`. It initializes
+     * its [Insets] variable `systemBars` to the [WindowInsetsCompat.getInsets] of
+     * `windowInsets` with [WindowInsetsCompat.Type.systemBars] as the argument. It then
+     * gets the insets for the IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then
+     * updates the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams] with the
+     * left margin set to `systemBars.left`, the right margin set to `systemBars.right`, the
+     * top margin set to `systemBars.top`, and the bottom margin set to the maximum of the
+     * system bars bottom inset and the IME bottom inset. Finally it returns
+     * [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets will not
+     * keep passing down to descendant views).
      *
      * We initialize our [IntArray] variable `val imageIDs` with the resource id's of the
      * 6 jpg's we display, initialize [CheckBox] variable `val checkbox` by finding the view
@@ -98,20 +94,20 @@ class BitmapAllocation : AppCompatActivity() {
      * `inJustDecodeBounds` field to `true` (the decoder will return `null` (no bitmap), but
      * the size fields of [mBitmapOptions] will still be set, allowing the caller to query the
      * bitmap without having to allocate the memory for its pixels). We then call the
-     * [BitmapFactory.decodeResource] method to set the fields of [mBitmapOptions] given the jpg
-     * with resource id `R.drawable.a`. We then create a bitmap for [Bitmap] field [mCurrentBitmap]
-     * using the `outWidth` field of [mBitmapOptions] as the width of the bitmap and the
-     * `outHeight` field as the height of the bitmap, using ARGB_8888 as the bitmap configuration
-     * (each pixel is stored in 4 bytes, with each channel (RGB and alpha for translucency) stored
-     * with 8 bits of precision). We then set the `inJustDecodeBounds` field of [mBitmapOptions] to
-     * `false`, set its `inBitmap` field to [mCurrentBitmap] (decode methods that take the
-     * `Options` object will attempt to reuse this bitmap when loading content), and set its
-     * `inSampleSize` field to 1 (no sub-sampling). We then call the `decodeResource` method of
-     * [BitmapFactory] to decode the jpg with resource id `R.drawable.a` into [Bitmap] field
-     * [mCurrentBitmap], then set the content of [ImageView] variable `imageview` to it.
-     * Finally we set the [View.OnClickListener] of `imageview` to an anonymous class which cycles
-     * through the resource id's in `imageIDs` displaying each jpg in turn and reusing
-     * [mCurrentBitmap] if the checkbox `checkbox` is checked.
+     * [BitmapFactory.decodeResource] method to set the fields of [mBitmapOptions] given the
+     * jpg with resource id `R.drawable.a`. We then create a bitmap for [Bitmap] field
+     * [mCurrentBitmap] using the `outWidth` field of [mBitmapOptions] as the width of the
+     * bitmap and the `outHeight` field as the height of the bitmap, using ARGB_8888 as the
+     * bitmap configuration (each pixel is stored in 4 bytes, with each channel (RGB and alpha
+     * for translucency) stored with 8 bits of precision). We then set the `inJustDecodeBounds`
+     * field of [mBitmapOptions] to `false`, set its `inBitmap` field to [mCurrentBitmap]
+     * (decode methods that take the `Options` object will attempt to reuse this bitmap when
+     * loading content), and set its `inSampleSize` field to 1 (no sub-sampling). We then call
+     * the `decodeResource` method of [BitmapFactory] to decode the jpg with resource id
+     * `R.drawable.a` into [Bitmap] field [mCurrentBitmap], then set the content of [ImageView]
+     * variable `imageview` to it. Finally we set the [View.OnClickListener] of `imageview` to
+     * an anonymous class which cycles through the resource id's in `imageIDs` displaying each
+     * jpg in turn and reusing [mCurrentBitmap] if the checkbox `checkbox` is checked.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
@@ -136,8 +132,10 @@ class BitmapAllocation : AppCompatActivity() {
             // down to descendant views.
             WindowInsetsCompat.CONSUMED
         }
-        val imageIDs: IntArray = intArrayOf(R.drawable.a, R.drawable.b, R.drawable.c, R.drawable.d,
-            R.drawable.e, R.drawable.f)
+        val imageIDs: IntArray = intArrayOf(
+            R.drawable.a, R.drawable.b, R.drawable.c,
+            R.drawable.d, R.drawable.e, R.drawable.f
+        )
         val checkbox: CheckBox = findViewById(R.id.checkbox)
         val durationTextview: TextView = findViewById(R.id.loadDuration)
         val imageview: ImageView = findViewById(R.id.imageview)
