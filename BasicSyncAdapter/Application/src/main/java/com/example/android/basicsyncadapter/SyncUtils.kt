@@ -137,8 +137,9 @@ object SyncUtils {
         b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
         b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
         ContentResolver.requestSync(
-            GenericAccountService.GetAccount(ACCOUNT_TYPE),  // Sync account
-            FeedContract.CONTENT_AUTHORITY,  // Content authority
-            b) // Extras
+            /* account = */ GenericAccountService.GetAccount(ACCOUNT_TYPE),  // Sync account
+            /* authority = */ FeedContract.CONTENT_AUTHORITY,  // Content authority
+            /* extras = */ b  // Extras
+        )
     }
 }

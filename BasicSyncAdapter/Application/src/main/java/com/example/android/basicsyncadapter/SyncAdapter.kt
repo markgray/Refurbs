@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog")
+@file:Suppress(
+    "unused",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "ReplaceJavaStaticMethodWithKotlinAnalog"
+)
 
 package com.example.android.basicsyncadapter
 
@@ -105,7 +109,7 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
      * that triggered the sync.
      *
      * Perform a sync for this account. [SyncAdapter]-specific parameters may be specified in
-     * [Bundle] parameter [extras], which is guaranteed to not be null. Invocations of this method
+     * [Bundle] parameter [extras], which is guaranteed to not be `null`. Invocations of this method
      * are guaranteed to be serialized.
      *
      * First we log the fact we are "Beginning network synchronization", then wrapped in a try
@@ -260,9 +264,15 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
      *  `withValue` from the values for these columns in [FeedParser.Entry] `match`. We then build
      *  this builder and add the [ContentProviderOperation] to our list `batch`. We then increment
      *  the `numUpdates` field of the `stats` field of `syncResult`, and loop back for the next
-     *  [FeedParser.Entry].
+     *  [FeedParser.Entry]. If none of fields changed we just log "No action: "
      *
-     *  * null - we just log "No action: "
+     *  * `null` - the entry does not exit, we initialize [Uri] variable `val deleteUri` to an [Uri]
+     *  pointing to the `id` in column [COLUMN_ID] of the [Cursor] variable `c`, then log the message
+     *  "Scheduling delete: $deleteUri", we then call the `newDelete` method of [ContentProviderOperation]
+     *  to create a builder for building an update [ContentProviderOperation] for deleting `deleteUri`,
+     *  build this builder and add the [ContentProviderOperation] to our list `batch`. We then increment
+     *  the `numDeletes` field of the `stats` field of `syncResult`, and loop back for the next
+     *  [FeedParser.Entry].
      *
      * After handling all the rows in [Cursor] `c` we close `c`, and move on to add the values in
      * `entryMap` that are new. To do this we loop through all the [FeedParser.Entry] `var e` that
@@ -291,7 +301,13 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
      * fails due to specified constraints.
      * @throws ParseException Signals that an error has been reached unexpectedly while parsing.
      */
-    @Throws(IOException::class, XmlPullParserException::class, RemoteException::class, OperationApplicationException::class, ParseException::class)
+    @Throws(
+        IOException::class,
+        XmlPullParserException::class,
+        RemoteException::class,
+        OperationApplicationException::class,
+        ParseException::class
+    )
     fun updateLocalFeedData(stream: InputStream?, syncResult: SyncResult) {
         val feedParser = FeedParser()
         val contentResolver: ContentResolver = context.contentResolver
@@ -310,11 +326,11 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
         Log.i(TAG, "Fetching local entries for merge")
         val uri: Uri = FeedContract.Entry.CONTENT_URI // Get all entries
         val c: Cursor = contentResolver.query(
-            uri,
-            PROJECTION,
-            null,
-            null,
-            null
+            /* uri = */ uri,
+            /* projection = */ PROJECTION,
+            /* selection = */ null,
+            /* selectionArgs = */ null,
+            /* sortOrder = */ null
         )!!
         Log.i(TAG, "Found " + c.count + " local entries. Computing merge solution...")
 
@@ -331,28 +347,33 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
             title = c.getString(COLUMN_TITLE)
             link = c.getString(COLUMN_LINK)
             published = c.getLong(COLUMN_PUBLISHED)
-            val match = entryMap[entryId]
+            val match: FeedParser.Entry? = entryMap[entryId]
             if (match != null) {
                 // Entry exists. Remove from entry map to prevent insert later.
                 entryMap.remove(entryId)
                 // Check to see if the entry needs to be updated
                 val existingUri = FeedContract.Entry.CONTENT_URI.buildUpon()
                     .appendPath(Integer.toString(id)).build()
-                if (match.title != null && match.title != title || match.link != null && match.link != link || match.published != published) {
+                if (match.title != null && match.title != title
+                    || match.link != null && match.link != link
+                    || match.published != published
+                ) {
                     // Update existing record
                     Log.i(TAG, "Scheduling update: $existingUri")
-                    batch.add(ContentProviderOperation.newUpdate(existingUri)
-                        .withValue(FeedContract.Entry.COLUMN_NAME_TITLE, match.title)
-                        .withValue(FeedContract.Entry.COLUMN_NAME_LINK, match.link)
-                        .withValue(FeedContract.Entry.COLUMN_NAME_PUBLISHED, match.published)
-                        .build())
+                    batch.add(
+                        ContentProviderOperation.newUpdate(existingUri)
+                            .withValue(FeedContract.Entry.COLUMN_NAME_TITLE, match.title)
+                            .withValue(FeedContract.Entry.COLUMN_NAME_LINK, match.link)
+                            .withValue(FeedContract.Entry.COLUMN_NAME_PUBLISHED, match.published)
+                            .build()
+                    )
                     syncResult.stats.numUpdates++
                 } else {
                     Log.i(TAG, "No action: $existingUri")
                 }
             } else {
                 // Entry doesn't exist. Remove it from the database.
-                val deleteUri = FeedContract.Entry.CONTENT_URI.buildUpon()
+                val deleteUri: Uri = FeedContract.Entry.CONTENT_URI.buildUpon()
                     .appendPath(Integer.toString(id)).build()
                 Log.i(TAG, "Scheduling delete: $deleteUri")
                 batch.add(ContentProviderOperation.newDelete(deleteUri).build())
@@ -364,21 +385,23 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
         // Add new items
         for (e: FeedParser.Entry in entryMap.values) {
             Log.i(TAG, "Scheduling insert: entry_id=" + e.id)
-            batch.add(ContentProviderOperation.newInsert(FeedContract.Entry.CONTENT_URI)
-                .withValue(FeedContract.Entry.COLUMN_NAME_ENTRY_ID, e.id)
-                .withValue(FeedContract.Entry.COLUMN_NAME_TITLE, e.title)
-                .withValue(FeedContract.Entry.COLUMN_NAME_LINK, e.link)
-                .withValue(FeedContract.Entry.COLUMN_NAME_PUBLISHED, e.published)
-                .build())
+            batch.add(
+                ContentProviderOperation.newInsert(FeedContract.Entry.CONTENT_URI)
+                    .withValue(FeedContract.Entry.COLUMN_NAME_ENTRY_ID, e.id)
+                    .withValue(FeedContract.Entry.COLUMN_NAME_TITLE, e.title)
+                    .withValue(FeedContract.Entry.COLUMN_NAME_LINK, e.link)
+                    .withValue(FeedContract.Entry.COLUMN_NAME_PUBLISHED, e.published)
+                    .build()
+            )
             syncResult.stats.numInserts++
         }
         Log.i(TAG, "Merge solution ready. Applying batch update")
         mContentResolver.applyBatch(FeedContract.CONTENT_AUTHORITY, batch)
         @Suppress("DEPRECATION") // TODO: fix notifyChange deprecation
         mContentResolver.notifyChange(
-            FeedContract.Entry.CONTENT_URI,  // URI where data was modified
-            null,  // No local observer
-            false // IMPORTANT: Do not sync to network
+            /* uri = */ FeedContract.Entry.CONTENT_URI,  // URI where data was modified
+            /* observer = */ null,  // No local observer
+            /* syncToNetwork = */ false // IMPORTANT: Do not sync to network
         )
         // This sample doesn't support uploads, but if *your* code does, make sure you set
         // syncToNetwork=false in the line above to prevent duplicate syncs.
@@ -430,7 +453,8 @@ internal class SyncAdapter : AbstractThreadedSyncAdapter {
          *
          * "https://feeds.feedburner.com/blogspot/hsDu"
          *
-         * XmlPullParser does not handle the redirect correctly.
+         * XmlPullParser does not handle the redirect, so you have to handle it.
+         * TODO: Automatically handle redirects in case it moves again!
          */
         private const val FEED_URL = "https://feeds.feedburner.com/blogspot/hsDu"
 

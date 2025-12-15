@@ -38,9 +38,9 @@ import java.util.Arrays
  *
  * Example:
  *
- *    SelectionBuilder builder = new SelectionBuilder();
- *    Cursor c = builder.table(FeedContract.Entry.TABLE_NAME)       // String TABLE_NAME = "entry"
- *                .where(FeedContract.Entry._ID + "=?", id);  // String _ID = "_ID"
+ *    val builder = SelectionBuilder()
+ *    val c: Cursor = builder.table(FeedContract.Entry.TABLE_NAME)
+ *                .where(FeedContract.Entry._ID + "=?", id)
  *                .query(db, projection, sortOrder)
  *
  * In this example, the table name and filters (`WHERE` clauses) are both explicitly
@@ -127,9 +127,9 @@ class SelectionBuilder {
      *
      * Example:
      *
-     *     .where("blog_posts.category = 'PROGRAMMING');
+     *     .where("blog_posts.category = 'PROGRAMMING')
      *
-     * User input should never be directly supplied as as part of the selection statement. Instead,
+     * User input should never be directly supplied as part of the selection statement. Instead,
      * use positional parameters in your selection statement, then pass the user input in via the
      * `selectionArgs` parameter. This prevents SQL escape characters in user input from causing
      * unwanted side effects. (Failure to follow this convention may have security implications.)
@@ -137,7 +137,7 @@ class SelectionBuilder {
      *
      * Example:
      *
-     *     .where("blog_posts.title contains ?, userSearchString);
+     *     .where("blog_posts.title contains ?", userSearchString)
      *
      * First if our [String] parameter [selection] is the empty string we check to see if
      * we have one or more [String] entries in our `vararg` parameter [selectionArgs] and
@@ -298,7 +298,14 @@ class SelectionBuilder {
      * [Cursor]s are not synchronized, see the documentation for more details.
      */
     fun query(db: SQLiteDatabase, columns: Array<String>?, orderBy: String?): Cursor {
-        return query(db, columns, null, null, orderBy, null)
+        return query(
+            db = db,
+            columns = columns,
+            groupBy = null,
+            having = null,
+            orderBy = orderBy,
+            limit = null
+        )
     }
 
     /**
@@ -339,7 +346,7 @@ class SelectionBuilder {
      *  Passing `null` denotes no "LIMIT" clause.
      *
      * @param db      Database to query.
-     * @param columns Database projection (column list) to return, must be non-null.
+     * @param columns Database projection (column list) to return, must be non-`null`.
      * @param groupBy A filter declaring how to group rows, formatted as an SQL "GROUP BY" clause
      * (excluding the "GROUP BY" itself). Passing `null` will cause the rows to not be grouped.
      * @param having  A filter declaring which row groups to include in the cursor, if row grouping
@@ -365,13 +372,22 @@ class SelectionBuilder {
         columns?.let { mapColumns(it) }
         @Suppress("ReplaceJavaStaticMethodWithKotlinAnalog")
         Log.v(TAG, "query(columns=" + Arrays.toString(columns) + ") " + this)
-        return db.query(mTable!!, columns, selection, selectionArgs, groupBy, having, orderBy, limit)
+        return db.query(
+            /* table = */ mTable!!,
+            /* columns = */ columns,
+            /* selection = */ selection,
+            /* selectionArgs = */ selectionArgs,
+            /* groupBy = */ groupBy,
+            /* having = */ having,
+            /* orderBy = */ orderBy,
+            /* limit = */ limit
+        )
     }
 
     /**
      * Execute an `UPDATE` against database. First we call our method [assertTable] to make sure we
      * have set our [String] field [mTable] (if it is `null` it throws [IllegalStateException]).
-     * Then we return the [Cursor] returned my the [SQLiteDatabase.update] method of `db` for the
+     * Then we return the [Cursor] returned by the [SQLiteDatabase.update] method of `db` for the
      * table [mTable], updating the [ContentValues] parameter [values] for the SQL selection
      * statement returned by our property [selection] (aka java method `getSelection`) and the
      * selection arguments returned by our property [selectionArgs] (aka java method `getSelectionArgs`).
@@ -384,7 +400,12 @@ class SelectionBuilder {
     fun update(db: SQLiteDatabase, values: ContentValues?): Int {
         assertTable()
         Log.v(TAG, "update() $this")
-        return db.update(mTable!!, values, selection, selectionArgs)
+        return db.update(
+            /* table = */ mTable!!,
+            /* values = */ values,
+            /* whereClause = */ selection,
+            /* whereArgs = */ selectionArgs
+        )
     }
 
     /**
@@ -401,7 +422,11 @@ class SelectionBuilder {
     fun delete(db: SQLiteDatabase): Int {
         assertTable()
         Log.v(TAG, "delete() $this")
-        return db.delete(mTable!!, selection, selectionArgs)
+        return db.delete(
+            /* table = */ mTable!!,
+            /* whereClause = */ selection,
+            /* whereArgs = */ selectionArgs
+        )
     }
 
     companion object {

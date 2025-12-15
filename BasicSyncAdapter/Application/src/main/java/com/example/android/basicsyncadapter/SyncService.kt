@@ -49,7 +49,7 @@ class SyncService : Service() {
         Log.i(TAG, "Service created")
         synchronized(sSyncAdapterLock) {
             if (sSyncAdapter == null) {
-                sSyncAdapter = SyncAdapter(applicationContext, true)
+                sSyncAdapter = SyncAdapter(context = applicationContext, autoInitialize = true)
             }
         }
     }

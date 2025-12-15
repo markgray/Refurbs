@@ -42,16 +42,20 @@ import android.view.View
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.view.MenuItemCompat
+import androidx.core.net.toUri
 import androidx.cursoradapter.widget.SimpleCursorAdapter
 import androidx.fragment.app.ListFragment
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.CursorLoader
 import androidx.loader.content.Loader
-import com.example.android.basicsyncadapter.provider.FeedProvider
+import com.example.android.basicsyncadapter.EntryListFragment.Companion.COLUMN_PUBLISHED
+import com.example.android.basicsyncadapter.EntryListFragment.Companion.COLUMN_URL_STRING
+import com.example.android.basicsyncadapter.EntryListFragment.Companion.FROM_COLUMNS
+import com.example.android.basicsyncadapter.EntryListFragment.Companion.PROJECTION
+import com.example.android.basicsyncadapter.EntryListFragment.Companion.TO_FIELDS
 import com.example.android.basicsyncadapter.provider.FeedContract
+import com.example.android.basicsyncadapter.provider.FeedProvider
 import com.example.android.common.accounts.GenericAccountService
-import androidx.core.net.toUri
 
 /**
  * List fragment containing a list of Atom entry objects (articles) stored in the local database.
@@ -221,7 +225,6 @@ class EntryListFragment
      * `onPause`, then if our [Any] field [mSyncObserverHandle] is not `null` we call the
      * [ContentResolver.removeStatusChangeListener] method to remove our [SyncStatusObserver] and
      * set [mSyncObserverHandle] to `null`.
-     * TODO: Continue here.
      */
     override fun onPause() {
         super.onPause()
@@ -236,7 +239,7 @@ class EntryListFragment
      * Loaders do queries in a background thread. They also provide a [ContentObserver] that is
      * triggered when data in the content provider changes. When the sync adapter updates the
      * content provider, the [ContentObserver] responds by resetting the loader and then reloading
-     * it. We return a `CursorLoader` constructed to retrieve the URI [FeedContract.Entry.CONTENT_URI]
+     * it. We return a [CursorLoader] constructed to retrieve the URI [FeedContract.Entry.CONTENT_URI]
      * ("content://com.example.android.basicsyncadapter/entries") with the projection to use specified
      * by [PROJECTION], with null as the selection (returns all rows), and sorted by the column
      * [FeedContract.Entry.COLUMN_NAME_PUBLISHED] ("published") in "desc" (descending) order.
@@ -249,13 +252,13 @@ class EntryListFragment
         // We only have one loader, so we can ignore the value of i.
         // (It'll be '0', as set in onCreate().)
         return CursorLoader(
-            requireActivity(),  // Context
-            FeedContract.Entry.CONTENT_URI,  // URI
-            PROJECTION,  // Projection
-            null,  // Selection
-            null,  // Selection args
-            FeedContract.Entry.COLUMN_NAME_PUBLISHED + " desc"
-        ) // Sort
+            /* context = */ requireActivity(),
+            /* uri = */ FeedContract.Entry.CONTENT_URI,
+            /* projection = */ PROJECTION,
+            /* selection = */ null,
+            /* selectionArgs = */ null,
+            /* sortOrder = */ FeedContract.Entry.COLUMN_NAME_PUBLISHED + " desc"
+        )
     }
 
     /**
@@ -275,8 +278,8 @@ class EntryListFragment
      * Called when the [ContentObserver] defined for the content provider detects that data has
      * changed. The [ContentObserver] resets the loader, and then re-runs the loader. In the adapter,
      * set the [Cursor] value to `null`. This removes the reference to the Cursor, allowing it to be
-     * garbage-collected. To do this we just call the [SimpleCursorAdapter.changeCursor] method with
-     * `null` of our field [mAdapter].
+     * garbage-collected. To do this we just call the [SimpleCursorAdapter.changeCursor] method
+     * of our field [mAdapter] with `null`.
      *
      * @param cursorLoader The [Loader] that is being reset.
      */
@@ -382,8 +385,7 @@ class EntryListFragment
             if (refreshing) {
                 refreshItem.setActionView(R.layout.actionbar_indeterminate_progress)
             } else {
-                @Suppress("DEPRECATION") // TODO: Fix setActionView deprecation
-                MenuItemCompat.setActionView(refreshItem, null)
+                refreshItem.actionView = null
             }
         }
     }
