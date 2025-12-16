@@ -56,7 +56,7 @@ class ClippingBasicFragment : Fragment() {
 
     /**
      * Called to do initial creation of a fragment. First we call our super's implementation of
-     * `onCreate` the we call [setHasOptionsMenu] with `true` to report that this fragment would
+     * `onCreate` then we call [setHasOptionsMenu] with `true` to report that this fragment would
      * like to participate in populating the options menu by receiving a call to [onCreateOptionsMenu]
      * and related methods. We initialize our [ViewOutlineProvider] field [mOutlineProvider] with a
      * new instance of [ClipOutlineProvider], and initialize [Array] of [String] field [mSampleTexts]
@@ -94,7 +94,11 @@ class ClippingBasicFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.clipping_basic_fragment, container, false)
+        return inflater.inflate(
+            /* resource = */ R.layout.clipping_basic_fragment,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
     }
 
     /**
