@@ -148,7 +148,7 @@ class DirectorySelectionFragment : Fragment() {
         rootView.findViewById<View>(R.id.button_open_directory)
             .setOnClickListener {
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                @Suppress("DEPRECATION")
+                @Suppress("DEPRECATION") // TODO: Replace with registerForActivityResult
                 startActivityForResult(intent, REQUEST_CODE_OPEN_DIRECTORY)
             }
         mCurrentDirectoryTextView = rootView.findViewById(R.id.textview_current_directory)
@@ -159,7 +159,7 @@ class DirectorySelectionFragment : Fragment() {
                 .setTitle(R.string.create_directory)
                 .setView(editView)
                 .setPositiveButton(android.R.string.ok
-                ) { dialog, whichButton ->
+                ) { _, _ ->
                     try {
                         createDirectory(mCurrentDirectoryUri,
                             editView.text.toString())
@@ -169,7 +169,7 @@ class DirectorySelectionFragment : Fragment() {
                     updateDirectoryEntries(mCurrentDirectoryUri)
                 }
                 .setNegativeButton(android.R.string.cancel
-                ) { dialog, whichButton -> }
+                ) { _, _ -> }
                 .show()
         }
         mRecyclerView = rootView.findViewById(R.id.recyclerview_directory_entries)
@@ -198,7 +198,7 @@ class DirectorySelectionFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        @Suppress("DEPRECATION")
+        @Suppress("DEPRECATION") // TODO: Replace with registerForActivityResult
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_OPEN_DIRECTORY && resultCode == Activity.RESULT_OK) {
             Log.d(TAG, String.format("Open Directory result Uri : %s", data!!.data))
@@ -236,7 +236,6 @@ class DirectorySelectionFragment : Fragment() {
      * logging the string contents of column 0 (the directory name) and column 1 (the mime type)
      * we set [Uri] field [mCurrentDirectoryUri] to [uri], set the text of [mCurrentDirectoryTextView]
      * to the string in column 0 of `docCursor`, and enable the button [mCreateDirectoryButton].
-     *
      *
      * We initialize [Cursor] variable `val childCursor` by using our [ContentResolver] variable
      * `contentResolver` to query the [Uri] variable `childrenUri` for all entries returning the
@@ -325,13 +324,16 @@ class DirectorySelectionFragment : Fragment() {
     @Throws(FileNotFoundException::class)
     fun createDirectory(uri: Uri?, directoryName: String?) {
         val contentResolver: ContentResolver = requireActivity().contentResolver
-        val documentId: String = DocumentsContract.getTreeDocumentId(uri)
-        val docUri: Uri = DocumentsContract.buildDocumentUriUsingTree(uri, documentId)
+        val documentId: String = DocumentsContract.getTreeDocumentId(/* documentUri = */ uri)
+        val docUri: Uri = DocumentsContract.buildDocumentUriUsingTree(
+            /* treeUri = */ uri,
+            /* documentId = */ documentId
+        )
         val directoryUri: Uri? = DocumentsContract.createDocument(
-            contentResolver,
-            docUri,
-            DocumentsContract.Document.MIME_TYPE_DIR,
-            directoryName!!
+            /* content = */ contentResolver,
+            /* parentDocumentUri = */ docUri,
+            /* mimeType = */ DocumentsContract.Document.MIME_TYPE_DIR,
+            /* displayName = */ directoryName!!
         )
         if (directoryUri != null) {
             Log.i(TAG, String.format(
@@ -367,7 +369,7 @@ class DirectorySelectionFragment : Fragment() {
                 closeable.close()
             } catch (rethrown: RuntimeException) {
                 throw rethrown
-            } catch (ignored: Exception) {
+            } catch (_: Exception) {
             }
         }
     }

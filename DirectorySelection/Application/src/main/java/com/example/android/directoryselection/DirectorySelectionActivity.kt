@@ -37,22 +37,19 @@ class DirectorySelectionActivity : FragmentActivity() {
      * edge display, then we call our super's implementation of `onCreate`, and set our content
      * view to our layout file `R.layout.activity_directory_selection`.
      *
-     * We initialize our [FrameLayout] variable `rootView` to the view with ID
-     * `R.id.container` then call [ViewCompat.setOnApplyWindowInsetsListener] to take
-     * over the policy for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [FrameLayout] variable `rootView` to the view with ID `R.id.container` then
+     * call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying window
+     * insets to `rootView`, with the `listener` argument a lambda that accepts the [View] passed
+     * the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * If our [Bundle] parameter [savedInstanceState] is `null` this is the first time that we were
      * called so we need to construct and add our [DirectorySelectionFragment]. To do this we use

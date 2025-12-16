@@ -89,7 +89,6 @@ class DirectoryEntryAdapter(
     }
 
     /**
-     * TODO: Continue here.
      * Called by RecyclerView to display the data at the specified position. We set the `text`
      * of the [ViewHolder.fileName] cached [TextView] of our [ViewHolder] parameter [viewHolder]
      * to the [DirectoryEntry.fileName] field of the [DirectoryEntry] object in position
