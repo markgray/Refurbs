@@ -23,19 +23,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * Provide views to RecyclerView with the directory entries.
- */
-class DirectoryEntryAdapter
-/**
- * Initialize the directory entries of the Adapter. We just save our parameter `directoryEntries`
- * in our field `List<DirectoryEntry> mDirectoryEntries`.
+ * Provides views to RecyclerView with the directory entries.
  *
- * @param mDirectoryEntries [List] of [DirectoryEntry].
+ * @param mDirectoryEntries [List] of [DirectoryEntry] directory entries of the Adapter.
  */
-(
-    /**
-     * The data set we are displaying, set by our constructor or by our [setDirectoryEntries] method.
-     */
+class DirectoryEntryAdapter(
     private var mDirectoryEntries: List<DirectoryEntry>
 ) : RecyclerView.Adapter<DirectoryEntryAdapter.ViewHolder>() {
     /**
@@ -59,7 +51,7 @@ class DirectoryEntryAdapter
         val imageView: ImageView
 
         /**
-         * Our constructor. First we call our super's constructor, then we initialize our `TextView`
+         * Our init block. First we call our super's constructor, then we initialize our `TextView`
          * field `mFileName` by finding the view with id R.id.textview_filename, our `TextView` field
          * `mMimeType` by finding the view with id R.id.textview_mimetype, and our `ImageView` field
          * `mImageView` by finding the view with id R.id.entry_image.
@@ -88,11 +80,16 @@ class DirectoryEntryAdapter
      */
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val v: View = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.directory_item, viewGroup, false)
+            .inflate(
+                /* resource = */ R.layout.directory_item,
+                /* root = */ viewGroup,
+                /* attachToRoot = */ false
+            )
         return ViewHolder(v)
     }
 
     /**
+     * TODO: Continue here.
      * Called by RecyclerView to display the data at the specified position. We set the `text`
      * of the [ViewHolder.fileName] cached [TextView] of our [ViewHolder] parameter [viewHolder]
      * to the [DirectoryEntry.fileName] field of the [DirectoryEntry] object in position
