@@ -18,7 +18,7 @@ package com.example.android.curvedmotion
 
 /**
  * A class that holds information about a location and how the path should get to that
- * location from the previous path location (if any). Any PathPoint holds the information for
+ * location from the previous path location (if any). Any [PathPoint] holds the information for
  * its location as well as the instructions on how to traverse the preceding interval from the
  * previous location.
  */

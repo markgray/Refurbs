@@ -59,28 +59,23 @@ class CurvedMotion : ComponentActivity() {
     var mButton: Button? = null
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.activity_curved_motion`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_curved_motion`.
      *
-     * We initialize our [RelativeLayout] variable `rootView`
-     * to the view with ID `R.id.root_view` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [RelativeLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [Button] field [mButton] by finding the view with id `R.id.button`
      * ("Click Me!"), and set its [OnClickListener] to an anonymous class whose
@@ -128,24 +123,25 @@ class CurvedMotion : ComponentActivity() {
                      * drawing occurs.
                      *
                      * First we remove `this` as an [OnPreDrawListener] of the [ViewTreeObserver] of
-                     * [mButton]. Then we initialize [Int] variable `val left` with the left position
-                     * of [mButton] relative to its parent, and [Int] variable `val top` with the top
-                     * position (the new location). We calculate [Int] variable `val deltaX` by
-                     * subtracting `oldLeft` from `left` and [Int] variable `val deltaY` by subtracting
-                     * `oldTop` from `top`. We initialize [AnimatorPath] variable `val path` with a
-                     * new instance, then call its [AnimatorPath.moveTo] method to add a [PathPoint]
-                     * object that describes a discontinuous move to (-deltaX,-deltaY) to it, and call
-                     * its [AnimatorPath.curveTo] method to add a [PathPoint] that describes a Bezier
-                     * curve for the `CURVE` operation of the [PathEvaluator]. We then initialize
-                     * [ObjectAnimator] variable `val anim` with an instance which will animate the
-                     * "buttonLoc" property of `this` [CurvedMotion] using a new instance of [PathEvaluator]
-                     * that will be called on each animation frame to provide the necessary interpolation
-                     * between the Object values to derive the animated value, and the [PathPoint]
-                     * objects in `path` as the values that the animation will animate between over
-                     * time. We then start `anim` running and return `true` to proceed with the current
-                     * drawing pass.
+                     * [mButton]. Then we initialize [Int] variable `val left` with the left
+                     * position of [mButton] relative to its parent, and [Int] variable `val top`
+                     * with the top position (the new location). We calculate [Int] variable
+                     * `val deltaX` by subtracting `oldLeft` from `left` and [Int] variable
+                     * `val deltaY` by subtracting `oldTop` from `top`. We initialize [AnimatorPath]
+                     * variable `val path` with a new instance, then call its [AnimatorPath.moveTo]
+                     * method to add a [PathPoint] object that describes a discontinuous move to
+                     * (-deltaX,-deltaY) to it, and call its [AnimatorPath.curveTo] method to add a
+                     * [PathPoint] that describes a Bezier curve for the `CURVE` operation of the
+                     * [PathEvaluator]. We then initialize [ObjectAnimator] variable `val anim` with
+                     * an instance which will animate the "buttonLoc" property of `this`
+                     * [CurvedMotion] using a new instance of [PathEvaluator] that will be called on
+                     * each animation frame to provide the necessary interpolation between the Object
+                     * values to derive the animated value, and the [PathPoint] objects in `path` as
+                     * the values that the animation will animate between over time. We then start
+                     * `anim` running and return `true` to proceed with the current drawing pass.
                      *
-                     * @return Return `true` to proceed with the current drawing pass, or `false` to cancel.
+                     * @return Return `true` to proceed with the current drawing pass, or `false`
+                     * to cancel.
                      */
                     override fun onPreDraw(): Boolean {
                         mButton!!.viewTreeObserver.removeOnPreDrawListener(this)
