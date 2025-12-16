@@ -64,6 +64,7 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
     private var mPager: ViewPager? = null
 
     /**
+     * TODO: Continue here.
      * Called when the activity is starting. First we check if the gradle generated constant
      * [BuildConfig.DEBUG] is true, and if it is we call the [Utils.enableStrictMode] method to set
      * the policy for what potentially suspect actions should be detected and logged using

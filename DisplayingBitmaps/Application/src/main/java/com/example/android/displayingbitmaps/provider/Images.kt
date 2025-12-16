@@ -20,7 +20,7 @@ package com.example.android.displayingbitmaps.provider
  */
 object Images {
     /**
-     * This are PicasaWeb URLs and could potentially change. Ideally the PicasaWeb API should be
+     * These are PicasaWeb URLs and could potentially change. Ideally the PicasaWeb API should be
      * used to fetch the URLs.
      *
      * Credit to Romain Guy for the photos:
