@@ -88,7 +88,7 @@ class CardReaderFragment : Fragment(), AccountCallback {
         if (v != null) {
             mAccountField = v.findViewById(R.id.card_account_field)
             mAccountField!!.text = "Waiting..."
-            mLoyaltyCardReader = LoyaltyCardReader(this)
+            mLoyaltyCardReader = LoyaltyCardReader(accountCallback = this)
 
             // Disable Android Beam and register our card reader callback
             enableReaderMode()
@@ -135,7 +135,12 @@ class CardReaderFragment : Fragment(), AccountCallback {
         Log.i(TAG, "Enabling reader mode")
         val activity: Activity? = activity
         val nfc: NfcAdapter? = NfcAdapter.getDefaultAdapter(activity)
-        nfc?.enableReaderMode(activity, mLoyaltyCardReader, READER_FLAGS, null)
+        nfc?.enableReaderMode(
+            /* activity = */ activity,
+            /* callback = */ mLoyaltyCardReader,
+            /* flags = */ READER_FLAGS,
+            /* extras = */ null
+        )
     }
 
     /**
