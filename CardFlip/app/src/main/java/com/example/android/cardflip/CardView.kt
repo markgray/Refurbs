@@ -446,7 +446,6 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
     }
 
     /**
-     * TODO: Continue here.
      * This is called during layout when the size of this view has changed. If you were just added
      * to the view hierarchy, you're called with the old values of 0. First we call our super's
      * implementation of `onSizeChanged`, then we set [Matrix] field [mHorizontalFlipMatrix] to
@@ -460,7 +459,12 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
      */
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        mHorizontalFlipMatrix!!.setScale(-1f, 1f, (w / 2).toFloat(), (h / 2).toFloat())
+        mHorizontalFlipMatrix!!.setScale(
+            /* sx = */ -1f,
+            /* sy = */ 1f,
+            /* px = */ (w / 2).toFloat(),
+            /* py = */ (h / 2).toFloat()
+        )
     }
 
     /**
@@ -488,7 +492,7 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
      * its rotation around the vertical axis through the pivot point modulo 360 divided by 180,
      * times 2 times the X coordinate of its pivot point minus the width of our view (this comes out
      * to 0 when the card has just been flipped to the left stack, and (on a pixel) to 540 (half its
-     * width) when it has been flipped to the right stack). Set then set our X rotation to 0 and our
+     * width) when it has been flipped to the right stack). We then set our X rotation to 0 and our
      * Y rotation to 0 and set our view's layout params to `params`.
      */
     fun updateLayoutParams() {
@@ -558,7 +562,11 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
         if (!isRotatingOut) {
             rotation = 0
         }
-        return ObjectAnimator.ofFloat(this, ROTATION, rotation.toFloat())
+        return ObjectAnimator.ofFloat(
+            /* target = */ this,
+            /* property = */ ROTATION,
+            /* ...values = */ rotation.toFloat()
+        )
     }
 
     /**
@@ -593,7 +601,11 @@ class CardView : androidx.appcompat.widget.AppCompatImageView {
         rotateCardAroundCorner(corner)
         var rotation = 360 - currentRotation
         rotation = if (isClockwise) rotation else -rotation
-        val animator = ObjectAnimator.ofFloat(this, ROTATION, rotation.toFloat())
+        val animator = ObjectAnimator.ofFloat(
+            /* target = */ this,
+            /* property = */ ROTATION,
+            /* ...values = */ rotation.toFloat()
+        )
         animator.startDelay = (ROTATION_DELAY_PER_CARD * cardFromTop).toLong()
         animator.duration = ROTATION_DURATION.toLong()
         animator.addListener(object : AnimatorListenerAdapter() {
