@@ -38,28 +38,23 @@ import androidx.core.view.updateLayoutParams
  */
 class MainActivity : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.sample_main` (which consists of a [LinearLayout] containing a [TextView] which
-     * explains the example and a [ListView] with id "@android:id/list" which this [Activity]
-     * will use to display its list o Cheeses).
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.sample_main` (which consists of a [LinearLayout] containing
+     * a [TextView] which explains the example and a [ListView] with id "@android:id/list" which
+     * this [Activity] will use to display its list of Cheeses).
      *
-     * We initialize our [LinearLayout] variable `rootView`
-     * to the view with ID `R.id.root_view` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `insets` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument, then it updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `insets.left`, the right margin set to
-     * `insets.right`, the top margin set to `insets.top`, and the bottom margin
-     * set to `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `insets` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument, then it updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `insets.left`, the right margin
+     * set to `insets.right`, the top margin set to `insets.top`, and the bottom margin set to
+     * `insets.bottom`. Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that
+     * the window insets will not keep passing down to descendant views).
      *
      * Finally we use [findViewById] to find the [ListView] with ID [android.R.id.list] and call
      * its [ListView.setAdapter] method (aka kotlin `adapter` property) with a new instance of

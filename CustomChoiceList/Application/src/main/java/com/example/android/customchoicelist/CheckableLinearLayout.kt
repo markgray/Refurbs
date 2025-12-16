@@ -98,16 +98,20 @@ class CheckableLinearLayout
     public override fun onCreateDrawableState(extraSpace: Int): IntArray {
         val drawableState: IntArray = super.onCreateDrawableState(extraSpace + 1)
         if (isChecked) {
-            mergeDrawableStates(drawableState, CHECKED_STATE_SET)
+            mergeDrawableStates(
+                /* baseState = */ drawableState,
+                /* additionalState = */ CHECKED_STATE_SET
+            )
         }
         return drawableState
     }
 
     companion object {
         /**
-         * State identifier indicating that the object is currently checked. See state_checkable for an
-         * additional identifier that can indicate if any object may ever display a check, regardless of
-         * whether state_checked is currently set. May be a boolean value, such as "true" or "false".
+         * State identifier indicating that the object is currently checked. See state_checkable for
+         * an additional identifier that can indicate if any object may ever display a check,
+         * regardless of whether state_checked is currently set. May be a boolean value, such as
+         * "true" or "false".
          */
         private val CHECKED_STATE_SET = intArrayOf(android.R.attr.state_checked)
     }
