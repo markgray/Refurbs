@@ -43,31 +43,27 @@ class MainActivity : ComponentActivity() {
     private var mEditBody: EditText? = null
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file `R.layout.main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.main`.
      *
-     * We initialize our [LinearLayout] variable `rootView` to the view with ID
-     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to
-     * take over the policy for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
-     * We set the action bar of our activity to the [Toolbar] whose view has id
-     * `R.id.toolbar`, initialize [EditText] field [mEditBody] by finding the view
-     * with id `R.id.body`, and set the [View.OnClickListener] of the view with id
-     * `R.id.share` to our field [mOnClickListener].
+     * We set the action bar of our activity to the [Toolbar] whose view has id `R.id.toolbar`,
+     * initialize [EditText] field [mEditBody] by finding the view with id `R.id.body`, and set
+     * the [View.OnClickListener] of the view with id `R.id.share` to our field [mOnClickListener].
      *
      * @param savedInstanceState We do not override [onSaveInstanceState] so do not use
      */
@@ -102,8 +98,8 @@ class MainActivity : ComponentActivity() {
      */
     private val mOnClickListener = View.OnClickListener { v ->
         /**
-         * Called when the Button with id R.id.share is clicked. We use a switch statement to make
-         * sure the view has id R.id.share before calling our method `share`.
+         * Called when the Button with id R.id.share is clicked. We use a `when` statement to make
+         * sure the view has the id R.id.share before calling our method `share`.
          *
          * @param v `View` that was clicked.
          */
@@ -121,9 +117,12 @@ class MainActivity : ComponentActivity() {
      * `R.string.send_intent_title` ("Send a message via:").
      */
     private fun share() {
-        val sharingIntent = Intent(Intent.ACTION_SEND)
+        val sharingIntent = Intent(/* action = */ Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
-        sharingIntent.putExtra(Intent.EXTRA_TEXT, mEditBody!!.text.toString())
+        sharingIntent.putExtra(
+            /* name = */ Intent.EXTRA_TEXT,
+            /* value = */ mEditBody!!.text.toString()
+        )
         startActivity(Intent.createChooser(sharingIntent, getString(R.string.send_intent_title)))
     }
 }

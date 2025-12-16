@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_ANONYMOUS_PARAMETER")
+@file:Suppress("UNUSED_ANONYMOUS_PARAMETER", "unused")
 
 package com.example.android.directshare
 
@@ -82,7 +82,7 @@ class SelectContactActivity : Activity() {
          * @return The data at the specified position.
          */
         override fun getItem(i: Int): Any {
-            return Contact.byId(i)
+            return Contact.byId(id = i)
         }
 
         /**

@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 @file:Suppress("DEPRECATION")
+/**
+ * TODO: Replace with advice in the below URL
+ * Deprecated For publishing direct share targets, please follow the instructions in
+ * https://developer.android.com/training/sharing/receive.html#providing-direct-share-targets instead.
+ */
 
 package com.example.android.directshare
 
@@ -68,12 +73,15 @@ class SampleChooserTargetService : ChooserTargetService() {
         targetActivityName: ComponentName,
         matchedFilter: IntentFilter
     ): List<ChooserTarget> {
-        val componentName = ComponentName(packageName, SendMessageActivity::class.java.canonicalName!!)
+        val componentName = ComponentName(
+            /* pkg = */ packageName,
+            /* cls = */ SendMessageActivity::class.java.canonicalName!!
+        )
         // The list of Direct Share items. The system will show the items the way they are sorted
         // in this list.
         val targets = ArrayList<ChooserTarget>()
         for (i in Contact.CONTACTS.indices) {
-            val contact: Contact = byId(i)
+            val contact: Contact = byId(id = i)
             val extras = Bundle()
             extras.putInt(Contact.ID, i)
             targets.add(ChooserTarget( // The name of this target.

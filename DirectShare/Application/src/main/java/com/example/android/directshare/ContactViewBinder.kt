@@ -32,6 +32,11 @@ object ContactViewBinder {
      */
     fun bind(contact: Contact, textView: TextView) {
         textView.text = contact.name
-        textView.setCompoundDrawablesRelativeWithIntrinsicBounds(contact.icon, 0, 0, 0)
+        textView.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            /* start = */ contact.icon,
+            /* top = */ 0,
+            /* end = */ 0,
+            /* bottom = */ 0
+        )
     }
 }
