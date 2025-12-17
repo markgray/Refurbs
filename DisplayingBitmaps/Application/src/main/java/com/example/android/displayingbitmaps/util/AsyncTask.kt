@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNCHECKED_CAST", "UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
+@file:Suppress(
+    "UNCHECKED_CAST",
+    "UNUSED_PARAMETER",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "MemberVisibilityCanBePrivate",
     "RedundantSuppression"
 )
 
@@ -57,11 +61,7 @@ abstract class AsyncTask<Params, Progress, Result> {
      * wrap `mWorker`.
      */
     private val mFuture: FutureTask<Result>
-    /**
-     * Returns the current status of this task. We just return the value in our field `mStatus`
-     *
-     * @return The current status.
-     */
+
     /**
      * Status of this task, one of PENDING, RUNNING, or FINISHED. This is used by the method
      * `executeOnExecutor` to make sure a task is run only once (If the status is not
@@ -113,26 +113,27 @@ abstract class AsyncTask<Params, Progress, Result> {
          */
         @Synchronized
         override fun execute(r: Runnable) {
-            mTasks.offer(Runnable
-            /**
-             * Called when the `execute` method of this `Runnable` is called. Wrapped
-             * in a try block we call the `run` method of `Runnable r`, with the
-             * finally block calling the method `scheduleNext` to execute the next task
-             * in our deque `mTasks` when `run` is done or dies for some reason.
-             */
-            /**
-             * Called when the `execute` method of this `Runnable` is called. Wrapped
-             * in a try block we call the `run` method of `Runnable r`, with the
-             * finally block calling the method `scheduleNext` to execute the next task
-             * in our deque `mTasks` when `run` is done or dies for some reason.
-             */
-            {
-                try {
-                    r.run()
-                } finally {
-                    scheduleNext()
-                }
-            })
+            mTasks.offer(
+                Runnable
+                /**
+                 * Called when the `execute` method of this `Runnable` is called. Wrapped
+                 * in a try block we call the `run` method of `Runnable r`, with the
+                 * finally block calling the method `scheduleNext` to execute the next task
+                 * in our deque `mTasks` when `run` is done or dies for some reason.
+                 */
+                /**
+                 * Called when the `execute` method of this `Runnable` is called. Wrapped
+                 * in a try block we call the `run` method of `Runnable r`, with the
+                 * finally block calling the method `scheduleNext` to execute the next task
+                 * in our deque `mTasks` when `run` is done or dies for some reason.
+                 */
+                {
+                    try {
+                        r.run()
+                    } finally {
+                        scheduleNext()
+                    }
+                })
             if (mActive == null) {
                 scheduleNext()
             }
@@ -213,8 +214,10 @@ abstract class AsyncTask<Params, Progress, Result> {
                 } catch (e: InterruptedException) {
                     Log.w(LOG_TAG, e)
                 } catch (e: ExecutionException) {
-                    throw RuntimeException("An error occurred while executing doInBackground()",
-                        e.cause)
+                    throw RuntimeException(
+                        "An error occurred while executing doInBackground()",
+                        e.cause
+                    )
                 } catch (e: CancellationException) {
                     postResultIfNotInvoked(null)
                 }
@@ -248,122 +251,111 @@ abstract class AsyncTask<Params, Progress, Result> {
      * @return our parameter `result`
      */
     private fun postResult(result: Result): Result {
-        val message = sHandler.obtainMessage(MESSAGE_POST_RESULT,
-            AsyncTaskResult(this, result))
+        val message = sHandler.obtainMessage(
+            MESSAGE_POST_RESULT,
+            AsyncTaskResult(this, result)
+        )
         message.sendToTarget()
         return result
     }
 
     /**
      * Override this method to perform a computation on a background thread. The
-     * specified parameters are the parameters passed to [.execute]
+     * specified parameters are the parameters passed to [execute]
      * by the caller of this task.
      *
-     *
-     * This method can call [.publishProgress] to publish updates
+     * This method can call [publishProgress] to publish updates
      * on the UI thread.
      *
      * @param params The parameters of the task.
      *
      * @return A result, defined by the subclass of this task.
      *
-     * @see .onPreExecute
-     * @see .onPostExecute
-     *
-     * @see .publishProgress
+     * @see onPreExecute
+     * @see onPostExecute
+     * @see publishProgress
      */
     protected abstract fun doInBackground(vararg params: Params): Result
 
     /**
-     * Runs on the UI thread before [.doInBackground].
+     * Runs on the UI thread before [doInBackground].
      *
-     * @see .onPostExecute
-     *
-     * @see .doInBackground
+     * @see onPostExecute
+     * @see doInBackground
      */
     protected fun onPreExecute() {}
 
     /**
-     * Runs on the UI thread after [.doInBackground]. The
-     * specified result is the value returned by [.doInBackground].
-     *
+     * Runs on the UI thread after [doInBackground]. The
+     * specified result is the value returned by [doInBackground].
      *
      * This method won't be invoked if the task was cancelled.
      *
-     * @param result The result of the operation computed by [.doInBackground].
-     *
-     * @see .onPreExecute
-     *
-     * @see .doInBackground
-     *
-     * @see .onCancelled
+     * @param result The result of the operation computed by [doInBackground].
+     * @see onPreExecute
+     * @see doInBackground
+     * @see onCancelled
      */
     protected open fun onPostExecute(result: Result) {}
 
     /**
-     * Runs on the UI thread after [.publishProgress] is invoked.
-     * The specified values are the values passed to [.publishProgress].
+     * Runs on the UI thread after [publishProgress] is invoked.
+     * The specified values are the values passed to [publishProgress].
      *
      * @param values The values indicating progress.
      *
-     * @see .publishProgress
-     *
-     * @see .doInBackground
+     * @see publishProgress
+     * @see doInBackground
      */
     protected fun onProgressUpdate(vararg values: Array<out Any?>) {}
 
     /**
-     * Runs on the UI thread after [.cancel] is invoked and
-     * [.doInBackground] has finished.
+     * Runs on the UI thread after [cancel] is invoked and
+     * [doInBackground] has finished.
      *
-     *
-     * The default implementation simply invokes [.onCancelled] and
+     * The default implementation simply invokes [onCancelled] and
      * ignores the result. If you write your own implementation, do not call
      * `super.onCancelled(result)`.
      *
-     *
      * We just call our zero parameter `onCancelled` method.
      *
-     * @param result The result, if any, computed in
-     * [.doInBackground], can be null
+     * @param result The result, if any, computed in [doInBackground], can be `null`
      *
-     * @see .cancel
-     * @see .isCancelled
+     * @see cancel
+     * @see isCancelled
      */
     protected open fun onCancelled(result: Result) {
         onCancelled()
     }
 
     /**
-     * Applications should preferably override [.onCancelled].
+     * Applications should preferably override [onCancelled].
      * This method is invoked by the default implementation of
-     * [.onCancelled].
+     * [onCancelled].
      *
+     * Runs on the UI thread after [cancel] is invoked and [doInBackground] has finished.
      *
-     * Runs on the UI thread after [.cancel] is invoked and
-     * [.doInBackground] has finished.
-     *
-     * @see .onCancelled
-     * @see .cancel
-     * @see .isCancelled
+     * @see onCancelled
+     * @see cancel
+     * @see isCancelled
      */
     protected fun onCancelled() {}
+
     /**
      * If `true` we have been canceled
      */
     val isCancelled: Boolean
         /**
-         * Returns <tt>true</tt> if this task was cancelled before it completed
-         * normally. If you are calling [.cancel] on the task,
+         * Returns `true` if this task was cancelled before it completed
+         * normally. If you are calling [cancel] on the task,
          * the value returned by this method should be checked periodically from
-         * [.doInBackground] to end the task as soon as possible.
-         *
+         * [doInBackground] to end the task as soon as possible.
          *
          * We just return the value of our field `AtomicBoolean mCancelled`.
          *
-         * @return <tt>true</tt> if task was cancelled before it completed
+         * @return `true` if task was cancelled before it completed
          *
-         * @see .cancel
+         * @see cancel
          */
         get() = mCancelled.get()
 
@@ -371,36 +363,33 @@ abstract class AsyncTask<Params, Progress, Result> {
      * Attempts to cancel execution of this task.  This attempt will
      * fail if the task has already completed, already been cancelled,
      * or could not be cancelled for some other reason. If successful,
-     * and this task has not started when <tt>cancel</tt> is called,
+     * and this task has not started when [cancel] is called,
      * this task should never run. If the task has already started,
-     * then the <tt>mayInterruptIfRunning</tt> parameter determines
+     * then the [mayInterruptIfRunning] parameter determines
      * whether the thread executing this task should be interrupted in
      * an attempt to stop the task.
      *
-     *
-     * Calling this method will result in [.onCancelled] being
-     * invoked on the UI thread after [.doInBackground]
-     * returns. Calling this method guarantees that [.onPostExecute]
+     * Calling this method will result in [onCancelled] being
+     * invoked on the UI thread after [doInBackground]
+     * returns. Calling this method guarantees that [onPostExecute]
      * is never invoked. After invoking this method, you should check the
-     * value returned by [.isCancelled] periodically from
-     * [.doInBackground] to finish the task as early as
+     * value returned by [isCancelled] periodically from
+     * [doInBackground] to finish the task as early as
      * possible.
-     *
      *
      * We set our field `AtomicBoolean mCancelled` to true, then return the value returned
      * by the `cancel` method of `FutureTask<Result> mFuture` when called with our
-     * parameter `mayInterruptIfRunning`.
+     * parameter [mayInterruptIfRunning].
      *
-     * @param mayInterruptIfRunning <tt>true</tt> if the thread executing this
+     * @param mayInterruptIfRunning `true` if the thread executing this
      * task should be interrupted; otherwise, in-progress tasks are allowed
      * to complete.
-     *
-     * @return <tt>false</tt> if the task could not be cancelled,
+     * @return `false` if the task could not be cancelled,
      * typically because it has already completed normally;
-     * <tt>true</tt> otherwise
+     * `true` otherwise
      *
-     * @see .isCancelled
-     * @see .onCancelled
+     * @see isCancelled
+     * @see onCancelled
      */
     fun cancel(mayInterruptIfRunning: Boolean): Boolean {
         mCancelled.set(true)
@@ -450,8 +439,7 @@ abstract class AsyncTask<Params, Progress, Result> {
 
     /**
      * Executes the task with the specified parameters. The task returns
-     * itself (this) so that the caller can keep a reference to it.
-     *
+     * itself (`this`) so that the caller can keep a reference to it.
      *
      * Note: this function schedules the task on a queue for a single background
      * thread or pool of threads depending on the platform version.  When first
@@ -461,26 +449,23 @@ abstract class AsyncTask<Params, Progress, Result> {
      * [android.os.Build.VERSION_CODES.HONEYCOMB], tasks are back to being
      * executed on a single thread to avoid common application errors caused
      * by parallel execution.  If you truly want parallel execution, you can use
-     * the [.executeOnExecutor] version of this method
-     * with [.THREAD_POOL_EXECUTOR]; however, see commentary there for warnings
+     * the [executeOnExecutor] version of this method
+     * with [THREAD_POOL_EXECUTOR]; however, see commentary there for warnings
      * on its use.
-     *
      *
      * This method must be invoked on the UI thread.
      *
-     *
-     * We just call the `executeOnExecutor` method using `sDefaultExecutor`
+     * We just call the [executeOnExecutor] method using `sDefaultExecutor`
      * as the executor and our parameter `params` as the parameters to pass.
      *
      * @param params The parameters of the task.
-     *
      * @return This instance of AsyncTask.
      *
      * @throws IllegalStateException If [.getStatus] returns either
      * [AsyncTask.Status.RUNNING] or [AsyncTask.Status.FINISHED].
      *
-     * @see .executeOnExecutor
-     * @see .execute
+     * @see executeOnExecutor
+     * @see execute
      */
     fun execute(vararg params: Params): AsyncTask<Params, Progress, Result> {
         return executeOnExecutor(sDefaultExecutor, *params)
@@ -488,14 +473,12 @@ abstract class AsyncTask<Params, Progress, Result> {
 
     /**
      * Executes the task with the specified parameters. The task returns
-     * itself (this) so that the caller can keep a reference to it.
+     * itself (`this`) so that the caller can keep a reference to it.
      *
-     *
-     * This method is typically used with [.THREAD_POOL_EXECUTOR] to
+     * This method is typically used with [THREAD_POOL_EXECUTOR] to
      * allow multiple tasks to run in parallel on a pool of threads managed by
      * AsyncTask, however you can also use your own [java.util.concurrent.Executor] for custom
      * behavior.
-     *
      *
      * *Warning:* Allowing multiple tasks to run in parallel from
      * a thread pool is generally *not* what one wants, because the order
@@ -506,40 +489,44 @@ abstract class AsyncTask<Params, Progress, Result> {
      * of the data to be over-written by an older one, leading to obscure data
      * loss and stability issues.  Such changes are best
      * executed in serial; to guarantee such work is serialized regardless of
-     * platform version you can use this function with [.SERIAL_EXECUTOR].
-     *
+     * platform version you can use this function with [SERIAL_EXECUTOR].
      *
      * This method must be invoked on the UI thread.
      *
-     *
-     * First we make sure our status `mStatus` is PENDING, and if not we throw
+     * First we make sure our status `status` is PENDING, and if not we throw
      * IllegalStateException for RUNNING, or FINISHED status. If it is PENDING we set
      * it to RUNNING, call `onPreExecute`, store our parameter `params` in
      * the `mParams` field of `WorkerRunnable<Params, Result> mWorker` then
      * call the `execute` method of our parameter `exec` to execute
      * `FutureTask<Result> mFuture`.
      *
-     * @param exec The executor to use.  [.THREAD_POOL_EXECUTOR] is available as a
+     * @param exec The executor to use.  [THREAD_POOL_EXECUTOR] is available as a
      * convenient process-wide thread pool for tasks that are loosely coupled.
      * @param params The parameters of the task.
      *
      * @return This instance of AsyncTask.
      *
-     * @throws IllegalStateException If [.getStatus] returns either
+     * @throws IllegalStateException If [status] returns either
      * [AsyncTask.Status.RUNNING] or [AsyncTask.Status.FINISHED].
      *
      * @see .execute
      */
-    fun executeOnExecutor(exec: Executor,
-                          vararg params: Params): AsyncTask<Params, Progress, Result> {
+    fun executeOnExecutor(
+        exec: Executor,
+        vararg params: Params
+    ): AsyncTask<Params, Progress, Result> {
         if (status != Status.PENDING) {
             when (status) {
-                Status.RUNNING -> throw IllegalStateException("Cannot execute task:"
-                    + " the task is already running.")
+                Status.RUNNING -> throw IllegalStateException(
+                    "Cannot execute task:"
+                        + " the task is already running."
+                )
 
-                Status.FINISHED -> throw IllegalStateException("Cannot execute task:"
-                    + " the task has already been executed "
-                    + "(a task can be executed only once)")
+                Status.FINISHED -> throw IllegalStateException(
+                    "Cannot execute task:"
+                        + " the task has already been executed "
+                        + "(a task can be executed only once)"
+                )
 
                 else -> {}
             }
@@ -552,15 +539,12 @@ abstract class AsyncTask<Params, Progress, Result> {
     }
 
     /**
-     * This method can be invoked from [.doInBackground] to
+     * This method can be invoked from [doInBackground] to
      * publish updates on the UI thread while the background computation is
      * still running. Each call to this method will trigger the execution of
-     * [.onProgressUpdate] on the UI thread.
+     * [onProgressUpdate] on the UI thread.
      *
-     *
-     * [.onProgressUpdate] will not be called if the task has been
-     * canceled.
-     *
+     * [onProgressUpdate] will not be called if the task has been canceled.
      *
      * If this task has not been canceled, we create a message using our UI handler `sHandler`
      * whose `what` field is MESSAGE_POST_PROGRESS, and whose `obj` field is an
@@ -571,15 +555,16 @@ abstract class AsyncTask<Params, Progress, Result> {
      *
      * @param values The progress values to update the UI with.
      *
-     * @see .onProgressUpdate
-     *
-     * @see .doInBackground
+     * @see onProgressUpdate
+     * @see doInBackground
      */
     @Suppress("unused")
     protected fun publishProgress(vararg values: Progress) {
         if (!isCancelled) {
-            sHandler.obtainMessage(MESSAGE_POST_PROGRESS,
-                AsyncTaskResult(this, *values)).sendToTarget()
+            sHandler.obtainMessage(
+                MESSAGE_POST_PROGRESS,
+                AsyncTaskResult(this, *values)
+            ).sendToTarget()
         }
     }
 
@@ -587,7 +572,7 @@ abstract class AsyncTask<Params, Progress, Result> {
      * Called by the `handleMessage` method of our UI handler in response to a MESSAGE_POST_RESULT
      * message. If our task had been cancelled we call our `onCancelled` method with our parameter
      * `result`, otherwise we call the `onPostExecute` with our parameter `result`.
-     * In either case we set our status `mStatus` to FINISHED.
+     * In either case we set our status `status` to FINISHED.
      *
      * @param result result returned by the background thread
      */
@@ -609,17 +594,11 @@ abstract class AsyncTask<Params, Progress, Result> {
          * Called when we have a message to receive. We cast the `obj` field of our parameter
          * `msg` to initialize `AsyncTaskResult result`, then we switch on the `what`
          * field of `msg`:
+         *  * MESSAGE_POST_RESULT: we call the `finish` method of the `mTask` field
+         *  of `result` with the value `result.mData[0]`.
          *
-         *  *
-         * MESSAGE_POST_RESULT: we call the `finish` method of the `mTask` field
-         * of `result` with the value `result.mData[0]`, then break.
-         *
-         *  *
-         * MESSAGE_POST_PROGRESS: we call the `onProgressUpdate` method of the
-         * `mTask` field of `result` with the value `result.mData`,
-         * then break.
-         *
-         *
+         *  * MESSAGE_POST_PROGRESS: we call the `onProgressUpdate` method of the
+         *  `mTask` field of `result` with the value `result.mData`.
          *
          * @param msg Message from the global message pool we are to handle
          */
@@ -637,9 +616,9 @@ abstract class AsyncTask<Params, Progress, Result> {
     /**
      * Class that adds a field `Params[] mParams` to the `Callable<Result>` class.
      *
-     * @param <Params> type of our parameters field
-     * @param <Result> type of our return value
-    </Result></Params> */
+     * @param Params type of our parameters field
+     * @param Result type of our return value
+     */
     private abstract class WorkerRunnable<Params, Result> : Callable<Result> {
         lateinit var mParams: Array<Params>
     }
@@ -647,14 +626,15 @@ abstract class AsyncTask<Params, Progress, Result> {
     /**
      * Simple holding class intended to hold the data returned from an `AsyncTask`
      *
-     * @param <Data> type of data we are holding.
-    </Data> */
+     * @param Data type of data we are holding.
+     */
     private class AsyncTaskResult<Data>(
         /**
          * `AsyncTask` we belong to, used in the `handleMessage` method of `InternalHandler`
          * to route the data to the correct task.
          */
-        val mTask: AsyncTask<*, *, *>, vararg data: Data) {
+        val mTask: AsyncTask<*, *, *>, vararg data: Data
+    ) {
         /**
          * Data returned by the `AsyncTask`
          */
@@ -686,14 +666,15 @@ abstract class AsyncTask<Params, Progress, Result> {
         private const val CORE_POOL_SIZE = 5
 
         /**
-         * The maximum number of threads to allow in the pool of our `ThreadPoolExecutor THREAD_POOL_EXECUTOR`.
+         * The maximum number of threads to allow in the pool of our
+         * `ThreadPoolExecutor THREAD_POOL_EXECUTOR`.
          */
         private const val MAXIMUM_POOL_SIZE = 128
 
         /**
-         * When the number of threads is greater than the core, this is the maximum time that excess idle
-         * threads will wait for new tasks before terminating. The units used in the constructor for
-         * `Executor THREAD_POOL_EXECUTOR` is `TimeUnit.SECONDS` so 1 second in our case.
+         * When the number of threads is greater than the core, this is the maximum time that excess
+         * idle threads will wait for new tasks before terminating. The units used in the constructor
+         * for `Executor THREAD_POOL_EXECUTOR` is `TimeUnit.SECONDS` so 1 second in our case.
          */
         private const val KEEP_ALIVE = 1
 
@@ -702,8 +683,8 @@ abstract class AsyncTask<Params, Progress, Result> {
          */
         private val sThreadFactory: ThreadFactory = object : ThreadFactory {
             /**
-             * Number to use when forming the name of the thread created (its string value is appended to
-             * the string "AsyncTask #"), it is incremented after the thread is created.
+             * Number to use when forming the name of the thread created (its string value is
+             * appended to the string "AsyncTask #"), it is incremented after the thread is created.
              */
             private val mCount = AtomicInteger(1)
 
@@ -740,16 +721,25 @@ abstract class AsyncTask<Params, Progress, Result> {
          * reached (discards the oldest unhandled request and then retries execute, unless the executor
          * is shut down, in which case the task is discarded).
          */
-        val THREAD_POOL_EXECUTOR: Executor = ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE.toLong(),
-            TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory,
-            ThreadPoolExecutor.DiscardOldestPolicy())
+        val THREAD_POOL_EXECUTOR: Executor = ThreadPoolExecutor(
+            /* corePoolSize = */ CORE_POOL_SIZE,
+            /* maximumPoolSize = */ MAXIMUM_POOL_SIZE,
+            /* keepAliveTime = */ KEEP_ALIVE.toLong(),
+            /* unit = */ TimeUnit.SECONDS,
+            /* workQueue = */ sPoolWorkQueue,
+            /* threadFactory = */ sThreadFactory,
+            /* handler = */ ThreadPoolExecutor.DiscardOldestPolicy()
+        )
 
         /**
          * An [java.util.concurrent.Executor] that executes tasks one at a time in serial
          * order.  This serialization is global to a particular process. Uses `sThreadFactory`
          * as the thread factory when creating new threads.
          */
-        val SERIAL_EXECUTOR: Executor = if (hasHoneycomb()) SerialExecutor() else Executors.newSingleThreadExecutor(sThreadFactory)
+        val SERIAL_EXECUTOR: Executor =
+            if (hasHoneycomb()) SerialExecutor() else Executors.newSingleThreadExecutor(
+                sThreadFactory
+            )
 
         /**
          * `Executor` that reuses two threads operating off a shared unbounded queue. Two threads
@@ -779,23 +769,26 @@ abstract class AsyncTask<Params, Progress, Result> {
         @Volatile
         private var sDefaultExecutor = SERIAL_EXECUTOR
 
-        /** Used to force static handler to be created.  */
+        /**
+         * Used to force static handler to be created.
+         */
         @Suppress("unused")
         fun init() {
             sHandler.looper
         }
 
-        /** Sets the default executor  */
+        /**
+         * Sets the default executor
+         */
         @Suppress("unused")
         fun setDefaultExecutor(exec: Executor) {
             sDefaultExecutor = exec
         }
 
         /**
-         * Convenience version of [.execute] for use with
-         * a simple Runnable object. See [.execute] for more
+         * Convenience version of [execute] for use with
+         * a simple Runnable object. See [execute] for more
          * information on the order of execution.
-         *
          *
          * We just call the `execute` method of our field `Executor sDefaultExecutor` to
          * execute our parameter `Runnable runnable`.

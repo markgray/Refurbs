@@ -31,7 +31,7 @@ class ImageGridActivity : FragmentActivity() {
      * Called when the activity is starting. First we check if the gradle generated constant
      * [BuildConfig.DEBUG] is true, and if it is we call the [Utils.enableStrictMode] method to set
      * the policy for what potentially suspect actions should be detected and logged using
-     * android.os.StrictMode. Then we call our super's implementation of `onCreate`.
+     * [android.os.StrictMode]. Then we call our super's implementation of `onCreate`.
      *
      * If the [FragmentManager] for interacting with fragments associated with this activity can not
      * find a fragment with the tag [TAG], we initialize [FragmentTransaction] variable `val ft` by

@@ -104,13 +104,16 @@ class RecyclingImageView : ImageView {
         private fun notifyDrawable(drawable: Drawable?, isDisplayed: Boolean) {
             if (drawable is RecyclingBitmapDrawable) {
                 // The drawable is a CountingBitmapDrawable, so notify it
-                drawable.setIsDisplayed(isDisplayed)
+                drawable.setIsDisplayed(isDisplayed = isDisplayed)
             } else if (drawable is LayerDrawable) {
                 // The drawable is a LayerDrawable, so recurse on each layer
                 var i = 0
                 val z: Int = drawable.numberOfLayers
                 while (i < z) {
-                    notifyDrawable(drawable.getDrawable(i), isDisplayed)
+                    notifyDrawable(
+                        drawable = drawable.getDrawable(/* index = */ i),
+                        isDisplayed = isDisplayed
+                    )
                     i++
                 }
             }

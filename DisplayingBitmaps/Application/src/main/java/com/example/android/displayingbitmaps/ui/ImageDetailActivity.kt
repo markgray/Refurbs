@@ -64,7 +64,6 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
     private var mPager: ViewPager? = null
 
     /**
-     * TODO: Continue here.
      * Called when the activity is starting. First we check if the gradle generated constant
      * [BuildConfig.DEBUG] is true, and if it is we call the [Utils.enableStrictMode] method to set
      * the policy for what potentially suspect actions should be detected and logged using
@@ -137,7 +136,7 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
         imageFetcher!!.setImageFadeIn(false)
 
         // Set up ViewPager and backing adapter
-        mAdapter = ImagePagerAdapter(supportFragmentManager, Images.imageUrls.size)
+        mAdapter = ImagePagerAdapter(fm = supportFragmentManager, mSize = Images.imageUrls.size)
         mPager = findViewById(R.id.pager)
         mPager!!.adapter = mAdapter
         mPager!!.pageMargin = resources.getDimension(R.dimen.horizontal_page_margin).toInt()
@@ -154,7 +153,7 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
             actionBar.setDisplayHomeAsUpEnabled(true)
 
             // Hide and show the ActionBar as the visibility changes
-            mPager!!.setOnSystemUiVisibilityChangeListener { vis ->
+            mPager!!.setOnSystemUiVisibilityChangeListener { vis: Int ->
                 if (vis and View.SYSTEM_UI_FLAG_LOW_PROFILE != 0) {
                     actionBar.hide()
                 } else {
@@ -177,7 +176,7 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
     /**
      * Called after [onRestoreInstanceState], [onRestart], or [onPause], for our activity to start
      * interacting with the user. First we call our super's implementation of `onResume`, then we
-     * call the  method of our [ImageFetcher] field [imageFetcher]
+     * call the [ImageFetcher.setExitTasksEarly]  method of our [ImageFetcher] field [imageFetcher]
      * with `false` to clear its exit tasks early flag.
      */
     public override fun onResume() {
@@ -247,8 +246,9 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We fetch a [MenuInflater]
-     * for our context and use it to inflate our menu layout file `R.menu.main_menu` into [Menu]
-     * parameter [menu]. We then return `true` to the caller so that the menu will be displayed.
+     * for our context and use it to inflate our menu layout file `R.menu.main_menu` (contains one
+     * option "Clear Caches") into [Menu] parameter [menu]. We then return `true` to the caller so
+     * that the menu will be displayed.
      *
      * @param menu The options menu in which you place your items.
      * @return You must return `true` for the menu to be displayed;
@@ -291,7 +291,7 @@ class ImageDetailActivity : FragmentActivity(), View.OnClickListener {
          * at index [position] in the [Images.imageUrls] array.
          */
         override fun getItem(position: Int): Fragment {
-            return ImageDetailFragment.newInstance(Images.imageUrls[position])
+            return ImageDetailFragment.newInstance(imageUrl = Images.imageUrls[position])
         }
     }
 

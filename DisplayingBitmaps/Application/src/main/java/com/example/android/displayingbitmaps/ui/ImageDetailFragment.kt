@@ -72,7 +72,11 @@ class ImageDetailFragment
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mImageUrl = if (arguments != null) requireArguments().getString(IMAGE_DATA_EXTRA) else null
+        mImageUrl = if (arguments != null) {
+            requireArguments().getString(IMAGE_DATA_EXTRA)
+        } else {
+            null
+        }
     }
 
     /**
@@ -125,7 +129,7 @@ class ImageDetailFragment
         // cache can be used over all pages in the ViewPager
         if (ImageDetailActivity::class.java.isInstance(activity)) {
             mImageFetcher = (activity as ImageDetailActivity?)!!.imageFetcher
-            mImageFetcher!!.loadImage(mImageUrl, mImageView!!, this)
+            mImageFetcher!!.loadImage(data = mImageUrl, imageView = mImageView!!, listener = this)
         }
 
         // Pass clicks on the ImageView to the parent activity to handle
@@ -136,14 +140,14 @@ class ImageDetailFragment
 
     /**
      * Called when the fragment is no longer in use. First we call our super's implementation of
-     * `onDestroy`, then is our [ImageView] field [mImageView] is not `null` we cancel any pending
+     * `onDestroy`, then if our [ImageView] field [mImageView] is not `null` we cancel any pending
      * image work for [mImageView] and set the image drawable of [mImageView] to null.
      */
     override fun onDestroy() {
         super.onDestroy()
         if (mImageView != null) {
             // Cancel any pending image work
-            ImageWorker.cancelWork(mImageView)
+            ImageWorker.cancelWork(imageView = mImageView)
             mImageView!!.setImageDrawable(null)
         }
     }
@@ -155,7 +159,7 @@ class ImageDetailFragment
      * @param success `true` if the image was loaded successfully, `false` if there was an error.
      */
     override fun onImageLoaded(success: Boolean) {
-        // Set loading spinner to gone once image has loaded. Cloud also show
+        // Set loading spinner to gone once image has loaded. Could also show
         // an error view here if needed.
         mProgressBar!!.visibility = View.GONE
     }

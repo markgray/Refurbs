@@ -177,7 +177,11 @@ class DiskLruCache private constructor(
      * were last accessed, from least-recently accessed to most-recently (access-order).
      * This kind of map is well-suited to building LRU caches.
      */
-    private val lruEntries = LinkedHashMap<String, Entry?>(0, 0.75f, true)
+    private val lruEntries = LinkedHashMap<String, Entry?>(
+        /* initialCapacity = */ 0,
+        /* loadFactor = */ 0.75f,
+        /* accessOrder = */ true
+    )
 
     /**
      * Count of number of operations committed to journal, used to determine whether a journal
@@ -261,7 +265,6 @@ class DiskLruCache private constructor(
      * `String blank`. We then throw an IOException if any of these strings do not match what
      * we would write as the header to a journal file.
      *
-     *
      * We then loop forever executing our method `readJournalLine` on the string read by our
      * `readAsciiLine` from `inputStream`. `readJournalLine` processes each line and updates
      * the contents of our field `LinkedHashMap<String, Entry> lruEntries` based on the contents
@@ -299,6 +302,7 @@ class DiskLruCache private constructor(
     }
 
     /**
+     * TODO: Continue here.
      * Processes a single `String line` from an old journal and updates the contents of our field
      * `LinkedHashMap<String, Entry> lruEntries` based on the contents of the journal line.
      * First we initialize `String[] parts` by splitting our parameter `String line` on
@@ -1405,6 +1409,7 @@ class DiskLruCache private constructor(
         private fun <T> copyOfRange(original: Array<T>, start: Int, end: Int): Array<T> {
             val originalLength = original.size // For exception priority compatibility.
             require(start <= end)
+            @Suppress("ConvertTwoComparisonsToRangeCheck")
             if (start < 0 || start > originalLength) {
                 throw ArrayIndexOutOfBoundsException()
             }

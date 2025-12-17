@@ -110,13 +110,22 @@ class ImageGridFragment
         mImageThumbSize = resources.getDimensionPixelSize(R.dimen.image_thumbnail_size)
         mImageThumbSpacing = resources.getDimensionPixelSize(R.dimen.image_thumbnail_spacing)
         mAdapter = ImageAdapter(activity)
-        val cacheParams = ImageCacheParams((activity as Context), IMAGE_CACHE_DIR)
-        cacheParams.setMemCacheSizePercent(0.25f) // Set memory cache to 25% of app memory
+        val cacheParams = ImageCacheParams(
+            context = (activity as Context),
+            diskCacheDirectoryName = IMAGE_CACHE_DIR
+        )
+        cacheParams.setMemCacheSizePercent(fraction = 0.25f) // Set memory cache to 25% of app memory
 
         // The ImageFetcher takes care of loading images into our ImageView children asynchronously
-        mImageFetcher = ImageFetcher((activity as Context), mImageThumbSize)
-        mImageFetcher!!.setLoadingImage(R.drawable.empty_photo)
-        mImageFetcher!!.addImageCache(requireActivity().supportFragmentManager, cacheParams)
+        mImageFetcher = ImageFetcher(
+            context = (activity as Context),
+            imageSize = mImageThumbSize
+        )
+        mImageFetcher!!.setLoadingImage(resId = R.drawable.empty_photo)
+        mImageFetcher!!.addImageCache(
+            fragmentManager = requireActivity().supportFragmentManager,
+            cacheParams = cacheParams
+        )
     }
 
     /**
@@ -154,7 +163,11 @@ class ImageGridFragment
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val v = inflater.inflate(R.layout.image_grid_fragment, container, false)
+        val v = inflater.inflate(
+            /* resource = */ R.layout.image_grid_fragment,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
         val mGridView = v.findViewById<GridView>(R.id.gridView)
         mGridView.adapter = mAdapter
         mGridView.onItemClickListener = this
@@ -191,8 +204,10 @@ class ImageGridFragment
              * @param visibleItemCount the number of visible cells
              * @param totalItemCount the number of items in the list adaptor
              */
-            override fun onScroll(absListView: AbsListView, firstVisibleItem: Int,
-                                  visibleItemCount: Int, totalItemCount: Int) {
+            override fun onScroll(
+                absListView: AbsListView, firstVisibleItem: Int,
+                visibleItemCount: Int, totalItemCount: Int
+            ) {
             }
         })
 
@@ -219,7 +234,8 @@ class ImageGridFragment
                     if (mAdapter!!.numColumns == 0) {
                         val numColumns = floor(
                             (mGridView.width / (mImageThumbSize + mImageThumbSpacing))
-                                .toDouble()).toInt()
+                                .toDouble()
+                        ).toInt()
                         if (numColumns > 0) {
                             val columnWidth = mGridView.width / numColumns - mImageThumbSpacing
                             mAdapter!!.numColumns = numColumns
@@ -304,10 +320,16 @@ class ImageGridFragment
             // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
             // show plus the thumbnail image in GridView is cropped. so using
             // makeScaleUpAnimation() instead.
-            val options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.width, v.height)
-            requireActivity().startActivity(i, options.toBundle())
+            val options = ActivityOptions.makeScaleUpAnimation(
+                /* source = */ v,
+                /* startX = */ 0,
+                /* startY = */ 0,
+                /* width = */ v.width,
+                /* height = */ v.height
+            )
+            requireActivity().startActivity(/* intent = */ i, /* options = */ options.toBundle())
         } else {
-            startActivity(i)
+            startActivity(/* intent = */ i)
         }
     }
 
@@ -319,7 +341,7 @@ class ImageGridFragment
      * @param menu The options menu in which you place your items.
      * @param inflater a [MenuInflater] you can use to inflate xml menu layout files.
      */
-    @Deprecated("Deprecated in Java", ReplaceWith("inflater.inflate(R.menu.main_menu, menu)", "com.example.android.displayingbitmaps.R")) // TODO: Switch to MenuProvider
+    @Deprecated("Replace with addMenuProvider(MenuProvider)") // TODO: Switch to MenuProvider
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
     }
@@ -342,8 +364,10 @@ class ImageGridFragment
         when (item.itemId) {
             R.id.clear_cache -> {
                 mImageFetcher!!.clearCache()
-                Toast.makeText(activity, R.string.clear_cache_complete_toast,
-                    Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    activity, R.string.clear_cache_complete_toast,
+                    Toast.LENGTH_SHORT
+                ).show()
                 return true
             }
         }
@@ -397,13 +421,19 @@ class ImageGridFragment
          */
         init {
             mImageViewLayoutParams = AbsListView.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+            )
             // Calculate ActionBar height
             val tv = TypedValue()
-            if (context!!.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            if (context!!.theme.resolveAttribute(
+                    /* resid = */ android.R.attr.actionBarSize,
+                    /* outValue = */ tv,
+                    /* resolveRefs = */ true
+                )
+            ) {
                 mActionBarHeight = TypedValue.complexToDimensionPixelSize(
-                    tv.data,
-                    context!!.resources.displayMetrics
+                    /* data = */ tv.data,
+                    /* metrics = */ context!!.resources.displayMetrics
                 )
             }
         }
@@ -501,6 +531,8 @@ class ImageGridFragment
          * [convertView] is not `null` we set `imageView` to it. If the height of the layout
          * parameters of `imageView` is not equal to our [Int] field [mItemHeight] we set the layout
          * parameters of `imageView` to our [AbsListView.LayoutParams] field [mImageViewLayoutParams].
+         * If the [ImageView.getDrawable] method of `imageView` returns `null` we call the
+         * [ImageView.setImageDrawable] method of `imageView` with a new instance or [BitmapDrawable].
          * We then call the [ImageFetcher.loadImage] method of our [ImageFetcher] field [mImageFetcher]
          * to load the image whose url is at index [position] minus [numColumns] in the
          * [Images.imageThumbUrls] array asynchronously into [ImageView] variable `imageView` (this
@@ -526,7 +558,8 @@ class ImageGridFragment
                 }
                 // Set empty view with height of ActionBar
                 convertViewLocal.layoutParams = AbsListView.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, mActionBarHeight)
+                    ViewGroup.LayoutParams.MATCH_PARENT, mActionBarHeight
+                )
                 return convertViewLocal
             }
 
@@ -552,7 +585,10 @@ class ImageGridFragment
 
             // Finally load the image asynchronously into the ImageView, this also takes care of
             // setting a placeholder image while the background thread runs
-            mImageFetcher!!.loadImage(Images.imageThumbUrls[position - numColumns], imageView)
+            mImageFetcher!!.loadImage(
+                data = Images.imageThumbUrls[position - numColumns],
+                imageView = imageView
+            )
             return imageView
         }
 
