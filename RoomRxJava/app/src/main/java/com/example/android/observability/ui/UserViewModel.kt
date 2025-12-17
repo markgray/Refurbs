@@ -56,7 +56,7 @@ class UserViewModel
      * @return a [Flowable] that will emit every time the user name has been updated.
      */
     val userName: Flowable<String>
-        get() = mDataSource.getUser()!! // for every emission of the user, get the user name
+        get() = mDataSource.getUser() // for every emission of the user, get the user name
             .map { user: User ->
                 mUser = user
                 user.userName
