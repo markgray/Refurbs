@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "SameParameterValue", "UNNECESSARY_NOT_NULL_ASSERTION", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate",
+@file:Suppress(
+    "unused",
+    "SameParameterValue",
+    "UNNECESSARY_NOT_NULL_ASSERTION",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "JoinDeclarationAndAssignment",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "MemberVisibilityCanBePrivate",
     "UnusedImport",
     "RedundantSuppression"
 )
@@ -274,7 +281,8 @@ class DiskLruCache private constructor(
      */
     @Throws(IOException::class)
     private fun readJournal() {
-        val inputStream: InputStream = BufferedInputStream(FileInputStream(journalFile), IO_BUFFER_SIZE)
+        val inputStream: InputStream =
+            BufferedInputStream(FileInputStream(journalFile), IO_BUFFER_SIZE)
         try {
             val magic = readAsciiLine(inputStream)
             val version = readAsciiLine(inputStream)
@@ -285,9 +293,12 @@ class DiskLruCache private constructor(
                 || VERSION_1 != version
                 || Integer.toString(appVersion) != appVersionString
                 || Integer.toString(valueCount) != valueCountString
-                || "" != blank) {
-                throw IOException("unexpected journal header: ["
-                    + magic + ", " + version + ", " + valueCountString + ", " + blank + "]")
+                || "" != blank
+            ) {
+                throw IOException(
+                    "unexpected journal header: ["
+                        + magic + ", " + version + ", " + valueCountString + ", " + blank + "]"
+                )
             }
             while (true) {
                 try {
@@ -302,48 +313,38 @@ class DiskLruCache private constructor(
     }
 
     /**
-     * TODO: Continue here.
      * Processes a single `String line` from an old journal and updates the contents of our field
      * `LinkedHashMap<String, Entry> lruEntries` based on the contents of the journal line.
      * First we initialize `String[] parts` by splitting our parameter `String line` on
      * blanks. If there are not at least two strings in `parts` after doing this we throw
      * IOException "unexpected journal line: ". We initialize `String key` to `parts[1]`.
      *
-     *
      * If `parts[0]` is equal to the string REMOVE ("REMOVE") and there are 2 strings in
      * `parts` we remove the `Entry` in `LinkedHashMap<String, Entry> lruEntries`
      * with the key `key` and return.
-     *
      *
      * We initialize `Entry entry` with the `Entry` in `lruEntries` with the key
      * `key`, if this is null we set `entry` to a new instance of `Entry` for
      * `key` and put it in `lruEntries` under the key `key`.
      *
-     *
      * We now handle three different cases of the value of `parts[0]`:
      *
-     *  1.
-     * If `parts[0]` is equal to the string CLEAN ("CLEAN") and there are `valueCount`
-     * plus 2 strings in `parts`, we set the `readable` field of `entry` to true,
-     * set its `currentEditor` field to null, and call its `setLengths` method to set
-     * the values in the `lengths[]` array field of `entry` to the long values encoded
-     * in the strings of `parts` after the first two strings (there will be `valueCount`
-     * of these, 1 in our case).
+     *  1. If `parts[0]` is equal to the string CLEAN ("CLEAN") and there are `valueCount`
+     *  plus 2 strings in `parts`, we set the `readable` field of `entry` to true,
+     *  set its `currentEditor` field to null, and call its `setLengths` method to set
+     *  the values in the `lengths[]` array field of `entry` to the long values encoded
+     *  in the strings of `parts` after the first two strings (there will be `valueCount`
+     *  of these, 1 in our case).
      *
-     *  1.
-     * If `parts[0]` is equal to the string DIRTY ("DIRTY") and there are 2 strings in
-     * `parts` we set the `currentEditor` field of `entry` to a new instance
-     * of `Editor` constructed to edit `entry`.
+     *  1. If `parts[0]` is equal to the string DIRTY ("DIRTY") and there are 2 strings in
+     *  `parts` we set the `currentEditor` field of `entry` to a new instance
+     *  of `Editor` constructed to edit `entry`.
      *
-     *  1.
-     * If `parts[0]` is equal to the string READ ("READ") and there are 2 strings in
-     * `parts` we do nothing, since this has already been handled by our call to the
-     * `get` method of `lruEntries`
+     *  1. If `parts[0]` is equal to the string READ ("READ") and there are 2 strings in
+     *  `parts` we do nothing, since this has already been handled by our call to the
+     *  `get` method of `lruEntries`
      *
-     *  1.
-     * Otherwise we throw an IOException "unexpected journal line: "
-     *
-     *
+     *  1. Otherwise we throw an IOException "unexpected journal line: "
      *
      * @param line Line from old journal to interpret
      * @throws IOException if an IO error occurs, or a incorrect journal line is passed us
@@ -383,20 +384,15 @@ class DiskLruCache private constructor(
      * to delete `journalFileTmp` if it already exists. Then for all the `Entry` objects
      * in `LinkedHashMap<String, Entry> lruEntries` we set `Entry entry` to the next
      * entry, and if:
+     *  * the `currentEditor` field of `entry` is null, we add all of the values in
+     *  the `lengths[]` field of `entry` to size
      *
-     *  *
-     * the `currentEditor` field of `entry` is null, we add all of the values in
-     * the `lengths[]` field of `entry` to size
-     *
-     *  *
-     * if the `currentEditor` field of `entry` is not null, we set it to null, and
-     * we delete from the file system (if they exist) all the files that might have been written
-     * for this `Entry`. We do this by looping though all the `valueCount` (1 in
-     * our case) `File` objects returned by both the methods `getCleanFile` and
-     * `getDirtyFile` of `entry` passing them to `deleteIfExists` to delete
-     * them if they exit. After this we remove the `Entry` from `lruEntries`.
-     *
-     *
+     *  * if the `currentEditor` field of `entry` is not null, we set it to null, and
+     *  we delete from the file system (if they exist) all the files that might have been written
+     *  for this `Entry`. We do this by looping though all the `valueCount` (1 in
+     *  our case) `File` objects returned by both the methods `getCleanFile` and
+     *  `getDirtyFile` of `entry` passing them to `deleteIfExists` to delete
+     *  them if they exit. After this we remove the `Entry` from `lruEntries`.
      */
     @Throws(IOException::class)
     private fun processJournal() {
@@ -421,30 +417,25 @@ class DiskLruCache private constructor(
 
     /**
      * Creates a new journal that omits redundant information. This replaces the current journal if
-     * it exists. If our field `Writer journalWriter` is not null, we call its `close`
-     * method to close its file. Then we create `Writer writer` to be a `BufferedWriter`
-     * that will use a `FileWriter` instance constructed to write to `File journalFileTmp`.
-     * We then write the journal header to `writer` which consists of a line with the string
-     * MAGIC ("libcore.io.DiskLruCache"), followed by a line with the string VERSION_1 ("1"), followed
+     * it exists. If our field `Writer journalWriter` is not null, we call its `close` method to
+     * close its file. Then we create `Writer writer` to be a `BufferedWriter` that will use a
+     * `FileWriter` instance constructed to write to `File journalFileTmp`. We then write the
+     * journal header to `writer` which consists of a line with the string MAGIC
+     * ("libcore.io.DiskLruCache"), followed by a line with the string VERSION_1 ("1"), followed
      * by a line with the string value of `appVersion`, followed by a line with the string value
      * of `valueCount`, followed by a blank line.
-     *
      *
      * We then loop through each of the `Entry entry` objects in the values of `lruEntries`
      * and if its `currentEditor` is:
      *
-     *  *
-     * not null: we write a line to `writer` consisting of the string DIRTY ("DIRTY")
-     * followed by a blank, followed by the string value of the field `key` of this
-     * `entry`.
+     *  * not `null`: we write a line to `writer` consisting of the string DIRTY ("DIRTY")
+     *  followed by a blank, followed by the string value of the field `key` of this `entry`.
      *
-     *  *
-     * null: we write a line to `writer` consisting of the string CLEAN ("CLEAN")
-     * followed by a blank, followed by the string value of the field `key` of this
-     * `entry`, followed by the string returned by the `getLengths` method of
-     * this `entry` (this method concatenates the string value of all of the values
-     * in the `lengths[]` field, each preceded by a blank character)
-     *
+     *  * `null`: we write a line to `writer` consisting of the string CLEAN ("CLEAN")
+     *  followed by a blank, followed by the string value of the field `key` of this
+     *  `entry`, followed by the string returned by the `getLengths` method of this
+     *  `entry` (this method concatenates the string value of all of the values in the
+     *  `lengths[]` field, each preceded by a blank character)
      *
      * After doing this we close `writer`, rename `journalFileTmp` to `journalFile`,
      * and initialize our field `Writer journalWriter` to be a `BufferedWriter` writing
@@ -483,38 +474,34 @@ class DiskLruCache private constructor(
      * currently readable. If a value is returned, it is automatically moved to the head of the LRU
      * queue by the `get` method of `lruEntries`.
      *
-     *
      * First we call our method `checkNotClosed` to make sure the journal is open (it throws
      * IllegalStateException if it is not). Then we call our method `validateKey` to make
      * sure that `key` does not contain any illegal characters (if it contains " ", "\n" or
      * "\r" it throws IllegalArgumentException). We initialize `Entry entry` by retrieving the
-     * `Entry` in `lruEntries` stored under `key`, and if it is null we return
-     * null to the caller. If the `readable` field of `entry` is false we also return
-     * null to the caller (the `Entry` has never been published).
-     *
+     * `Entry` in `lruEntries` stored under `key`, and if it is `null` we return
+     * `null` to the caller. If the `readable` field of `entry` is false we also return
+     * `null` to the caller (the `Entry` has never been published).
      *
      * We initialize `InputStream[] ins` to hold `valueCount` input streams, then wrapped
      * in a try block intended to catch FileNotFoundException we loop over `int i` for the
-     * `valueCount` entries in `ins` opening the `FileInputStream` for each of
-     * the `File` paths that `Entry.getCleanFile(i)` creates, and if one of them does
-     * not exist FileNotFoundException gets caught by our catch block and we return null instead of
+     * `valueCount` entries in `ins` opening the `FileInputStream` for each of the `File`
+     * paths that `Entry.getCleanFile(i)` creates, and if one of them does not exist
+     * FileNotFoundException gets caught by our catch block and we return `null` instead of
      * continuing.
      *
-     *
      * We next increment our field `redundantOpCount`, and append a line to `journalWriter`
-     * consisting of the string formed by concatenating the string READ followed by a blank, followed
-     * by the string value of `key`. If our method `journalRebuildRequired` determines
+     * consisting of the string formed by concatenating the string READ followed by a blank,
+     * followed by the string value of `key`. If our method `journalRebuildRequired` determines
      * that a journal rebuild would be profitable we schedule the callable `cleanupCallable`
      * to run in the background.
      *
-     *
      * Finally we return a new instance of `Snapshot` constructed using `key` as the key
-     * to the cached `Entry`, the `sequenceNumber` field of our `entry` as the
-     * sequence number, and `ins` as the array of open `InputStream` objects to use to
-     * read the objects cached from the disk.
+     * to the cached `Entry`, the `sequenceNumber` field of our `entry` as the sequence
+     * number, and `ins` as the array of open `InputStream` objects to use to read the
+     * objects cached from the disk.
      *
      * @param key key of the disk cache entry to create a snapshot for.
-     * @return a `Snapshot` of the `Entry` with key `key`
+     * @return a [Snapshot] of the `Entry` with key `key`
      * @throws IOException if any IO errors occur.
      */
     @Synchronized
@@ -546,12 +533,12 @@ class DiskLruCache private constructor(
         if (journalRebuildRequired()) {
             executorService.submit(cleanupCallable)
         }
-        return Snapshot(key, entry.sequenceNumber, ins)
+        return Snapshot(key = key, sequenceNumber = entry.sequenceNumber, ins = ins)
     }
 
     /**
-     * Returns an editor for the entry named `key`, or null if another edit is in progress. We
-     * just return the `Editor` returned by our the parameter version of this method when called
+     * Returns an editor for the entry named `key`, or `null` if another edit is in progress. We
+     * just return the `Editor` returned by the two parameter version of this method when called
      * with our parameter `key` and ANY_SEQUENCE_NUMBER as the sequence number.
      *
      * @param key key of the cached `Entry`
@@ -565,29 +552,26 @@ class DiskLruCache private constructor(
     }
 
     /**
-     * Returns an editor for the entry named `key`, or null if another edit is in progress.
+     * Returns an editor for the entry named `key`, or `null` if another edit is in progress.
      * First we call our method `checkNotClosed` to make sure the journal is open (it throws
      * IllegalStateException if it is not). Then we call our method `validateKey` to make
      * sure that `key` does not contain any illegal characters (if it contains " ", "\n" or
      * "\r" it throws IllegalArgumentException). We initialize `Entry entry` by retrieving the
      * `Entry` in `lruEntries` stored under `key`.
      *
-     *
      * If the parameter `expectedSequenceNumber` is not equal to ANY_SEQUENCE_NUMBER and either
      * `entry` is null, or its `sequenceNumber` field is not equal to our parameter
      * `expectedSequenceNumber` we return null (the snapshot is stale).
      *
-     *
-     * If `entry` is null, we set it to a new instance of `Entry` for the key `key`
+     * If `entry` is `null`, we set it to a new instance of `Entry` for the key `key`
      * and put it in our field `LinkedHashMap<String, Entry> lruEntries`. Otherwise we check
-     * if its field `currentEditor` is not null and if so we return null to the caller (another
+     * if its field `currentEditor` is not `null` and if so we return `null` to the caller (another
      * edit is in progress).
-     *
      *
      * We initialize `Editor editor` with an instance for editing `entry`, then set the
      * `currentEditor` field of `entry` to `editor`. We write a line to our journal
-     * consisting of the string DIRTY ("DIRTY") followed by a blank followed by the string value of
-     * `key`. We then flush `journalWriter` to prevent file leaks, and return `editor`
+     * consisting of the string DIRTY ("DIRTY") followed by a blank followed by the string
+     * value of `key`. We then flush `journalWriter` to prevent file leaks, and return `editor`
      * to the caller.
      *
      * @param key key of the cached `Entry`
@@ -604,7 +588,8 @@ class DiskLruCache private constructor(
         validateKey(key)
         var entry = lruEntries[key]
         if (expectedSequenceNumber != ANY_SEQUENCE_NUMBER
-            && (entry == null || entry.sequenceNumber != expectedSequenceNumber)) {
+            && (entry == null || entry.sequenceNumber != expectedSequenceNumber)
+        ) {
             return null // snapshot is stale
         }
         if (entry == null) {
@@ -646,48 +631,41 @@ class DiskLruCache private constructor(
 
     /**
      * Finalizes an edit. First we initialize `Entry entry` from the `entry` field of
-     * our parameter `Editor editor`. If the `currentEditor` field of `entry` is
-     * not equal to `editor` we throw IllegalStateException. If our parameter `success`
-     * is true, and the `readable` field of `entry` is false (the entry is being created
-     * for the first time) we loop over `int i` for the `valueCount` (1 in our case) files
-     * for this entry aborting the edit and throwing IllegalStateException is any of the dirty files
-     * returned by `entry.getDirtyFile(i)` does not exist.
-     *
+     * our parameter `Editor editor`. If the `currentEditor` field of `entry` is not equal
+     * to `editor` we throw IllegalStateException. If our parameter `success` is true, and
+     * the `readable` field of `entry` is false (the entry is being created for the first time)
+     * we loop over `int i` for the `valueCount` (1 in our case) files for this entry aborting
+     * the edit and throwing IllegalStateException is any of the dirty files returned by
+     * `entry.getDirtyFile(i)` does not exist.
      *
      * Then we loop over `int i` for the `valueCount` (1 in our case) files for this entry
      * setting `File dirty` to each of the tmp files returned by `entry.getDirtyFile(i)`
      * and if our parameter `success` is:
      *
-     *  *
-     * true: if the file `dirty` exists we set `File clean` to the old file returned
-     * by `entry.getCleanFile(i)` then rename `dirty` to `clean`. We set
-     * `long oldLength` to the value stored in `entry.lengths` at `i` and set
-     * `long newLength` to the length of `clean`. We then set `entry.lengths` at `i`
-     * to `newLength` and update `size` by subtracting `oldLength` and adding
-     * `newLength` from it.
+     *  * `true`: if the file `dirty` exists we set `File clean` to the old file returned
+     *  by `entry.getCleanFile(i)` then rename `dirty` to `clean`. We set
+     *  `long oldLength` to the value stored in `entry.lengths` at `i` and set
+     *  `long newLength` to the length of `clean`. We then set `entry.lengths` at `i`
+     *  to `newLength` and update `size` by subtracting `oldLength` and adding
+     *  `newLength` from it.
      *
-     *  *
-     * false: We call our method `deleteIfExists` to delete `dirty` if it exists.
-     *
+     *  * `false`: We call our method `deleteIfExists` to delete `dirty` if it exists.
      *
      * We then increment `redundantOpCount` and set the `currentEditor` field of `entry`
-     * to null. If the `readable` field of `entry` is true or our parameter `success`
-     * is true:
+     * to null. If the `readable` field of `entry` is `true` or our parameter `success`
+     * is `true`:
      *
-     *  *
-     * true: we set the `readable` field of `entry` to true, and write a line to
-     * the journal consisting of the string CLEAN ("CLEAN") followed by a blank followed by
-     * the string value of the `key` field of `entry` followed by the string
-     * returned by `entry.getLengths()` (the string value of all the entries in the
-     * `lengths[]` array preceded by a blank). If our parameter `success` is
-     * true we set the `sequenceNumber` field of `entry` to `nextSequenceNumber`
-     * (post incrementing `nextSequenceNumber` in the same statement).
+     *  * `true`: we set the `readable` field of `entry` to `true`, and write a line to
+     *  the journal consisting of the string CLEAN ("CLEAN") followed by a blank followed by
+     *  the string value of the `key` field of `entry` followed by the string
+     *  returned by `entry.getLengths()` (the string value of all the entries in the
+     *  `lengths[]` array preceded by a blank). If our parameter `success` is
+     *  `true` we set the `sequenceNumber` field of `entry` to `nextSequenceNumber`
+     *  (post incrementing `nextSequenceNumber` in the same statement).
      *
-     *  *
-     * both false: We remove the `key` `Entry` from `LinkedHashMap<String, Entry> lruEntries`
-     * and write a line to the journal consisting of the string REMOVE ("REMOVE") followed by a blank followed
-     * by the string value of the `key` field of `entry`.
-     *
+     *  * both `false`: We remove the `key` `Entry` from `LinkedHashMap<String, Entry> lruEntries`
+     *  and write a line to the journal consisting of the string REMOVE ("REMOVE") followed by a
+     *  blank followed by the string value of the `key` field of `entry`.
      *
      * If `size` is greater than `maxSize` or `journalRebuildRequired` determines
      * that a journal rebuild would be profitable, we submit a background job to `executorService`
@@ -769,12 +747,10 @@ class DiskLruCache private constructor(
      * If `entry` is null, or its field `currentEditor` is not null we return false to the
      * caller.
      *
-     *
      * We loop over `i` for the `valueCount` (1 in our case) files in `entry` setting
      * `File file` to the file path returned by the `getCleanFile(i)` method of `entry`.
      * If we are not able to delete `file` we throw IOException, if we are we subtract the length
      * of the file contained in `lengths` at `i` from `size` and set `lengths` at `i` to 0.
-     *
      *
      * We increment `redundantOpCount`, and append a line to the journal consisting of the string
      * REMOVE ("REMOVE") followed by a blank followed by the string value of the `key`. We then
@@ -852,7 +828,6 @@ class DiskLruCache private constructor(
      * `lruEntries.values()` and if the `currentEditor` field of `entry` is not
      * null we call its `abort` method to abort the edit.
      *
-     *
      * We call our method `trimToSize` which removes the least recently used `Entry`
      * objects from our cache until `size` is less than or equal to `maxSize`. We call
      * the `close` method of `journalWriter` to close the file, and set it to null.
@@ -885,16 +860,16 @@ class DiskLruCache private constructor(
     @Throws(IOException::class)
     private fun trimToSize() {
         while (size > maxSize) {
-//            Map.Entry<String, Entry> toEvict = lruEntries.eldest();
+            // Map.Entry<String, Entry> toEvict = lruEntries.eldest();
             val (key) = lruEntries.entries.iterator().next()
             remove(key)
         }
     }
 
     /**
-     * Closes the cache and deletes all of its stored values. This will delete all files in the cache
-     * directory including files that weren't created by the cache. We call our method `close`
-     * to close our cache, then we call our method `deleteContents` to recursively delete
+     * Closes the cache and deletes all of its stored values. This will delete all files in the
+     * cache directory including files that weren't created by the cache. We call our method
+     * `close` to close our cache, then we call our method `deleteContents` to recursively delete
      * everything in the cache directory `File directory`.
      *
      * @throws IOException If an I/O error occurs
@@ -912,7 +887,13 @@ class DiskLruCache private constructor(
      * @param key cache key string
      */
     private fun validateKey(key: String) {
-        require(!(key.contains(" ") || key.contains("\n") || key.contains("\r"))) { "keys must not contain spaces or newlines: \"$key\"" }
+        require(
+            !(key.contains(" ")
+                || key.contains("\n")
+                || key.contains("\r"))
+        ) {
+            "keys must not contain spaces or newlines: \"$key\""
+        }
     }
 
     /**
@@ -937,9 +918,10 @@ class DiskLruCache private constructor(
         /**
          * The `InputStream[]` array for the files contained in the `Entry`
          */
-        private val ins: Array<InputStream?>) : Closeable {
+        private val ins: Array<InputStream?>
+    ) : Closeable {
         /**
-         * Returns an editor for this snapshot's entry, or null if either the
+         * Returns an editor for this snapshot's entry, or `null` if either the
          * entry has changed since this snapshot was created or if another edit
          * is in progress. We just return the Editor instance to edit the Entry
          * with our field `key` as the key, and the sequence number the
@@ -1000,7 +982,8 @@ class DiskLruCache private constructor(
         /**
          * `Entry` we are editing.
          */
-        val entry: Entry) {
+        val entry: Entry
+    ) {
         /**
          * True if an IOException has been caught while doing IO.
          */
@@ -1009,9 +992,9 @@ class DiskLruCache private constructor(
         /**
          * Returns an unbuffered input stream to read the last committed value, or null if no value
          * has been committed. We synchronize on `DiskLruCache.this`, and if the value of the
-         * `currentEditor` field of our field `Entry entry` is not this we throw
-         * IllegalStateException. If the `readable` field of `entry` is false we return
-         * null (no values have been committed to disk for this `Entry`). Finally we return
+         * `currentEditor` field of our field `Entry entry` is not `this` we throw
+         * IllegalStateException. If the `readable` field of `entry` is `false` we return
+         * `null` (no values have been committed to disk for this `Entry`). Finally we return
          * a `FileInputStream` constructed to read the file with the path returned by the
          * `getCleanFile` method of `entry` for the file index `index`.
          *
@@ -1048,9 +1031,9 @@ class DiskLruCache private constructor(
         /**
          * Returns a new unbuffered output stream to write the value at `index`. If the
          * underlying output stream encounters errors when writing to the filesystem, this edit
-         * will be aborted when [.commit] is called. The returned output stream does not
+         * will be aborted when [commit] is called. The returned output stream does not
          * throw IOExceptions. We synchronize on `DiskLruCache.this`, and if the value of
-         * the `currentEditor` field of our field `Entry entry` is not this we throw
+         * the `currentEditor` field of our field `Entry entry` is not `this` we throw
          * IllegalStateException. Finally we return an instance of `FaultHidingOutputStream`
          * constructed to write to the `FileOutputStream` created to write to the temporary
          * file pathname returned by the `getDirtyFile` method of `entry` for index
@@ -1167,10 +1150,10 @@ class DiskLruCache private constructor(
             }
 
             /**
-             * Closes this output stream and releases any system resources associated with the stream.
-             * Wrapped in a try block intended to catch IOException we just call the `close`
-             * method of the underlying output  stream passed to our constructor. If we catch IOException
-             * we just set `hasErrors` to true.
+             * Closes this output stream and releases any system resources associated with the
+             * stream. Wrapped in a try block intended to catch IOException we just call the
+             * `close` method of the underlying output  stream passed to our constructor. If we
+             * catch IOException we just set `hasErrors` to true.
              */
             override fun close() {
                 try {
@@ -1201,7 +1184,8 @@ class DiskLruCache private constructor(
      */
     inner class Entry(
         /** Key for referencing this `Entry` and creating file names  */
-        val key: String) {
+        val key: String
+    ) {
         /** Lengths of this entry's files.  */
         val lengths: LongArray
 
@@ -1222,7 +1206,7 @@ class DiskLruCache private constructor(
          * param key Key for referencing this `Entry`
          */
         init {
-            lengths = LongArray(valueCount)
+            lengths = LongArray(size = valueCount)
         }
 
         /**
@@ -1369,30 +1353,30 @@ class DiskLruCache private constructor(
          * Buffer size used to read and write to journal.
          */
         private const val IO_BUFFER_SIZE = 8 * 1024
-        /* From java.util.Arrays */
+
         /**
-         * Copies the specified range of the specified array into a new array. The initial index of the
-         * range (`start`) must lie between zero and `original.length`, inclusive. The value
-         * at `original[start]` is placed into the initial element of the copy (unless `start`
-         * is equal to `original.length` or `start` is equal to `end`). Values from
-         * subsequent elements in the original array are placed into subsequent elements in the copy.
+         * From java.util.Arrays
+         *
+         * Copies the specified range of the specified array into a new array. The initial index of
+         * the range (`start`) must lie between zero and `original.length`, inclusive. The value
+         * at `original[start]` is placed into the initial element of the copy (unless `start` is
+         * equal to `original.length` or `start` is equal to `end`). Values from subsequent
+         * elements in the original array are placed into subsequent elements in the copy.
          * The final index of the range (`end`), which must be greater than or equal to `start`,
          * may be greater than `original.length`, in which case null is placed in all elements of
          * the copy whose index is greater than or equal to `original.length` minus `start`.
          * The length of the returned array will be `end-start`.
          *
-         *
          * The resulting array is of exactly the same class as the original array.
-         *
          *
          * First we initialize `originalLength` with the length of our parameter `original`.
          * If `start` is greater than `end` we throw IllegalArgumentException. If `start`
          * is less than 0, or `start` is greater than `originalLength` we throw
          * ArrayIndexOutOfBoundsException. We initialize `resultLength` to the number of objects
-         * the copy will hold: `end` minus `start`. We initialize `copyLength` to the
-         * number of objects that need to be copied: the minimum of `resultLength` (the number of
-         * objects the copy will hold) and `originalLength` minus `start` (the number of
-         * objects in the original array that are requested to be copied). We then create a new instance
+         * the copy will hold: `end` minus `start`. We initialize `copyLength` to the number of
+         * objects that need to be copied: the minimum of `resultLength` (the number of objects
+         * the copy will hold) and `originalLength` minus `start` (the number of objects in the
+         * original array that are requested to be copied). We then create a new instance
          * for `T[] result` with a component type that is the same as `original`, and whose
          * length is `resultLength`. We then use the `System.arraycopy` method to copy from
          * the source array `original`, starting at position `start` into the destination
@@ -1402,32 +1386,41 @@ class DiskLruCache private constructor(
          * @param original array from which a range is to be copied
          * @param start initial index of the range to be copied, inclusive
          * @param end final index of the range to be copied, exclusive. (This index may lie outside the array.)
-         * @param <T> type of objects in array
+         * @param T type of objects in array
          * @return a new array containing the specified range from the original array, truncated or padded
          * with nulls to obtain the required length
         </T> */
         private fun <T> copyOfRange(original: Array<T>, start: Int, end: Int): Array<T> {
             val originalLength = original.size // For exception priority compatibility.
             require(start <= end)
-            @Suppress("ConvertTwoComparisonsToRangeCheck")
+            @Suppress("ConvertTwoComparisonsToRangeCheck") // Range checks are less readable
             if (start < 0 || start > originalLength) {
                 throw ArrayIndexOutOfBoundsException()
             }
             val resultLength = end - start
             val copyLength = Math.min(resultLength, originalLength - start)
 
-            val result = java.lang.reflect.Array
-                .newInstance(original.javaClass.componentType!!, resultLength) as Array<T>
-            System.arraycopy(original, start, result, 0, copyLength)
+            val result =
+                java.lang.reflect.Array.newInstance(
+                    /* componentType = */ original.javaClass.componentType!!,
+                    /* length = */ resultLength
+                ) as Array<T>
+            System.arraycopy(
+                /* src = */ original,
+                /* srcPos = */ start,
+                /* dest = */ result,
+                /* destPos = */ 0,
+                /* length = */ copyLength
+            )
             return result
         }
 
         /**
-         * Returns the remainder of 'reader' as a string, closing it when done. We initialize our variable
-         * `StringWriter writer`, `char[] buffer` with a char array that can hold 1024 chars,
+         * Returns the remainder of 'reader' as a string, closing it when done. We initialize our
+         * variable `StringWriter writer`, `char[] buffer` with a char array that can hold 1024 chars,
          * and declare `int count`. Then we set `count` to the number of characters read from
-         * `reader` into `buffer`, and while that is not equal to -1 (`read` returns -1
-         * when the end of the stream has been reached), we call the `write` method of `writer`
+         * `reader` into `buffer`, and while that is not equal to -1 (`read` returns -1 when the
+         * end of the stream has been reached), we call the `write` method of `writer`
          * to write `count` characters of `buffer` to it. When all of `reader` has been
          * read, we return the string representation of `writer` to the caller.
          *
@@ -1449,9 +1442,9 @@ class DiskLruCache private constructor(
         }
 
         /**
-         * Returns the ASCII characters up to but not including the next "\r\n", or "\n". First we create
-         * `StringBuilder result` with an initial capacity of 80. Then we loop reading the next
-         * character from `inputStream` into `int c`. If `c` is equal to -1 (end of the stream)
+         * Returns the ASCII characters up to but not including the next "\r\n", or "\n". First we
+         * create `StringBuilder result` with an initial capacity of 80. Then we loop reading the
+         * next character from `inputStream` into `int c`. If `c` is equal to -1 (end of the stream)
          * we throw EOFException, and if `c` is equal to '\n' we break out of the loop. For all
          * other characters we append the char version of `c` to `result`. After we reach a
          * '\n' character and break we set `int length` to the length of `result` and if
@@ -1534,24 +1527,22 @@ class DiskLruCache private constructor(
          * We initialize `DiskLruCache cache` with a new instance using our parameters as the
          * arguments to the constructor.
          *
-         *
          * If the file `cache.journalFile` exists, the cache already exists so we try to pick up
          * where we left off. Wrapped in a try block intended to catch IOException we call the
          * `readJournal` method of `cache` which reads the journal and after verifying the
          * header interprets each line of the journal in order to rebuild the `lruEntries` map of
          * cache files as it existed at the last run. We then call the `processJournal` method of
          * `cache` to compute the initial size and collect garbage. We then initialize the field
-         * `cache.journalWriter` with a `BufferedWriter` which uses a `FileWriter`
-         * constructed from `cache.journalFile` in append mode. Then we return `cache` to
-         * the caller. If we catch an IOException we call the `delete` method of `cache` and
-         * pretend the cache did not exist yet.
-         *
+         * `cache.journalWriter` with a `BufferedWriter` which uses a `FileWriter` constructed
+         * from `cache.journalFile` in append mode. Then we return `cache` to the caller If we
+         * catch an IOException we call the `delete` method of `cache` and pretend the cache
+         * did not exist yet.
          *
          * If `cache.journalFile` does not exist (or we decided to delete the cache above) we call
-         * the `mkdirs` of `directory` to create the directory in the file system, set
-         * `cache` to yet another new instance of `DiskLruCache` using our parameters as the
-         * arguments to the constructor, call its `rebuildJournal` method to create a new journal,
-         * and then return `cache` to the caller.
+         * the `mkdirs` of `directory` to create the directory in the file system, set `cache` to
+         * yet another new instance of `DiskLruCache` using our parameters as the arguments to the
+         * constructor, call its `rebuildJournal` method to create a new journal, and then return
+         * `cache` to the caller.
          *
          * @param directory a writable directory
          * @param appVersion version of the app
@@ -1572,7 +1563,8 @@ class DiskLruCache private constructor(
                     cache.processJournal()
                     cache.journalWriter = BufferedWriter(
                         FileWriter(cache.journalFile, true),
-                        IO_BUFFER_SIZE)
+                        IO_BUFFER_SIZE
+                    )
                     return cache
                 } catch (journalIsCorrupt: IOException) {
 //                System.logW("DiskLruCache " + directory + " is corrupt: "
@@ -1610,10 +1602,10 @@ class DiskLruCache private constructor(
         }
 
         /**
-         * Reads the entire remaining contents of the parameter `InputStream inputStream` into a string and
-         * returns it to the caller. We create an `InputStreamReader` to read from [inputStream] using
-         * the UTF_8 charset, and return the string returned by our method `readFully` when called
-         * with it.
+         * Reads the entire remaining contents of the parameter `InputStream inputStream` into a
+         * string and returns it to the caller. We create an `InputStreamReader` to read from
+         * [inputStream] using the UTF_8 charset, and return the string returned by our method
+         * `readFully` when called with it.
          *
          * @param inputStream [InputStream] to read from
          * @return the entire contents of `InputStream in` as a string

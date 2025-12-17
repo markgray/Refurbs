@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "CatchMayIgnoreException", "PLATFORM_CLASS_MAPPED_TO_KOTLIN", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress(
+    "DEPRECATION",
+    "CatchMayIgnoreException",
+    "PLATFORM_CLASS_MAPPED_TO_KOTLIN",
+    "JoinDeclarationAndAssignment",
+    "ReplaceNotNullAssertionWithElvisReturn"
+)
 
 package com.example.android.displayingbitmaps.util
 
@@ -173,7 +179,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                         if (Utils.hasHoneycomb()) {
                             // We're running on Honeycomb or later, so add the bitmap
                             // to a SoftReference set for possible use with inBitmap later
-                            mReusableBitmaps!!.add(SoftReference(oldValue.bitmap))
+                            mReusableBitmaps!!.add(SoftReference(/* referent = */ oldValue.bitmap))
                         }
                     }
                 }
@@ -196,7 +202,6 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                 }
             }
         }
-        //END_INCLUDE(init_memory_cache)
 
         // By default the disk cache is not initialized here as it should be initialized
         // on a separate thread due to disk access.
@@ -262,10 +267,10 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     /**
      * Adds a bitmap to both memory and disk cache. First if either of our parameters is `null` we
      * return having done nothing. If our [LruCache] of [String] to [BitmapDrawable] field
-     * [mMemoryCache] is not `null` we add the our [BitmapDrawable] parameter [value] to the memory
+     * [mMemoryCache] is not `null` we add our [BitmapDrawable] parameter [value] to the memory
      * cache, calling the [RecyclingBitmapDrawable.setIsCached] method of [value] with `true` if it
      * is an instance of [RecyclingBitmapDrawable] first before storing [value] using our [String]
-     * parameter [data] a the key in [mMemoryCache].
+     * parameter [data] as the key in [mMemoryCache].
      *
      * Then synchronized on [Object] field [mDiskCacheLock] if [mDiskLruCache] is not `null` we
      * generate [String] variable `val key` by calling [hashKeyForDisk] with our [String] parameter
@@ -336,7 +341,6 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                 }
             }
         }
-        //END_INCLUDE(add_bitmap_to_cache)
     }
 
     /**
@@ -349,7 +353,6 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
      * @return The bitmap drawable if found in cache, null otherwise
      */
     fun getBitmapFromMemCache(data: String): BitmapDrawable? {
-        //BEGIN_INCLUDE(get_bitmap_from_mem_cache)
         var memValue: BitmapDrawable? = null
         if (mMemoryCache != null) {
             memValue = mMemoryCache!![data]
@@ -358,7 +361,6 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
             Log.d(TAG, "Memory cache hit")
         }
         return memValue
-        //END_INCLUDE(get_bitmap_from_mem_cache)
     }
 
     /**
@@ -384,7 +386,6 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
      * @return The [Bitmap] if found in cache, null otherwise
      */
     fun getBitmapFromDiskCache(data: String): Bitmap? {
-        //BEGIN_INCLUDE(get_bitmap_from_disk_cache)
         val key = hashKeyForDisk(data)
         var bitmap: Bitmap? = null
         synchronized(mDiskCacheLock) {
@@ -424,7 +425,6 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
             }
             return bitmap
         }
-        //END_INCLUDE(get_bitmap_from_disk_cache)
     }
 
     /**
@@ -444,11 +444,10 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
      *
      * Finally we return `bitmap` to the caller.
      *
-     * @param options - [BitmapFactory.Options] with out* options populated
+     * @param options - [BitmapFactory.Options] with out options populated
      * @return [Bitmap] that case be used for `inBitmap`
      */
     fun getBitmapFromReusableSet(options: BitmapFactory.Options): Bitmap? {
-        //BEGIN_INCLUDE(get_bitmap_from_reusable_set)
         var bitmap: Bitmap? = null
         if (mReusableBitmaps != null && mReusableBitmaps!!.isNotEmpty()) {
             synchronized(mReusableBitmaps!!) {
@@ -473,10 +472,10 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
             }
         }
         return bitmap
-        //END_INCLUDE(get_bitmap_from_reusable_set)
     }
 
     /**
+     * TODO: Continue here.
      * Clears both the memory and disk cache associated with this [ImageCache] object. Note that
      * this includes disk access so this should not be executed on the main/UI thread. First if
      * [LruCache] of [String] to [BitmapDrawable] field [mMemoryCache] is not `null` we call its
@@ -628,6 +627,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
          * @param fraction Fraction of available app memory to use to size memory cache
          */
         fun setMemCacheSizePercent(fraction: Float) {
+            @Suppress("ConvertTwoComparisonsToRangeCheck") // Range checks are less readable
             require(!(fraction < 0.01f || fraction > 0.8f)) {
                 ("setMemCacheSizePercent - percent must be "
                     + "between 0.01 and 0.8 (inclusive)")
@@ -768,7 +768,8 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         @SuppressLint("ObsoleteSdkInt")
         @RequiresApi(VERSION_CODES.KITKAT)
         private fun canUseForInBitmap(
-            candidate: Bitmap, targetOptions: BitmapFactory.Options): Boolean {
+            candidate: Bitmap, targetOptions: BitmapFactory.Options
+        ): Boolean {
             if (!Utils.hasKitKat()) {
                 // On earlier versions, the dimensions must match exactly and the inSampleSize must be 1
                 return candidate.width == targetOptions.outWidth &&
@@ -834,8 +835,10 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
         fun getDiskCacheDir(context: Context, uniqueName: String): File {
             // Check if media is mounted or storage is built-in, if so, try and use external cache dir
             // otherwise use internal cache dir
-            val cachePath = if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState() ||
-                !isExternalStorageRemovable) getExternalCacheDir(context)!!.path else context.cacheDir.path
+            val cachePath =
+                if (Environment.MEDIA_MOUNTED == Environment.getExternalStorageState() ||
+                    !isExternalStorageRemovable
+                ) getExternalCacheDir(context)!!.path else context.cacheDir.path
             return File(cachePath + File.separator + uniqueName)
         }
 
