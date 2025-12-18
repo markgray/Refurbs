@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "DEPRECATION",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.effectivenavigation
 
@@ -124,7 +128,8 @@ class MainActivity : FragmentActivity(), TabListener {
             actionBar.addTab(
                 actionBar.newTab()
                     .setText(mAppSectionsPagerAdapter!!.getPageTitle(i))
-                    .setTabListener(this))
+                    .setTabListener(this)
+            )
         }
     }
 
@@ -138,7 +143,8 @@ class MainActivity : FragmentActivity(), TabListener {
      * stack.
      */
     @Deprecated("Deprecated in Java")
-    override fun onTabUnselected(tab: Tab, fragmentTransaction: FragmentTransaction) {}
+    override fun onTabUnselected(tab: Tab, fragmentTransaction: FragmentTransaction) {
+    }
 
     /**
      * Called when a tab enters the selected state. We just call the [ViewPager.setCurrentItem]
@@ -166,7 +172,8 @@ class MainActivity : FragmentActivity(), TabListener {
      * stack.
      */
     @Deprecated("Deprecated in Java")
-    override fun onTabReselected(tab: Tab, fragmentTransaction: FragmentTransaction) {}
+    override fun onTabReselected(tab: Tab, fragmentTransaction: FragmentTransaction) {
+    }
 
     /**
      * A [FragmentPagerAdapter] that returns a fragment corresponding to one of the primary
@@ -179,7 +186,7 @@ class MainActivity : FragmentActivity(), TabListener {
      * @param fm An an instance of the [FragmentManager] for interacting with fragments
      * associated with this activity
      */
-    (fm: FragmentManager?) : FragmentPagerAdapter(fm) {
+        (fm: FragmentManager?) : FragmentPagerAdapter(fm) {
         /**
          * Returns the [Fragment] associated with a specified position. We `when` switch on the
          * value of our [Int] parameter [i]:
@@ -269,14 +276,18 @@ class MainActivity : FragmentActivity(), TabListener {
             savedInstanceState: Bundle?
         ): View? {
             val rootView = inflater.inflate(
-                R.layout.fragment_section_launchpad,
-                container, false
+                /* resource = */ R.layout.fragment_section_launchpad,
+                /* root = */ container,
+                /* attachToRoot = */ false
             )
 
             // Demonstration of a collection-browsing activity.
             rootView.findViewById<View>(R.id.demo_collection_button)
                 .setOnClickListener {
-                    val intent = Intent(activity, CollectionDemoActivity::class.java)
+                    val intent = Intent(
+                        /* packageContext = */ activity,
+                        /* cls = */ CollectionDemoActivity::class.java
+                    )
                     startActivity(intent)
                 }
 
@@ -320,8 +331,16 @@ class MainActivity : FragmentActivity(), TabListener {
          * from a previous saved state as given here.
          * @return Return the [View] for the fragment's UI, or `null`.
          */
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-            val rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false)
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+            val rootView = inflater.inflate(
+                /* resource = */ R.layout.fragment_section_dummy,
+                /* root = */ container,
+                /* attachToRoot = */ false
+            )
             val args = arguments
             (rootView.findViewById<View>(android.R.id.text1) as TextView).text =
                 getString(R.string.dummy_section_text, args!!.getInt(ARG_SECTION_NUMBER))

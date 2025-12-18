@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate",
+@file:Suppress(
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "MemberVisibilityCanBePrivate",
     "UnusedImport"
 )
 
@@ -78,7 +81,7 @@ class CollectionDemoActivity : FragmentActivity() {
         // 
         // ViewPager and its adapters use support library fragments, so we must use
         // getSupportFragmentManager.
-        mDemoCollectionPagerAdapter = DemoCollectionPagerAdapter(supportFragmentManager)
+        mDemoCollectionPagerAdapter = DemoCollectionPagerAdapter(fm = supportFragmentManager)
 
         // Set up action bar.
         val actionBar: ActionBar? = actionBar
@@ -152,7 +155,7 @@ class CollectionDemoActivity : FragmentActivity() {
      * @param fm a reference to the [FragmentManager] for interacting with fragments associated
      * with this activity.
      */
-    (fm: FragmentManager?) : FragmentStatePagerAdapter(fm) {
+        (fm: FragmentManager?) : FragmentStatePagerAdapter(fm) {
         /**
          * Return the [Fragment] associated with a specified position. We initialize our [Fragment]
          * variable `val fragment` with a new instance of [DemoObjectFragment]. We initialize
