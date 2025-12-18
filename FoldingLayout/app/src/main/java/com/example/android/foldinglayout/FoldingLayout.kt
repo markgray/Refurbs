@@ -37,7 +37,7 @@ import androidx.core.graphics.createBitmap
  * can be specified. Each of these parameters can be modified individually and updates and resets
  * the fold to a default (unfolded) state. The fold factor varies between 0 (completely unfolded
  * flat image) to 1.0 (completely folded, non-visible image).
- *
+ * TODO: Continue
  * This layout throws an exception if there is more than one child added to the view. For more
  * complicated view hierarchy's inside the folding layout, the views should all be nested inside
  * 1 parent layout.
