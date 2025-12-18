@@ -33,6 +33,6 @@ android {
     }
     namespace = "com.example.android.foldinglayout"
     dependencies {
-        implementation("androidx.activity:activity-ktx:1.12.1")
+        implementation("androidx.activity:activity-ktx:1.12.2")
     }
 }
