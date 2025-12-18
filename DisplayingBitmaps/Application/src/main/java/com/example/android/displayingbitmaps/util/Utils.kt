@@ -49,7 +49,7 @@ object Utils {
      *
      * If we have at least a HONEYCOMB device we add the penalty to flash the screen to
      * `threadPolicyBuilder`, and set the class instance limit of `vmPolicyBuilder` for both
-     * [ImageGridActivity], and [ImageDetailActivity] to 1. We not build `threadPolicyBuilder` and
+     * [ImageGridActivity], and [ImageDetailActivity] to 1. We build `threadPolicyBuilder` and
      * set the thread policy for the current thread to it, and build `vmPolicyBuilder` and set the
      * policy for actions in the VM process (on any thread) to it.
      */

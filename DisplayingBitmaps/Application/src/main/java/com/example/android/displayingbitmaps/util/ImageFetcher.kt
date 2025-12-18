@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "DEPRECATION",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.displayingbitmaps.util
 
@@ -102,7 +106,7 @@ class ImageFetcher : ImageResizer {
      */
     private fun initialize(context: Context) {
         checkConnection(context)
-        mHttpCacheDir = ImageCache.getDiskCacheDir(context, HTTP_CACHE_DIR)
+        mHttpCacheDir = ImageCache.getDiskCacheDir(context = context, uniqueName = HTTP_CACHE_DIR)
     }
 
     /**
@@ -134,7 +138,8 @@ class ImageFetcher : ImageResizer {
         synchronized(mHttpDiskCacheLock) {
             if (ImageCache.getUsableSpace(mHttpCacheDir!!) > HTTP_CACHE_SIZE) {
                 try {
-                    mHttpDiskCache = DiskLruCache.open(mHttpCacheDir!!, 1, 1, HTTP_CACHE_SIZE.toLong())
+                    mHttpDiskCache =
+                        DiskLruCache.open(mHttpCacheDir!!, 1, 1, HTTP_CACHE_SIZE.toLong())
                     if (BuildConfig.DEBUG) {
                         Log.d(TAG, "HTTP cache initialized")
                     }
@@ -296,7 +301,7 @@ class ImageFetcher : ImageResizer {
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "processBitmap - $data")
         }
-        val key: String = ImageCache.hashKeyForDisk(data)
+        val key: String = ImageCache.hashKeyForDisk(key = data)
         var fileDescriptor: FileDescriptor? = null
         var fileInputStream: FileInputStream? = null
         var snapshot: Snapshot?
@@ -319,7 +324,11 @@ class ImageFetcher : ImageResizer {
                         }
                         val editor: DiskLruCache.Editor? = mHttpDiskCache!!.edit(key)
                         if (editor != null) {
-                            if (downloadUrlToStream(data, editor.newOutputStream(DISK_CACHE_INDEX))) {
+                            if (downloadUrlToStream(
+                                    urlString = data,
+                                    outputStream = editor.newOutputStream(DISK_CACHE_INDEX)
+                                )
+                            ) {
                                 editor.commit()
                             } else {
                                 editor.abort()
@@ -328,8 +337,9 @@ class ImageFetcher : ImageResizer {
                         snapshot = mHttpDiskCache!![key]
                     }
                     if (snapshot != null) {
-                        fileInputStream = snapshot!!.getInputStream(DISK_CACHE_INDEX) as FileInputStream
-                        fileDescriptor = fileInputStream!!.fd
+                        fileInputStream =
+                            snapshot.getInputStream(DISK_CACHE_INDEX) as FileInputStream
+                        fileDescriptor = fileInputStream.fd
                     }
                 } catch (e: IOException) {
                     Log.e(TAG, "processBitmap - $e")
@@ -339,7 +349,7 @@ class ImageFetcher : ImageResizer {
                     if (fileDescriptor == null && fileInputStream != null) {
                         @Suppress("CatchMayIgnoreException")
                         try {
-                            fileInputStream!!.close()
+                            fileInputStream.close()
                         } catch (e: IOException) {
                         }
                     }
@@ -348,13 +358,17 @@ class ImageFetcher : ImageResizer {
         }
         var bitmap: Bitmap? = null
         if (fileDescriptor != null) {
-            bitmap = decodeSampledBitmapFromDescriptor(fileDescriptor, mImageWidth,
-                mImageHeight, imageCache)
+            bitmap = decodeSampledBitmapFromDescriptor(
+                fileDescriptor = fileDescriptor,
+                reqWidth = mImageWidth,
+                reqHeight = mImageHeight,
+                cache = imageCache
+            )
         }
         if (fileInputStream != null) {
             @Suppress("CatchMayIgnoreException")
             try {
-                fileInputStream!!.close()
+                fileInputStream.close()
             } catch (e: IOException) {
             }
         }
@@ -368,6 +382,7 @@ class ImageFetcher : ImageResizer {
      * @param data [Object] version of http url?
      * @return [Bitmap] downloaded
      */
+    @Suppress("RedundantNullableReturnType") // The method we override returns nullable
     override fun processBitmap(data: Any?): Bitmap? {
         return processBitmap(data.toString())!!
     }

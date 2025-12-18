@@ -88,7 +88,7 @@ open class ImageResizer : ImageWorker {
      * @param size width and height of image
      */
     fun setImageSize(size: Int) {
-        setImageSize(size, size)
+        setImageSize(width = size, height = size)
     }
 
     /**
@@ -124,7 +124,7 @@ open class ImageResizer : ImageWorker {
      * [Any] parameter [data].
      */
     override fun processBitmap(data: Any?): Bitmap? {
-        return processBitmap(data.toString().toInt())
+        return processBitmap(resId = data.toString().toInt())
     }
 
     companion object {
@@ -138,7 +138,7 @@ open class ImageResizer : ImageWorker {
          * initialize [BitmapFactory.Options] variable `val options` with a new instance, set its
          * [BitmapFactory.Options.inJustDecodeBounds] field to `true` then call the method
          * [BitmapFactory.decodeResource] to check the dimensions of the image. Then we set the
-         * [BitmapFactory.Options.inJustDecodeBounds] field of `options` to the value calculated by
+         * [BitmapFactory.Options.inSampleSize] field of `options` to the value calculated by
          * our method [calculateInSampleSize] when passed `options` as its [BitmapFactory.Options]
          * argument `options`, [reqWidth] as its `reqWidth` argument and [reqHeight] as its
          * `reqHeight` argument. If our device is HONEYCOMB or newer we call our method
@@ -164,12 +164,10 @@ open class ImageResizer : ImageWorker {
             reqHeight: Int,
             cache: ImageCache?
         ): Bitmap {
-
-            // BEGIN_INCLUDE (read_bitmap_dimensions)
             // First decode with inJustDecodeBounds=true to check dimensions
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
-            BitmapFactory.decodeResource(res, resId, options)
+            BitmapFactory.decodeResource(/* res = */ res, /* id = */ resId, /* opts = */ options)
 
             // Calculate inSampleSize
             options.inSampleSize = calculateInSampleSize(
@@ -186,7 +184,11 @@ open class ImageResizer : ImageWorker {
 
             // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false
-            return BitmapFactory.decodeResource(res, resId, options)
+            return BitmapFactory.decodeResource(
+                /* res = */ res,
+                /* id = */ resId,
+                /* opts = */ options
+            )
         }
 
         /**
@@ -226,19 +228,23 @@ open class ImageResizer : ImageWorker {
             // First decode with inJustDecodeBounds=true to check dimensions
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
-            BitmapFactory.decodeFile(filename, options)
+            BitmapFactory.decodeFile(/* pathName = */ filename, /* opts = */ options)
 
             // Calculate inSampleSize
-            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight)
+            options.inSampleSize = calculateInSampleSize(
+                options = options,
+                reqWidth = reqWidth,
+                reqHeight = reqHeight
+            )
 
             // If we're running on Honeycomb or newer, try to use inBitmap
             if (Utils.hasHoneycomb()) {
-                addInBitmapOptions(options, cache)
+                addInBitmapOptions(options = options, cache = cache)
             }
 
             // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false
-            return BitmapFactory.decodeFile(filename, options)
+            return BitmapFactory.decodeFile(/* pathName = */ filename, /* opts = */ options)
         }
 
         /**
@@ -279,10 +285,18 @@ open class ImageResizer : ImageWorker {
             // First decode with inJustDecodeBounds=true to check dimensions
             val options = BitmapFactory.Options()
             options.inJustDecodeBounds = true
-            BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options)
+            BitmapFactory.decodeFileDescriptor(
+                /* fd = */ fileDescriptor,
+                /* outPadding = */ null,
+                /* opts = */ options
+            )
 
             // Calculate inSampleSize
-            options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight)
+            options.inSampleSize = calculateInSampleSize(
+                options = options,
+                reqWidth = reqWidth,
+                reqHeight = reqHeight
+            )
 
             // If we're running on Honeycomb or newer, try to use inBitmap
             if (Utils.hasHoneycomb()) {
@@ -291,7 +305,11 @@ open class ImageResizer : ImageWorker {
 
             // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false
-            return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options)
+            return BitmapFactory.decodeFileDescriptor(
+                /* fd = */ fileDescriptor,
+                /* outPadding = */ null,
+                /* opts = */ options
+            )
         }
 
         /**
@@ -309,18 +327,16 @@ open class ImageResizer : ImageWorker {
         @SuppressLint("ObsoleteSdkInt")
         @RequiresApi(Build.VERSION_CODES.HONEYCOMB)
         private fun addInBitmapOptions(options: BitmapFactory.Options, cache: ImageCache?) {
-            //BEGIN_INCLUDE(add_bitmap_options)
             // inBitmap only works with mutable bitmaps so force the decoder to
             // return mutable bitmaps.
             options.inMutable = true
             if (cache != null) {
                 // Try and find a bitmap to use for inBitmap
-                val inBitmap = cache.getBitmapFromReusableSet(options = options)
+                val inBitmap: Bitmap? = cache.getBitmapFromReusableSet(options = options)
                 if (inBitmap != null) {
                     options.inBitmap = inBitmap
                 }
             }
-            //END_INCLUDE(add_bitmap_options)
         }
 
         /**
@@ -363,10 +379,9 @@ open class ImageResizer : ImageWorker {
             reqWidth: Int,
             reqHeight: Int
         ): Int {
-            // BEGIN_INCLUDE (calculate_sample_size)
             // Raw height and width of image
-            val height = options.outHeight
-            val width = options.outWidth
+            val height: Int = options.outHeight
+            val width: Int = options.outWidth
             var inSampleSize = 1
             if (height > reqHeight || width > reqWidth) {
                 val halfHeight = height / 2
@@ -394,7 +409,6 @@ open class ImageResizer : ImageWorker {
                 }
             }
             return inSampleSize
-            // END_INCLUDE (calculate_sample_size)
         }
     }
 }

@@ -23,7 +23,7 @@ import com.example.android.displayingbitmaps.BuildConfig
 
 /**
  * A [BitmapDrawable] that keeps track of whether it is being displayed or cached. When the drawable
- * is no longer being displayed or cached, [recycle()][android.graphics.Bitmap.recycle] will be
+ * is no longer being displayed or cached, [recycle()][Bitmap.recycle] will be
  * called on this drawable's bitmap.
  */
 class RecyclingBitmapDrawable
@@ -69,7 +69,6 @@ class RecyclingBitmapDrawable
      * @param isDisplayed - Whether the drawable is being displayed or not
      */
     fun setIsDisplayed(isDisplayed: Boolean) {
-        //BEGIN_INCLUDE(set_is_displayed)
         synchronized(this) {
             if (isDisplayed) {
                 mDisplayRefCount++
@@ -81,7 +80,6 @@ class RecyclingBitmapDrawable
 
         // Check to see if recycle() can be called
         checkState()
-        //END_INCLUDE(set_is_displayed)
     }
 
     /**
@@ -98,7 +96,6 @@ class RecyclingBitmapDrawable
      * @param isCached - Whether the drawable is being cached or not
      */
     fun setIsCached(isCached: Boolean) {
-        //BEGIN_INCLUDE(set_is_cached)
         synchronized(this) {
             if (isCached) {
                 mCacheRefCount++
@@ -109,7 +106,6 @@ class RecyclingBitmapDrawable
 
         // Check to see if recycle() can be called
         checkState()
-        //END_INCLUDE(set_is_cached)
     }
 
     /**
@@ -121,7 +117,6 @@ class RecyclingBitmapDrawable
      */
     @Synchronized
     private fun checkState() {
-        //BEGIN_INCLUDE(check_state)
         // If the drawable cache and display ref counts = 0, and this drawable
         // has been displayed, then recycle
         if (mCacheRefCount <= 0 && mDisplayRefCount <= 0 && mHasBeenDisplayed
@@ -132,7 +127,6 @@ class RecyclingBitmapDrawable
             }
             bitmap.recycle()
         }
-        //END_INCLUDE(check_state)
     }
 
     /**
@@ -144,7 +138,7 @@ class RecyclingBitmapDrawable
      */
     @Synchronized
     private fun hasValidBitmap(): Boolean {
-        val bitmap = bitmap
+        val bitmap: Bitmap? = bitmap
         return bitmap != null && !bitmap.isRecycled
     }
 

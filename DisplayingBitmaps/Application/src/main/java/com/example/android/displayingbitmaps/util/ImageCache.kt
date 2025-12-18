@@ -475,7 +475,6 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
     }
 
     /**
-     * TODO: Continue here.
      * Clears both the memory and disk cache associated with this [ImageCache] object. Note that
      * this includes disk access so this should not be executed on the main/UI thread. First if
      * [LruCache] of [String] to [BitmapDrawable] field [mMemoryCache] is not `null` we call its
@@ -560,7 +559,7 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
 
     /**
      * A holder class that contains cache parameters. It Creates a set of image cache parameters
-     * that can be provided to [ImageCache.getInstance] or `[ImageWorker.addImageCache]. In our
+     * that can be provided to [ImageCache.getInstance] or [ImageWorker.addImageCache]. In our
      * `init` block we initialize our [File] field [diskCacheDir] with the [File] returned by our
      * method [getDiskCacheDir].
      *
@@ -771,7 +770,8 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
             candidate: Bitmap, targetOptions: BitmapFactory.Options
         ): Boolean {
             if (!Utils.hasKitKat()) {
-                // On earlier versions, the dimensions must match exactly and the inSampleSize must be 1
+                // On earlier versions, the dimensions must match exactly
+                // and the inSampleSize must be 1
                 return candidate.width == targetOptions.outWidth &&
                     candidate.height == targetOptions.outHeight &&
                     targetOptions.inSampleSize == 1
@@ -944,9 +944,9 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
 
         /**
          * Get the external app cache directory. If the device is at least FROYO, we return the value
-         * returned by the [Context.getExternalCacheDir] method of our parameter [Context] parameter
-         * [context]. Otherwise we initialize [String] variable `val cacheDir` by concatenating the
-         * string "/Android/data/" followed by our package name followed by the string "/cache/". We
+         * returned by the [Context.getExternalCacheDir] method of our [Context] parameter [context].
+         * Otherwise we initialize [String] variable `val cacheDir` by concatenating the string
+         * "/Android/data/" followed by our package name followed by the string "/cache/". We
          * then return a new instance of [File] for the path formed by concatenating the path string
          * name for the external storage directory [File] to our string `cacheDir`.
          *
@@ -1002,7 +1002,6 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
          * created.
          */
         private fun findOrCreateRetainFragment(fm: FragmentManager): RetainFragment {
-            //BEGIN_INCLUDE(find_create_retain_fragment)
             // Check to see if we have retained the worker fragment.
             var mRetainFragment = fm.findFragmentByTag(TAG) as RetainFragment?
 
@@ -1012,7 +1011,6 @@ class ImageCache private constructor(cacheParams: ImageCacheParams) {
                 fm.beginTransaction().add(mRetainFragment, TAG).commitAllowingStateLoss()
             }
             return mRetainFragment
-            //END_INCLUDE(find_create_retain_fragment)
         }
     }
 }

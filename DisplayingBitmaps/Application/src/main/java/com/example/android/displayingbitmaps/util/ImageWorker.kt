@@ -142,15 +142,18 @@ abstract class ImageWorker protected constructor(context: Context) {
             listener?.onImageLoaded(true)
         } else if (cancelPotentialWork(data, imageView)) {
             //BEGIN_INCLUDE(execute_background_task)
-            val task = BitmapWorkerTask(data, imageView, listener)
-            val asyncDrawable = AsyncDrawable(mResources, mLoadingBitmap, task)
+            val task = BitmapWorkerTask(data = data, imageView = imageView, listener = listener)
+            val asyncDrawable = AsyncDrawable(
+                res = mResources,
+                bitmap = mLoadingBitmap,
+                bitmapWorkerTask = task
+            )
             imageView.setImageDrawable(asyncDrawable)
 
             // NOTE: This uses a custom version of AsyncTask that has been pulled from the
             // framework and slightly modified. Refer to the docs at the top of the class
             // for more info on what was changed.
-            task.executeOnExecutor(AsyncTask.DUAL_THREAD_EXECUTOR)
-            //END_INCLUDE(execute_background_task)
+            task.executeOnExecutor(exec = AsyncTask.DUAL_THREAD_EXECUTOR)
         }
     }
 
@@ -172,7 +175,7 @@ abstract class ImageWorker protected constructor(context: Context) {
      * @param resId resource id of image.
      */
     fun setLoadingImage(resId: Int) {
-        mLoadingBitmap = BitmapFactory.decodeResource(mResources, resId)
+        mLoadingBitmap = BitmapFactory.decodeResource(/* res = */ mResources, /* id = */ resId)
     }
 
     /**
@@ -190,7 +193,10 @@ abstract class ImageWorker protected constructor(context: Context) {
         cacheParams: ImageCacheParams?
     ) {
         mImageCacheParams = cacheParams
-        imageCache = ImageCache.getInstance(fragmentManager!!, mImageCacheParams!!)
+        imageCache = ImageCache.getInstance(
+            fragmentManager = fragmentManager!!,
+            cacheParams = mImageCacheParams!!
+        )
         CacheAsyncTask().execute(MESSAGE_INIT_DISK_CACHE)
     }
 
@@ -211,8 +217,14 @@ abstract class ImageWorker protected constructor(context: Context) {
         activity: FragmentActivity,
         diskCacheDirectoryName: String?
     ) {
-        mImageCacheParams = ImageCacheParams(activity, diskCacheDirectoryName!!)
-        imageCache = ImageCache.getInstance(activity.supportFragmentManager, mImageCacheParams!!)
+        mImageCacheParams = ImageCacheParams(
+            context = activity,
+            diskCacheDirectoryName = diskCacheDirectoryName!!
+        )
+        imageCache = ImageCache.getInstance(
+            fragmentManager = activity.supportFragmentManager,
+            cacheParams = mImageCacheParams!!
+        )
         CacheAsyncTask().execute(MESSAGE_INIT_DISK_CACHE)
     }
 
@@ -285,7 +297,7 @@ abstract class ImageWorker protected constructor(context: Context) {
         @Suppress("unused")
         constructor(data: Any, imageView: ImageView) {
             mData = data
-            imageViewReference = WeakReference(imageView)
+            imageViewReference = WeakReference(/* referent = */ imageView)
             mOnImageLoadedListener = null
         }
 
@@ -302,7 +314,7 @@ abstract class ImageWorker protected constructor(context: Context) {
          */
         constructor(data: Any, imageView: ImageView, listener: OnImageLoadedListener?) {
             mData = data
-            imageViewReference = WeakReference(imageView)
+            imageViewReference = WeakReference(/* referent = */ imageView)
             mOnImageLoadedListener = listener
         }
 
@@ -344,7 +356,6 @@ abstract class ImageWorker protected constructor(context: Context) {
          * @return [BitmapDrawable] we downloaded and processed (or found in disk cache).
          */
         override fun doInBackground(vararg params: Void?): BitmapDrawable {
-            //BEGIN_INCLUDE(load_bitmap_in_background)
             if (BuildConfig.DEBUG) {
                 Log.d(TAG, "doInBackground - starting work")
             }
@@ -368,7 +379,7 @@ abstract class ImageWorker protected constructor(context: Context) {
             // to this task and our "exit early" flag is not set then try and fetch the bitmap from
             // the cache
             if (imageCache != null && !isCancelled && attachedImageView != null && !mExitTasksEarly) {
-                bitmap = imageCache!!.getBitmapFromDiskCache(dataString)
+                bitmap = imageCache!!.getBitmapFromDiskCache(data = dataString)
             }
 
             // If the bitmap was not found in the cache and this task has not been cancelled by
@@ -386,11 +397,11 @@ abstract class ImageWorker protected constructor(context: Context) {
             if (bitmap != null) {
                 drawable = if (Utils.hasHoneycomb()) {
                     // Running on Honeycomb or newer, so wrap in a standard BitmapDrawable
-                    bitmap.toDrawable(mResources)
+                    bitmap.toDrawable(resources = mResources)
                 } else {
                     // Running on Gingerbread or older, so wrap in a RecyclingBitmapDrawable
                     // which will recycle auto-magically
-                    RecyclingBitmapDrawable(mResources, bitmap)
+                    RecyclingBitmapDrawable(res = mResources, bitmap = bitmap)
                 }
                 if (imageCache != null) {
                     imageCache!!.addBitmapToCache(data = dataString, value = drawable)
@@ -400,7 +411,6 @@ abstract class ImageWorker protected constructor(context: Context) {
                 Log.d(TAG, "doInBackground - finished work")
             }
             return drawable ?: BitmapDrawable()
-            //END_INCLUDE(load_bitmap_in_background)
         }
 
         /**
@@ -420,7 +430,6 @@ abstract class ImageWorker protected constructor(context: Context) {
          * disk cache).
          */
         override fun onPostExecute(result: BitmapDrawable?) {
-            //BEGIN_INCLUDE(complete_background_work)
             var valueLocal: BitmapDrawable? = result
             var success = false
             // if cancel was called on this task or the "exit early" flag is set then we're done
@@ -435,8 +444,7 @@ abstract class ImageWorker protected constructor(context: Context) {
                 success = true
                 setImageDrawable(imageView = imageView, drawable = valueLocal)
             }
-            mOnImageLoadedListener?.onImageLoaded(success)
-            //END_INCLUDE(complete_background_work)
+            mOnImageLoadedListener?.onImageLoaded(success = success)
         }
 
         /**
@@ -448,7 +456,7 @@ abstract class ImageWorker protected constructor(context: Context) {
          * @param result [BitmapDrawable] returned from [doInBackground] method.
          */
         override fun onCancelled(result: BitmapDrawable?) {
-            super.onCancelled(result) // docs say we should not call?
+            super.onCancelled(result = result) // docs say we should not call?
             synchronized(mPauseWorkLock) { mPauseWorkLock.notifyAll() }
         }
 
@@ -456,11 +464,11 @@ abstract class ImageWorker protected constructor(context: Context) {
          * Returns the [ImageView] associated with this task as long as the [ImageView]'s task still
          * points to this task as well. Returns `null` otherwise. We initialize [ImageView] variable
          * `val imageView` by retrieving the reference object's referent from [imageViewReference]
-         * (will be `null` if the garbage collector collected this [WeakReference] or it was
-         * by the program). We initialize [BitmapWorkerTask] variable `val bitmapWorkerTask` to the
-         * [BitmapWorkerTask] returned by our method [getBitmapWorkerTask] for `imageView`. If `this`
-         * is the same as the variable `bitmapWorkerTask` we return `imageView`, otherwise we return
-         * `null`.
+         * (will be `null` if the garbage collector collected this [WeakReference] or if it was set
+         * to null by the program). We initialize [BitmapWorkerTask] variable `val bitmapWorkerTask`
+         * to the [BitmapWorkerTask] returned by our method [getBitmapWorkerTask] for `imageView`.
+         * If `this` is the same as the variable `bitmapWorkerTask` we return `imageView`, otherwise
+         * we return `null`.
          *
          * @return [ImageView] associated with this task or `null`
          */
@@ -511,7 +519,7 @@ abstract class ImageWorker protected constructor(context: Context) {
          * reference to our `BitmapWorkerTask` parameter `bitmapWorkerTask`.
          */
         init {
-            bitmapWorkerTaskReference = WeakReference(bitmapWorkerTask)
+            bitmapWorkerTaskReference = WeakReference(/* referent = */ bitmapWorkerTask)
         }
 
         /**
@@ -738,7 +746,7 @@ abstract class ImageWorker protected constructor(context: Context) {
             if (bitmapWorkerTask != null) {
                 bitmapWorkerTask.cancel(true)
                 if (BuildConfig.DEBUG) {
-                    val bitmapData = bitmapWorkerTask.mData
+                    val bitmapData: Any? = bitmapWorkerTask.mData
                     Log.d(TAG, "cancelWork - cancelled work for $bitmapData")
                 }
             }
@@ -753,8 +761,8 @@ abstract class ImageWorker protected constructor(context: Context) {
          * [BitmapWorkerTask.mData] field of `bitmapWorkerTask`, then if:
          *
          *  * `bitmapData` is `null`, or `bitmapData` is not equal to our [Any] parameter [data] we
-         * call the [BitmapWorkerTask.cancel] method of `bitmapWorkerTask` to cancel the work and
-         * return `true` (by falling through to the null branch of the previous if statement.
+         *  call the [BitmapWorkerTask.cancel] method of `bitmapWorkerTask` to cancel the work and
+         *  return `true` (by falling through to the null branch of the previous if statement.
          *
          *  * otherwise we return `false`: The same work is already in progress.
          *
@@ -766,7 +774,6 @@ abstract class ImageWorker protected constructor(context: Context) {
          * stopped in that case.
          */
         fun cancelPotentialWork(data: Any, imageView: ImageView?): Boolean {
-            //BEGIN_INCLUDE(cancel_potential_work)
             val bitmapWorkerTask = getBitmapWorkerTask(imageView)
             if (bitmapWorkerTask != null) {
                 val bitmapData: Any? = bitmapWorkerTask.mData
@@ -781,7 +788,6 @@ abstract class ImageWorker protected constructor(context: Context) {
                 }
             }
             return true
-            //END_INCLUDE(cancel_potential_work)
         }
 
         /**
