@@ -56,7 +56,7 @@ class ElevationDragFragment : Fragment() {
      * First we call our super's implementation of `onCreate`. Then we initialize our
      * [ViewOutlineProvider] field [mOutlineProviderCircle] with a new instance. Finally we
      * initialize [mElevationStep] with the raw pixel size that a Resources instance for the
-     * application's package resolves for the resource with id `R.dimen.elevation_step`.
+     * application's package resolves for the resource with id `R.dimen.elevation_step` (8dp) .
      *
      * @param savedInstanceState we do not override `onSaveInstanceState` so do not use.
      */
@@ -109,15 +109,21 @@ class ElevationDragFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.ztranslation, container, false)
+        val rootView = inflater.inflate(
+            /* resource = */ R.layout.ztranslation,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
 
-        /* Find the {@link View} to apply z-translation to. */
+        /**
+         * The [View] to apply z-translation to
+         */
         val floatingShape = rootView.findViewById<View>(R.id.circle)
 
-        /* Define the shape of the {@link View}'s shadow by setting one of the {@link Outline}s. */
+        /* Define the shape of the `View`'s shadow by setting one of the `Outline`'s. */
         floatingShape.outlineProvider = mOutlineProviderCircle
 
-        /* Clip the {@link View} with its outline. */
+        /* Clip the `View` with its outline. */
         floatingShape.clipToOutline = true
         val dragLayout = rootView.findViewById<DragFrameLayout>(R.id.main_layout)
         dragLayout.setDragFrameController(object : DragFrameLayout.DragFrameLayoutController {
@@ -161,7 +167,7 @@ class ElevationDragFragment : Fragment() {
      */
     private class CircleOutlineProvider : ViewOutlineProvider() {
         /**
-         * Called to get the provider to populate the Outline. This method will be called by a [View]
+         * Called to get the provider to populate the [Outline]. This method will be called by a [View]
          * when its owned Drawables are invalidated, when the [View]'s size changes, or if
          * [View.invalidateOutline] is called explicitly. The input outline is empty and has
          * an alpha of `1.0f`. We call the [Outline.setOval] method of our [Outline] parameter
