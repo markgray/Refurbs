@@ -54,26 +54,23 @@ class MainActivity : SampleActivityBase() {
     private var mLogShown = false
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.sample_main_layout`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.sample_main_layout`.
      *
      * We initialize our [LinearLayout] variable `rootView` to the view with ID
-     * `R.id.sample_main_layout` then call [ViewCompat.setOnApplyWindowInsetsListener]
-     * to take over the policy for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `R.id.sample_main_layout` then call [ViewCompat.setOnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to `rootView`, with the `listener` argument a
+     * lambda that accepts the [View] passed the lambda in variable `v` and the [WindowInsetsCompat]
+     * passed the lambda in variable `windowInsets`. It initializes its [Insets] variable
      * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the IME
+     * (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v`
+     * to be a [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the
+     * right margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the
+     * bottom margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * If our [Bundle] parameter [savedInstanceState] is null, this is the first time we were
      * called so we use the [FragmentManager] for interacting with fragments associated with this
@@ -82,9 +79,9 @@ class MainActivity : SampleActivityBase() {
      * to replace (add) `fragment` to the container view with ID `R.id.sample_content_fragment`
      * in our layout. We then commit `transaction`.
      *
-     * @param savedInstanceState If this is `null` we need to create and add our [ElevationBasicFragment]
-     * fragment, if not `null` we are being recreated after a configuration change so the fragment
-     * already exists
+     * @param savedInstanceState If this is `null` we need to create and add our
+     * [ElevationBasicFragment] fragment, if not `null` we are being recreated after a configuration
+     * change so the fragment already exists
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -116,8 +113,9 @@ class MainActivity : SampleActivityBase() {
 
     /**
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater]
-     * with this context to inflate our menu layout file `R.menu.main` into our [Menu] parameter
-     * [menu] and return `true` so that the menu will be displayed.
+     * with this context to inflate our menu layout file `R.menu.main` (contains a single item
+     * "Show Log") into our [Menu] parameter [menu] and return `true` so that the menu will be
+     * displayed.
      *
      * @param menu The options menu in which you place your items.
      * @return You must return `true` for the menu to be displayed;
@@ -132,13 +130,13 @@ class MainActivity : SampleActivityBase() {
      * Prepare the Screen's standard options menu to be displayed. We initialize [MenuItem] variable
      * `val logToggle` by finding the menu item in our [Menu] parameter [menu] with id
      * `R.id.menu_toggle_log`, set it to visible only if the view in our layout with id
-     * `R.id.sample_output` is an instance of [ViewAnimator], and set its title to
+     * `R.id.sample_output` is an instance of [ViewAnimator] (which it is if the screen is smaller
+     * than 720dp wide, it is a [LinearLayout] for larger screens) and set its title to
      * `R.string.sample_hide_log` ("Hide Log") if our [Boolean] flag field [mLogShown] is `true`
      * or to `R.string.sample_show_log` ("Show Log") if it is `false`. Finally we return the value
      * returned by our super's implementation of `onPrepareOptionsMenu` to the caller.
      *
-     * @param menu The options menu as last shown or first initialized by
-     * [onCreateOptionsMenu].
+     * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu].
      * @return You must return `true` for the menu to be displayed;
      * if you return `false` it will not be shown.
      */
