@@ -35,10 +35,10 @@ class FloatingActionButtonBasicFragment : Fragment(), OnCheckedChangeListener {
      * variable `val rootView` to the [View] that our [LayoutInflater] parameter [inflater] inflates
      * from our layout file `R.layout.fab_layout` using our [ViewGroup] parameter [container] for
      * LayoutParams without attaching to it. We initialize [FloatingActionButton] variable `val fab1`
-     *  with id `R.id.fab_1` and set its [OnCheckedChangeListener] to this, and we initialize
-     * [FloatingActionButton] variable `val fab2` by finding the view in `rootView` with id
-     * `R.id.fab_2` and set its [OnCheckedChangeListener] to this. Finally we return `rootView` to
-     * the caller.
+     * to the view with id `R.id.fab_1` and set its [OnCheckedChangeListener] to this, and we
+     * initialize [FloatingActionButton] variable `val fab2` by finding the view in `rootView` with
+     * id `R.id.fab_2` and set its [OnCheckedChangeListener] to this. Finally we return `rootView`
+     * to the caller.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
@@ -55,7 +55,11 @@ class FloatingActionButtonBasicFragment : Fragment(), OnCheckedChangeListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val rootView = inflater.inflate(R.layout.fab_layout, container, false)
+        val rootView = inflater.inflate(
+            /* resource = */ R.layout.fab_layout,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
 
         // Make this {@link Fragment} listen for changes in both FABs.
         val fab1 = rootView.findViewById<FloatingActionButton>(R.id.fab_1)

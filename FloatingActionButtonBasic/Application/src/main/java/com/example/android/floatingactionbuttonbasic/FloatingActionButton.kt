@@ -94,7 +94,12 @@ class FloatingActionButton @JvmOverloads constructor(
              * @param outline The empty outline to be populated.
              */
             override fun getOutline(view: View, outline: Outline) {
-                outline.setOval(0, 0, width, height)
+                outline.setOval(
+                    /* left = */ 0,
+                    /* top = */ 0,
+                    /* right = */ width,
+                    /* bottom = */ height
+                )
             }
         }
 
@@ -107,10 +112,10 @@ class FloatingActionButton @JvmOverloads constructor(
      * interface. If our [Boolean] field [mChecked] is already equal to our [Boolean] parameter
      * [checked] we return having done nothing. Otherwise we set [mChecked] to [checked] and call
      * the method [refreshDrawableState] to force our view to update its drawable state. This will
-     * cause the [drawableStateChanged] method to be called on this view. If our [OnCheckedChangeListener]
-     * field is not `null` we call its [OnCheckedChangeListener.onCheckedChanged] method with this
-     * as the [FloatingActionButton] view whose state has changed and [checked] as the new checked
-     * state.
+     * cause the [drawableStateChanged] method to be called on this view. If our
+     * [OnCheckedChangeListener] field is not `null` we call its
+     * [OnCheckedChangeListener.onCheckedChanged] method with `this` as the [FloatingActionButton]
+     * view whose state has changed and [checked] as the new checked state.
      *
      * @param checked value to set our state to.
      */
