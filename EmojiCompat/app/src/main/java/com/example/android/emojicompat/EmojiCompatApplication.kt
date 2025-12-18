@@ -71,14 +71,17 @@ class EmojiCompatApplication : Application() {
                 .setReplaceAll(true)
                 .registerInitCallback(object : EmojiCompat.InitCallback() {
                     /**
-                     * Called when EmojiCompat is initialized and the emoji data is loaded. We log this
+                     * Called when EmojiCompat is initialized and the emoji data is loaded.
+                     * We log this.
                      */
                     override fun onInitialized() {
                         Log.i(TAG, "EmojiCompat initialized")
                     }
 
                     /**
-                     * Called when an unrecoverable error occurs during EmojiCompat initialization. We log this
+                     * Called when an unrecoverable error occurs during EmojiCompat initialization.
+                     * We log this.
+                     *
                      * @param throwable the error or exception that occurred
                      */
                     override fun onFailed(throwable: Throwable?) {

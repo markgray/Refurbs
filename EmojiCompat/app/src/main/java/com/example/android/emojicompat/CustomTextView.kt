@@ -47,7 +47,7 @@ class CustomTextView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : AppCompatTextView(context!!, attrs, defStyleAttr) {
     /**
-     * Our instance of a `EmojiTextViewHelper` to use to as a Utility class to enhance custom
+     * Our instance of a [EmojiTextViewHelper] to use to as a Utility class to enhance custom
      * TextView widgets with `EmojiCompat`.
      */
     private var mEmojiTextViewHelper: EmojiTextViewHelper? = null
