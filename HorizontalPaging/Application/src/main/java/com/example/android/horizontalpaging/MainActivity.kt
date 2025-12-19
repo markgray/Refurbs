@@ -1,4 +1,10 @@
-@file:Suppress("DEPRECATION", "KDocUnresolvedReference", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "DEPRECATION",
+    "KDocUnresolvedReference",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.horizontalpaging
 
@@ -46,22 +52,19 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
      * content view to our layout file `R.layout.sample_main` (it holds only a [ViewPager]
      * widget).
      *
-     * We initialize our [ViewPager] variable `rootView` to the view with ID `R.id.pager`
-     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [ViewPager] field [mViewPager] to the view with ID `R.id.pager` then call
+     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying window
+     * insets to [mViewPager], with the `listener` argument a lambda that accepts the [View] passed
+     * the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * Next we set up an [ActionBar] with tabs, and then configure the [ViewPager] contained inside
      * `R.layout.activity_main`. A [SectionsPagerAdapter] will be instantiated to hold the different
@@ -73,16 +76,14 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
      * of static title text this mode presents a series of tabs for navigation within the activity).
      * We initialize our [SectionsPagerAdapter] field [mSectionsPagerAdapter] with a new instance
      * constructed using the [FragmentManager] for interacting with fragments associated with this
-     * activity for the various [FragmentTransaction] operations it uses to swap fragments. We
-     * initialize our [ViewPager] field [mViewPager] by finding the view in our layout file with id
-     * `R.id.pager` set its adapter to [mSectionsPagerAdapter], and set its [OnPageChangeListener]
-     * to an anonymous [SimpleOnPageChangeListener] whose [SimpleOnPageChangeListener.onPageSelected]
+     * activity for the various [FragmentTransaction] operations it uses to swap fragments. We set
+     * the adapter of [mViewPager] to [mSectionsPagerAdapter], and set its [OnPageChangeListener] to
+     * an anonymous [SimpleOnPageChangeListener] whose [SimpleOnPageChangeListener.onPageSelected]
      * override calls the [setSelectedNavigationItem] method of [ActionBar] variable `actionBar`
      * with the Position index of the newly selected page `position` in order to set its selected
-     * tab to the selected page. Finally we loop over [Int] variable `var i` for all of the pages
-     * in the data set of [SectionsPagerAdapter] field [mSectionsPagerAdapter] adding a new tab
-     * to `actionBar` whose text consists of the page title for `i`, and whose [TabListener]
-     * is `this`.
+     * tab to the selected page. Finally we loop over [Int] variable `var i` for all of the pages in
+     * the data set of [SectionsPagerAdapter] field [mSectionsPagerAdapter] adding a new tab to
+     * `actionBar` whose text consists of the page title for `i`, and whose [TabListener] is `this`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
@@ -91,8 +92,8 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
         super.onCreate(savedInstanceState)
         // Load the UI from layout/sample_main.xml
         setContentView(R.layout.sample_main)
-        val rootView = findViewById<ViewPager>(R.id.pager)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+        mViewPager = findViewById<ViewPager>(R.id.pager)
+        ViewCompat.setOnApplyWindowInsetsListener(mViewPager!!) { v: View, windowInsets: WindowInsetsCompat ->
             val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
 
@@ -120,7 +121,6 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = rootView
         mViewPager!!.adapter = mSectionsPagerAdapter
 
         // When swiping between different sections, select the corresponding tab. We can also use
@@ -147,7 +147,8 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
             actionBar.addTab(
                 actionBar.newTab()
                     .setText(mSectionsPagerAdapter!!.getPageTitle(i))
-                    .setTabListener(this))
+                    .setTabListener(this)
+            )
         }
     }
 
@@ -178,7 +179,8 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
      * support being added to the back stack.
      */
     @Deprecated("Deprecated in Java")
-    override fun onTabUnselected(tab: ActionBar.Tab, fragmentTransaction: FragmentTransaction) {}
+    override fun onTabUnselected(tab: ActionBar.Tab, fragmentTransaction: FragmentTransaction) {
+    }
 
     /**
      * Called when a tab that is already selected is chosen again by the user. Some applications may
@@ -190,7 +192,8 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
      * to the back stack.
      */
     @Deprecated("Deprecated in Java")
-    override fun onTabReselected(tab: ActionBar.Tab, fragmentTransaction: FragmentTransaction) {}
+    override fun onTabReselected(tab: ActionBar.Tab, fragmentTransaction: FragmentTransaction) {
+    }
 
     /**
      * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -202,7 +205,7 @@ class MainActivity : FragmentActivity(), ActionBar.TabListener {
      *
      * @param fm [FragmentManager] to use to perform any [FragmentTransaction] needed
      */
-    (fm: FragmentManager?) : FragmentPagerAdapter(fm!!) {
+        (fm: FragmentManager?) : FragmentPagerAdapter(fm!!) {
         /**
          * Get fragment corresponding to a specific position. This will be used to populate the
          * contents of the [ViewPager]. We initialize [Fragment] variable `val fragment` with a new
