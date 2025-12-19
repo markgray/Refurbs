@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "VARIABLE_WITH_REDUNDANT_INITIALIZER", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "KotlinConstantConditions", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "DEPRECATION",
+    "VARIABLE_WITH_REDUNDANT_INITIALIZER",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "KotlinConstantConditions",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.imagepixelization
 
@@ -50,21 +57,21 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.scale
 
 /**
- * This application shows three different graphics/animation concepts.
- * TODO: Continue here.
- * A pixelization effect is applied to an image with varying pixelization
- * factors to achieve an image that is pixelized to varying degrees. In
- * order to optimize the amount of image processing performed on the image
- * being pixelized, the pixelization effect only takes place if a predefined
- * amount of time has elapsed since the main image was last pixelized. The
- * effect is also applied when the user stops moving the seekbar.
+ * This application shows three different graphics/animation concepts:
  *
- * This application also shows how to use a ValueAnimator to achieve a
- * smooth self-animating seekbar.
+ *  1. A pixelization effect is applied to an image with varying pixelization
+ *  factors to achieve an image that is pixelized to varying degrees. In
+ *  order to optimize the amount of image processing performed on the image
+ *  being pixelized, the pixelization effect only takes place if a predefined
+ *  amount of time has elapsed since the main image was last pixelized. The
+ *  effect is also applied when the user stops moving the seekbar.
  *
- * Lastly, this application shows a use case of AsyncTask where some
- * computation heavy processing can be moved onto a background thread,
- * so as to keep the UI completely responsive to user input.
+ *  2. This application also shows how to use a ValueAnimator to achieve a
+ *  smooth self-animating seekbar.
+ *
+ *  3. Lastly, this application shows a use case of AsyncTask where some
+ *  computation heavy processing can be moved onto a background thread,
+ *  so as to keep the UI completely responsive to user input.
  */
 class ImagePixelization : ComponentActivity() {
     /**
@@ -115,23 +122,19 @@ class ImagePixelization : ComponentActivity() {
      * edge display, then we call our super's implementation of `onCreate`, and set our content
      * view to our layout file `R.layout.activity_image_pixelization`.
      *
-     * We initialize our [RelativeLayout] variable `rootView`
-     * to the view with ID `R.id.root_view` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [RelativeLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [ImageView] field [mImageView] by finding the view with id `R.id.pixelView`,
      * and our [SeekBar] field [mSeekBar] by finding the view with id `R.id.seekbar`. We initialize
@@ -173,42 +176,43 @@ class ImagePixelization : ComponentActivity() {
      * `R.id.seekbar`), communicates changes to the position of the [SeekBar] to the parts of
      * our code responsible for pixilating our image.
      */
-    private val mOnSeekBarChangeListener: OnSeekBarChangeListener = object : OnSeekBarChangeListener {
-        /**
-         * Notification that the user has finished a touch gesture. If the new position of our
-         * [SeekBar] is [SEEKBAR_STOP_CHANGE_DELTA] (5) different than the last position we
-         * pixilated for we call our method [invokePixelization] to update the level of pixilation
-         * of our image.
-         *
-         * @param seekBar The [SeekBar] in which the touch gesture began
-         */
-        override fun onStopTrackingTouch(seekBar: SeekBar) {
-            if (Math.abs(mSeekBar!!.progress - mLastProgress) > SEEKBAR_STOP_CHANGE_DELTA) {
-                invokePixelization()
+    private val mOnSeekBarChangeListener: OnSeekBarChangeListener =
+        object : OnSeekBarChangeListener {
+            /**
+             * Notification that the user has finished a touch gesture. If the new position of our
+             * [SeekBar] is [SEEKBAR_STOP_CHANGE_DELTA] (5) different than the last position we
+             * pixilated for we call our method [invokePixelization] to update the level of
+             * pixilation of our image.
+             *
+             * @param seekBar The [SeekBar] in which the touch gesture began
+             */
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                if (Math.abs(mSeekBar!!.progress - mLastProgress) > SEEKBAR_STOP_CHANGE_DELTA) {
+                    invokePixelization()
+                }
+            }
+
+            /**
+             * Notification that the user has started a touch gesture. We ignore.
+             *
+             * @param seekBar The [SeekBar] in which the touch gesture began
+             */
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+
+            /**
+             * Notification that the progress level has changed. We just call our method
+             * [checkIfShouldPixelize] to first check if enough time has elapsed since the
+             * last pixelization call was invoked, and if it has it calls our method
+             * `invokePixelization` to update the level of pixilation of our image.
+             *
+             * @param seekBar The [SeekBar] whose progress has changed
+             * @param progress The current progress level.
+             * @param fromUser `true` if the progress change was initiated by the user.
+             */
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                checkIfShouldPixelize()
             }
         }
-
-        /**
-         * Notification that the user has started a touch gesture. We ignore.
-         *
-         * @param seekBar The [SeekBar] in which the touch gesture began
-         */
-        override fun onStartTrackingTouch(seekBar: SeekBar) {}
-
-        /**
-         * Notification that the progress level has changed. We just call our method
-         * [checkIfShouldPixelize] to first check if enough time has elapsed since the
-         * last pixelization call was invoked, and if it has it calls our method
-         * `invokePixelization` to update the level of pixilation of our image.
-         *
-         * @param seekBar The [SeekBar] whose progress has changed
-         * @param progress The current progress level.
-         * @param fromUser `true` if the progress change was initiated by the user.
-         */
-        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-            checkIfShouldPixelize()
-        }
-    }
 
     /**
      * Checks if enough time has elapsed since the last pixelization call was invoked. This prevents
@@ -243,8 +247,8 @@ class ImagePixelization : ComponentActivity() {
      *  * `R.id.animate`: ("Animate") We initialize [ObjectAnimator] variable `val animator` with an
      *  instance configured to animate the [Int] "progress" property of [SeekBar] field [mSeekBar]
      *  from 0 to the upper limit its range. We set its [TimeInterpolator] to a new instance of
-     * [LinearInterpolator] (interpolator where the rate of change is constant), set its
-     * duration to SEEKBAR_ANIMATION_DURATION (10_000), and start it running.
+     *  [LinearInterpolator] (interpolator where the rate of change is constant), set its
+     *  duration to SEEKBAR_ANIMATION_DURATION (10_000), and start it running.
      *
      *  * `R.id.checkbox`: ("Using AsyncTask") If our [Boolean] field [mIsChecked] is `true` we set
      *  the checked state of [MenuItem] parameter [item] to `false` and set [Boolean] field
@@ -308,14 +312,14 @@ class ImagePixelization : ComponentActivity() {
      * component occupies 1 byte).
      *
      * We initialize [Int] variable `var xPixels` to our parameter `pixelizationFactor` times `width`
-     * truncated to int, and if this is 0 we set it to 1. We initialize `int yPixels` to our
-     * [Float] parameter [pixelizationFactor] times `height` truncated to [Int], and if this is 0
-     * we set it to 1. We declare [Int] variable `var pixel`, [Int] variable `var red`, [Int] variable
-     * `var green`, [Int] variable `var blue`, and [Int] variable `var numPixels` setting them to 0.
-     * We allocate a `width` times `height` [IntArray] for `val bitmapPixels`, and load a copy of
-     * the data in [Bitmap] parameter [bitmap] into it. We allocate a `yPixels` times `xPixels`
-     * [IntArray] for `val pixels`, and declare [Int] variable `var maxX` and [Int] variable
-     * `var maxY`.
+     * truncated to [Int], and if this is 0 we set it to 1. We initialize [Int] variable `yPixels`
+     * to our [Float] parameter [pixelizationFactor] times `height` truncated to [Int], and if this
+     * is 0 we set it to 1. We declare [Int] variable `var pixel`, [Int] variable `var red`, [Int]
+     * variable `var green`, [Int] variable `var blue`, and [Int] variable `var numPixels` setting
+     * them to 0. We allocate a `width` times `height` [IntArray] for `val bitmapPixels`, and load
+     * a copy of the data in [Bitmap] parameter [bitmap] into it. We allocate a `yPixels` times
+     * `xPixels` [IntArray] for `val pixels`, and declare [Int] variable `var maxX` and [Int]
+     * variable `var maxY`.
      *
      * Now we loop over [Int] variable `y` while `y` is less then `height` incrementing by `yPixels`
      * and over [Int] variable `x` for `x` less then `width` incrementing by `xPixels`:
@@ -345,25 +349,33 @@ class ImagePixelization : ComponentActivity() {
      * @return a pixelated [BitmapDrawable] version of our [Bitmap] parameter [bitmap].
      */
     fun customImagePixelization(pixelizationFactor: Float, bitmap: Bitmap?): BitmapDrawable {
-        val width = bitmap!!.width
-        val height = bitmap.height
+        val width: Int = bitmap!!.width
+        val height: Int = bitmap.height
         if (mPixelatedBitmap == null ||
             !(width == mPixelatedBitmap!!.width && height == mPixelatedBitmap!!.height)
         ) {
             mPixelatedBitmap = createBitmap(width = width, height = height)
         }
-        var xPixels = (pixelizationFactor * width.toFloat()).toInt()
+        var xPixels: Int = (pixelizationFactor * width.toFloat()).toInt()
         xPixels = if (xPixels > 0) xPixels else 1
-        var yPixels = (pixelizationFactor * height.toFloat()).toInt()
+        var yPixels: Int = (pixelizationFactor * height.toFloat()).toInt()
         yPixels = if (yPixels > 0) yPixels else 1
         var pixel: Int
         var red: Int
         var green: Int
         var blue: Int
         var numPixels: Int
-        val bitmapPixels = IntArray(width * height)
-        bitmap.getPixels(bitmapPixels, 0, width, 0, 0, width, height)
-        val pixels = IntArray(yPixels * xPixels)
+        val bitmapPixels = IntArray(size = width * height)
+        bitmap.getPixels(
+            /* pixels = */ bitmapPixels,
+            /* offset = */ 0,
+            /* stride = */ width,
+            /* x = */ 0,
+            /* y = */ 0,
+            /* width = */ width,
+            /* height = */ height
+        )
+        val pixels = IntArray(size = yPixels * xPixels)
         var maxX: Int
         var maxY: Int
         var y = 0
@@ -389,7 +401,15 @@ class ImagePixelization : ComponentActivity() {
                 Arrays.fill(pixels, pixel)
                 val w: Int = Math.min(xPixels, width - x)
                 val h: Int = Math.min(yPixels, height - y)
-                mPixelatedBitmap!!.setPixels(pixels, 0, w, x, y, w, h)
+                mPixelatedBitmap!!.setPixels(
+                    /* pixels = */ pixels,
+                    /* offset = */ 0,
+                    /* stride = */ w,
+                    /* x = */ x,
+                    /* y = */ y,
+                    /* width = */ w,
+                    /* height = */ h
+                )
                 x += xPixels
             }
             y += yPixels
@@ -432,14 +452,14 @@ class ImagePixelization : ComponentActivity() {
      */
     @SuppressLint("ObsoleteSdkInt")
     fun builtInPixelization(pixelizationFactor: Float, bitmap: Bitmap?): BitmapDrawable {
-        val width = bitmap!!.width
-        val height = bitmap.height
-        var downScaleFactorWidth = (pixelizationFactor * width).toInt()
+        val width: Int = bitmap!!.width
+        val height: Int = bitmap.height
+        var downScaleFactorWidth: Int = (pixelizationFactor * width).toInt()
         downScaleFactorWidth = if (downScaleFactorWidth > 0) downScaleFactorWidth else 1
-        var downScaleFactorHeight = (pixelizationFactor * height).toInt()
+        var downScaleFactorHeight: Int = (pixelizationFactor * height).toInt()
         downScaleFactorHeight = if (downScaleFactorHeight > 0) downScaleFactorHeight else 1
-        val downScaledWidth = width / downScaleFactorWidth
-        val downScaledHeight = height / downScaleFactorHeight
+        val downScaledWidth: Int = width / downScaleFactorWidth
+        val downScaledHeight: Int = height / downScaleFactorHeight
         val pixelatedBitmap: Bitmap = bitmap.scale(
             width = downScaledWidth,
             height = downScaledHeight,
@@ -486,8 +506,6 @@ class ImagePixelization : ComponentActivity() {
      *  [BitmapDrawable] that our method [pixelizeImage] creates from [Bitmap] field [mImageBitmap]
      *  for a pixelization factorof the current progress of [SeekBar] field [mSeekBar] divided by
      *  [PROGRESS_TO_PIXELIZATION_FACTOR].
-     *
-     *
      */
     fun invokePixelization() {
         mLastTime = System.currentTimeMillis()
@@ -567,7 +585,7 @@ class ImagePixelization : ComponentActivity() {
          *
          * @param result The result of the operation computed by [doInBackground].
          */
-        @Deprecated("Deprecated in Java", ReplaceWith("mImageView!!.setImageDrawable(result)"))
+        @Deprecated("Deprecated in Java")
         override fun onPostExecute(result: BitmapDrawable) {
             mImageView!!.setImageDrawable(result)
         }
@@ -576,7 +594,8 @@ class ImagePixelization : ComponentActivity() {
          * Runs on the UI thread before [doInBackground]. We ignore.
          */
         @Deprecated("Deprecated in Java")
-        override fun onPreExecute() {}
+        override fun onPreExecute() {
+        }
 
         /**
          * Runs on the UI thread after [publishProgress] is invoked. The specified values are
@@ -585,7 +604,8 @@ class ImagePixelization : ComponentActivity() {
          * @param values The values indicating progress.
          */
         @Deprecated("Deprecated in Java")
-        override fun onProgressUpdate(vararg values: Void?) {}
+        override fun onProgressUpdate(vararg values: Void?) {
+        }
     }
 
     companion object {
