@@ -13,7 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("unused", "DEPRECATION", "UNUSED_CHANGED_VALUE", "ReplaceJavaStaticMethodWithKotlinAnalog", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "unused",
+    "DEPRECATION",
+    "UNUSED_CHANGED_VALUE",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "JoinDeclarationAndAssignment",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.interactivechart
 
@@ -89,7 +97,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      *
      * @see [mContentRect]
      */
-    private var mCurrentViewport: RectF? = RectF(AXIS_X_MIN, AXIS_Y_MIN, AXIS_X_MAX, AXIS_Y_MAX)
+    private var mCurrentViewport: RectF? = RectF(
+        /* left = */ AXIS_X_MIN,
+        /* top = */ AXIS_Y_MIN,
+        /* right = */ AXIS_X_MAX,
+        /* bottom = */ AXIS_Y_MAX
+    )
 
     /**
      * The current destination rectangle (in pixel coordinates) into which the chart data should
@@ -136,7 +149,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     private var mLabelTextPaint: Paint? = null
 
     /**
-     * Maximum length of a label, used when an estimated size for is needed, it is set in our
+     * Maximum length of a label, used when an estimated size for it is needed, it is set in our
      * [initPaints] method to the value that the [Paint.measureText] method of [mLabelTextPaint]
      * returns for the text "0000" converted to an [Int].
      */
@@ -369,101 +382,102 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * The scale listener, used for handling multi-finger scale gestures.
      */
-    private val mScaleGestureListener: OnScaleGestureListener = object : SimpleOnScaleGestureListener() {
-        /**
-         * This is the active focal point in terms of the viewport. Could be a local
-         * variable but kept here to minimize per-frame allocations.
-         */
-        private val viewportFocus: PointF = PointF()
+    private val mScaleGestureListener: OnScaleGestureListener =
+        object : SimpleOnScaleGestureListener() {
+            /**
+             * This is the active focal point in terms of the viewport. Could be a local
+             * variable but kept here to minimize per-frame allocations.
+             */
+            private val viewportFocus: PointF = PointF()
 
-        /**
-         * The average X distance in pixels between each of the pointers forming the gesture in
-         * progress through the focal point.
-         */
-        private var lastSpanX: Float = 0f
+            /**
+             * The average X distance in pixels between each of the pointers forming the gesture in
+             * progress through the focal point.
+             */
+            private var lastSpanX: Float = 0f
 
-        /**
-         * The average Y distance in pixels between each of the pointers forming the gesture in
-         * progress through the focal point.
-         */
-        private var lastSpanY: Float = 0f
+            /**
+             * The average Y distance in pixels between each of the pointers forming the gesture in
+             * progress through the focal point.
+             */
+            private var lastSpanY: Float = 0f
 
-        /**
-         * Responds to the beginning of a scaling gesture. Reported by new pointers going down.
-         * We set our [Float] variable [lastSpanX] to the value of the average X distance in pixels
-         * between each of the pointers forming the gesture in progress through the focal point, and
-         * our [Float] variable [lastSpanY] to the value of the average Y distance in pixels between
-         * each of the pointers forming the gesture in progress through the focal point
-         *
-         * @param scaleGestureDetector The detector reporting the event - use this to retrieve
-         * extended info about event state.
-         * @return Whether or not the detector should continue recognizing this gesture. For
-         * example, if a gesture is beginning with a focal point outside of a region where it
-         * makes sense, onScaleBegin() may return `false` to ignore the rest of the gesture. We
-         * always return `true`.
-         */
-        override fun onScaleBegin(scaleGestureDetector: ScaleGestureDetector): Boolean {
-            lastSpanX = ScaleGestureDetectorCompat.getCurrentSpanX(scaleGestureDetector)
-            lastSpanY = ScaleGestureDetectorCompat.getCurrentSpanY(scaleGestureDetector)
-            return true
+            /**
+             * Responds to the beginning of a scaling gesture. Reported by new pointers going down.
+             * We set our [Float] variable [lastSpanX] to the value of the average X distance in pixels
+             * between each of the pointers forming the gesture in progress through the focal point, and
+             * our [Float] variable [lastSpanY] to the value of the average Y distance in pixels between
+             * each of the pointers forming the gesture in progress through the focal point
+             * TODO: Continue here.
+             * @param scaleGestureDetector The detector reporting the event - use this to retrieve
+             * extended info about event state.
+             * @return Whether or not the detector should continue recognizing this gesture. For
+             * example, if a gesture is beginning with a focal point outside of a region where it
+             * makes sense, onScaleBegin() may return `false` to ignore the rest of the gesture. We
+             * always return `true`.
+             */
+            override fun onScaleBegin(scaleGestureDetector: ScaleGestureDetector): Boolean {
+                lastSpanX = ScaleGestureDetectorCompat.getCurrentSpanX(scaleGestureDetector)
+                lastSpanY = ScaleGestureDetectorCompat.getCurrentSpanY(scaleGestureDetector)
+                return true
+            }
+
+            /**
+             * Responds to scaling events for a gesture in progress. Reported by pointer motion. We
+             * initialize our [Float] variable `val spanX` to the average X distance between each of
+             * the pointers forming the gesture in progress through the focal point that our
+             * [ScaleGestureDetectorCompat.getCurrentSpanX] method returns when passed our
+             * [ScaleGestureDetector] parameter [scaleGestureDetector], and initialize our [Float]
+             * variable `val spanY` to the average Y distance between each of the pointers forming the
+             * gesture in progress through the focal point that our [ScaleGestureDetectorCompat.getCurrentSpanX]
+             * method returns when passed our [ScaleGestureDetector] parameter [scaleGestureDetector].
+             * We initialize our [Float] variable `val newWidth` to our [Float] field [lastSpanX] divided
+             * by `spanX` times the `width` of our [RectF] field [mCurrentViewport], and we initialize
+             * our [Float] variable `val newHeight` to our [Float] field [lastSpanY] divided
+             * by `spanY` times the `height` of our [RectF] field [mCurrentViewport]. We initialize our
+             * [Float] variable `val focusX` to the X coordinate of the current gesture's focal point,
+             * and our [Float] variable `val focusY` to the Y coordinate of the current gesture's focal
+             * point. We then call our [hitTest] method to check if the point (`focusX`,`focusY`) is
+             * contained in [mContentRect] and if it is it will set [PointF] field [viewportFocus] to
+             * the point. We then update the value of [RectF] field [mCurrentViewport] based on the
+             * resulting scaling requested by the gesture, and call our [constrainViewport] method to
+             * have it ensure that the viewport size requested for [mCurrentViewport] is inside the
+             * viewport extremes defined by [AXIS_X_MIN], [AXIS_X_MAX], [AXIS_Y_MIN] and [AXIS_Y_MAX].
+             * We then call the [ViewCompat.postInvalidateOnAnimation] method to cause an invalidate
+             * of `this` [View] to happen on the next animation time step, typically the next display
+             * frame. We then set our [lastSpanX] field to `spanX` and our [lastSpanY] field to `spanY`
+             * and return `true` so that the detector will consider this event as handled.
+             *
+             * @param scaleGestureDetector The detector reporting the event - use this to retrieve
+             * extended info about event state.
+             * @return Whether or not the detector should consider this event as handled. If an event
+             * was not handled, the detector will continue to accumulate movement until an event is
+             * handled. This can be useful if an application, for example, only wants to update scaling
+             * factors if the change is greater than 0.01. We always return `true`
+             */
+            override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
+                val spanX: Float = ScaleGestureDetectorCompat.getCurrentSpanX(scaleGestureDetector)
+                val spanY: Float = ScaleGestureDetectorCompat.getCurrentSpanY(scaleGestureDetector)
+                val newWidth: Float = lastSpanX / spanX * mCurrentViewport!!.width()
+                val newHeight: Float = lastSpanY / spanY * mCurrentViewport!!.height()
+                val focusX: Float = scaleGestureDetector.focusX
+                val focusY: Float = scaleGestureDetector.focusY
+                hitTest(focusX, focusY, viewportFocus)
+                mCurrentViewport!!.set(
+                    viewportFocus.x - newWidth * (focusX - mContentRect.left) / mContentRect.width(),
+                    viewportFocus.y - newHeight * (mContentRect.bottom - focusY) / mContentRect.height(),
+                    0f,
+                    0f
+                )
+                mCurrentViewport!!.right = mCurrentViewport!!.left + newWidth
+                mCurrentViewport!!.bottom = mCurrentViewport!!.top + newHeight
+                constrainViewport()
+                ViewCompat.postInvalidateOnAnimation(this@InteractiveLineGraphView)
+                lastSpanX = spanX
+                lastSpanY = spanY
+                return true
+            }
         }
-
-        /**
-         * Responds to scaling events for a gesture in progress. Reported by pointer motion. We
-         * initialize our [Float] variable `val spanX` to the average X distance between each of
-         * the pointers forming the gesture in progress through the focal point that our
-         * [ScaleGestureDetectorCompat.getCurrentSpanX] method returns when passed our
-         * [ScaleGestureDetector] parameter [scaleGestureDetector], and initialize our [Float]
-         * variable `val spanY` to the average Y distance between each of the pointers forming the
-         * gesture in progress through the focal point that our [ScaleGestureDetectorCompat.getCurrentSpanX]
-         * method returns when passed our [ScaleGestureDetector] parameter [scaleGestureDetector].
-         * We initialize our [Float] variable `val newWidth` to our [Float] field [lastSpanX] divided
-         * by `spanX` times the `width` of our [RectF] field [mCurrentViewport], and we initialize
-         * our [Float] variable `val newHeight` to our [Float] field [lastSpanY] divided
-         * by `spanY` times the `height` of our [RectF] field [mCurrentViewport]. We initialize our
-         * [Float] variable `val focusX` to the X coordinate of the current gesture's focal point,
-         * and our [Float] variable `val focusY` to the Y coordinate of the current gesture's focal
-         * point. We then call our [hitTest] method to check if the point (`focusX`,`focusY`) is
-         * contained in [mContentRect] and if it is it will set [PointF] field [viewportFocus] to
-         * the point. We then update the value of [RectF] field [mCurrentViewport] based on the
-         * resulting scaling requested by the gesture, and call our [constrainViewport] method to
-         * have it ensure that the viewport size requested for [mCurrentViewport] is inside the
-         * viewport extremes defined by [AXIS_X_MIN], [AXIS_X_MAX], [AXIS_Y_MIN] and [AXIS_Y_MAX].
-         * We then call the [ViewCompat.postInvalidateOnAnimation] method to cause an invalidate
-         * of `this` [View] to happen on the next animation time step, typically the next display
-         * frame. We then set our [lastSpanX] field to `spanX` and our [lastSpanY] field to `spanY`
-         * and return `true` so that the detector will consider this event as handled.
-         *
-         * @param scaleGestureDetector The detector reporting the event - use this to retrieve
-         * extended info about event state.
-         * @return Whether or not the detector should consider this event as handled. If an event
-         * was not handled, the detector will continue to accumulate movement until an event is
-         * handled. This can be useful if an application, for example, only wants to update scaling
-         * factors if the change is greater than 0.01. We always return `true`
-         */
-        override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
-            val spanX: Float = ScaleGestureDetectorCompat.getCurrentSpanX(scaleGestureDetector)
-            val spanY: Float = ScaleGestureDetectorCompat.getCurrentSpanY(scaleGestureDetector)
-            val newWidth: Float = lastSpanX / spanX * mCurrentViewport!!.width()
-            val newHeight: Float = lastSpanY / spanY * mCurrentViewport!!.height()
-            val focusX: Float = scaleGestureDetector.focusX
-            val focusY: Float = scaleGestureDetector.focusY
-            hitTest(focusX, focusY, viewportFocus)
-            mCurrentViewport!!.set(
-                viewportFocus.x - newWidth * (focusX - mContentRect.left) / mContentRect.width(),
-                viewportFocus.y - newHeight * (mContentRect.bottom - focusY) / mContentRect.height(),
-                0f,
-                0f
-            )
-            mCurrentViewport!!.right = mCurrentViewport!!.left + newWidth
-            mCurrentViewport!!.bottom = mCurrentViewport!!.top + newHeight
-            constrainViewport()
-            ViewCompat.postInvalidateOnAnimation(this@InteractiveLineGraphView)
-            lastSpanX = spanX
-            lastSpanY = spanY
-            return true
-        }
-    }
 
     /**
      * The gesture listener, used for handling simple gestures such as double touches, scrolls,
@@ -589,8 +603,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
              * additional information about the viewport, see the comments for
              * [mCurrentViewport].
              */
-            val viewportOffsetX: Float = distanceX * mCurrentViewport!!.width() / mContentRect.width()
-            val viewportOffsetY: Float = -distanceY * mCurrentViewport!!.height() / mContentRect.height()
+            val viewportOffsetX: Float =
+                distanceX * mCurrentViewport!!.width() / mContentRect.width()
+            val viewportOffsetY: Float =
+                -distanceY * mCurrentViewport!!.height() / mContentRect.height()
             computeScrollSurfaceSize(out = mSurfaceSizeBuffer)
             val scrolledX: Int = (mSurfaceSizeBuffer.x
                 * (mCurrentViewport!!.left + viewportOffsetX - AXIS_X_MIN)
@@ -800,19 +816,19 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         val minChartSize: Int = resources.getDimensionPixelSize(R.dimen.min_chart_size)
         setMeasuredDimension(
             /* measuredWidth = */ Math.max(
-            suggestedMinimumWidth,
-            resolveSize(
-                minChartSize + paddingLeft + mMaxLabelWidth + mLabelSeparation + paddingRight,
-                widthMeasureSpec
-            )
-        ),
+                suggestedMinimumWidth,
+                resolveSize(
+                    minChartSize + paddingLeft + mMaxLabelWidth + mLabelSeparation + paddingRight,
+                    widthMeasureSpec
+                )
+            ),
             /* measuredHeight = */ Math.max(
-            suggestedMinimumHeight,
-            resolveSize(
-                minChartSize + paddingTop + mLabelHeight + mLabelSeparation + paddingBottom,
-                heightMeasureSpec
+                suggestedMinimumHeight,
+                resolveSize(
+                    minChartSize + paddingTop + mLabelHeight + mLabelSeparation + paddingBottom,
+                    heightMeasureSpec
+                )
             )
-        )
         )
     }
 
@@ -1354,10 +1370,14 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     private fun constrainViewport() {
         mCurrentViewport!!.left = Math.max(AXIS_X_MIN, mCurrentViewport!!.left)
         mCurrentViewport!!.top = Math.max(AXIS_Y_MIN, mCurrentViewport!!.top)
-        mCurrentViewport!!.bottom = Math.max(Math.nextUp(mCurrentViewport!!.top),
-            Math.min(AXIS_Y_MAX, mCurrentViewport!!.bottom))
-        mCurrentViewport!!.right = Math.max(Math.nextUp(mCurrentViewport!!.left),
-            Math.min(AXIS_X_MAX, mCurrentViewport!!.right))
+        mCurrentViewport!!.bottom = Math.max(
+            Math.nextUp(mCurrentViewport!!.top),
+            Math.min(AXIS_Y_MAX, mCurrentViewport!!.bottom)
+        )
+        mCurrentViewport!!.right = Math.max(
+            Math.nextUp(mCurrentViewport!!.left),
+            Math.min(AXIS_X_MAX, mCurrentViewport!!.right)
+        )
     }
 
     /**
@@ -1412,8 +1432,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         // Flings use math in pixels (as opposed to math based on the viewport).
         computeScrollSurfaceSize(mSurfaceSizeBuffer)
         mScrollerStartViewport.set(mCurrentViewport!!)
-        val startX: Int = (mSurfaceSizeBuffer.x * (mScrollerStartViewport.left - AXIS_X_MIN) / (AXIS_X_MAX - AXIS_X_MIN)).toInt()
-        val startY: Int = (mSurfaceSizeBuffer.y * (AXIS_Y_MAX - mScrollerStartViewport.bottom) / (AXIS_Y_MAX - AXIS_Y_MIN)).toInt()
+        val startX: Int =
+            (mSurfaceSizeBuffer.x * (mScrollerStartViewport.left - AXIS_X_MIN) / (AXIS_X_MAX - AXIS_X_MIN)).toInt()
+        val startY: Int =
+            (mSurfaceSizeBuffer.y * (AXIS_Y_MAX - mScrollerStartViewport.bottom) / (AXIS_Y_MAX - AXIS_Y_MIN)).toInt()
         mScroller.forceFinished(true)
         mScroller.fling(
             startX,
@@ -1555,13 +1577,15 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
             val canScrollY: Boolean = (mCurrentViewport!!.top > AXIS_Y_MIN
                 || mCurrentViewport!!.bottom < AXIS_Y_MAX)
             if (canScrollX && currX < 0 && mEdgeEffectLeft.isFinished
-                && !mEdgeEffectLeftActive) {
+                && !mEdgeEffectLeftActive
+            ) {
                 mEdgeEffectLeft.onAbsorb(OverScrollerCompat.getCurrVelocity(mScroller).toInt())
                 mEdgeEffectLeftActive = true
                 needsInvalidate = true
             } else if (canScrollX
                 && currX > (mSurfaceSizeBuffer.x - mContentRect.width())
-                && mEdgeEffectRight.isFinished && !mEdgeEffectRightActive) {
+                && mEdgeEffectRight.isFinished && !mEdgeEffectRightActive
+            ) {
                 mEdgeEffectRight.onAbsorb(OverScrollerCompat.getCurrVelocity(mScroller).toInt())
                 mEdgeEffectRightActive = true
                 needsInvalidate = true
@@ -1572,13 +1596,16 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
                 needsInvalidate = true
             } else if (canScrollY && currY > mSurfaceSizeBuffer.y - mContentRect.height()
                 && mEdgeEffectBottom.isFinished
-                && !mEdgeEffectBottomActive) {
+                && !mEdgeEffectBottomActive
+            ) {
                 mEdgeEffectBottom.onAbsorb(OverScrollerCompat.getCurrVelocity(mScroller).toInt())
                 mEdgeEffectBottomActive = true
                 needsInvalidate = true
             }
-            val currXRange: Float = AXIS_X_MIN + (AXIS_X_MAX - AXIS_X_MIN) * currX / mSurfaceSizeBuffer.x
-            val currYRange: Float = AXIS_Y_MAX - (AXIS_Y_MAX - AXIS_Y_MIN) * currY / mSurfaceSizeBuffer.y
+            val currXRange: Float =
+                AXIS_X_MIN + (AXIS_X_MAX - AXIS_X_MIN) * currX / mSurfaceSizeBuffer.x
+            val currYRange: Float =
+                AXIS_Y_MAX - (AXIS_Y_MAX - AXIS_Y_MIN) * currY / mSurfaceSizeBuffer.y
             setViewportBottomLeft(x = currXRange, y = currYRange)
         }
         if (mZoomer.computeZoom()) {
@@ -1962,7 +1989,10 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
                      * @param inParcel – The [Parcel] to read the object's data from.
                      * @return a new instance of the [Parcelable] class.
                      */
-                    override fun createFromParcel(inParcel: Parcel, loader: ClassLoader): SavedState? {
+                    override fun createFromParcel(
+                        inParcel: Parcel,
+                        loader: ClassLoader
+                    ): SavedState? {
                         return SavedState(inParcel = inParcel)
                     }
 
