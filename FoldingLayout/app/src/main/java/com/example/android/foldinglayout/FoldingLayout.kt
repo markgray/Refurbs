@@ -37,7 +37,7 @@ import androidx.core.graphics.createBitmap
  * can be specified. Each of these parameters can be modified individually and updates and resets
  * the fold to a default (unfolded) state. The fold factor varies between 0 (completely unfolded
  * flat image) to 1.0 (completely folded, non-visible image).
- * TODO: Continue
+ *
  * This layout throws an exception if there is more than one child added to the view. For more
  * complicated view hierarchy's inside the folding layout, the views should all be nested inside
  * 1 parent layout.
@@ -115,7 +115,7 @@ class FoldingLayout : ViewGroup {
     /**
      * Maximum width of a fold (when the view is totally unfolded), the width of the view in
      * [Orientation.VERTICAL] orientation, and the width of the view divided by the number of
-     * folds in [Orientation.HORIZONTAL orientation. Set in our method [prepareFold].
+     * folds in [Orientation.HORIZONTAL] orientation. Set in our method [prepareFold].
      */
     private var mFoldMaxWidth: Float = 0f
 
@@ -301,13 +301,17 @@ class FoldingLayout : ViewGroup {
      * sizes.
      *
      * @param widthMeasureSpec horizontal space requirements as imposed by the parent.
-     * The requirements are encoded with [android.view.View.MeasureSpec].
+     * The requirements are encoded with [MeasureSpec].
      * @param heightMeasureSpec vertical space requirements as imposed by the parent.
-     * The requirements are encoded with [android.view.View.MeasureSpec].
+     * The requirements are encoded with [MeasureSpec].
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val child = getChildAt(0)
-        measureChild(child, widthMeasureSpec, heightMeasureSpec)
+        measureChild(
+            /* child = */ child,
+            /* parentWidthMeasureSpec = */ widthMeasureSpec,
+            /* parentHeightMeasureSpec = */ heightMeasureSpec
+        )
         setMeasuredDimension(widthMeasureSpec, heightMeasureSpec)
     }
 
@@ -328,7 +332,7 @@ class FoldingLayout : ViewGroup {
      * @param b       Bottom position, relative to parent
      */
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        val child = getChildAt(0)
+        val child: View = getChildAt(0)
         child.layout(0, 0, child.measuredWidth, child.measuredHeight)
         updateFold()
     }
@@ -495,7 +499,7 @@ class FoldingLayout : ViewGroup {
      * by default.
      *
      * We allocate [NUM_OF_POLY_POINTS] (8) [Float] for both of our [FloatArray] fields [mSrc] and
-     * [mDst], initialize [Rect] field [mDstRect] with a new instance, set our field [Float] field
+     * [mDst], initialize [Rect] field [mDstRect] with a new instance, set our [Float] field
      * [mFoldFactor] to 0f (fully unfolded), set the [Float] field [mPreviousFoldFactor] to 0f, set
      * our [Boolean] field [mIsFoldPrepared] to `false`, allocate new instances for our [Paint]
      * fields [mSolidShadow] and [mGradientShadow], set our [Orientation] field [mOrientation] to
@@ -585,19 +589,24 @@ class FoldingLayout : ViewGroup {
         mNumberOfFolds = numberOfFolds
         mOriginalWidth = measuredWidth
         mOriginalHeight = measuredHeight
-        mFoldRectArray = arrayOfNulls(mNumberOfFolds)
-        mMatrix = arrayOfNulls(mNumberOfFolds)
+        mFoldRectArray = arrayOfNulls(size = mNumberOfFolds)
+        mMatrix = arrayOfNulls(size = mNumberOfFolds)
         for (x in 0 until mNumberOfFolds) {
             mMatrix[x] = Matrix()
         }
-        val h = mOriginalHeight
-        val w = mOriginalWidth
+        val h: Int = mOriginalHeight
+        val w: Int = mOriginalWidth
         if (FoldingLayoutActivity.IS_JBMR2) {
             mFullBitmap = createBitmap(width = w, height = h)
             val canvas = Canvas(mFullBitmap!!)
             getChildAt(0).draw(canvas)
         }
-        val delta = Math.round(if (mIsHorizontal) w.toFloat() / mNumberOfFolds.toFloat() else h.toFloat() / mNumberOfFolds.toFloat())
+        val delta = Math.round(if (mIsHorizontal) {
+            w.toFloat() / mNumberOfFolds.toFloat()
+        } else {
+            h.toFloat() / mNumberOfFolds.toFloat()
+        }
+        )
 
         /* Loops through the number of folds and segments the full layout into a number
          * of smaller equal components. If the number of folds is odd, then one of the
@@ -605,11 +614,29 @@ class FoldingLayout : ViewGroup {
          * the calculation for an odd number of folds.*/
         for (x in 0 until mNumberOfFolds) {
             if (mIsHorizontal) {
-                val deltap = if ((x + 1) * delta > w) w - x * delta else delta
-                mFoldRectArray[x] = Rect(x * delta, 0, x * delta + deltap, h)
+                val deltap: Int = if ((x + 1) * delta > w) {
+                    w - x * delta
+                } else {
+                    delta
+                }
+                mFoldRectArray[x] = Rect(
+                    /* left = */ x * delta,
+                    /* top = */ 0,
+                    /* right = */ x * delta + deltap,
+                    /* bottom = */ h
+                )
             } else {
-                val deltap = if ((x + 1) * delta > h) h - x * delta else delta
-                mFoldRectArray[x] = Rect(0, x * delta, w, x * delta + deltap)
+                val deltap: Int = if ((x + 1) * delta > h) {
+                    h - x * delta
+                } else {
+                    delta
+                }
+                mFoldRectArray[x] = Rect(
+                    /* left = */ 0,
+                    /* top = */ x * delta,
+                    /* right = */ w,
+                    /* bottom = */ x * delta + deltap
+                )
             }
         }
         if (mIsHorizontal) {
@@ -638,8 +665,9 @@ class FoldingLayout : ViewGroup {
      * our previous fold factor [Float] field [mPreviousFoldFactor] to our current fold factor
      * [Float] field [mFoldFactor].
      *
-     * We now loop over [Int] variable `x` calling the [Matrix.reset] method of each [Matrix] in our
-     * [Array] of [Matrix] field [mMatrix] to set the matrix to the identity matrix.
+     * We now loop over [Int] variable `x` from 0 until [mNumberOfFolds] calling the [Matrix.reset]
+     * method of each [Matrix] in our [Array] of [Matrix] field [mMatrix] to set the matrix to the
+     * identity matrix.
      *
      * We initialize [Float] variable `val cTranslationFactor` to 1f minus our fold factor [Float]
      * field [mFoldFactor]. If [Boolean] field [mIsHorizontal] is `true` we initialize [Float]
@@ -647,7 +675,7 @@ class FoldingLayout : ViewGroup {
      * (the current width of our folded horizontal view), if it is `false` we use [mOriginalHeight]
      * times `cTranslationFactor` (the current height of our folded vertical view). We then
      * initialize [Float] variable `val translatedDistancePerFold` to the rounded value of
-     * `translatedDistance` divided by `mNumberOfFolds`. Then if [mFoldMaxWidth] is less than
+     * `translatedDistance` divided by [mNumberOfFolds]. Then if [mFoldMaxWidth] is less than
      * `translatedDistancePerFold` we set [Float] field [mFoldDrawWidth] to `translatedDistancePerFold`,
      * otherwise we set it to [mFoldMaxWidth] (preventing rounding error from making it from exceeding
      * [mFoldMaxWidth]). Similarly if [mFoldMaxHeight] is less than `translatedDistancePerFold` we
@@ -841,7 +869,7 @@ class FoldingLayout : ViewGroup {
         /* The size of some object is always inversely proportional to the distance
         *  it is away from the viewpoint. The constant can be varied to affect the
         *  amount of perspective. */
-        val scaleFactor = DEPTH_CONSTANT / (DEPTH_CONSTANT + depth)
+        val scaleFactor: Float = DEPTH_CONSTANT / (DEPTH_CONSTANT + depth)
         val scaledWidth: Float
         val scaledHeight: Float
         val bottomScaledPoint: Float
@@ -943,11 +971,11 @@ class FoldingLayout : ViewGroup {
 
             /* Sets the shadow and bitmap transformation matrices.*/
             mMatrix[x]!!.setPolyToPoly(
-                mSrc,
-                0,
-                mDst,
-                0,
-                NUM_OF_POLY_POINTS / 2
+                /* src = */ mSrc,
+                /* srcIndex = */ 0,
+                /* dst = */ mDst,
+                /* dstIndex = */ 0,
+                /* pointCount = */ NUM_OF_POLY_POINTS / 2
             )
         }
         /* The shadows on the folds are split into two parts: Solid shadows and gradients.
@@ -958,7 +986,12 @@ class FoldingLayout : ViewGroup {
 
         /* Solid shadow paint object. */
         val alpha: Int = (mFoldFactor * 255 * SHADING_ALPHA).toInt()
-        mSolidShadow!!.color = Color.argb(alpha, 0, 0, 0)
+        mSolidShadow!!.color = Color.argb(
+            /* alpha = */ alpha,
+            /* red = */ 0,
+            /* green = */ 0,
+            /* blue = */ 0
+        )
         if (mIsHorizontal) {
             mShadowGradientMatrix!!.setScale(mFoldDrawWidth, 1f)
             mShadowLinearGradient!!.setLocalMatrix(mShadowGradientMatrix)
@@ -1047,24 +1080,41 @@ class FoldingLayout : ViewGroup {
                  * segment. The canvas is clipped to account for the size of each fold and
                  * is translated so they are drawn in the right place. The shadow is then drawn on
                  * top of the different folds using the same transformation matrix.*/
-                canvas.clipRect(0, 0, src!!.right - src.left, src.bottom - src.top)
+                canvas.clipRect(
+                    /* left = */ 0,
+                    /* top = */ 0,
+                    /* right = */ src!!.right - src.left,
+                    /* bottom = */ src.bottom - src.top
+                )
                 if (mIsHorizontal) {
-                    canvas.translate(-src.left.toFloat(), 0f)
+                    canvas.translate(/* dx = */ -src.left.toFloat(), /* dy = */ 0f)
                 } else {
-                    canvas.translate(0f, -src.top.toFloat())
+                    canvas.translate(/* dx = */ 0f, /* dy = */ -src.top.toFloat())
                 }
                 super.dispatchDraw(canvas)
                 if (mIsHorizontal) {
-                    canvas.translate(src.left.toFloat(), 0f)
+                    canvas.translate(/* dx = */ src.left.toFloat(), /* dy = */ 0f)
                 } else {
-                    canvas.translate(0f, src.top.toFloat())
+                    canvas.translate(/* dx = */ 0f, /* dy = */ src.top.toFloat())
                 }
             }
             /* Draws the shadows corresponding to this specific fold. */
             if (x % 2 == 0) {
-                canvas.drawRect(0f, 0f, mFoldDrawWidth, mFoldDrawHeight, mSolidShadow!!)
+                canvas.drawRect(
+                    /* left = */ 0f,
+                    /* top = */ 0f,
+                    /* right = */ mFoldDrawWidth,
+                    /* bottom = */ mFoldDrawHeight,
+                    /* paint = */ mSolidShadow!!
+                )
             } else {
-                canvas.drawRect(0f, 0f, mFoldDrawWidth, mFoldDrawHeight, mGradientShadow!!)
+                canvas.drawRect(
+                    /* left = */ 0f,
+                    /* top = */ 0f,
+                    /* right = */ mFoldDrawWidth,
+                    /* bottom = */ mFoldDrawHeight,
+                    /* paint = */ mGradientShadow!!
+                )
             }
             canvas.restore()
         }
@@ -1072,7 +1122,7 @@ class FoldingLayout : ViewGroup {
 
     companion object {
         /**
-         * detail message for the NumberOfFoldingLayoutChildrenException that our method
+         * detail message for the [NumberOfFoldingLayoutChildrenException] that our method
          * [throwCustomException] throws if there are more than 1 child view added to us.
          */
         private const val FOLDING_VIEW_EXCEPTION_MESSAGE = "Folding Layout can only have 1 child at most"

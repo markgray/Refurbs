@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "DEPRECATION",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.foldinglayout
 
@@ -176,7 +181,7 @@ class FoldingLayoutActivity : ComponentActivity() {
     private var mCamera: Camera? = null
 
     /**
-     * The `TextureView` that holds our camera preview.
+     * The [TextureView] that holds our camera preview.
      */
     private var mTextureView: TextureView? = null
 
@@ -206,17 +211,15 @@ class FoldingLayoutActivity : ComponentActivity() {
      * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
      * window insets to `rootView`, with the `listener` argument a lambda that accepts the
      * [View] passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * in variable `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [ImageView] property [mImageView] by finding the view with id
      * `R.id.image_view`, set its padding to [ANTIALIAS_PADDING] on all sides, set its scale type
@@ -289,10 +292,10 @@ class FoldingLayoutActivity : ComponentActivity() {
         mSepiaPaint = Paint()
         val m1 = ColorMatrix()
         val m2 = ColorMatrix()
-        m1.setSaturation(0f)
-        m2.setScale(1f, .95f, .82f, 1.0f)
-        m1.setConcat(m2, m1)
-        mSepiaPaint!!.colorFilter = ColorMatrixColorFilter(m1)
+        m1.setSaturation(/* sat = */ 0f)
+        m2.setScale(/* rScale = */ 1f, /* gScale = */ .95f, /* bScale = */ .82f, /* aScale = */ 1.0f)
+        m1.setConcat(/* matA = */ m2, /* matB = */ m1)
+        mSepiaPaint!!.colorFilter = ColorMatrixColorFilter(/* matrix = */ m1)
     }
 
     /**
@@ -323,7 +326,7 @@ class FoldingLayoutActivity : ComponentActivity() {
          */
         override fun onStartFold() {
             if (mIsSepiaOn) {
-                setSepiaLayer(mFoldLayout!!.getChildAt(0), true)
+                setSepiaLayer(view = mFoldLayout!!.getChildAt(0), isSepiaLayerOn = true)
             }
         }
 
@@ -334,7 +337,7 @@ class FoldingLayoutActivity : ComponentActivity() {
          * to [Paint] field [mDefaultPaint].
          */
         override fun onEndFold() {
-            setSepiaLayer(mFoldLayout!!.getChildAt(0), false)
+            setSepiaLayer(view = mFoldLayout!!.getChildAt(0), isSepiaLayerOn = false)
         }
     }
 
@@ -342,7 +345,7 @@ class FoldingLayoutActivity : ComponentActivity() {
      * Called to set the [Paint] of the the current layer of its [View] parameter [view] to the
      * [Paint] selected by its [Boolean] parmameter [isSepiaLayerOn]. If [IS_JBMR2] is `true` we
      * return without doing anything ([Build.VERSION_CODES.JELLY_BEAN_MR2] has a bug which makes
-     * our code not work correctly). Other wise we branch on the value of [isSepiaLayerOn]:
+     * our code not work correctly). Otherwise we branch on the value of [isSepiaLayerOn]:
      *
      *  * `true`: We call the [View.setLayerType] method of [view] to set the type of layer backing
      *  this view to [View.LAYER_TYPE_HARDWARE] (Indicates that the view has a hardware layer. A
@@ -550,7 +553,7 @@ class FoldingLayoutActivity : ComponentActivity() {
      *  or [HORIZONTAL], then set the title of our [MenuItem] parameter [item] to "Vertical" if
      *  the new state is [HORIZONTAL] or to "Horizontal" if it is [VERTICAL]. We then set our [Int]
      *  field [mTranslation] to 0 and set the [FoldingLayout.orientation] property of our
-     *  [FoldingLayout] field [mFoldLayout] to set the orientation it folds in to [mOrientation].
+     *  [FoldingLayout] field [mFoldLayout] to set the orientation it folds to [mOrientation].
      *
      *  * `R.id.camera_feed`: ("Camera Feed" or "Static Image" depending on the current image
      *  source) we toggle our [Boolean] field [mIsCameraFeed], and if the new value is `true` we
@@ -600,12 +603,18 @@ class FoldingLayoutActivity : ComponentActivity() {
                 item.isChecked = mIsCameraFeed
                 if (mIsCameraFeed) {
                     mFoldLayout!!.removeView(mImageView)
-                    mFoldLayout!!.addView(mTextureView, ViewGroup.LayoutParams(
-                        mFoldLayout!!.width, mFoldLayout!!.height))
+                    mFoldLayout!!.addView(
+                        mTextureView, ViewGroup.LayoutParams(
+                            mFoldLayout!!.width, mFoldLayout!!.height
+                        )
+                    )
                 } else {
                     mFoldLayout!!.removeView(mTextureView)
-                    mFoldLayout!!.addView(mImageView, ViewGroup.LayoutParams(
-                        mFoldLayout!!.width, mFoldLayout!!.height))
+                    mFoldLayout!!.addView(
+                        mImageView, ViewGroup.LayoutParams(
+                            mFoldLayout!!.width, mFoldLayout!!.height
+                        )
+                    )
                 }
                 mTranslation = 0
             }
@@ -770,7 +779,7 @@ class FoldingLayoutActivity : ComponentActivity() {
          *
          * We now set our [Boolean] field [mDidNotStartScroll] to `false` (we have started scrolling).
          * If our [Int] field [mTranslation] is greater than 0 we set it to 0 (we do not try to unfold
-         * more than fully unfolded). Finally we call the [FoldingLayout.foldFactor] property of
+         * more than fully unfolded). Finally we set the [FoldingLayout.foldFactor] property of
          * [FoldingLayout] field [mFoldLayout] to have it fold to the value of [Float] variable
          * `factor`, and return `true` to the caller (`false` works too).
          *
@@ -793,7 +802,8 @@ class FoldingLayoutActivity : ComponentActivity() {
             if (mOrientation == VERTICAL) {
                 factor = Math.abs(mTranslation.toFloat() / mFoldLayout!!.height.toFloat())
                 if (e2.y - mParentPositionY <= mFoldLayout!!.height
-                    && e2.y - mParentPositionY >= 0) {
+                    && e2.y - mParentPositionY >= 0
+                ) {
                     if (e2.y - mParentPositionY > mFoldLayout!!.height * mAnchorFactor) {
                         mTranslation -= distanceY.toInt()
                         touchSlop = if (distanceY < 0) -mTouchSlop else mTouchSlop
@@ -801,7 +811,8 @@ class FoldingLayoutActivity : ComponentActivity() {
                         mTranslation += distanceY.toInt()
                         touchSlop = if (distanceY < 0) mTouchSlop else -mTouchSlop
                     }
-                    mTranslation = if (mDidNotStartScroll) mTranslation + touchSlop else mTranslation
+                    mTranslation =
+                        if (mDidNotStartScroll) mTranslation + touchSlop else mTranslation
                     if (mTranslation < -mFoldLayout!!.height) {
                         mTranslation = -mFoldLayout!!.height
                     }
@@ -845,12 +856,12 @@ class FoldingLayoutActivity : ComponentActivity() {
         val IS_JBMR2: Boolean = Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN_MR2
 
         /**
-         * Padding used for our `ImageView mImageView`
+         * Padding used for our [ImageView] field `mImageView`
          */
         private const val ANTIALIAS_PADDING: Int = 1
 
         /**
-         * Duration of the animation of the "foldFactor" property of `FoldingLayout mFoldLayout`
+         * Duration of the animation of the "foldFactor" property of [FoldingLayout] `mFoldLayout`
          */
         private const val FOLD_ANIMATION_DURATION: Int = 1000
     }
