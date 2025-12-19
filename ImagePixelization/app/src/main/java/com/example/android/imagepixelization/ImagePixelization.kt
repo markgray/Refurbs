@@ -51,7 +51,7 @@ import androidx.core.graphics.scale
 
 /**
  * This application shows three different graphics/animation concepts.
- *
+ * TODO: Continue here.
  * A pixelization effect is applied to an image with varying pixelization
  * factors to achieve an image that is pixelized to varying degrees. In
  * order to optimize the amount of image processing performed on the image
