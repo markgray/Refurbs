@@ -404,11 +404,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
 
             /**
              * Responds to the beginning of a scaling gesture. Reported by new pointers going down.
-             * We set our [Float] variable [lastSpanX] to the value of the average X distance in pixels
-             * between each of the pointers forming the gesture in progress through the focal point, and
-             * our [Float] variable [lastSpanY] to the value of the average Y distance in pixels between
-             * each of the pointers forming the gesture in progress through the focal point
-             * TODO: Continue here.
+             * We set our [Float] variable [lastSpanX] to the value of the average X distance in
+             * pixels between each of the pointers forming the gesture in progress through the focal
+             * point, and our [Float] variable [lastSpanY] to the value of the average Y distance in
+             * pixels between each of the pointers forming the gesture in progress through the focal
+             * point.
+             *
              * @param scaleGestureDetector The detector reporting the event - use this to retrieve
              * extended info about event state.
              * @return Whether or not the detector should continue recognizing this gesture. For
@@ -428,15 +429,16 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
              * the pointers forming the gesture in progress through the focal point that our
              * [ScaleGestureDetectorCompat.getCurrentSpanX] method returns when passed our
              * [ScaleGestureDetector] parameter [scaleGestureDetector], and initialize our [Float]
-             * variable `val spanY` to the average Y distance between each of the pointers forming the
-             * gesture in progress through the focal point that our [ScaleGestureDetectorCompat.getCurrentSpanX]
-             * method returns when passed our [ScaleGestureDetector] parameter [scaleGestureDetector].
-             * We initialize our [Float] variable `val newWidth` to our [Float] field [lastSpanX] divided
-             * by `spanX` times the `width` of our [RectF] field [mCurrentViewport], and we initialize
-             * our [Float] variable `val newHeight` to our [Float] field [lastSpanY] divided
-             * by `spanY` times the `height` of our [RectF] field [mCurrentViewport]. We initialize our
-             * [Float] variable `val focusX` to the X coordinate of the current gesture's focal point,
-             * and our [Float] variable `val focusY` to the Y coordinate of the current gesture's focal
+             * variable `val spanY` to the average Y distance between each of the pointers forming
+             * the gesture in progress through the focal point that our
+             * [ScaleGestureDetectorCompat.getCurrentSpanX] method returns when passed our
+             * [ScaleGestureDetector] parameter [scaleGestureDetector]. We initialize our [Float]
+             * variable `val newWidth` to our [Float] field [lastSpanX] divided by `spanX` times the
+             * `width` of our [RectF] field [mCurrentViewport], and we initialize our [Float]
+             * variable `val newHeight` to our [Float] field [lastSpanY] divided by `spanY` times
+             * the `height` of our [RectF] field [mCurrentViewport]. We initialize our [Float]
+             * variable `val focusX` to the X coordinate of the current gesture's focal point, and
+             * our [Float] variable `val focusY` to the Y coordinate of the current gesture's focal
              * point. We then call our [hitTest] method to check if the point (`focusX`,`focusY`) is
              * contained in [mContentRect] and if it is it will set [PointF] field [viewportFocus] to
              * the point. We then update the value of [RectF] field [mCurrentViewport] based on the
@@ -462,7 +464,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
                 val newHeight: Float = lastSpanY / spanY * mCurrentViewport!!.height()
                 val focusX: Float = scaleGestureDetector.focusX
                 val focusY: Float = scaleGestureDetector.focusY
-                hitTest(focusX, focusY, viewportFocus)
+                hitTest(x = focusX, y = focusY, dest = viewportFocus)
                 mCurrentViewport!!.set(
                     viewportFocus.x - newWidth * (focusX - mContentRect.left) / mContentRect.width(),
                     viewportFocus.y - newHeight * (mContentRect.bottom - focusY) / mContentRect.height(),
@@ -510,7 +512,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         /**
          * Notified when a double-tap occurs. Triggered on the down event of second tap. We call the
          * [Zoomer.forceFinished] method of [Zoomer] field [mZoomer] with `true` to force the zoom
-         * finished state to `true`, then is our [hitTest] method returns `true` indicating that the
+         * finished state to `true`, then if our [hitTest] method returns `true` indicating that the
          * (`x`,`y`) of [MotionEvent] parameter [e] is inside [Rect] field [mContentRect] we call
          * the [Zoomer.startZoom] method of [mZoomer] with its `endZoom` argument [ZOOM_AMOUNT]
          * (0.25f) (note that the call to [hitTest] sets [PointF] field [mZoomFocalPoint] to the
@@ -546,7 +548,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
          * an [Int]. We initialize our [Int] variable `val scrolledY` to the [Point.y] value of
          * [mSurfaceSizeBuffer] times the quantity of [AXIS_Y_MAX] minus the [RectF.bottom] value of
          * [mCurrentViewport] minus `viewportOffsetY` divided by the quantity [AXIS_Y_MAX] (1f) minus
-         * [AXIS_Y_MIN (-1f) with the result converted to an [Int]. We initialize [Boolean] variable
+         * [AXIS_Y_MIN] (-1f) with the result converted to an [Int]. We initialize [Boolean] variable
          * `val canScrollX` to `true` if the [RectF.left] value of [mCurrentViewport] is greater
          * than [AXIS_X_MIN] or the [RectF.right] value of [mCurrentViewport] is less than [AXIS_X_MAX].
          * We initialize [Boolean] variable `val canScrollY` to `true` if the [RectF.top] value of
@@ -949,7 +951,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      *
      * Now we want to draw all the labels. We start by declaring our [Int] variables `var labelOffset`
      * and `var labelLength`. We use the [Paint.setTextAlign] method (aka kotlin `textAlign` property)
-     * to set the text alignment or [Paint] field [mLabelTextPaint] to [Paint.Align.CENTER] (text is
+     * to set the text alignment of [Paint] field [mLabelTextPaint] to [Paint.Align.CENTER] (text is
      * drawn centered horizontally on the x,y origin). We set `i` to 0 and loop over `i` while `i`
      * is less than the [AxisStops.numStops] property of [mXStopsBuffer]:
      *
@@ -990,7 +992,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      */
     private fun drawAxes(canvas: Canvas) {
         // Computes axis stops (in terms of numerical value and position on screen)
-        var i: Int
+
         computeAxisStops(
             start = mCurrentViewport!!.left,
             stop = mCurrentViewport!!.right,
@@ -1020,7 +1022,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
         }
 
         // Compute positions
-        i = 0
+        var i = 0
         while (i < mXStopsBuffer.numStops) {
             mAxisXPositionsBuffer[i] = getDrawX(x = mXStopsBuffer.stops[i])
             i++
@@ -1135,11 +1137,12 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * for each line of the curve we draw: the X coordinate of the start of the line, the Y
      * coordinate of the start of the line, the X coordinate of the end of the line, and the Y
      * coordinate of the end of the line. We start by setting the values for the first line:
-     *  0: X coordinate of the start of the line is the [Rect.left] of [mContentRect] as a [Float]
-     *  1: Y coordinate of the start of the line is the value returned by [getDrawY] when passed
+     *
+     *  0. X coordinate of the start of the line is the [Rect.left] of [mContentRect] as a [Float]
+     *  1. Y coordinate of the start of the line is the value returned by [getDrawY] when passed
      *  the results of calling [fofX] with the [RectF.left] property of [mCurrentViewport]
-     *  2: is a copy of the 0'th  entry in [mSeriesLinesBuffer].
-     *  3: is a copy of the 1'th  entry in [mSeriesLinesBuffer].
+     *  2. is a copy of the 0'th  entry in [mSeriesLinesBuffer].
+     *  3. is a copy of the 1'th  entry in [mSeriesLinesBuffer].
      *
      * We then declare [Float] variable `var x`, and loop over `i` from 1 until [DRAW_STEPS]:
      *  - we set the X coordinate of the start of the line to the X coordinate of the end of the
@@ -1696,7 +1699,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * Smoothly zooms the chart in one step. First we use the [RectF.set] method of [RectF] field
      * [mScrollerStartViewport] to set it to [RectF] field [mCurrentViewport] (for use by our
-     * [Zoomer] field [mZoomer]). The we call the [Zoomer.forceFinished] method of [mZoomer] with
+     * [Zoomer] field [mZoomer]). Then we call the [Zoomer.forceFinished] method of [mZoomer] with
      * `true` to force any ongoing zoom animation to "finish". We call the [Zoomer.startZoom] method
      * of [mZoomer] with [ZOOM_AMOUNT] (0.25f) to start a zoom from 1.0 to 1.25 in motion. Next we
      * use the [PointF.set] method of [PointF] field [mZoomFocalPoint] to set the focal point of the
@@ -1721,7 +1724,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
     /**
      * Smoothly zooms the chart out one step. First we use the [RectF.set] method of [RectF] field
      * [mScrollerStartViewport] to set it to [RectF] field [mCurrentViewport] (for use by our
-     * [Zoomer] field [mZoomer]). The we call the [Zoomer.forceFinished] method of [mZoomer] with
+     * [Zoomer] field [mZoomer]). Then we call the [Zoomer.forceFinished] method of [mZoomer] with
      * `true` to force any ongoing zoom animation to "finish". We call the [Zoomer.startZoom] method
      * of [mZoomer] with minus [ZOOM_AMOUNT] (-0.25f) to start a zoom from 1.0 to 0.75 in motion.
      * Next we use the [PointF.set] method of [PointF] field [mZoomFocalPoint] to set the focal
@@ -1776,7 +1779,7 @@ open class InteractiveLineGraphView @JvmOverloads constructor(
      * (kotlin `height` property).
      */
     fun panDown() {
-        fling(0, (PAN_VELOCITY_FACTOR * height).toInt())
+        fling(velocityX = 0, velocityY = (PAN_VELOCITY_FACTOR * height).toInt())
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
