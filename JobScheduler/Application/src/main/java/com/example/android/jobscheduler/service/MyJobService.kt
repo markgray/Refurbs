@@ -33,6 +33,7 @@ import android.util.Log
 import com.example.android.jobscheduler.MainActivity
 
 /**
+ * TODO: Continue here.
  * Service to handle callbacks from the [JobScheduler]. Requests scheduled with the [JobScheduler]
  * ultimately land on this service's [onStartJob] method. It runs jobs for a specific amount of time
  * and finishes them. It keeps the activity updated with changes via a Messenger.
@@ -194,7 +195,7 @@ class MyJobService : JobService() {
         m.obj = params
         try {
             mActivityMessenger!!.send(m)
-        } catch (e: RemoteException) {
+        } catch (_: RemoteException) {
             Log.e(TAG, "Error passing service object back to activity.")
         }
     }
