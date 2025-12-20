@@ -36,6 +36,7 @@ import com.example.android.common.logger.Log
 import java.util.Locale
 
 /**
+ * TODO: Continue here.
  * This sample demonstrates the use of animation interpolators and path animations for Material
  * Design. It shows how an [android.animation.ObjectAnimator] is used to animate two properties of a
  * view (scale X and Y) along a path.
@@ -196,12 +197,14 @@ class InterpolatorFragment
             val path: Path = if (mIsOut) pathIn!! else pathOut!!
 
             // Log animation details
-            Log.i(TAG, String.format(
-                Locale.getDefault(),
-                "Starting animation: [%d ms, %s, %s]",
-                duration,
-                mInterpolatorSpinner!!.selectedItem,
-                if (mIsOut) "Out (growing)" else "In (shrinking)")
+            Log.i(
+                TAG, String.format(
+                    Locale.getDefault(),
+                    "Starting animation: [%d ms, %s, %s]",
+                    duration,
+                    mInterpolatorSpinner!!.selectedItem,
+                    if (mIsOut) "Out (growing)" else "In (shrinking)"
+                )
             )
 
             // Start the animation with the selected options
