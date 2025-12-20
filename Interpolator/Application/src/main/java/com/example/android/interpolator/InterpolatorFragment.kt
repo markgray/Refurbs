@@ -36,7 +36,6 @@ import com.example.android.common.logger.Log
 import java.util.Locale
 
 /**
- * TODO: Continue here.
  * This sample demonstrates the use of animation interpolators and path animations for Material
  * Design. It shows how an [android.animation.ObjectAnimator] is used to animate two properties of a
  * view (scale X and Y) along a path.
@@ -133,7 +132,11 @@ class InterpolatorFragment
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.interpolator_fragment, container, false)
+        return inflater.inflate(
+            /* resource = */ R.layout.interpolator_fragment,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
     }
 
     /**
