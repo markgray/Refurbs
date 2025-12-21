@@ -55,6 +55,7 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 
 /**
+ * TODO: Continue here.
  * This [ListView] displays a list of [ListItemObject]. Calling [addRow] with a new [ListItemObject]
  * adds it to the top of the [ListView] and the new row is animated in. If the [ListView] content is
  * at the top (the scroll offset is 0), the animation of the new row is accompanied by an extra

@@ -85,45 +85,38 @@ class InsertingCells : ComponentActivity(), OnRowAdditionAnimationListener {
     private var mCellHeight: Int = 0
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.activity_main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_main`.
      *
-     * We initialize our [RelativeLayout] variable `rootView`
-     * to the view with ID `R.id.relative_layout` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [RelativeLayout] variable `rootView` to the view with ID
+     * `R.id.relative_layout` then call [ViewCompat.setOnApplyWindowInsetsListener] to take over
+     * the policy for applying window insets to `rootView`, with the `listener` argument a lambda
+     * that accepts the [View] passed the lambda in variable `v` and the [WindowInsetsCompat] passed
+     * the lambda in variable `windowInsets`. It initializes its [Insets] variable `systemBars` to
+     * the [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [Array] of [ListItemObject] field [mValues] with a new instance, filled
      * with three [ListItemObject] instances constructed to contain "Chameleon", "Rock", and
      * "Flower" text views as well as the resource id's for jpg images to use for the associated
      * [ImageView] (`R.drawable.chameleon`, `R.drawable.rock`, and `R.drawable.flower` respectively).
      * We initialize our [Int] field [mCellHeight] by retrieving the dimensional for the resource
-     * id `R.dimen.cell_height` from a [Resources] instance for our application's package. We
-     * initialize [List] of [ListItemObject] variable `val mData` with a new instance, and
+     * id `R.dimen.cell_height` (150dp) from a [Resources] instance for our application's package.
+     * We initialize [List] of [ListItemObject] variable `val mData` with a new instance, and
      * [CustomArrayAdapter] variable `val mAdapter` with an instance which will display the
-     * [ListItemObject] items in `mData` using our layout file `R.layout.list_view_item`. We
-     * initialize [RelativeLayout] variable `val mLayout` by finding the view with id
-     * `R.id.relative_layout` (it contains all our other views). We then initialize our fields
-     * [RoundView] field [mRoundView] by finding the view with id `R.id.round_view`, [Button] field
-     * [mButton] by finding the view with id `R.id.add_row_button` ("Add Row"), and
-     * [InsertionListView] field [mListView] by finding the view with id `R.id.list_view`. We then
-     * set the adapter of [mListView] to `mAdapter`, its data to `mData`, its parent [RelativeLayout]
-     * to `mLayout` and its [OnRowAdditionAnimationListener] to 'this'.
+     * [ListItemObject] items in `mData` using our layout file `R.layout.list_view_item`. We then
+     * initialize our fields [RoundView] field [mRoundView] by finding the view with id
+     * `R.id.round_view`, [Button] field [mButton] by finding the view with id `R.id.add_row_button`
+     * ("Add Row"), and [InsertionListView] field [mListView] by finding the view with id
+     * `R.id.list_view`. We then set the adapter of [mListView] to `mAdapter`, its data to `mData`,
+     * its parent [RelativeLayout] to `rootView` and its [OnRowAdditionAnimationListener] to 'this'.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -154,7 +147,11 @@ class InsertingCells : ComponentActivity(), OnRowAdditionAnimationListener {
         )
         mCellHeight = resources.getDimension(R.dimen.cell_height).toInt()
         val mData: List<ListItemObject> = ArrayList()
-        val mAdapter = CustomArrayAdapter(this, R.layout.list_view_item, mData)
+        val mAdapter = CustomArrayAdapter(
+            mContext = this,
+            mLayoutViewResourceId = R.layout.list_view_item,
+            mData = mData
+        )
         mRoundView = findViewById(R.id.round_view)
         mButton = findViewById(R.id.add_row_button)
         mListView = findViewById(R.id.list_view)

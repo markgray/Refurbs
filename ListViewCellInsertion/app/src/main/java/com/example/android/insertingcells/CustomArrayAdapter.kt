@@ -140,23 +140,24 @@ class CustomArrayAdapter(
 
     /**
      * Get a View that displays the data at the specified position in the data set. First we
+     * copy our [View] parameter [convertView] to our [View] variable `convertViewLocal`, and
      * initialize [ListItemObject] variable `val obj` with the [ListItemObject] at position
-     * [position] in our [List] of [ListItemObject] dataset fiedl [mData]. If our [View] parameter
-     * [convertView] is `null` we initialize [LayoutInflater] variable `val inflater` with the
+     * [position] in our [List] of [ListItemObject] dataset field [mData]. If our [View] variable
+     * `convertViewLocal` is `null` we initialize [LayoutInflater] variable `val inflater` with the
      * [LayoutInflater] instance that the [Activity] whose context was passed to our constructor
      * used. Then we use it to inflate the item layout file passed to our constructor (that we
-     * saved in the [Int] field [mLayoutViewResourceId]) to set [convertView] using our [ViewGroup]
-     * parameter [parent] for the layout params without attaching to it.
+     * saved in the [Int] field [mLayoutViewResourceId]) to initialize `convertViewLocal` using our
+     * [ViewGroup] parameter [parent] for the layout params without attaching to it.
      *
-     * Whether recycling or using a new [convertView] we set its layout params to [MATCH_PARENT]
+     * Whether recycling or using a new `convertViewLocal` we set its layout params to [MATCH_PARENT]
      * for the X size, and the height of `obj` for the Y size. We initialize [ImageView] variable
-     * `val imgView` by finding the view in [convertView] with id `R.id.image_view`, and [TextView]
-     * variable `val textView` by finding the view with id `R.id.text_view`. We initialize [Bitmap]
-     * variable `val bitmap` by decoding the image whose resource id is that returned by the
+     * `val imgView` by finding the view in `convertViewLocal` with id `R.id.image_view`, and
+     * [TextView] variable `val textView` by finding the view with id `R.id.text_view`. We initialize
+     * [Bitmap] variable `val bitmap` by decoding the image whose resource id is that returned by the
      * [ListItemObject.imgResource] property of `obj`, set the text of `textView` to the string
      * returned by the [ListItemObject.title] property of `obj` and set the content of `imgView`
      * to the circular cropped [Bitmap] created by our method [getCroppedBitmap] from `bitmap`.
-     * Finally we return [convertView] to the caller.
+     * Finally we return `convertViewLocal` to the caller.
      *
      * @param position The position of the item within the adapter's dataset whose view we want.
      * @param convertView The old [View] to reuse, if possible.
@@ -168,7 +169,11 @@ class CustomArrayAdapter(
         val obj: ListItemObject = mData[position]
         if (convertViewLocal == null) {
             val inflater = (mContext as Activity).layoutInflater
-            convertViewLocal = inflater.inflate(mLayoutViewResourceId, parent, false)
+            convertViewLocal = inflater.inflate(
+                /* resource = */ mLayoutViewResourceId,
+                /* root = */ parent,
+                /* attachToRoot = */ false
+            )
         }
         convertViewLocal!!.layoutParams = AbsListView.LayoutParams(MATCH_PARENT, obj.height)
         val imgView = convertViewLocal.findViewById<ImageView>(R.id.image_view)
@@ -204,15 +209,26 @@ class CustomArrayAdapter(
         @JvmStatic
         fun getCroppedBitmap(bitmap: Bitmap): Bitmap {
             val output = createBitmap(width = bitmap.width, height = bitmap.height)
-            val rect = Rect(0, 0, bitmap.width, bitmap.height)
-            val canvas = Canvas(output)
+            val rect = Rect(
+                /* left = */ 0,
+                /* top = */ 0,
+                /* right = */ bitmap.width,
+                /* bottom = */ bitmap.height
+            )
+            val canvas = Canvas(/* bitmap = */ output)
             val paint = Paint()
             paint.isAntiAlias = true
             val halfWidth: Int = bitmap.width / 2
             val halfHeight: Int = bitmap.height / 2
-            canvas.drawCircle(halfWidth.toFloat(), halfHeight.toFloat(), Math.max(halfWidth, halfHeight).toFloat(), paint)
-            paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-            canvas.drawBitmap(bitmap, rect, rect, paint)
+            canvas.drawCircle(
+                /* cx = */ halfWidth.toFloat(),
+                /* cy = */ halfHeight.toFloat(),
+                /* radius = */ Math.max(halfWidth, halfHeight).toFloat(),
+                /* paint = */ paint
+            )
+            paint.xfermode = PorterDuffXfermode(/* mode = */ PorterDuff.Mode.SRC_IN)
+            canvas.drawBitmap(
+                bitmap, rect, rect, paint)
             return output
         }
     }
