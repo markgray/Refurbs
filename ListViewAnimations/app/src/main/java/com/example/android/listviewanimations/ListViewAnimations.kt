@@ -49,28 +49,23 @@ import java.util.Collections
  */
 class ListViewAnimations : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.activity_list_view_animations`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_list_view_animations`.
      *
-     * We initialize our [LinearLayout] variable `rootView`
-     * to the view with ID `R.id.root_view` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We then initialize [CheckBox] variable `val vpaCB` by finding the view with id `R.id.vpaCB`
      * ("ViewPropertyAnimator") initialize [CheckBox] variable `val setTransientStateCB` by finding
@@ -138,7 +133,7 @@ class ListViewAnimations : ComponentActivity() {
              *  and sets the alpha of [view] to 1.
              *
              *  * Unchecked: We initialize [ObjectAnimator] variable `val anim` with an instance
-             *  which will animate the ALPHA property of [View] parameter [view], and set its
+             *  which will animate the ALPHA property of [View] parameter [view] to 0f, and set its
              *  duration to 1000ms. Then if [CheckBox] variable `setTransientStateCB` is checked
              *  we call the [View.setHasTransientState] method of [view] with `true` to set its
              *  transient state flag (A view with transient state cannot be trivially rebound from
@@ -150,7 +145,7 @@ class ListViewAnimations : ComponentActivity() {
              *  [View.setHasTransientState] method of [view] with `false` to clear its transient
              *  state flag (this flag is reference counted, so every call to
              *  [View.setHasTransientState] with `true` should be paired with a later call to
-             *  [View.setHasTransientState]with `false`). Having configured [ObjectAnimator] `anim`
+             *  [View.setHasTransientState] with `false`). Having configured [ObjectAnimator] `anim`
              *  we start it running.
              *
              * param parent   The [AdapterView] where the click happened.
@@ -237,7 +232,7 @@ class ListViewAnimations : ComponentActivity() {
          * @return The id of the item at the specified position.
          */
         override fun getItemId(position: Int): Long {
-            val item = getItem(position)
+            val item: String? = getItem(position)
             return mIdMap[item]!!.toLong()
         }
 
