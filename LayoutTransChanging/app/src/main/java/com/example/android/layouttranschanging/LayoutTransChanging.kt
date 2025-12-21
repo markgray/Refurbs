@@ -47,20 +47,17 @@ class LayoutTransChanging : ComponentActivity() {
      *
      * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.root_view`
      * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
-     * window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize [Button] variable `val addButton` by finding the view with id `R.id.addButton`
      * ("Add Item"), [Button] variable `val removeButton` by finding the view with id
@@ -127,7 +124,7 @@ class LayoutTransChanging : ComponentActivity() {
         // case here because the container has the attribute "animateLayoutChanges" set to true
         // in the layout file. You can also call setLayoutTransition(new LayoutTransition()) in
         // code to set a LayoutTransition on any container.
-        val transition = container.layoutTransition
+        val transition: LayoutTransition = container.layoutTransition
 
         // New capability as of Jellybean; monitor the container for *all* layout changes
         // (not just add/remove/visibility changes) and animate these changes as well.
@@ -138,7 +135,7 @@ class LayoutTransChanging : ComponentActivity() {
      * Custom view painted with a random background color and two different sizes which are
      * toggled between due to user interaction.
      *
-         * Our constructor. First we call our super's constructor. In our `init` block we initialize
+     * Our constructor. First we call our super's constructor. In our `init` block we initialize
      * [Int] variable `val red`, [Int] variable `val green`, and [Int] variable `val blue` to random
      * numbers between 127 and 255, then initialize [Int] variable `val color` to a ARGB color formed
      * by shifting each to their proper position and or'ing them together along with 0xff for the
