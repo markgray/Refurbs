@@ -33,7 +33,6 @@ import android.util.Log
 import com.example.android.jobscheduler.MainActivity
 
 /**
- * TODO: Continue here.
  * Service to handle callbacks from the [JobScheduler]. Requests scheduled with the [JobScheduler]
  * ultimately land on this service's [onStartJob] method. It runs jobs for a specific amount of time
  * and finishes them. It keeps the activity updated with changes via a Messenger.
@@ -73,11 +72,13 @@ class MyJobService : JobService() {
      *
      * We initialize our [Messenger] field [mActivityMessenger] by retrieving from our [Intent]
      * parameter [intent] the [Parcelable] value that the activity that launched us stored under
-     * the key [MainActivity.MESSENGER_INTENT_KEY] ("com.example.android.jobscheduler.MESSENGER_INTENT_KEY"),
-     * then return the constant [JobService.START_NOT_STICKY] (if this service's process is killed
-     * while it is started (after returning from [onStartCommand], and there are no new start intents
-     * to deliver to it, then take the service out of the started state and don't recreate until a
-     * future explicit call to [Context.startService].
+     * the key [MainActivity.MESSENGER_INTENT_KEY] using different overloads for the
+     * [Intent.getParcelableExtra] method depending on whether the device we are running on is
+     * older than `TIRAMISU` (`TIRAMISU` adds a `clazz` argument specifying the `class.java` of the
+     * object expected). We then return the constant [JobService.START_NOT_STICKY] (if this service's
+     * process is killed while it is started (after returning from [onStartCommand], and there are
+     * no new start intents to deliver to it, then take the service out of the started state and
+     * don't recreate until a future explicit call to [Context.startService].
      *
      * @param intent The [Intent] supplied to [Context.startService], as given. This may be `null`
      * if the service is being restarted after its process has gone away, and it had previously

@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_PARAMETER", "ReplaceNotNullAssertionWithElvisReturn", "RedundantSuppression")
+@file:Suppress(
+    "UNUSED_PARAMETER",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "RedundantSuppression"
+)
 
 package com.example.android.jobscheduler
 
@@ -48,7 +52,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import com.example.android.jobscheduler.service.MyJobService
-import java.lang.Long
 import java.lang.ref.WeakReference
 
 /**
@@ -88,7 +91,7 @@ class MainActivity : ComponentActivity() {
     private var mRequiresChargingCheckBox: CheckBox? = null
 
     /**
-     * [CheckBox] the user uses specify that to run, the job needs the device to be in idle mode.
+     * [CheckBox] the user uses to specify that to run, the job needs the device to be in idle mode.
      * Idle mode is a loose definition provided by the system, which means that the device is not in
      * use, and has not been in use for some time.
      */
@@ -115,26 +118,23 @@ class MainActivity : ComponentActivity() {
     private var mHandler: IncomingMessageHandler? = null
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge
-     * to edge display, then we call our super's implementation of `onCreate`, and set our
-     * content view to our layout file `R.layout.sample_main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.sample_main`.
      *
-     * We initialize our [ScrollView] variable `rootView` to the view with ID
-     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to
-     * take over the policy for applying window insets to `rootView`, with the
-     * `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [ScrollView] variable `rootView` to the view with ID `R.id.root_view` then
+     * call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying window
+     * insets to `rootView`, with the `listener` argument a lambda that accepts the [View] passed
+     * the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We then proceed to initialize our various widget references by finding them in our layout:
      *
@@ -259,11 +259,11 @@ class MainActivity : ComponentActivity() {
         val builder = JobInfo.Builder(mJobId++, mServiceComponent!!)
         val delay = mDelayEditText!!.text.toString()
         if (!TextUtils.isEmpty(delay)) {
-            builder.setMinimumLatency(Long.valueOf(delay) * 1000)
+            builder.setMinimumLatency(delay.toLong() * 1000)
         }
         val deadline = mDeadlineEditText!!.text.toString()
         if (!TextUtils.isEmpty(deadline)) {
-            builder.setOverrideDeadline(Long.valueOf(deadline) * 1000)
+            builder.setOverrideDeadline(delay.toLong() * 1000)
         }
         val requiresUnmetered = mWiFiConnectivityRadioButton!!.isChecked
         val requiresAnyConnectivity = mAnyConnectivityRadioButton!!.isChecked
@@ -281,7 +281,7 @@ class MainActivity : ComponentActivity() {
         if (TextUtils.isEmpty(workDuration)) {
             workDuration = "1"
         }
-        extras.putLong(WORK_DURATION_KEY, Long.valueOf(workDuration) * 1000)
+        extras.putLong(WORK_DURATION_KEY, workDuration.toLong() * 1000)
         builder.setExtras(extras)
 
         // Schedule job
@@ -329,11 +329,13 @@ class MainActivity : ComponentActivity() {
             jobScheduler.cancel(jobId)
             Toast.makeText(
                 this@MainActivity, String.format(getString(R.string.cancelled_job), jobId),
-                Toast.LENGTH_SHORT).show()
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
             Toast.makeText(
                 this@MainActivity, getString(R.string.no_jobs_to_cancel),
-                Toast.LENGTH_SHORT).show()
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -390,7 +392,7 @@ class MainActivity : ComponentActivity() {
          *  * [MSG_UNCOLOR_STOP]: We set the background color of `showStopView` to
          *  `R.color.none_received` (#999999 gray), and call our [updateParamsTextView] method
          *  with `null` for the `jobId` and the empty string for the `action` (clears
-         * all the changes done by a previous MSG_COLOR_STOP message).
+         *  all the changes done by a previous MSG_COLOR_STOP message).
          *
          * @param msg [Message] containing a description ([Message.what] field) and arbitrary data
          * object ([Message.obj] field)
@@ -509,7 +511,8 @@ class MainActivity : ComponentActivity() {
          * Intent key for storing of `Messenger` for `MyJobService` to use to send us messages.
          * ("com.example.android.jobscheduler.MESSENGER_INTENT_KEY")
          */
-        const val MESSENGER_INTENT_KEY: String = BuildConfig.APPLICATION_ID + ".MESSENGER_INTENT_KEY"
+        const val MESSENGER_INTENT_KEY: String =
+            BuildConfig.APPLICATION_ID + ".MESSENGER_INTENT_KEY"
 
         /**
          * Intent key for storing of the duration that the job is supposed to last, [MyJobService]
