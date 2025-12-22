@@ -36,5 +36,5 @@ android {
 
 dependencies {
     implementation ("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.activity:activity-ktx:1.12.1")
+    implementation("androidx.activity:activity-ktx:1.12.2")
 }
