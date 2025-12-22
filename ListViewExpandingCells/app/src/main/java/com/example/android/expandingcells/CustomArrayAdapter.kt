@@ -110,27 +110,35 @@ class CustomArrayAdapter(
         val listItem: ExpandableListItem = mData[position]
         if (convertViewLocal == null) {
             val inflater: LayoutInflater = (context as Activity).layoutInflater
-            convertViewLocal = inflater.inflate(mLayoutViewResourceId, parent, false)
+            convertViewLocal = inflater.inflate(
+                /* resource = */ mLayoutViewResourceId,
+                /* root = */ parent,
+                /* attachToRoot = */ false
+            )
         }
         val linearLayout = convertViewLocal!!.findViewById<LinearLayout>(R.id.item_linear_layout)
         val linearLayoutParams = LinearLayout.LayoutParams(
-            AbsListView.LayoutParams.MATCH_PARENT,
-            listItem.collapsedHeight
+            /* width = */ AbsListView.LayoutParams.MATCH_PARENT,
+            /* height = */ listItem.collapsedHeight
         )
         linearLayout.layoutParams = linearLayoutParams
         val imgView = convertViewLocal.findViewById<ImageView>(R.id.image_view)
         val titleView = convertViewLocal.findViewById<TextView>(R.id.title_view)
         val textView = convertViewLocal.findViewById<TextView>(R.id.text_view)
         titleView.text = listItem.title
-        imgView.setImageBitmap(getCroppedBitmap(BitmapFactory.decodeResource(
-            context.resources,
-            listItem.imgResource,
-            null
-        )))
+        imgView.setImageBitmap(
+            getCroppedBitmap(
+                BitmapFactory.decodeResource(
+                    /* res = */ context.resources,
+                    /* id = */ listItem.imgResource,
+                    /* opts = */ null
+                )
+            )
+        )
         textView.text = listItem.text
         convertViewLocal.layoutParams = AbsListView.LayoutParams(
-            AbsListView.LayoutParams.MATCH_PARENT,
-            AbsListView.LayoutParams.WRAP_CONTENT
+            /* w = */ AbsListView.LayoutParams.MATCH_PARENT,
+            /* h = */ AbsListView.LayoutParams.WRAP_CONTENT
         )
         val expandingLayout = convertViewLocal.findViewById<ExpandingLayout>(R.id.expanding_layout)
         expandingLayout.expandedHeight = listItem.expandedHeight
@@ -144,6 +152,7 @@ class CustomArrayAdapter(
     }
 
     /**
+     * TODO: Continue here.
      * Crops a circle out of the thumbnail photo passed it and returns the circle to the caller.
      * First we initialize [Bitmap] variable `val output` with a [Bitmap] that is the same width
      * and height as our [Bitmap] parameter [bitmap]. We initialize [Rect] variable `val rect` to
@@ -164,20 +173,30 @@ class CustomArrayAdapter(
      */
     fun getCroppedBitmap(bitmap: Bitmap): Bitmap {
         val output = createBitmap(width = bitmap.width, height = bitmap.height)
-        val rect = Rect(0, 0, bitmap.width, bitmap.height)
-        val canvas = Canvas(output)
+        val rect = Rect(
+            /* left = */ 0,
+            /* top = */ 0,
+            /* right = */ bitmap.width,
+            /* bottom = */ bitmap.height
+        )
+        val canvas = Canvas(/* bitmap = */ output)
         val paint = Paint()
         paint.isAntiAlias = true
         val halfWidth = bitmap.width / 2
         val halfHeight = bitmap.height / 2
         canvas.drawCircle(
-            halfWidth.toFloat(),
-            halfHeight.toFloat(),
-            Math.max(halfWidth, halfHeight).toFloat(),
-            paint
+            /* cx = */ halfWidth.toFloat(),
+            /* cy = */ halfHeight.toFloat(),
+            /* radius = */ Math.max(halfWidth, halfHeight).toFloat(),
+            /* paint = */ paint
         )
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-        canvas.drawBitmap(bitmap, rect, rect, paint)
+        paint.xfermode = PorterDuffXfermode(/* mode = */ PorterDuff.Mode.SRC_IN)
+        canvas.drawBitmap(
+            /* bitmap = */ bitmap,
+            /* src = */ rect,
+            /* dst = */ rect,
+            /* paint = */ paint
+        )
         return output
     }
 }
