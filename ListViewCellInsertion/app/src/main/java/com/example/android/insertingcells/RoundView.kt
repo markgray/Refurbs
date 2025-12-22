@@ -76,7 +76,11 @@ class RoundView : View {
      * reference to a style resource that supplies default values for
      * the view. Can be 0 to not look for defaults.
      */
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         inititialize()
     }
 
@@ -102,7 +106,12 @@ class RoundView : View {
      * @param canvas the [Canvas] on which the background will be drawn
      */
     override fun onDraw(canvas: Canvas) {
-        canvas.drawCircle(width / 2f, height / 2f, RADIUS.toFloat(), mPaint!!)
+        canvas.drawCircle(
+            /* cx = */ width / 2f,
+            /* cy = */ height / 2f,
+            /* radius = */ RADIUS.toFloat(),
+            /* paint = */ mPaint!!
+        )
     }
 
     /**
@@ -121,9 +130,19 @@ class RoundView : View {
      */
     val scalingAnimator: ObjectAnimator
         get() {
-            val imgViewScaleY = PropertyValuesHolder.ofFloat(SCALE_Y, SCALE_FACTOR)
-            val imgViewScaleX = PropertyValuesHolder.ofFloat(SCALE_X, SCALE_FACTOR)
-            val imgViewScaleAnimator = ObjectAnimator.ofPropertyValuesHolder(this, imgViewScaleX, imgViewScaleY)
+            val imgViewScaleY = PropertyValuesHolder.ofFloat(
+                /* property = */ SCALE_Y,
+                /* ...values = */ SCALE_FACTOR
+            )
+            val imgViewScaleX = PropertyValuesHolder.ofFloat(
+                /* property = */ SCALE_X,
+                /* ...values = */ SCALE_FACTOR
+            )
+            val imgViewScaleAnimator =
+                ObjectAnimator.ofPropertyValuesHolder(
+                    /* target = */ this,
+                    /* ...values = */ imgViewScaleX, imgViewScaleY
+                )
             imgViewScaleAnimator.repeatCount = 1
             imgViewScaleAnimator.repeatMode = ValueAnimator.REVERSE
             imgViewScaleAnimator.duration = ANIMATION_DURATION.toLong()

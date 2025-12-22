@@ -55,7 +55,6 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toDrawable
 
 /**
- * TODO: Continue here.
  * This [ListView] displays a list of [ListItemObject]. Calling [addRow] with a new [ListItemObject]
  * adds it to the top of the [ListView] and the new row is animated in. If the [ListView] content is
  * at the top (the scroll offset is 0), the animation of the new row is accompanied by an extra
@@ -140,7 +139,11 @@ class InsertionListView : ListView {
      * @param defStyle An attribute in the current theme that contains a reference to a style
      * resource that supplies default values for the view. Can be 0 to not look for defaults.
      */
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         inititialize(context)
     }
 
@@ -210,23 +213,26 @@ class InsertionListView : ListView {
          * Stores the starting bounds and the corresponding bitmap drawables of every
          * cell presently visible in the ListView before the data set change takes place.
          */
-        @SuppressLint("UseSparseArrays") val listViewItemBounds = HashMap<Long, Rect>()
-        @SuppressLint("UseSparseArrays") val listViewItemDrawables = HashMap<Long, BitmapDrawable>()
+        @SuppressLint("UseSparseArrays")
+        val listViewItemBounds = HashMap<Long, Rect>()
+
+        @SuppressLint("UseSparseArrays")
+        val listViewItemDrawables = HashMap<Long, BitmapDrawable>()
         val firstVisiblePosition = firstVisiblePosition
         Log.i(TAG, "Child count: $childCount First position: $firstVisiblePosition")
         for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            val position = firstVisiblePosition + i
-            val itemID = adapter.getItemId(position)
+            val child: View = getChildAt(i)
+            val position: Int = firstVisiblePosition + i
+            val itemID: Long = adapter.getItemId(position)
             val startRect = Rect(child.left, child.top, child.right, child.bottom)
             listViewItemBounds[itemID] = startRect
-            listViewItemDrawables[itemID] = getBitmapDrawableFromView(child)
+            listViewItemDrawables[itemID] = getBitmapDrawableFromView(v = child)
         }
 
         /* Adds the new object to the data set, thereby modifying the adapter,
          *  as well as adding a stable Id for that specified object.*/
-        mData!!.add(0, newObj)
-        adapter.addStableIdForDataAtPosition(0)
+        mData!!.add(index = 0, element = newObj)
+        adapter.addStableIdForDataAtPosition(position = 0)
         adapter.notifyDataSetChanged()
         val observer: ViewTreeObserver = viewTreeObserver
         observer.addOnPreDrawListener(object : OnPreDrawListener {
@@ -405,33 +411,41 @@ class InsertionListView : ListView {
                     if (shouldAnimateInImage) {
                         val width: Int = imgView.width
                         val height: Int = imgView.height
-                        val childLoc: Point = getLocationOnScreen(newCell)
-                        val layoutLoc: Point = getLocationOnScreen(mLayout)
+                        val childLoc: Point = getLocationOnScreen(v = newCell)
+                        val layoutLoc: Point = getLocationOnScreen(v = mLayout)
                         val obj: ListItemObject = mData!![0]
                         val bitmap: Bitmap = getCroppedBitmap(
                             BitmapFactory.decodeResource(
-                                mContext!!.resources,
-                                obj.imgResource,
-                                null
+                                /* res = */ mContext!!.resources,
+                                /* id = */ obj.imgResource,
+                                /* opts = */ null
                             )
                         )
                         copyImgView.setImageBitmap(bitmap)
                         imgView.visibility = INVISIBLE
                         copyImgView.scaleType = ImageView.ScaleType.CENTER
                         val imgViewTranslation = ObjectAnimator.ofFloat(
-                            copyImgView,
-                            Y,
-                            (childLoc.y - layoutLoc.y).toFloat()
+                            /* target = */ copyImgView,
+                            /* property = */ Y,
+                            /* ...values = */ (childLoc.y - layoutLoc.y).toFloat()
                         )
-                        val imgViewScaleY = PropertyValuesHolder.ofFloat(SCALE_Y, 0f, 1.0f)
-                        val imgViewScaleX = PropertyValuesHolder.ofFloat(SCALE_X, 0f, 1.0f)
-                        val imgViewScaleAnimator = ObjectAnimator
-                            .ofPropertyValuesHolder(copyImgView, imgViewScaleX, imgViewScaleY)
+                        val imgViewScaleY = PropertyValuesHolder.ofFloat(
+                            /* property = */ SCALE_Y,
+                            /* ...values = */ 0f, 1.0f
+                        )
+                        val imgViewScaleX = PropertyValuesHolder.ofFloat(
+                            /* property = */ SCALE_X,
+                            /* ...values = */ 0f, 1.0f
+                        )
+                        val imgViewScaleAnimator = ObjectAnimator.ofPropertyValuesHolder(
+                            /* target = */ copyImgView,
+                            /* ...values = */ imgViewScaleX, imgViewScaleY
+                        )
                         imgViewScaleAnimator.interpolator = sOvershootInterpolator
                         animations.add(imgViewTranslation)
                         animations.add(imgViewScaleAnimator)
                         val params = RelativeLayout.LayoutParams(width, height)
-                        mLayout!!.addView(copyImgView, params)
+                        mLayout!!.addView(/* child = */ copyImgView, /* params = */ params)
                     }
                 }
 
@@ -450,10 +464,9 @@ class InsertionListView : ListView {
                         val startTop: Int = startRect.top
                         val delta: Int = startTop - top
                         val animation = ObjectAnimator.ofFloat(
-                            child,
-                            TRANSLATION_Y,
-                            delta.toFloat(),
-                            0f
+                            /* target = */ child,
+                            /* property = */ TRANSLATION_Y,
+                            /* ...values = */ delta.toFloat(), 0f
                         )
                         animations.add(animation)
                     } else {
@@ -464,10 +477,9 @@ class InsertionListView : ListView {
                         val startTop: Int = top + if (i > 0) childHeight else -childHeight
                         val delta: Int = startTop - top
                         val animation = ObjectAnimator.ofFloat(
-                            child,
-                            TRANSLATION_Y,
-                            delta.toFloat(),
-                            0f
+                            /* target = */ child,
+                            /* property = */ TRANSLATION_Y,
+                            /* ...values = */ delta.toFloat(), 0f
                         )
                         animations.add(animation)
                     }
@@ -488,14 +500,13 @@ class InsertionListView : ListView {
                     val startBounds: Rect? = listViewItemBounds[itemId]
                     bitmapDrawable!!.bounds = startBounds!!
                     val childHeight: Int = startBounds.bottom - startBounds.top + dividerHeight
-                    val endBounds = Rect(startBounds)
-                    endBounds.offset(0, childHeight)
+                    val endBounds = Rect(/* r = */ startBounds)
+                    endBounds.offset(/* dx = */ 0, /* dy = */ childHeight)
                     val animation = ObjectAnimator.ofObject(
-                        bitmapDrawable,
-                        "bounds",
-                        sBoundsEvaluator,
-                        startBounds,
-                        endBounds
+                        /* target = */ bitmapDrawable,
+                        /* propertyName = */ "bounds",
+                        /* evaluator = */ sBoundsEvaluator,
+                        /* ...values = */ startBounds, endBounds
                     )
                     animation.addUpdateListener(object : AnimatorUpdateListener {
                         private var mLastBound: Rect? = null
@@ -659,9 +670,9 @@ class InsertionListView : ListView {
         val dm = DisplayMetrics()
         @Suppress("DEPRECATION") // Oddly enough `dm` does not seem to be used?
         (context as Activity).windowManager.defaultDisplay.getMetrics(dm)
-        val location = IntArray(2)
-        v!!.getLocationOnScreen(location)
-        return Point(location[0], location[1])
+        val location = IntArray(size = 2)
+        v!!.getLocationOnScreen(/* outLocation = */ location)
+        return Point(/* x = */ location[0], /* y = */ location[1])
     }
 
     /**
@@ -741,10 +752,28 @@ class InsertionListView : ListView {
              * [Float] parameter [fraction].
              */
             override fun evaluate(fraction: Float, startValue: Rect, endValue: Rect): Rect {
-                return Rect(interpolate(startValue.left, endValue.left, fraction),
-                    interpolate(startValue.top, endValue.top, fraction),
-                    interpolate(startValue.right, endValue.right, fraction),
-                    interpolate(startValue.bottom, endValue.bottom, fraction))
+                return Rect(
+                    /* left = */ interpolate(
+                        start = startValue.left,
+                        end = endValue.left,
+                        fraction = fraction
+                    ),
+                    /* top = */ interpolate(
+                        start = startValue.top,
+                        end = endValue.top,
+                        fraction = fraction
+                    ),
+                    /* right = */ interpolate(
+                        start = startValue.right,
+                        end = endValue.right,
+                        fraction = fraction
+                    ),
+                    /* bottom = */ interpolate(
+                        start = startValue.bottom,
+                        end = endValue.bottom,
+                        fraction = fraction
+                    )
+                )
             }
 
             /**
