@@ -54,28 +54,23 @@ class ListViewDeletion : ComponentActivity() {
     val mCheckedViews: ArrayList<View> = ArrayList()
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.activity_list_view_deletion`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_list_view_deletion`.
      *
-     * We initialize our [LinearLayout] variable `rootView`
-     * to the view with ID `R.id.root_view` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize [Button] variable `val deleteButton` by finding the view with id
      * `R.id.deleteButton` ("Delete Selected"), initialize [CheckBox] variable `val usePositionsCB`
@@ -130,8 +125,10 @@ class ListViewDeletion : ComponentActivity() {
         val listView = findViewById<ListView>(R.id.list_view)
         val cheeseList = ArrayList<String>()
         Collections.addAll(cheeseList, *Cheeses.sCheeseStrings)
-        val adapter = StableArrayAdapter(this,
-            android.R.layout.simple_list_item_multiple_choice, cheeseList)
+        val adapter = StableArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_multiple_choice, cheeseList
+        )
         listView.adapter = adapter
         listView.itemsCanFocus = false
         listView.choiceMode = ListView.CHOICE_MODE_MULTIPLE
@@ -147,7 +144,7 @@ class ListViewDeletion : ComponentActivity() {
              * [Int] variable `var i` for the `numCheckedItems` in `checkedItems`:
              *
              *  * If the value at `i` of `checkedItems` is `false` we continue (this never happens
-             *  because `checkedItems` contains only the checked items it its sparse array).
+             *  because `checkedItems` contains only the checked items in its sparse array).
              *
              *  * We initialize [Int] variable `val position` with the key of the key-value pair in
              *  location `i` in the `checkedItems` sparse array (this is the position of the checked
@@ -213,7 +210,8 @@ class ListViewDeletion : ComponentActivity() {
                     mCheckedViews.clear()
                     val positionOnScreen = position - listView.firstVisiblePosition
                     if (positionOnScreen >= 0 &&
-                        positionOnScreen < listView.childCount) {
+                        positionOnScreen < listView.childCount
+                    ) {
                         val view = listView.getChildAt(positionOnScreen)
                         // All set to fade this view out. Using ViewPropertyAnimator accounts
                         // for possible recycling of views during the animation itself
@@ -248,7 +246,7 @@ class ListViewDeletion : ComponentActivity() {
              * Callback method to be invoked when an item in the [ListView] has been clicked.
              * We initialize [Boolean] variable `val checked` with the checked state of the item
              * at position `position` in [ListView] `listView` and if `checked` is `true` we add
-             * `view` to [ArrayList] of [View] field [mCheckedViews], if it is false we remove it.
+             * `view` to [ArrayList] of [View] field [mCheckedViews], if it is `false` we remove it.
              *
              * Paremeter: parent   The [AdapterView] where the click happened.
              * Paremeter: view     The view within the [AdapterView] that was clicked (this
@@ -256,7 +254,6 @@ class ListViewDeletion : ComponentActivity() {
              * Paremeter: position The position of the view in the adapter.
              * Paremeter: id       The row id of the item that was clicked.
              */
-
             val checked: Boolean = listView.isItemChecked(position)
             if (checked) {
                 mCheckedViews.add(view)
@@ -272,10 +269,10 @@ class ListViewDeletion : ComponentActivity() {
      * parameter `objects` putting `i` in our [HashMap] of [String] to [Int] field [mIdMap] under
      * the key consisting of the string in position `i` in `objects`.
      *
-     * Paremeter: context            The current context.
+     * @param context  The current context.
      * @param textViewResourceId The resource ID for a layout file containing a TextView to use
      * when instantiating views.
-     * @param objects            The objects to represent in the ListView.
+     * @param objects The objects to represent in the ListView.
      */
     private class StableArrayAdapter(
         context: Context?,
@@ -303,7 +300,7 @@ class ListViewDeletion : ComponentActivity() {
          * @return The id of the item at the specified position.
          */
         override fun getItemId(position: Int): Long {
-            val item = getItem(position)
+            val item: String? = getItem(position)
             return mIdMap[item]!!.toLong()
         }
 
