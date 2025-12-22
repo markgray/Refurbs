@@ -429,7 +429,6 @@ class DynamicListView : ListView {
     }
 
     /**
-     * TODO: Continue here.
      * Retrieves the position in the list corresponding to our [Long] parameter [itemID]. First we
      * initialize [View] variable `val v` with the view that our method [getViewForID] returns for
      * the item id [itemID]. If `v` is `null` we return -1, otherwise we return the position
@@ -531,8 +530,8 @@ class DynamicListView : ListView {
                     val deltaY = mLastEventY - mDownY
                     if (mCellIsMobile) {
                         mHoverCellCurrentBounds!!.offsetTo(
-                            mHoverCellOriginalBounds!!.left,
-                            mHoverCellOriginalBounds!!.top + deltaY + mTotalOffset
+                            /* newLeft = */ mHoverCellOriginalBounds!!.left,
+                            /* newTop = */ mHoverCellOriginalBounds!!.top + deltaY + mTotalOffset
                         )
                         mHoverCell!!.bounds = mHoverCellCurrentBounds!!
                         invalidate()
@@ -602,7 +601,7 @@ class DynamicListView : ListView {
      *
      *  * We call our method [swapElements] to swap the data items at position `originalItem` (the
      *  item being dragged) with the item at the position occupied by `switchView` in our [ArrayList]
-     *  of [String] dataset field[mCheeseList]. We then call the [StableArrayAdapter.notifyDataSetChanged]
+     *  of [String] dataset field [mCheeseList]. We then call the [StableArrayAdapter.notifyDataSetChanged]
      *  method of our adapter to notify it that the dataset changed and the [ListView] needs to be
      *  redrawn.
      *
@@ -638,13 +637,17 @@ class DynamicListView : ListView {
                 updateNeighborViewsForID(mMobileItemId)
                 return
             }
-            swapElements(mCheeseList, originalItem, getPositionForView(switchView))
+            swapElements(
+                arrayList = mCheeseList,
+                indexOne = originalItem,
+                indexTwo = getPositionForView(switchView)
+            )
             (adapter as BaseAdapter).notifyDataSetChanged()
             mDownY = mLastEventY
             val switchViewStartTop: Int = switchView.top
             mobileView!!.visibility = VISIBLE
             switchView.visibility = INVISIBLE
-            updateNeighborViewsForID(mMobileItemId)
+            updateNeighborViewsForID(itemID = mMobileItemId)
             val observer: ViewTreeObserver = viewTreeObserver
             observer.addOnPreDrawListener(object : OnPreDrawListener {
                 /**
@@ -673,7 +676,11 @@ class DynamicListView : ListView {
                     val switchViewNewTop: Int = switchViewLocal!!.top
                     val delta: Int = switchViewStartTop - switchViewNewTop
                     switchViewLocal.translationY = delta.toFloat()
-                    val animator = ObjectAnimator.ofFloat(switchViewLocal, TRANSLATION_Y, 0f)
+                    val animator = ObjectAnimator.ofFloat(
+                        /* target = */ switchViewLocal,
+                        /* property = */ TRANSLATION_Y,
+                        /* ...values = */ 0f
+                    )
                     animator.duration = MOVE_DURATION.toLong()
                     animator.start()
                     return true
@@ -746,10 +753,15 @@ class DynamicListView : ListView {
                 mIsWaitingForScrollFinish = true
                 return
             }
-            mHoverCellCurrentBounds!!.offsetTo(mHoverCellOriginalBounds!!.left, mobileView!!.top)
+            mHoverCellCurrentBounds!!.offsetTo(
+                /* newLeft = */ mHoverCellOriginalBounds!!.left,
+                /* newTop = */ mobileView!!.top
+            )
             val hoverViewAnimator = ObjectAnimator.ofObject(
-                mHoverCell, "bounds",
-                sBoundEvaluator, mHoverCellCurrentBounds
+                /* target = */ mHoverCell,
+                /* propertyName = */ "bounds",
+                /* evaluator = */ sBoundEvaluator,
+                /* ...values = */ mHoverCellCurrentBounds
             )
             hoverViewAnimator.addUpdateListener { invalidate() }
             hoverViewAnimator.addListener(object : AnimatorListenerAdapter() {
@@ -821,7 +833,7 @@ class DynamicListView : ListView {
      * [Rect] field [mHoverCellCurrentBounds].
      */
     private fun handleMobileCellScroll() {
-        mIsMobileScrolling = handleMobileCellScroll(mHoverCellCurrentBounds)
+        mIsMobileScrolling = handleMobileCellScroll(r = mHoverCellCurrentBounds)
     }
 
     /**
@@ -859,11 +871,11 @@ class DynamicListView : ListView {
         val hoverViewTop: Int = r!!.top
         val hoverHeight: Int = r.height()
         if (hoverViewTop <= 0 && offset > 0) {
-            smoothScrollBy(-mSmoothScrollAmountAtEdge, 0)
+            smoothScrollBy(/* distance = */ -mSmoothScrollAmountAtEdge, /* duration = */ 0)
             return true
         }
         if (hoverViewTop + hoverHeight >= height && offset + extent < range) {
-            smoothScrollBy(mSmoothScrollAmountAtEdge, 0)
+            smoothScrollBy(/* distance = */ mSmoothScrollAmountAtEdge, /* duration = */ 0)
             return true
         }
         return false
@@ -953,11 +965,12 @@ class DynamicListView : ListView {
          * Callback method to be invoked while the list view or grid view is being scrolled. If the
          * view is being scrolled, this method will be called before the next frame of the scroll is
          * rendered. We save our [Int] parameter [scrollState] in our [Int] field [mCurrentScrollState]
-         * as well as in our [Int] field [mScrollState]. We then call our [isScrollCompleted] method
-         * to either continue a scroll invoked by the hover cell being outside the bounds of the
-         * [ListView], or if the hover cell has already been released invoke the animation for the
-         * hover cell to return to its correct position after the [ListView] has entered an idle
-         * scroll state.
+         * as well as in our [Int] field [mScrollState]. We then reference our [isScrollCompleted]
+         * property to have its `get` method decide to either continue a scroll invoked by the hover
+         * cell being outside the bounds of the [ListView], or if the hover cell has already been
+         * released invoke the animation for the hover cell to return to its correct position after
+         * the [ListView] has entered an idle scroll state ([isScrollCompleted] is a property only
+         * because the java to kotlin converter was confused by the name IMO, but what the hay).
          *
          * @param view The view whose scroll state is being reported
          * @param scrollState The current scroll state. One of
@@ -1076,10 +1089,10 @@ class DynamicListView : ListView {
              */
             override fun evaluate(fraction: Float, startValue: Rect, endValue: Rect): Rect {
                 return Rect(
-                    interpolate(startValue.left, endValue.left, fraction),
-                    interpolate(startValue.top, endValue.top, fraction),
-                    interpolate(startValue.right, endValue.right, fraction),
-                    interpolate(startValue.bottom, endValue.bottom, fraction)
+                    /* left = */ interpolate(startValue.left, endValue.left, fraction),
+                    /* top = */ interpolate(startValue.top, endValue.top, fraction),
+                    /* right = */ interpolate(startValue.right, endValue.right, fraction),
+                    /* bottom = */ interpolate(startValue.bottom, endValue.bottom, fraction)
                 )
             }
 

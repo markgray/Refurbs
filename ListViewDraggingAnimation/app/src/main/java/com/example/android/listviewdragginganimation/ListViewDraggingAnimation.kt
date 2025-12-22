@@ -45,10 +45,14 @@ class ListViewDraggingAnimation : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_view)
         val mCheeseList = ArrayList<String>()
-        Collections.addAll(mCheeseList, *Cheeses.sCheeseStrings)
-        val adapter = StableArrayAdapter(this, R.layout.text_view, mCheeseList)
+        Collections.addAll(/* c = */ mCheeseList, /* ...elements = */ *Cheeses.sCheeseStrings)
+        val adapter = StableArrayAdapter(
+            context = this,
+            textViewResourceId = R.layout.text_view,
+            objects = mCheeseList
+        )
         val listView = findViewById<DynamicListView>(R.id.list_view)
-        listView.setCheeseList(mCheeseList)
+        listView.setCheeseList(cheeseList = mCheeseList)
         listView.adapter = adapter
         listView.choiceMode = ListView.CHOICE_MODE_SINGLE
     }
