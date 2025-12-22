@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "UNUSED_ANONYMOUS_PARAMETER", "MemberVisibilityCanBePrivate", "UnusedImport")
+@file:Suppress(
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "UNUSED_ANONYMOUS_PARAMETER",
+    "MemberVisibilityCanBePrivate",
+    "UnusedImport"
+)
 
 package com.example.android.listviewdragginganimation
 
@@ -39,9 +44,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.OnPreDrawListener
 import android.widget.AbsListView
-import android.widget.AbsListView.OnScrollListener
 import android.widget.AdapterView
-import android.widget.AdapterView.OnItemLongClickListener
 import android.widget.BaseAdapter
 import android.widget.ListView
 
@@ -90,7 +93,8 @@ class DynamicListView : ListView {
     private var mDownX: Int = -1
 
     /**
-     * Total amount the dragged cell in the Y direction from its initial position on the screen.
+     * Total amount that the dragged cell has been dragged in the Y direction from its initial
+     * position on the screen.
      */
     private var mTotalOffset: Int = 0
 
@@ -232,47 +236,49 @@ class DynamicListView : ListView {
      * Listens for long clicks on any items in the [ListView]. When a cell has been selected, the
      * hover cell is created and set up.
      */
-    private val mOnItemLongClickListener = OnItemLongClickListener {
-        arg0: AdapterView<*>, arg1: View, pos: Int, id: Long ->
-        /**
-         * Callback method to be invoked when an item in this view has been clicked and held. First
-         * we initialize our [Int] field [mTotalOffset] to 0. We initialize [Int] variable
-         * `val position` to the position of the item which contains the point ([mDownX], [mDownY])
-         * (this is the coordinates of the `onTouch` event which initiated this long click and
-         * `position` should be the same as our[Int] parameter [pos] since any scrolling of the
-         * [ListView] eats the long click events until the user lifts his finger, then long clicks
-         * with the scrolling stopped, but might as well make sure I guess). We then initialize
-         * [Int] variable `val itemNum` by subtracting the position number of the first visible item
-         * on the screen from `position`. We initialize [View] variable `val selectedView` by
-         * fetching our `itemNum`'th child, initialize our [Long] field [mMobileItemId] with the
-         * item id of the item at `position` in our dataset, and initialize our [BitmapDrawable]
-         * field [mHoverCell] with the [BitmapDrawable] that our method [getAndAddHoverView] creates
-         * from `selectedView` (this is the [BitmapDrawable] that our [dispatchDraw] override will
-         * draw on the screen when it is called). We then set the visibility of `selectedView` to
-         * INVISIBLE (note that we then need to set it to VISIBLE again before it is recycled by our
-         * adapter). We set our [Boolean] field [mCellIsMobile] to `true` and call our method
-         * [updateNeighborViewsForID] to store a reference to the views above and below the item
-         * currently corresponding to the hover cell in our [Long] fields [mAboveItemId] and
-         * [mBelowItemId]. Finally we return `true` to consume the long click.
-         *
-         * @param arg0 The AbsListView where the click happened
-         * @param arg1 The view within the AbsListView that was clicked
-         * @param pos  The position of the view in the list
-         * @param id   The row id of the item that was clicked
-         *
-         * @return `true` if the callback consumed the long click, `false` otherwise
-         */
-        mTotalOffset = 0
-        val position: Int = pointToPosition(mDownX, mDownY)
-        val itemNum: Int = position - firstVisiblePosition
-        val selectedView: View = getChildAt(itemNum)
-        mMobileItemId = adapter.getItemId(position)
-        mHoverCell = getAndAddHoverView(selectedView)
-        selectedView.visibility = INVISIBLE
-        mCellIsMobile = true
-        updateNeighborViewsForID(mMobileItemId)
-        true
-    }
+    @Suppress("unused")
+    private val mOnItemLongClickListener =
+        OnItemLongClickListener { arg0: AdapterView<*>, arg1: View, pos: Int, id: Long ->
+            /**
+             * Callback method to be invoked when an item in this view has been clicked and held.
+             * First we initialize our [Int] field [mTotalOffset] to 0. We initialize [Int] variable
+             * `val position` to the position of the item which contains the point ([mDownX], [mDownY])
+             * (this is the coordinates of the `onTouch` event which initiated this long click and
+             * `position` should be the same as our[Int] parameter [pos] since any scrolling of the
+             * [ListView] eats the long click events until the user lifts his finger, then long clicks
+             * with the scrolling stopped, but might as well make sure I guess). We then initialize
+             * [Int] variable `val itemNum` by subtracting the position number of the first visible
+             * item on the screen from `position`. We initialize [View] variable `val selectedView` by
+             * fetching our `itemNum`'th child, initialize our [Long] field [mMobileItemId] with the
+             * item id of the item at `position` in our dataset, and initialize our [BitmapDrawable]
+             * field [mHoverCell] with the [BitmapDrawable] that our method [getAndAddHoverView]
+             * creates from `selectedView` (this is the [BitmapDrawable] that our [dispatchDraw]
+             * override will draw on the screen when it is called). We then set the visibility of
+             * `selectedView` to INVISIBLE (note that we then need to set it to VISIBLE again before
+             * it is recycled by our adapter). We set our [Boolean] field [mCellIsMobile] to `true`
+             * and call our method [updateNeighborViewsForID] to store a reference to the views
+             * above and below the item currently corresponding to the hover cell in our [Long]
+             * fields [mAboveItemId] and [mBelowItemId]. Finally we return `true` to consume the
+             * long click.
+             *
+             * @param arg0 The AbsListView where the click happened
+             * @param arg1 The view within the AbsListView that was clicked
+             * @param pos  The position of the view in the list
+             * @param id   The row id of the item that was clicked
+             *
+             * @return `true` if the callback consumed the long click, `false` otherwise
+             */
+            mTotalOffset = 0
+            val position: Int = pointToPosition(mDownX, mDownY)
+            val itemNum: Int = position - firstVisiblePosition
+            val selectedView: View = getChildAt(itemNum)
+            mMobileItemId = adapter.getItemId(position)
+            mHoverCell = getAndAddHoverView(selectedView)
+            selectedView.visibility = INVISIBLE
+            mCellIsMobile = true
+            updateNeighborViewsForID(mMobileItemId)
+            true
+        }
 
     /**
      * Creates the hover cell with the appropriate bitmap and of appropriate size. The hover cell's
@@ -299,10 +305,15 @@ class DynamicListView : ListView {
         val h: Int = v.height
         val top: Int = v.top
         val left: Int = v.left
-        val b: Bitmap = getBitmapWithBorder(v)
-        val drawable = BitmapDrawable(resources, b)
-        mHoverCellOriginalBounds = Rect(left, top, left + w, top + h)
-        mHoverCellCurrentBounds = Rect(mHoverCellOriginalBounds)
+        val b: Bitmap = getBitmapWithBorder(v = v)
+        val drawable = BitmapDrawable(/* res = */ resources, /* bitmap = */ b)
+        mHoverCellOriginalBounds = Rect(
+            /* left = */ left,
+            /* top = */ top,
+            /* right = */ left + w,
+            /* bottom = */ top + h
+        )
+        mHoverCellCurrentBounds = Rect(/* r = */ mHoverCellOriginalBounds)
         drawable.bounds = mHoverCellCurrentBounds!!
         return drawable
     }
@@ -321,16 +332,21 @@ class DynamicListView : ListView {
      * @return screenshot of our parameter `View v` with a black border.
      */
     private fun getBitmapWithBorder(v: View): Bitmap {
-        val bitmap: Bitmap = getBitmapFromView(v)
-        val can = Canvas(bitmap)
-        val rect = Rect(0, 0, bitmap.width, bitmap.height)
+        val bitmap: Bitmap = getBitmapFromView(v = v)
+        val can = Canvas(/* bitmap = */ bitmap)
+        val rect = Rect(
+            /* left = */ 0,
+            /* top = */ 0,
+            /* right = */ bitmap.width,
+            /* bottom = */ bitmap.height
+        )
         val paint = Paint()
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = LINE_THICKNESS.toFloat()
         paint.color = Color.BLACK
 
         // can.drawBitmap(bitmap, 0, 0, null); this is not necessary!
-        can.drawRect(rect, paint)
+        can.drawRect(/* r = */ rect, /* paint = */ paint)
         return bitmap
     }
 
@@ -345,8 +361,12 @@ class DynamicListView : ListView {
      * @return a [Bitmap] showing a screenshot of our [View] parameter [v]
      */
     private fun getBitmapFromView(v: View): Bitmap {
-        val bitmap = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
+        val bitmap = Bitmap.createBitmap(
+            /* width = */ v.width,
+            /* height = */ v.height,
+            /* config = */ Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(/* bitmap = */ bitmap)
         v.draw(canvas)
         return bitmap
     }
@@ -365,7 +385,7 @@ class DynamicListView : ListView {
      * @param itemID item id of the hover cell.
      */
     private fun updateNeighborViewsForID(itemID: Long) {
-        val position: Int = getPositionForID(itemID)
+        val position: Int = getPositionForID(itemID = itemID)
         val adapter = adapter as StableArrayAdapter
         mAboveItemId = adapter.getItemId(position - 1)
         mBelowItemId = adapter.getItemId(position + 1)
@@ -398,9 +418,9 @@ class DynamicListView : ListView {
         val firstVisiblePosition: Int = firstVisiblePosition
         val adapter = adapter as StableArrayAdapter
         for (i in 0 until childCount) {
-            val v: View = getChildAt(i)
+            val v: View = getChildAt(/* index = */ i)
             val position: Int = firstVisiblePosition + i
-            val id: Long = adapter.getItemId(position)
+            val id: Long = adapter.getItemId(position = position)
             if (id == itemID) {
                 return v
             }
@@ -409,6 +429,7 @@ class DynamicListView : ListView {
     }
 
     /**
+     * TODO: Continue here.
      * Retrieves the position in the list corresponding to our [Long] parameter [itemID]. First we
      * initialize [View] variable `val v` with the view that our method [getViewForID] returns for
      * the item id [itemID]. If `v` is `null` we return -1, otherwise we return the position
@@ -509,8 +530,10 @@ class DynamicListView : ListView {
                     mLastEventY = event.getY(pointerIndex).toInt()
                     val deltaY = mLastEventY - mDownY
                     if (mCellIsMobile) {
-                        mHoverCellCurrentBounds!!.offsetTo(mHoverCellOriginalBounds!!.left,
-                            mHoverCellOriginalBounds!!.top + deltaY + mTotalOffset)
+                        mHoverCellCurrentBounds!!.offsetTo(
+                            mHoverCellOriginalBounds!!.left,
+                            mHoverCellOriginalBounds!!.top + deltaY + mTotalOffset
+                        )
                         mHoverCell!!.bounds = mHoverCellCurrentBounds!!
                         invalidate()
                         handleCellSwitch()
@@ -724,8 +747,10 @@ class DynamicListView : ListView {
                 return
             }
             mHoverCellCurrentBounds!!.offsetTo(mHoverCellOriginalBounds!!.left, mobileView!!.top)
-            val hoverViewAnimator = ObjectAnimator.ofObject(mHoverCell, "bounds",
-                sBoundEvaluator, mHoverCellCurrentBounds)
+            val hoverViewAnimator = ObjectAnimator.ofObject(
+                mHoverCell, "bounds",
+                sBoundEvaluator, mHoverCellCurrentBounds
+            )
             hoverViewAnimator.addUpdateListener { invalidate() }
             hoverViewAnimator.addListener(object : AnimatorListenerAdapter() {
                 /**
@@ -906,11 +931,18 @@ class DynamicListView : ListView {
          * @param visibleItemCount the number of visible cells
          * @param totalItemCount   the number of items in the list adaptor
          */
-        override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+        override fun onScroll(
+            view: AbsListView,
+            firstVisibleItem: Int,
+            visibleItemCount: Int,
+            totalItemCount: Int
+        ) {
             mCurrentFirstVisibleItem = firstVisibleItem
             mCurrentVisibleItemCount = visibleItemCount
-            mPreviousFirstVisibleItem = if (mPreviousFirstVisibleItem == -1) mCurrentFirstVisibleItem else mPreviousFirstVisibleItem
-            mPreviousVisibleItemCount = if (mPreviousVisibleItemCount == -1) mCurrentVisibleItemCount else mPreviousVisibleItemCount
+            mPreviousFirstVisibleItem =
+                if (mPreviousFirstVisibleItem == -1) mCurrentFirstVisibleItem else mPreviousFirstVisibleItem
+            mPreviousVisibleItemCount =
+                if (mPreviousVisibleItemCount == -1) mCurrentVisibleItemCount else mPreviousVisibleItemCount
             checkAndHandleFirstVisibleCellChange()
             checkAndHandleLastVisibleCellChange()
             mPreviousFirstVisibleItem = mCurrentFirstVisibleItem
@@ -1043,10 +1075,12 @@ class DynamicListView : ListView {
              * [Float] parameter [fraction].
              */
             override fun evaluate(fraction: Float, startValue: Rect, endValue: Rect): Rect {
-                return Rect(interpolate(startValue.left, endValue.left, fraction),
+                return Rect(
+                    interpolate(startValue.left, endValue.left, fraction),
                     interpolate(startValue.top, endValue.top, fraction),
                     interpolate(startValue.right, endValue.right, fraction),
-                    interpolate(startValue.bottom, endValue.bottom, fraction))
+                    interpolate(startValue.bottom, endValue.bottom, fraction)
+                )
             }
 
             /**
