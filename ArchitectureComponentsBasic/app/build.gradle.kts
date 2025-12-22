@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.activity:activity-ktx:1.12.1")
+    implementation("androidx.activity:activity-ktx:1.12.2")
     // Support libraries
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
