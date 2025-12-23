@@ -27,9 +27,10 @@ import android.widget.TextView
 
 /**
  * The stable [ArrayAdapter] used by our [ListView].
+ *
  * Our constructor. First we call our super's 3 argument constructor, then in our `init` block we
  * loop over [Int] variable `var i` for all of the strings in our [List] of [String] parameter
- * `objects` storing `i` under the key of the [String] fetched from position `i` in `objects` in
+ * [objects] storing `i` under the key of the [String] fetched from position `i` in [objects] in
  * our [HashMap] of [String] to [Int] field [mIdMap].
  *
  * @param context            The current [Context].
@@ -65,7 +66,7 @@ class StableArrayAdapter(
      * @return The id of the item at the specified position.
      */
     override fun getItemId(position: Int): Long {
-        val item = getItem(position)
+        val item: String? = getItem(position)
         return mIdMap[item]!!.toLong()
     }
 

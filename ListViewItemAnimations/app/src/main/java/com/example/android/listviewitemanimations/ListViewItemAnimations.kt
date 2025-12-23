@@ -336,7 +336,8 @@ class ListViewItemAnimations : ComponentActivity() {
                             remove = false
                         }
                         // Animate position and alpha
-                        val duration: Long = ((1 - fractionCovered) * SWIPE_DURATION).toInt().toLong()
+                        val duration: Long =
+                            ((1 - fractionCovered) * SWIPE_DURATION).toInt().toLong()
                         animateSwipe(
                             view = v,
                             endX = endX,
@@ -522,7 +523,6 @@ class ListViewItemAnimations : ComponentActivity() {
     }
 
     /**
-     * TODO: Continue here.
      * This method animates all other views in the [ListView] parameter [listView] container (not
      * including [View] parameter [viewToRemove]) into their final positions. It is called before
      * [viewToRemove] has been removed from the adapter, and before layout has been run. The approach
@@ -632,9 +632,9 @@ class ListViewItemAnimations : ComponentActivity() {
                             object : Runnable {
                                 /**
                                  * This `Runnable` is used to return our `ListView` to normalcy
-                                 * after the removal of an item is animated. First we call the `hideBackground`
-                                 * method of `mBackgroundContainer`, then we set `mSwiping` and
-                                 * `mAnimating` to false and enable `mListView`.
+                                 * after the removal of an item is animated. First we call the
+                                 * `hideBackground` method of `mBackgroundContainer`, then we set
+                                 * `mSwiping` and `mAnimating` to false and enable `mListView`.
                                  */
                                 override fun run() {
                                     mBackgroundContainer!!.hideBackground()
@@ -645,7 +645,14 @@ class ListViewItemAnimations : ComponentActivity() {
                             }
                         } else null
                         firstAnimation = false
-                        moveView(child, 0f, 0f, delta.toFloat(), 0f, endAction)
+                        moveView(
+                            view = child,
+                            startX = 0f,
+                            endX = 0f,
+                            startY = delta.toFloat(),
+                            endY = 0f,
+                            endAction = endAction
+                        )
                     }
                 }
                 mItemIdTopMap.clear()
@@ -662,16 +669,16 @@ class ListViewItemAnimations : ComponentActivity() {
      *
      *  * Post Gingerbread device: we set the duration of the underlying animator that animates
      *  properties of [View] parameter [view] to MOVE_DURATION (150ms) (Uh? this does nothing?) If
-     *  our [Float] parametr [startX] is not equal to our parameter [Float] parameter [endX] (never
-     *  happens?) we initialize [ObjectAnimator] variable `val anim` with an instance which will
-     *  animate the TRANSLATION_X property of [view] from [startX] to [endX], set its duration to
-     *  [MOVE_DURATION], start it running and call our [setAnimatorEndAction] method to set the
-     *  [AnimatorListener] of `anim` to `endActionLocal` if it is not `null`, then we set
-     *  `endActionLocal` to `null`. If our [Float] parameter [startY] is not equal to our [Float]
-     *  parameter [endY] we initialize [ObjectAnimator] `val anim` with an instance which will
-     *  animate the TRANSLATION_Y property of [view] from [startY] to [endY], set its duration to
-     *  [MOVE_DURATION], start it running and call our [setAnimatorEndAction] method to set the
-     *  [AnimatorListener] of `anim` to `endActionLocal` if it is not null.
+     *  our [Float] parametr [startX] is not equal to our [Float] parameter [endX] (never happens?)
+     *  we initialize [ObjectAnimator] variable `val anim` with an instance which will  animate the
+     *  TRANSLATION_X property of [view] from [startX] to [endX], set its duration to [MOVE_DURATION],
+     *  start it running and call our [setAnimatorEndAction] method to set the [AnimatorListener] of
+     *  `anim` to `endActionLocal` if it is not `null`, then we set `endActionLocal` to `null`. If
+     *  our [Float] parameter [startY] is not equal to our [Float] parameter [endY] we initialize
+     *  [ObjectAnimator] `val anim` with an instance which will animate the TRANSLATION_Y property
+     *  of [view] from [startY] to [endY], set its duration to [MOVE_DURATION], start it running and
+     *  call our [setAnimatorEndAction] method to set the [AnimatorListener] of `anim` to
+     *  `endActionLocal` if it is not null.
      *
      *  * Gingerbread (or earlier?) device: We initialize [TranslateAnimation] variable`val translator`
      *  with an instance which will translate from [startX] to [endX] in the X dimension and from
@@ -703,23 +710,36 @@ class ListViewItemAnimations : ComponentActivity() {
         if (isRuntimePostGingerbread) {
             view.animate().duration = MOVE_DURATION.toLong()
             if (startX != endX) {
-                val anim = ObjectAnimator.ofFloat(view, View.TRANSLATION_X, startX, endX)
+                val anim = ObjectAnimator.ofFloat(
+                    /* target = */ view,
+                    /* property = */ View.TRANSLATION_X,
+                    /* ...values = */ startX, endX
+                )
                 anim.duration = MOVE_DURATION.toLong()
                 anim.start()
-                setAnimatorEndAction(anim, endActionLocal)
+                setAnimatorEndAction(animator = anim, endAction = endActionLocal)
                 endActionLocal = null
             }
             if (startY != endY) {
                 val anim: ObjectAnimator =
-                    ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, startY, endY)
+                    ObjectAnimator.ofFloat(
+                        /* target = */ view,
+                        /* property = */ View.TRANSLATION_Y,
+                        /* ...values = */ startY, endY
+                    )
                 anim.duration = MOVE_DURATION.toLong()
                 anim.start()
-                setAnimatorEndAction(anim, endActionLocal)
+                setAnimatorEndAction(animator = anim, endAction = endActionLocal)
             }
         } else {
-            val translator = TranslateAnimation(startX, endX, startY, endY)
+            val translator = TranslateAnimation(
+                /* fromXDelta = */ startX,
+                /* toXDelta = */ endX,
+                /* fromYDelta = */ startY,
+                /* toYDelta = */ endY
+            )
             translator.duration = MOVE_DURATION.toLong()
-            view.startAnimation(translator)
+            view.startAnimation(/* animation = */ translator)
             if (endActionLocal != null) {
                 view.animation.setAnimationListener(object : AnimationListenerAdapter() {
                     /**
