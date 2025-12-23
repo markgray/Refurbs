@@ -18,6 +18,7 @@
 package com.example.android.listviewremovalanimation
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -101,17 +102,25 @@ class BackgroundContainer : FrameLayout {
      * reference to a style resource that supplies default values for
      * the view. Can be 0 to not look for defaults.
      */
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context!!, attrs, defStyle) {
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+        context!!,
+        attrs,
+        defStyle
+    ) {
         initialize()
     }
 
     /**
      * Called from our constructors to initialize our [Drawable] field [mShadowedBackground] with
-     * the 9 patch png in our resources with id `R.drawable.shadowed_background`
+     * the 9 patch png in our resources with id `R.drawable.shadowed_background`. If the SDK of the
+     * device we are running on is older than `LOLLIPOP` we use the 1 argument overload of the
+     * [Resources.getDrawable], and for `LOLLIPOP` and newer we use the 2 argument overload which
+     * adds an optional `theme` argument (we pass `null`).
      */
     private fun initialize() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mShadowedBackground = context.resources.getDrawable(R.drawable.shadowed_background, null)
+            mShadowedBackground =
+                context.resources.getDrawable(R.drawable.shadowed_background, null)
         } else {
             @Suppress("DEPRECATION") // Needed for SDK less than LOLLIPOP
             mShadowedBackground = context.resources.getDrawable(R.drawable.shadowed_background)
@@ -119,6 +128,7 @@ class BackgroundContainer : FrameLayout {
     }
 
     /**
+     * TODO: Continue here.
      * Causes our [Drawable] field [mShadowedBackground] to be drawn in the area occupied by the
      * item [View] which is being swiped. First we call the [setWillNotDraw] method with `false` so
      * that our [onDraw] override will be called. Then we save our [Int] parameter [top] in our
