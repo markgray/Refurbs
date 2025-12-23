@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("SameParameterValue", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "SameParameterValue",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.listviewitemanimations
 
@@ -107,28 +112,23 @@ class ListViewItemAnimations : ComponentActivity() {
     var mCurrentAlpha: Float = 1f
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.activity_list_view_item_animations`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_list_view_item_animations`.
      *
-     * We initialize our [LinearLayout] variable `rootView`
-     * to the view with ID `R.id.root_view` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [BackgroundContainer] field [mBackgroundContainer] by finding the view with
      * id `R.id.listViewBackground`, and [ListView] field [mListView] by finding the view with id
@@ -137,7 +137,7 @@ class ListViewItemAnimations : ComponentActivity() {
      * [Cheeses.sCheeseStrings] to it. We initialize our [StableArrayAdapter] field [mAdapter] with
      * a new instance which will use `cheeseList` as its dataset, displaying them using the layout
      * `R.layout.opaque_text_view` with our [OnTouchListener] field [mTouchListener] as its
-     * [OnTouchListener]. Finally we set the adapter of `mListView` to be `mAdapter`.
+     * [OnTouchListener]. Finally we set the adapter of [mListView] to be [mAdapter].
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -165,7 +165,12 @@ class ListViewItemAnimations : ComponentActivity() {
         mListView = findViewById(R.id.list_view)
         val cheeseList = ArrayList<String>()
         Collections.addAll(cheeseList, *Cheeses.sCheeseStrings)
-        mAdapter = StableArrayAdapter(this, R.layout.opaque_text_view, cheeseList, mTouchListener)
+        mAdapter = StableArrayAdapter(
+            context = this,
+            textViewResourceId = R.layout.opaque_text_view,
+            objects = cheeseList,
+            mTouchListener = mTouchListener
+        )
         mListView!!.adapter = mAdapter
     }
 
@@ -286,12 +291,12 @@ class ListViewItemAnimations : ComponentActivity() {
                     if (mAnimating) {
                         return true
                     }
-                    var x = event.x
+                    var x: Float = event.x
                     if (isRuntimePostGingerbread) {
                         x += v.translationX
                     }
-                    val deltaX = x - mDownX
-                    val deltaXAbs = Math.abs(deltaX)
+                    val deltaX: Float = x - mDownX
+                    val deltaXAbs: Float = Math.abs(deltaX)
                     if (!mSwiping) {
                         if (deltaXAbs > mSwipeSlop) {
                             mSwiping = true
@@ -310,12 +315,12 @@ class ListViewItemAnimations : ComponentActivity() {
                     }
                     // User let go - figure out whether to animate the view out, or back into place
                     if (mSwiping) {
-                        var x = event.x
+                        var x: Float = event.x
                         if (isRuntimePostGingerbread) {
                             x += v.translationX
                         }
-                        val deltaX = x - mDownX
-                        val deltaXAbs = Math.abs(deltaX)
+                        val deltaX: Float = x - mDownX
+                        val deltaXAbs: Float = Math.abs(deltaX)
                         val fractionCovered: Float
                         val endX: Float
                         val remove: Boolean
@@ -331,8 +336,13 @@ class ListViewItemAnimations : ComponentActivity() {
                             remove = false
                         }
                         // Animate position and alpha
-                        val duration = ((1 - fractionCovered) * SWIPE_DURATION).toInt().toLong()
-                        animateSwipe(v, endX, duration, remove)
+                        val duration: Long = ((1 - fractionCovered) * SWIPE_DURATION).toInt().toLong()
+                        animateSwipe(
+                            view = v,
+                            endX = endX,
+                            duration = duration,
+                            remove = remove
+                        )
                     } else {
                         mItemPressed = false
                     }
@@ -371,13 +381,16 @@ class ListViewItemAnimations : ComponentActivity() {
      *  `val alphaAnim` with an instance which will animate the alpha from [Float] field
      *  [mCurrentAlpha] to 0 if [Boolean] parameter [remove] is `true` or to 1 if it is `false`. We
      *  initialize [AnimationSet] variable `val set` with an instance which will share the
-     *  interpolator with all the animations in it. We then add `swipeAnim`, and `swipeAnim` to
+     *  interpolator with all the animations in it. We then add `swipeAnim`, and `alphaAnim` to
      *  `set`, set its duration to [Long] parameter [duration], and start it running now on [view].
      *  We then call our [setAnimationEndAction] method to set the [AnimationListener] of `set` to
      *  an anonymous [AnimationListenerAdapter] whose [AnimationListenerAdapter.onAnimationEnd]
-     *  override runs an anonymous [Runnable] we pass it which handles changes to the other views in
-     *  the [ListView] brought about when [view] is either removed or returned to its original
-     *  position.
+     *  override runs an anonymous [Runnable] we pass it which if [remove] is `true` calls
+     *  [animateOtherViews] to animate the other views in [mListView] to the positions they should
+     *  occupy now that [view] has been removed, and if [remove] is `false` calls the
+     *  [BackgroundContainer.hideBackground] method of [mBackgroundContainer] to hide it, sets
+     *  [mSwiping] and [mAnimating] both to `false` and re-enables [mListView]. In either case it
+     *  then sets [mItemPressed] to `false`.
      *
      * @param view the [View] that is being swiped
      * @param endX the X coordinate that it is being swiped to (0 or plus or minus the width of view)
@@ -389,7 +402,8 @@ class ListViewItemAnimations : ComponentActivity() {
         mAnimating = true
         mListView!!.isEnabled = false
         if (isRuntimePostGingerbread) {
-            view.animate().setDuration(duration).alpha((if (remove) 0 else 1).toFloat()).translationX(endX)
+            view.animate().setDuration(duration).alpha((if (remove) 0 else 1).toFloat())
+                .translationX(endX)
                 .setListener(object : AnimatorListenerAdapter() {
                     /**
                      * Notifies the end of the animation. First we restore the animated values by
@@ -425,8 +439,16 @@ class ListViewItemAnimations : ComponentActivity() {
                     }
                 })
         } else {
-            val swipeAnim = TranslateAnimation(mCurrentX, endX, 0f, 0f)
-            val alphaAnim = AlphaAnimation(mCurrentAlpha, (if (remove) 0 else 1).toFloat())
+            val swipeAnim = TranslateAnimation(
+                /* fromXDelta = */ mCurrentX,
+                /* toXDelta = */ endX,
+                /* fromYDelta = */ 0f,
+                /* toYDelta = */ 0f
+            )
+            val alphaAnim = AlphaAnimation(
+                /* fromAlpha = */ mCurrentAlpha,
+                /* toAlpha = */ (if (remove) 0 else 1).toFloat()
+            )
             val set = AnimationSet(true)
             set.addAnimation(swipeAnim)
             set.addAnimation(alphaAnim)
@@ -434,7 +456,7 @@ class ListViewItemAnimations : ComponentActivity() {
             view.startAnimation(set)
             setAnimationEndAction(set) {
                 if (remove) {
-                    animateOtherViews(mListView, view)
+                    animateOtherViews(listView = mListView, viewToRemove = view)
                 } else {
                     mBackgroundContainer!!.hideBackground()
                     mSwiping = false
@@ -472,16 +494,24 @@ class ListViewItemAnimations : ComponentActivity() {
      */
     @SuppressLint("NewApi")
     private fun setSwipePosition(view: View, deltaX: Float) {
-        val fraction = Math.abs(deltaX) / view.width
+        val fraction: Float = Math.abs(deltaX) / view.width
         if (isRuntimePostGingerbread) {
             view.translationX = deltaX
             view.alpha = 1 - fraction
         } else {
             // Hello, Gingerbread!
-            val swipeAnim = TranslateAnimation(deltaX, deltaX, 0f, 0f)
+            val swipeAnim = TranslateAnimation(
+                /* fromXDelta = */ deltaX,
+                /* toXDelta = */ deltaX,
+                /* fromYDelta = */ 0f,
+                /* toYDelta = */ 0f
+            )
             mCurrentX = deltaX
             mCurrentAlpha = (1 - fraction)
-            val alphaAnim = AlphaAnimation(mCurrentAlpha, mCurrentAlpha)
+            val alphaAnim = AlphaAnimation(
+                /* fromAlpha = */ mCurrentAlpha,
+                /* toAlpha = */ mCurrentAlpha
+            )
             val set = AnimationSet(/* shareInterpolator = */ true)
             set.addAnimation(swipeAnim)
             set.addAnimation(alphaAnim)
@@ -492,6 +522,7 @@ class ListViewItemAnimations : ComponentActivity() {
     }
 
     /**
+     * TODO: Continue here.
      * This method animates all other views in the [ListView] parameter [listView] container (not
      * including [View] parameter [viewToRemove]) into their final positions. It is called before
      * [viewToRemove] has been removed from the adapter, and before layout has been run. The approach
@@ -679,7 +710,8 @@ class ListViewItemAnimations : ComponentActivity() {
                 endActionLocal = null
             }
             if (startY != endY) {
-                val anim: ObjectAnimator = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, startY, endY)
+                val anim: ObjectAnimator =
+                    ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, startY, endY)
                 anim.duration = MOVE_DURATION.toLong()
                 anim.start()
                 setAnimatorEndAction(anim, endActionLocal)

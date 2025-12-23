@@ -18,6 +18,7 @@
 package com.example.android.listviewitemanimations
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -57,11 +58,11 @@ class BackgroundContainer : FrameLayout {
     var mOpenAreaHeight: Int = 0
 
     /**
-     * Flag indicating that our [showBackground] has been called at least least once and we should
-     * start setting the bounds of [Drawable] field [mShadowedBackground] to our width and the
-     * height value contained in [Int] field [mOpenAreaHeight] (This flag is unnecessary in my
-     * opinion due to the fact that a true [Boolean] field [mShowing] guarantees that [mUpdateBounds]
-     * is also true).
+     * Flag indicating that our [showBackground] has been called at least once and we should start
+     * setting the bounds of [Drawable] field [mShadowedBackground] to our width and the height
+     * value contained in [Int] field [mOpenAreaHeight] (This flag is unnecessary in my opinion due
+     * to the fact that a `true` [Boolean] field [mShowing] guarantees that [mUpdateBounds] is also
+     * true).
      */
     var mUpdateBounds: Boolean = false
 
@@ -101,17 +102,27 @@ class BackgroundContainer : FrameLayout {
      * reference to a style resource that supplies default values for
      * the view. Can be 0 to not look for defaults.
      */
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context!!, attrs, defStyle) {
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+        context!!,
+        attrs,
+        defStyle
+    ) {
         inititalize()
     }
 
     /**
      * Called from our constructors to initialize our [Drawable] field [mShadowedBackground] with
-     * the 9 patch png in our resources with id `R.drawable.shadowed_background`
+     * the 9 patch png in our resources with id `R.drawable.shadowed_background`. If the SDK of the
+     * device we are running on is `LOLLIPOP` or newer we use the 2 argument overload of
+     * [Resources.getDrawable] that includes a `theme` argument, otherwise we use the 1 argument
+     * overload.
      */
     private fun inititalize() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mShadowedBackground = context.resources.getDrawable(R.drawable.shadowed_background, null)
+            mShadowedBackground = context.resources.getDrawable(
+                /* id = */ R.drawable.shadowed_background,
+                /* theme = */ null
+            )
         } else {
             @Suppress("DEPRECATION") // Needed for SDK less than LOLLIPOP
             mShadowedBackground = context.resources.getDrawable(R.drawable.shadowed_background)
@@ -147,24 +158,30 @@ class BackgroundContainer : FrameLayout {
     }
 
     /**
-     * We implement this to do our drawing. If our [Boolean] flag field [mShowing] is false we do
+     * We implement this to do our drawing. If our [Boolean] flag field [mShowing] is `false` we do
      * nothing. Otherwise we set the bounds of our [Drawable] field [mShadowedBackground] to have
-     * the width of our [View] and the height of [Int] field [mOpenAreaHeight]. We then save the
-     * current matrix and clip of our [Canvas] parameter [canvas] onto a private stack, translate
-     * it in the Y dimension to [Int] field [mOpenAreaTop] and instruct [mShadowedBackground] to
-     * draw itself on [canvas]. Finally we restore [canvas] to the state it had when we were called.
+     * the width of our [View] and the height of [Int] field [mOpenAreaHeight]. We then use the
+     * [Canvas.withTranslation] extension function to save the current matrix and clip of our
+     * [Canvas] parameter [canvas] onto a private stack, translate it in the Y dimension to [Int]
+     * field [mOpenAreaTop] and instruct [mShadowedBackground] to draw itself on [canvas].
+     * [Canvas.withTranslation] will then restore [canvas] to the state it had when we were called.
      *
      * @param canvas the [Canvas] on which the background will be drawn
      */
     override fun onDraw(canvas: Canvas) {
         if (mShowing) {
             if (mUpdateBounds) {
-                mShadowedBackground!!.setBounds(0, 0, width, mOpenAreaHeight)
+                mShadowedBackground!!.setBounds(
+                    /* left = */ 0,
+                    /* top = */ 0,
+                    /* right = */ width,
+                    /* bottom = */ mOpenAreaHeight
+                )
             } else {
                 Log.i("BackgroundContainer", "onDraw called with Drawable mUpdateBounds false")
             }
             canvas.withTranslation(x = 0f, y = mOpenAreaTop.toFloat()) {
-                mShadowedBackground!!.draw(this)
+                mShadowedBackground!!.draw(/* canvas = */ this)
             }
         }
     }
