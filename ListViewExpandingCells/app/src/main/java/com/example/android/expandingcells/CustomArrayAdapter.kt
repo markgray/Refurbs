@@ -152,7 +152,6 @@ class CustomArrayAdapter(
     }
 
     /**
-     * TODO: Continue here.
      * Crops a circle out of the thumbnail photo passed it and returns the circle to the caller.
      * First we initialize [Bitmap] variable `val output` with a [Bitmap] that is the same width
      * and height as our [Bitmap] parameter [bitmap]. We initialize [Rect] variable `val rect` to
@@ -172,7 +171,7 @@ class CustomArrayAdapter(
      * @return circle [Bitmap] cropped out of our [Bitmap] parameter [bitmap]
      */
     fun getCroppedBitmap(bitmap: Bitmap): Bitmap {
-        val output = createBitmap(width = bitmap.width, height = bitmap.height)
+        val output: Bitmap = createBitmap(width = bitmap.width, height = bitmap.height)
         val rect = Rect(
             /* left = */ 0,
             /* top = */ 0,
@@ -182,8 +181,8 @@ class CustomArrayAdapter(
         val canvas = Canvas(/* bitmap = */ output)
         val paint = Paint()
         paint.isAntiAlias = true
-        val halfWidth = bitmap.width / 2
-        val halfHeight = bitmap.height / 2
+        val halfWidth: Int = bitmap.width / 2
+        val halfHeight: Int = bitmap.height / 2
         canvas.drawCircle(
             /* cx = */ halfWidth.toFloat(),
             /* cy = */ halfHeight.toFloat(),

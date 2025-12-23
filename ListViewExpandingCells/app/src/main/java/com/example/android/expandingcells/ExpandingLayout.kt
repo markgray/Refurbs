@@ -76,26 +76,35 @@ class ExpandingLayout : RelativeLayout {
      * @param defStyle An attribute in the current theme that contains a reference to a style
      * resource that supplies default values for the [View]. Can be 0 to not look for defaults.
      */
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
+    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    )
 
     /**
      * Measure the view and its content to determine the measured width and the measured height.
      * This method is invoked by [measure] and should be overridden by subclasses to provide
-     * accurate and efficient measurement of their contents. If our [Int] field [mExpandedHeight]
-     * is not equal to zero we set our [Int] parameter [heightMeasureSpec] to a measure specification
-     * based on a size of [mExpandedHeight], and a mode of [MeasureSpec.AT_MOST] (child can be as
-     * large as it wants up to the specified size). Finally we call our super's implementation of
-     * `onMeasure`.
+     * accurate and efficient measurement of their contents. First we initialize our [Int] variable
+     * `heightMeasureSpecLocal` to our [Int] parameter [widthMeasureSpec], then if
+     * `heightMeasureSpecLocal` is greater than zero we set  `heightMeasureSpecLocal` to a measure
+     * specification based on a size of [mExpandedHeight], and a mode of [MeasureSpec.AT_MOST]
+     * (child can be as large as it wants up to the specified size). Finally we call our super's
+     * implementation of `onMeasure` with our [Int] parameter [widthMeasureSpec] and our [Int]
+     * variable `heightMeasureSpecLocal`.
      *
      * @param widthMeasureSpec horizontal space requirements as imposed by the parent.
-     * The requirements are encoded with [android.view.View.MeasureSpec].
+     * The requirements are encoded with [MeasureSpec].
      * @param heightMeasureSpec vertical space requirements as imposed by the parent.
-     * The requirements are encoded with [android.view.View.MeasureSpec].
+     * The requirements are encoded with [MeasureSpec].
      */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var heightMeasureSpecLocal = heightMeasureSpec
+        var heightMeasureSpecLocal: Int = heightMeasureSpec
         if (mExpandedHeight > 0) {
-            heightMeasureSpecLocal = MeasureSpec.makeMeasureSpec(mExpandedHeight, MeasureSpec.AT_MOST)
+            heightMeasureSpecLocal = MeasureSpec.makeMeasureSpec(
+                /* size = */ mExpandedHeight,
+                /* mode = */ MeasureSpec.AT_MOST
+            )
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpecLocal)
     }
