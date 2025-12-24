@@ -51,11 +51,12 @@ object Conversations {
      * Returns an [Array] of [Conversation] containing [Int] parameter [howManyConversations], with
      * each [Conversation] in the array containing a [List] of [String] field `messages` with [Int]
      * parameter [messagesPerConversation] members in it. First we create [MutableList] of
-     * [Conversation] variable `val conversationsList` using [arrayListOf], then we loop over [Int]
-     * variable `var i` creating a [Conversation] with a random [Conversation.conversationId], a
-     * random [Conversation.participantName] and [Int] parameter [messagesPerConversation] random
-     * messages for its [Conversation.messages] field. We then return the [Array] of [Conversation]
-     * created by the [toTypedArray] extension function from `conversationsList` to the caller.
+     * [Conversation] variable `val conversationsList` using [arrayListOf], then `repeat` [Int]
+     * parameter [howManyConversations] times creating a [Conversation] with a random
+     * [Conversation.conversationId], a random [Conversation.participantName] and [Int] parameter
+     * [messagesPerConversation] random messages for its [Conversation.messages] field. We then
+     * return the [Array] of [Conversation] created by the [toTypedArray] extension function from
+     * `conversationsList` to the caller.
      *
      * @param howManyConversations how many separate conversations to create
      * @param messagesPerConversation how many messages in each conversation
@@ -66,7 +67,7 @@ object Conversations {
         messagesPerConversation: Int
     ): Array<Conversation> {
         val conversationsList: MutableList<Conversation> = arrayListOf()
-        for (i in 0 until howManyConversations) {
+        repeat (times = howManyConversations) {
             conversationsList += Conversation(
                 conversationId = ThreadLocalRandom.current().nextInt(),
                 participantName = name(),
@@ -86,7 +87,7 @@ object Conversations {
     fun makeMessages(messagesPerConversation: Int): List<String> {
         val maxLen = MESSAGES.size
         val messages: MutableList<String> = ArrayList(messagesPerConversation)
-        for (i in 0 until messagesPerConversation) {
+        repeat (times = messagesPerConversation) {
             messages.add(MESSAGES[ThreadLocalRandom.current().nextInt(0, maxLen)])
         }
         return messages
