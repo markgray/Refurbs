@@ -128,7 +128,6 @@ class BackgroundContainer : FrameLayout {
     }
 
     /**
-     * TODO: Continue here.
      * Causes our [Drawable] field [mShadowedBackground] to be drawn in the area occupied by the
      * item [View] which is being swiped. First we call the [setWillNotDraw] method with `false` so
      * that our [onDraw] override will be called. Then we save our [Int] parameter [top] in our
@@ -148,7 +147,7 @@ class BackgroundContainer : FrameLayout {
 
     /**
      * Causes our [onDraw] override to stop drawing our shadowed background. First we call the
-     * [setWillNotDraw] method with `true` to set our view's WILL_NOT_DRAW flag (allowing
+     * [setWillNotDraw] method with `true` to set our view's `WILL_NOT_DRAW` flag (allowing
      * optimizations), then we set our flag field [mShowing] to `false`.
      */
     fun hideBackground() {
@@ -158,19 +157,26 @@ class BackgroundContainer : FrameLayout {
 
     /**
      * We implement this to do our drawing. If our [Boolean] flag field [mShowing] is `false` we do
-     * nothing. Otherwise we set the bounds of our [Drawable] field [mShadowedBackground] to have
-     * the width of our [View] and the height of [Int] field [mOpenAreaHeight]. We then save the
-     * current matrix and clip of our [Canvas] parameter [canvas] onto a private stack, translate it
-     * in the Y dimension to [Int] field [mOpenAreaTop] and instruct [Drawable] field
-     * [mShadowedBackground] to draw itself on [canvas]. Finally we restore [canvas] to the state it
-     * had when we were called.
+     * nothing. Otherwise if our [Boolean] flag field [mUpdateBounds] is `true` we set the bounds of
+     * our [Drawable] field [mShadowedBackground] to have the width of our [View] and the height of
+     * [Int] field [mOpenAreaHeight]. We then use the [Canvas.withTranslation] extension function to
+     * save the current matrix and clip of our [Canvas] parameter [canvas] onto a private stack,
+     * translate it in the Y dimension to [Int] field [mOpenAreaTop] and in the `block` lambda
+     * argument of [Canvas.withTranslation] instruct [Drawable] field [mShadowedBackground] to draw
+     * itself on [canvas]. When the lambda returns the [Canvas.withTranslation] extension function
+     * restores [canvas] to the state it had when it was called.
      *
      * @param canvas the [Canvas] on which the background will be drawn
      */
     override fun onDraw(canvas: Canvas) {
         if (mShowing) {
             if (mUpdateBounds) {
-                mShadowedBackground!!.setBounds(0, 0, width, mOpenAreaHeight)
+                mShadowedBackground!!.setBounds(
+                    /* left = */ 0,
+                    /* top = */ 0,
+                    /* right = */ width,
+                    /* bottom = */ mOpenAreaHeight
+                )
             } else {
                 Log.i("BackgroundContainer", "onDraw called with Drawable mUpdateBounds false")
             }

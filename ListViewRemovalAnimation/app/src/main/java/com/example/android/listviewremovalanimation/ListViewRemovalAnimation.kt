@@ -40,8 +40,8 @@ import java.util.Collections
 
 /**
  * This example shows what goes wrong when a view that is chosen to be deleted when that view is on
- * the screen is recycled when that view has been scrolled off the screen (the views that are animated
- * no longer contain the items that were selected to be deleted, but are animated anyway).
+ * the screen is recycled when that view has been scrolled off the screen (the views that are
+ * animated no longer contain the items that were selected to be deleted, but are animated anyway).
  *
  * Watch the associated video for this demo on the DevBytes channel of developer.android.com
  * or on YouTube at [ListViewRemovalAnimation](https://www.youtube.com/watch?v=NewCSg2JKLk).
@@ -61,10 +61,12 @@ class ListViewRemovalAnimation : ComponentActivity() {
      * The [BackgroundContainer] in our layout with id `R.id.listViewBackground`
      */
     var mBackgroundContainer: BackgroundContainer? = null
+
     /**
      * Is the user swiping an item
      */
     var mSwiping: Boolean = false
+
     /**
      * Has the user pressed an item
      */
@@ -77,28 +79,23 @@ class ListViewRemovalAnimation : ComponentActivity() {
     var mItemIdTopMap: HashMap<Long, Int> = HashMap()
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.activity_list_view_deletion`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_list_view_deletion`.
      *
-     * We initialize our [LinearLayout] variable `rootView`
-     * to the view with ID `R.id.root_view` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [BackgroundContainer] field [mBackgroundContainer] by finding the view with
      * id `R.id.listViewBackground`, and [ListView] field [mListView] by finding the view with id
@@ -136,7 +133,12 @@ class ListViewRemovalAnimation : ComponentActivity() {
         Log.d("Debug", "d=" + mListView!!.divider)
         val cheeseList = ArrayList<String>()
         Collections.addAll(cheeseList, *Cheeses.sCheeseStrings)
-        mAdapter = StableArrayAdapter(this, R.layout.opaque_text_view, cheeseList, mTouchListener)
+        mAdapter = StableArrayAdapter(
+            context = this,
+            textViewResourceId = R.layout.opaque_text_view,
+            objects = cheeseList,
+            mTouchListener = mTouchListener
+        )
         mListView!!.adapter = mAdapter
     }
 
@@ -166,7 +168,7 @@ class ListViewRemovalAnimation : ComponentActivity() {
          * parameter [event]:
          *
          *  * [MotionEvent.ACTION_DOWN]: if our [Boolean] flag field [mItemPressed] is `true` we
-         *  return true having done nothing (we are already responding to a swipe, and multi-item
+         *  return `true` having done nothing (we are already responding to a swipe, and multi-item
          *  swipes are not handled). Otherwise we set our [Boolean] flag field [mItemPressed] to
          *  `true`, and set [Float] field [mDownX] to the X coordinate of [event].
          *
@@ -179,7 +181,7 @@ class ListViewRemovalAnimation : ComponentActivity() {
          *  to the absolute value of `deltaX`. If our [Boolean] field [mSwiping] is `false` (we are
          *  not already in the middle of a swipe) we check if `deltaXAbs` is greater than [Float]
          *  field [mSwipeSlop] and if so we set [mSwiping] to `true`, call the
-         *  [ListView.requestDisallowInterceptTouchEvent] method of  method of [ListView] field
+         *  [ListView.requestDisallowInterceptTouchEvent] method of [ListView] field
          *  [mListView] with `true` to prevent it from intercepting touch events until this one is
          *  over, and then call the [BackgroundContainer.showBackground] method of
          *  [mBackgroundContainer] to have it start to show through the [ListView] from the top Y
@@ -200,17 +202,18 @@ class ListViewRemovalAnimation : ComponentActivity() {
          *  `deltaX` is less than 0, or to the width of [v] if it is not, and setting `remove` to
          *  `true`. If it is less than a quarter off the screen we animate it back by setting
          *  `fractionCovered` to 1 minus `deltaXAbs` divided by the width of [v], setting `endX`
-         *  to 0, and setting `remove` to `false`. In either case we set
-         *  [Long] variable `val duration` to the quantity 1 minus `fractionCovered` times
-         *  [SWIPE_DURATION] and disable [ListView] field [mListView]. We fetch a [ViewPropertyAnimator]
-         *  for [v], set its duration to `duration`, have it cause the View's `alpha` property to be
-         *  animated to `endAlpha`, have it cause its `translationX` property to be animated to
-         *  `endX` and specifies a lambda to take place when the animation ends in which the `alpha`
-         *  of [v] is set to 1f, its `translationX` to 0f, and if `remove` is `true` calls the
-         *  [animateRemoval] method to animate the removal of [v] from [ListView] field [mListView],
-         *  but when `remove` is `false` it call the [BackgroundContainer.hideBackground] method of
-         *  [mBackgroundContainer], sets [mSwiping] to `false` and reenables [mListView]. When done
-         *  we set our [Boolean] field [mItemPressed] to `false`
+         *  to 0, and setting `remove` to `false`. In either case we set [Long] variable
+         *  `val duration` to the quantity 1 minus `fractionCovered` times [SWIPE_DURATION] and
+         *  disable [ListView] field [mListView]. We fetch a [ViewPropertyAnimator] for [v] using
+         *  its [View.animate] method, set its duration to `duration`, have it cause the View's
+         *  `alpha` property to be animated to `endAlpha`, have it cause its `translationX` property
+         *  to be animated to `endX` and specify a lambda to take place when the animation ends in
+         *  which the `alpha` of [v] is set to 1f, its `translationX` to 0f, and if `remove` is
+         *  `true` calls the [animateRemoval] method to animate the removal of [v] from [ListView]
+         *  field [mListView], but when `remove` is `false` it calls the
+         *  [BackgroundContainer.hideBackground] method of [mBackgroundContainer], sets [mSwiping]
+         *  to `false` and reenables [mListView]. When done we set our [Boolean] flag field
+         *  [mItemPressed] to `false`
          *
          *  * default: We return `false`.
          *
@@ -290,19 +293,23 @@ class ListViewRemovalAnimation : ComponentActivity() {
                             // back at an appropriate speed.
                             val duration = ((1 - fractionCovered) * SWIPE_DURATION).toInt().toLong()
                             mListView!!.isEnabled = false
-                            v.animate().setDuration(duration).alpha(endAlpha).translationX(endX).withEndAction {
+                            v.animate()
+                                .setDuration(duration)
+                                .alpha(endAlpha)
+                                .translationX(endX)
+                                .withEndAction {
 
-                                // Restore animated values
-                                v.alpha = 1f
-                                v.translationX = 0f
-                                if (remove) {
-                                    animateRemoval(mListView, v)
-                                } else {
-                                    mBackgroundContainer!!.hideBackground()
-                                    mSwiping = false
-                                    mListView!!.isEnabled = true
+                                    // Restore animated values
+                                    v.alpha = 1f
+                                    v.translationX = 0f
+                                    if (remove) {
+                                        animateRemoval(mListView, v)
+                                    } else {
+                                        mBackgroundContainer!!.hideBackground()
+                                        mSwiping = false
+                                        mListView!!.isEnabled = true
+                                    }
                                 }
-                            }
                         }
                     }
                     mItemPressed = false
@@ -315,30 +322,31 @@ class ListViewRemovalAnimation : ComponentActivity() {
     }
 
     /**
-     * This method animates all other views in the [ListView] container (not including [viewToRemove])
-     * into their final positions. It is called after [viewToRemove] has been removed from the
-     * adapter, but before layout has been run. The approach here is to figure out where
-     * everything is now, then allow layout to run, then figure out where everything is after
-     * layout, and then to run animations between all of those start/end positions.
+     * This method animates all other views in the [ListView] container (not including [View]
+     * parameter [viewToRemove]) into their final positions. It is called after [viewToRemove]
+     * has been removed from the adapter, but before layout has been run. The approach here is
+     * to figure out where everything is now, then allow layout to run, then figure out where
+     * everything is after layout, and then to run animations between all of those start/end
+     * positions.
      *
      * We initialize [Int] variable `val firstVisiblePosition` to the position within the adapter's
      * data set of [ListView] parameter [listview] of the first item displayed on screen. Then we
      * loop over [Int] variable `var i` for all of the [ListView.getChildCount] (kotlin `childCount`
      * property) children of [listview] setting [View] variable `val child` to the `i`'th child of
-     * [listview]. Then is `child` is not equal to [viewToRemove] we initialize [Int] variable
+     * [listview]. Then if `child` is not equal to [viewToRemove] we initialize [Int] variable
      * `val position` to `firstVisiblePosition` plus `i`, and initialize [Long] variable `val itemId`
      * to the row id associated with the position `position` that is returned by the
      * [StableArrayAdapter.getItemId] method of [StableArrayAdapter] field [mAdapter]. We then store
      * `top` Y coordinate of `child` under the key `itemId` in our [HashMap] of [Long] to [Int] field
      * [mItemIdTopMap]. When done storing all of the `top` Y coordinates of all of the children apart
-     * from [viewToRemove] we initialize [Int] variable `val position` to the position of [viewToRemove]
-     * within the adapter's data set of [listview], then call the [StableArrayAdapter.remove] method
-     * of [mAdapter] to have it remove the data object in position `position` from its dataset. We
-     * initialize [ViewTreeObserver] variable `val observer` with the [ViewTreeObserver] for the
-     * hierarchy of [listview]. Then we add an anonymous [OnPreDrawListener] to `observer` whose
-     * [OnPreDrawListener.onPreDraw] override will be invoked when the view tree is about to be
-     * drawn, and it will animate all of the children that remain after [viewToRemove] is removed
-     * into their new positions.
+     * from [viewToRemove] we initialize [Int] variable `val position` to the position of
+     * [viewToRemove] within the adapter's data set of [listview], then call the
+     * [StableArrayAdapter.remove] method of [mAdapter] to have it remove the data object in
+     * position `position` from its dataset. We initialize [ViewTreeObserver] variable
+     * `val observer` with the [ViewTreeObserver] for the hierarchy of [listview]. Then we add
+     * an anonymous [OnPreDrawListener] to `observer` whose [OnPreDrawListener.onPreDraw] override
+     * will be invoked when the view tree is about to be drawn, and it will animate all of the
+     * children that remain after [viewToRemove] is removed into their new positions.
      *
      * @param listview the [ListView] that we are removing [viewToRemove] from.
      * @param viewToRemove the [View] that is being removed.
@@ -355,7 +363,7 @@ class ListViewRemovalAnimation : ComponentActivity() {
         }
         // Delete the item from the adapter
         val position: Int = mListView!!.getPositionForView(viewToRemove)
-        mAdapter!!.remove(mAdapter!!.getItem(position))
+        mAdapter!!.remove(/* object = */ mAdapter!!.getItem(position))
         val observer: ViewTreeObserver = listview.viewTreeObserver
         observer.addOnPreDrawListener(object : OnPreDrawListener {
             /**
@@ -382,31 +390,33 @@ class ListViewRemovalAnimation : ComponentActivity() {
              *  * `startTop` is NOT `null` (the `child` [View] was visible before [viewToRemove] was
              *  removed) if `startTop` is not equal to `top` we need to move the `child` [View] so
              *  we initialize our [Int] variable `val delta` to `startTop` minus `top`. Then we set
-             *  the `translationY` property of `child` to `delta`, and add a [ViewPropertyAnimator]
-             *  to `child` of duration [MOVE_DURATION] (150ms) which will animate the `translationY`
-             *  property back to 0f (thus moving it to the position that `child` will be in when the
-             *  [ListView] is drawn without [viewToRemove] in it). If `firstAnimation` is `true` we
-             *  add [Runnable] to take place when the animation ends and in that [Runnable] we call
-             *  the [BackgroundContainer.hideBackground] method of [mBackgroundContainer] to have it
-             *  stop drawing its shadowed background, then we set [Boolean] field [mSwiping] to
-             *  `false`, and enable [ListView] field [mListView]. Having added the end action we
-             *  we `firstAnimation` to `false` to avoid adding the end action again.
+             *  the `translationY` property of `child` to `delta`, and use the [View.animate] method
+             *  to add a [ViewPropertyAnimator]  to `child` of duration [MOVE_DURATION] (150ms) which
+             *  will animate the `translationY` property back to 0f (thus moving it to the position
+             *  that `child` will be in when the [ListView] is drawn without [viewToRemove] in it).
+             *  If `firstAnimation` is `true` we  add a [Runnable] to take place when the animation
+             *  ends and in that [Runnable] we call the [BackgroundContainer.hideBackground] method
+             *  of [mBackgroundContainer] to have it stop drawing its shadowed background, then we
+             *  set [Boolean] field [mSwiping] to `false`, and enable [ListView] field [mListView].
+             *  Having added the end action we set `firstAnimation` to `false` to avoid adding the
+             *  end action again.
              *
              *  * `startTop` is `null` (`child` is a new [View] which was not on the screen before
              *  [viewToRemove] was removed) We initialize our [Int] variable `val childHeight` to
              *  the `height` property of `child` plus the `dividerHeight` property of [ListView]
              *  parameter [listview]. Then if `i` is greater than 0 we set `startTop` to `top`
-             *  plus `childHeight`, or the `top` minus `childHeight` if it is no greater than 0.
+             *  plus `childHeight`, or the `top` minus `childHeight` if it is not greater than 0.
              *  Next we initialize our [Int] variable `val delta` to `startTop` minus `top` and set
-             *  the `translationY` property of `child` to `delta`, and add a [ViewPropertyAnimator]
-             *  to `child` of duration [MOVE_DURATION] (150ms) which will animate the `translationY`
-             *  property back to 0f (thus moving it to the position that `child` will be in when the
-             *  [ListView] is drawn without [viewToRemove] in it). If `firstAnimation` is `true` we
-             *  add [Runnable] to take place when the animation ends and in that [Runnable] we call
-             *  the [BackgroundContainer.hideBackground] method of [mBackgroundContainer] to have it
-             *  stop drawing its shadowed background, then we set [Boolean] field [mSwiping] to
-             *  `false`, and enable [ListView] field [mListView]. Having added the end action we
-             *  we `firstAnimation` to `false` to avoid adding the end action again.
+             *  the `translationY` property of `child` to `delta`, and use the [View.animate] method
+             *  to add a [ViewPropertyAnimator] to `child` of duration [MOVE_DURATION] (150ms) which
+             *  will animate the `translationY` property back to 0f (thus moving it to the position
+             *  that `child` will be in when the [ListView] is drawn without [viewToRemove] in it).
+             *  If `firstAnimation` is `true` we add a [Runnable] to take place when the animation
+             *  ends and in that [Runnable] we call the [BackgroundContainer.hideBackground] method
+             *  of [mBackgroundContainer] to have it stop drawing its shadowed background, then we
+             *  set [Boolean] field [mSwiping] to `false`, and enable [ListView] field [mListView].
+             *  Having added the end action we set `firstAnimation` to `false` to avoid adding the
+             *  end action again.
              *
              * Having animated the movement of all the other views when [viewToRemove] is removed
              * we call the `HashMap.clear` method of [HashMap] of [Long] to [Int] field [mItemIdTopMap]
@@ -429,7 +439,9 @@ class ListViewRemovalAnimation : ComponentActivity() {
                         if (startTop != top) {
                             val delta: Int = startTop - top
                             child.translationY = delta.toFloat()
-                            child.animate().setDuration(MOVE_DURATION.toLong()).translationY(0f)
+                            child.animate()
+                                .setDuration(MOVE_DURATION.toLong())
+                                .translationY(0f)
                             if (firstAnimation) {
                                 child.animate().withEndAction {
                                     mBackgroundContainer!!.hideBackground()
@@ -447,7 +459,9 @@ class ListViewRemovalAnimation : ComponentActivity() {
                         startTop = top + if (i > 0) childHeight else -childHeight
                         val delta: Int = startTop - top
                         child.translationY = delta.toFloat()
-                        child.animate().setDuration(MOVE_DURATION.toLong()).translationY(0f)
+                        child.animate()
+                            .setDuration(MOVE_DURATION.toLong())
+                            .translationY(0f)
                         if (firstAnimation) {
                             child.animate().withEndAction {
                                 mBackgroundContainer!!.hideBackground()

@@ -27,6 +27,7 @@ import android.widget.TextView
 
 /**
  * The stable [ArrayAdapter] used by our [ListView].
+ *
  * Our constructor. First we call our super's 3 argument constructor. In our `init` block we loop
  * over [Int] variable `var i` for all of the strings in our [List] of [String] parameter `objects`
  * storing `i` under the key of the string fetched from position `i` in `objects` in our [HashMap]
