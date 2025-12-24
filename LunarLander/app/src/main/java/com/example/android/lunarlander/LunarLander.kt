@@ -166,28 +166,23 @@ class LunarLander : ComponentActivity() {
     }
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.lunar_layout`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.lunar_layout`.
      *
-     * We initialize our [FrameLayout] variable `rootView`
-     * to the view with ID `R.id.root_view` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [FrameLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [LunarView] field [mLunarView] by finding the view with id `R.id.lunar`,
      * and initialize our [LunarThread] field [mLunarThread] with the handle to the animation thread
@@ -253,10 +248,10 @@ class LunarLander : ComponentActivity() {
              * [mLunarThread] is not `null` we branch on the value of the [LunarThread.mMode] field
              * of [mLunarThread]:
              *
-             *  * not [LunarView.STATE_RUNNING]: We call the [LunarThread.setDifficulty] method of
-             *  [mLunarThread] to set the difficulty level to [LunarView.DIFFICULTY_EASY], then we
-             *  call the [dispatchKeyEvent] method to fake an [KeyEvent.ACTION_DOWN] action of the
-             *  [KeyEvent.KEYCODE_DPAD_UP] keycode [KeyEvent] followed by an [KeyEvent.ACTION_UP]
+             *  * **NOT** [LunarView.STATE_RUNNING]: We call the [LunarThread.setDifficulty] method
+             *  of [mLunarThread] to set the difficulty level to [LunarView.DIFFICULTY_EASY], then
+             *  we call the [dispatchKeyEvent] method to fake an [KeyEvent.ACTION_DOWN] action of
+             *  the [KeyEvent.KEYCODE_DPAD_UP] keycode [KeyEvent] followed by an [KeyEvent.ACTION_UP]
              *  of the same key.
              *
              *  * [LunarView.STATE_RUNNING]: We branch on the value of our [Boolean] field [firing]
@@ -273,18 +268,50 @@ class LunarLander : ComponentActivity() {
                 if (mLunarThread != null) {
                     if (mLunarThread!!.mMode != LunarView.STATE_RUNNING) {
                         mLunarThread!!.setDifficulty(LunarView.DIFFICULTY_EASY)
-                        dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_UP))
-                        mLunarThread!!.doKeyDown(KeyEvent.KEYCODE_DPAD_UP, null)
-                        dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_UP))
-                        mLunarThread!!.doKeyUp(KeyEvent.KEYCODE_DPAD_UP, null)
+                        dispatchKeyEvent(
+                            event = KeyEvent(
+                                /* action = */ KeyEvent.ACTION_DOWN,
+                                /* code = */ KeyEvent.KEYCODE_DPAD_UP
+                            )
+                        )
+                        mLunarThread!!.doKeyDown(
+                            keyCode = KeyEvent.KEYCODE_DPAD_UP,
+                            ignoredMsg = null
+                        )
+                        dispatchKeyEvent(
+                            event = KeyEvent(
+                                /* action = */ KeyEvent.ACTION_UP,
+                                /* code = */ KeyEvent.KEYCODE_DPAD_UP
+                            )
+                        )
+                        mLunarThread!!.doKeyUp(
+                            keyCode = KeyEvent.KEYCODE_DPAD_UP,
+                            ignoredMsg = null
+                        )
                     } else {
                         firing = if (!firing) {
-                            dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_CENTER))
-                            mLunarThread!!.doKeyDown(KeyEvent.KEYCODE_DPAD_CENTER, null)
+                            dispatchKeyEvent(
+                                event = KeyEvent(
+                                    /* action = */ KeyEvent.ACTION_DOWN,
+                                    /* code = */ KeyEvent.KEYCODE_DPAD_CENTER
+                                )
+                            )
+                            mLunarThread!!.doKeyDown(
+                                keyCode = KeyEvent.KEYCODE_DPAD_CENTER,
+                                ignoredMsg = null
+                            )
                             true
                         } else {
-                            dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DPAD_CENTER))
-                            mLunarThread!!.doKeyUp(KeyEvent.KEYCODE_DPAD_CENTER, null)
+                            dispatchKeyEvent(
+                                event = KeyEvent(
+                                    /* action = */ KeyEvent.ACTION_UP,
+                                    /* code = */ KeyEvent.KEYCODE_DPAD_CENTER
+                                )
+                            )
+                            mLunarThread!!.doKeyUp(
+                                keyCode = KeyEvent.KEYCODE_DPAD_CENTER,
+                                ignoredMsg = null
+                            )
                             false
                         }
                     }

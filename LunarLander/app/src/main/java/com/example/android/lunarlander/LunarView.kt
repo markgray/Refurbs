@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNUSED_PARAMETER", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
+@file:Suppress(
+    "UNUSED_PARAMETER",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "MemberVisibilityCanBePrivate",
     "RedundantSuppression"
 )
 
@@ -263,6 +267,7 @@ internal class LunarView(
             mHandler = handler
             val res = context.resources
             // cache handles to our key sprites & other drawables
+            @SuppressLint("ObsoleteSdkInt")
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 mLanderImage = res.getDrawable(R.drawable.lander_plain, null)
                 mFiringImage = res.getDrawable(R.drawable.lander_firing, null)
@@ -802,7 +807,8 @@ internal class LunarView(
                 if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) okStart = true
                 if (keyCode == KeyEvent.KEYCODE_S) okStart = true
                 if (okStart
-                    && (mMode == STATE_READY || mMode == STATE_LOSE || mMode == STATE_WIN)) {
+                    && (mMode == STATE_READY || mMode == STATE_LOSE || mMode == STATE_WIN)
+                ) {
                     // ready-to-start -> start
                     doStart()
                     return true
@@ -865,13 +871,15 @@ internal class LunarView(
             synchronized(mSurfaceHolder) {
                 if (mMode == STATE_RUNNING) {
                     if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER
-                        || keyCode == KeyEvent.KEYCODE_SPACE) {
+                        || keyCode == KeyEvent.KEYCODE_SPACE
+                    ) {
                         setFiring(false)
                         handled = true
                     } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT
                         || keyCode == KeyEvent.KEYCODE_Q
                         || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
-                        || keyCode == KeyEvent.KEYCODE_W) {
+                        || keyCode == KeyEvent.KEYCODE_W
+                    ) {
                         mRotating = 0
                         handled = true
                     }
