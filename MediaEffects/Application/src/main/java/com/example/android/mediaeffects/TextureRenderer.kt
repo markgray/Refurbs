@@ -104,30 +104,43 @@ class TextureRenderer {
      * buffer long enough to hold the [TEX_VERTICES] array, set its order to [ByteOrder.nativeOrder],
      * then create a view of this byte buffer as a float buffer. We then bulk put all the vertex
      * values in [TEX_VERTICES] into [mTexVertices], chaining a call to `position(0)` to position the
-     * `FloatBuffer` back to the beginning. We initialize `FloatBuffer mPosVertices` by allocating
-     * a direct byte buffer long enough to hold the POS_VERTICES array, set its order to `nativeOrder`,
-     * then create a view of this byte buffer as a float buffer. We then bulk put all the vertex values
-     * in POS_VERTICES into `mPosVertices`, chaining a call to [FloatBuffer.position] to position
-     * the [FloatBuffer] back to its beginning (0).
+     * [FloatBuffer] back to the beginning. We initialize [FloatBuffer] field [mPosVertices] by
+     * allocating a direct byte buffer long enough to hold the POS_VERTICES array, set its order to
+     * `nativeOrder`, then create a view of this byte buffer as a float buffer. We then bulk put all
+     * the vertex values in POS_VERTICES into [mPosVertices], chaining a call to [FloatBuffer.position]
+     * to position the [FloatBuffer] back to its beginning (0).
      */
     fun initialize() {
         // Create program
-        mProgram = GLToolbox.createProgram(VERTEX_SHADER, FRAGMENT_SHADER)
+        mProgram = GLToolbox.createProgram(
+            vertexSource = VERTEX_SHADER,
+            fragmentSource = FRAGMENT_SHADER
+        )
 
         // Bind attributes and uniforms
-        mTexSamplerHandle = GLES20.glGetUniformLocation(mProgram, "tex_sampler")
-        mTexCoordHandle = GLES20.glGetAttribLocation(mProgram, "a_texcoord")
-        mPosCoordHandle = GLES20.glGetAttribLocation(mProgram, "a_position")
+        mTexSamplerHandle = GLES20.glGetUniformLocation(
+            /* program = */ mProgram,
+            /* name = */ "tex_sampler"
+        )
+        mTexCoordHandle = GLES20.glGetAttribLocation(
+            /* program = */ mProgram,
+            /* name = */ "a_texcoord"
+        )
+        mPosCoordHandle = GLES20.glGetAttribLocation(
+            /* program = */ mProgram,
+            /* name = */ "a_position"
+        )
 
         // Setup coordinate buffers
         mTexVertices = ByteBuffer.allocateDirect(
-            TEX_VERTICES.size * FLOAT_SIZE_BYTES)
-            .order(ByteOrder.nativeOrder()).asFloatBuffer()
-        mTexVertices!!.put(TEX_VERTICES).position(0)
+            /* capacity = */ TEX_VERTICES.size * FLOAT_SIZE_BYTES
+        ).order(/* bo = */ ByteOrder.nativeOrder()).asFloatBuffer()
+        mTexVertices!!.put(/* src = */ TEX_VERTICES).position(/* newPosition = */ 0)
+
         mPosVertices = ByteBuffer.allocateDirect(
-            POS_VERTICES.size * FLOAT_SIZE_BYTES)
-            .order(ByteOrder.nativeOrder()).asFloatBuffer()
-        mPosVertices!!.put(POS_VERTICES).position(0)
+            /* capacity = */ POS_VERTICES.size * FLOAT_SIZE_BYTES
+        ).order(/* bo = */ ByteOrder.nativeOrder()).asFloatBuffer()
+        mPosVertices!!.put(/* src = */ POS_VERTICES).position(/* newPosition = */ 0)
     }
 
     /**
@@ -135,7 +148,7 @@ class TextureRenderer {
      * program object pointed to by [Int] field [mProgram].
      */
     fun tearDown() {
-        GLES20.glDeleteProgram(mProgram)
+        GLES20.glDeleteProgram(/* program = */ mProgram)
     }
 
     /**
@@ -226,18 +239,23 @@ class TextureRenderer {
      */
     fun renderTexture(texId: Int) {
         // Bind default FBO
-        GLES20.glBindFramebuffer(GLES20.GL_FRAMEBUFFER, 0)
+        GLES20.glBindFramebuffer(/* target = */ GLES20.GL_FRAMEBUFFER, /* framebuffer = */ 0)
 
         // Use our shader program
-        GLES20.glUseProgram(mProgram)
-        GLToolbox.checkGlError("glUseProgram")
+        GLES20.glUseProgram(/* program = */ mProgram)
+        GLToolbox.checkGlError(op = "glUseProgram")
 
         // Set viewport
-        GLES20.glViewport(0, 0, mViewWidth, mViewHeight)
-        GLToolbox.checkGlError("glViewport")
+        GLES20.glViewport(
+            /* x = */ 0,
+            /* y = */ 0,
+            /* width = */ mViewWidth,
+            /* height = */ mViewHeight
+        )
+        GLToolbox.checkGlError(op = "glViewport")
 
         // Disable blending
-        GLES20.glDisable(GLES20.GL_BLEND)
+        GLES20.glDisable(/* cap = */ GLES20.GL_BLEND)
 
         // Set the vertex attributes
         GLES20.glVertexAttribPointer(
@@ -248,7 +266,7 @@ class TextureRenderer {
             /* stride = */ 0,
             /* ptr = */ mTexVertices
         )
-        GLES20.glEnableVertexAttribArray(mTexCoordHandle)
+        GLES20.glEnableVertexAttribArray(/* index = */ mTexCoordHandle)
 
         GLES20.glVertexAttribPointer(
             /* indx = */ mPosCoordHandle,
@@ -258,20 +276,25 @@ class TextureRenderer {
             /* stride = */ 0,
             /* ptr = */ mPosVertices
         )
-        GLES20.glEnableVertexAttribArray(mPosCoordHandle)
-        GLToolbox.checkGlError("vertex attribute setup")
+        GLES20.glEnableVertexAttribArray(/* index = */ mPosCoordHandle)
+        GLToolbox.checkGlError(op = "vertex attribute setup")
 
         // Set the input texture
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        GLToolbox.checkGlError("glActiveTexture")
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texId)
-        GLToolbox.checkGlError("glBindTexture")
-        GLES20.glUniform1i(mTexSamplerHandle, 0)
+        GLES20.glActiveTexture(/* texture = */ GLES20.GL_TEXTURE0)
+        GLToolbox.checkGlError(op = "glActiveTexture")
+        GLES20.glBindTexture(/* target = */ GLES20.GL_TEXTURE_2D, /* texture = */ texId)
+        GLToolbox.checkGlError(op = "glBindTexture")
+        GLES20.glUniform1i(/* location = */ mTexSamplerHandle, /* x = */ 0)
 
         // Draw
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
+        GLES20.glClearColor(
+            /* red = */ 0.0f,
+            /* green = */ 0.0f,
+            /* blue = */ 0.0f,
+            /* alpha = */ 1.0f
+        )
+        GLES20.glClear(/* mask = */ GLES20.GL_COLOR_BUFFER_BIT)
+        GLES20.glDrawArrays(/* mode = */ GLES20.GL_TRIANGLE_STRIP, /* first = */ 0, /* count = */ 4)
     }
 
     /**
@@ -279,9 +302,9 @@ class TextureRenderer {
      * for the attribute variable "a_position" which is used as the location of the current vertex.
      * If [mPosVertices] is `null` we do nothing. Otherwise we calculate the image aspect ratio in
      * [Float] variable `val imgAspectRatio` to be [Int] field [mTexWidth] divided by [Int] field
-     * [mTexHeight], and the view aspect ratio in [Float] variable `val viewAspectRatio` to be
-     * [Int] field [mViewWidth] divided by [Int] field [mViewHeight], and the relative aspect ratio
-     * in [Float] variable `val relativeAspectRatio` to be `viewAspectRatio` divided by `imgAspectRatio`.
+     * [mTexHeight], the view aspect ratio in [Float] variable `val viewAspectRatio` to be [Int]
+     * field [mViewWidth] divided by [Int] field [mViewHeight], and the relative aspect ratio in
+     * [Float] variable `val relativeAspectRatio` to be `viewAspectRatio` divided by `imgAspectRatio`.
      * We declare [Float] variable `val x0`, `val y0`, `val x1`, and `val y1` then we branch on the
      * value of `relativeAspectRatio`:
      *
@@ -316,7 +339,7 @@ class TextureRenderer {
                 y1 = relativeAspectRatio
             }
             val coords: FloatArray = floatArrayOf(x0, y0, x1, y0, x0, y1, x1, y1)
-            mPosVertices!!.put(coords).position(0)
+            mPosVertices!!.put(/* src = */ coords).position(/* newPosition = */ 0)
         }
     }
 
@@ -351,7 +374,8 @@ class TextureRenderer {
          *
          *  * } The end of our program.
          */
-        private const val VERTEX_SHADER = "attribute vec4 a_position;\n" +
+        private const val VERTEX_SHADER =
+            "attribute vec4 a_position;\n" +
             "attribute vec2 a_texcoord;\n" +
             "varying vec2 v_texcoord;\n" +
             "void main() {\n" +
@@ -384,7 +408,8 @@ class TextureRenderer {
          *
          *  * } The end of our program.
          */
-        private const val FRAGMENT_SHADER = "precision mediump float;\n" +
+        private const val FRAGMENT_SHADER =
+            "precision mediump float;\n" +
             "uniform sampler2D tex_sampler;\n" +
             "varying vec2 v_texcoord;\n" +
             "void main() {\n" +

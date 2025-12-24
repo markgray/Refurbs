@@ -560,14 +560,18 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     }
 
     /**
-     * TODO: Continue here.
      * Applies the [Effect] contained in our [Effect] field [mEffect] to the texture whose name is
      * in `mTextures[0]` saving the output in the texture whose name is in `mTextures[1]`, using
      * [Int] field [mImageWidth] as the input texture width and [Int] field [mImageHeight] as the
      * input texture height.
      */
     private fun applyEffect() {
-        mEffect!!.apply(mTextures[0], mImageWidth, mImageHeight, mTextures[1])
+        mEffect!!.apply(
+            /* inputTexId = */ mTextures[0],
+            /* width = */ mImageWidth,
+            /* height = */ mImageHeight,
+            /* outputTexId = */ mTextures[1]
+        )
     }
 
     /**
@@ -580,10 +584,10 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     private fun renderResult() {
         if (mCurrentEffect != R.id.none) {
             // render the result of applyEffect()
-            mTexRenderer.renderTexture(mTextures[1])
+            mTexRenderer.renderTexture(texId = mTextures[1])
         } else {
             // if no effect is chosen, just render the original bitmap
-            mTexRenderer.renderTexture(mTextures[0])
+            mTexRenderer.renderTexture(texId = mTextures[0])
         }
     }
 
