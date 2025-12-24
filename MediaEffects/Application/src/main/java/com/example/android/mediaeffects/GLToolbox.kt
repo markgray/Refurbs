@@ -44,15 +44,20 @@ object GLToolbox {
      * @return value by which the loaded shader can be referenced
      */
     fun loadShader(shaderType: Int, source: String?): Int {
-        val shader: Int = GLES20.glCreateShader(shaderType)
+        val shader: Int = GLES20.glCreateShader(/* type = */ shaderType)
         if (shader != 0) {
-            GLES20.glShaderSource(shader, source)
-            GLES20.glCompileShader(shader)
-            val compiled = IntArray(1)
-            GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compiled, 0)
+            GLES20.glShaderSource(/* shader = */ shader, /* string = */ source)
+            GLES20.glCompileShader(/* shader = */ shader)
+            val compiled = IntArray(size = 1)
+            GLES20.glGetShaderiv(
+                /* shader = */ shader,
+                /* pname = */ GLES20.GL_COMPILE_STATUS,
+                /* params = */ compiled,
+                /* offset = */ 0
+            )
             if (compiled[0] == 0) {
-                val info: String = GLES20.glGetShaderInfoLog(shader)
-                GLES20.glDeleteShader(shader)
+                val info: String = GLES20.glGetShaderInfoLog(/* shader = */ shader)
+                GLES20.glDeleteShader(/* shader = */ shader)
                 throw RuntimeException("Could not compile shader $shaderType:$info")
             }
         }
@@ -89,26 +94,37 @@ object GLToolbox {
      * @return value by which the created program object can be referenced
      */
     fun createProgram(vertexSource: String?, fragmentSource: String?): Int {
-        val vertexShader: Int = loadShader(GLES20.GL_VERTEX_SHADER, vertexSource)
+        val vertexShader: Int = loadShader(
+            shaderType = GLES20.GL_VERTEX_SHADER,
+            source = vertexSource
+        )
         if (vertexShader == 0) {
             return 0
         }
-        val pixelShader: Int = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentSource)
+        val pixelShader: Int = loadShader(
+            shaderType = GLES20.GL_FRAGMENT_SHADER,
+            source = fragmentSource
+        )
         if (pixelShader == 0) {
             return 0
         }
         val program: Int = GLES20.glCreateProgram()
         if (program != 0) {
-            GLES20.glAttachShader(program, vertexShader)
-            checkGlError("glAttachShader")
-            GLES20.glAttachShader(program, pixelShader)
-            checkGlError("glAttachShader")
-            GLES20.glLinkProgram(program)
-            val linkStatus = IntArray(1)
-            GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus,0)
+            GLES20.glAttachShader(/* program = */ program, /* shader = */ vertexShader)
+            checkGlError(op = "glAttachShader")
+            GLES20.glAttachShader(/* program = */ program, /* shader = */ pixelShader)
+            checkGlError(op = "glAttachShader")
+            GLES20.glLinkProgram(/* program = */ program)
+            val linkStatus = IntArray(size = 1)
+            GLES20.glGetProgramiv(
+                /* program = */ program,
+                /* pname = */ GLES20.GL_LINK_STATUS,
+                /* params = */ linkStatus,
+                /* offset = */ 0
+            )
             if (linkStatus[0] != GLES20.GL_TRUE) {
-                val info: String = GLES20.glGetProgramInfoLog(program)
-                GLES20.glDeleteProgram(program)
+                val info: String = GLES20.glGetProgramInfoLog(/* program = */ program)
+                GLES20.glDeleteProgram(/* program = */ program)
                 throw RuntimeException("Could not link program: $info")
             }
         }
@@ -119,9 +135,8 @@ object GLToolbox {
      * Checks for an OpenGL error and throws [RuntimeException] if anything but [GLES20.GL_NO_ERROR]
      * has occurred. We initialize [Int] variable `val error` with the value of the error flag
      * returned by the method [GLES20.glGetError]. If this is not [GLES20.GL_NO_ERROR] we throw a
-     * [RuntimeException] constructed using the string formed by
-     * concatenating our [String] parameter [op] followed by the string ": glError " followed by the
-     * string value of `error`.
+     * [RuntimeException] constructed using the string formed by concatenating our [String] parameter
+     * [op] followed by the string ": glError " followed by the string value of `error`.
      *
      * @param op string to include in our [RuntimeException] if we need to throw it
      */
@@ -156,13 +171,25 @@ object GLToolbox {
      *  stop at the last pixel when you fall off the edge).
      */
     fun initTexParams() {
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-            GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,
-            GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S,
-            GLES20.GL_CLAMP_TO_EDGE)
-        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T,
-            GLES20.GL_CLAMP_TO_EDGE)
+        GLES20.glTexParameteri(
+            /* target = */ GLES20.GL_TEXTURE_2D,
+            /* pname = */ GLES20.GL_TEXTURE_MAG_FILTER,
+            /* param = */ GLES20.GL_LINEAR
+        )
+        GLES20.glTexParameteri(
+            /* target = */ GLES20.GL_TEXTURE_2D,
+            /* pname = */ GLES20.GL_TEXTURE_MIN_FILTER,
+            /* param = */ GLES20.GL_LINEAR
+        )
+        GLES20.glTexParameteri(
+            /* target = */ GLES20.GL_TEXTURE_2D,
+            /* pname = */ GLES20.GL_TEXTURE_WRAP_S,
+            /* param = */ GLES20.GL_CLAMP_TO_EDGE
+        )
+        GLES20.glTexParameteri(
+            /* target = */ GLES20.GL_TEXTURE_2D,
+            /* pname = */ GLES20.GL_TEXTURE_WRAP_T,
+            /* param = */ GLES20.GL_CLAMP_TO_EDGE
+        )
     }
 }

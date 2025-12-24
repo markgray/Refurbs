@@ -55,28 +55,23 @@ class MainActivity : SampleActivityBase() {
     private var mLogShown = false
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.activity_main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_main`.
      *
-     * We initialize our [LinearLayout] variable `rootView`
-     * to the view with ID `R.id.sample_main_layout` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID
+     * `R.id.sample_main_layout` then call [ViewCompat.setOnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to `rootView`, with the `listener` argument a
+     * lambda that accepts the [View] passed the lambda in variable `v` and the [WindowInsetsCompat]
+     * passed the lambda in variable `windowInsets`. It initializes its [Insets] variable
      * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the IME
+     * (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v`
+     * to be a [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the
+     * right margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the
+     * bottom margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * If our [Bundle] parameter [savedInstanceState] is `null` this is the first time we have been
      * called so we create [FragmentTransaction] variable `val transaction` by using the
@@ -136,10 +131,11 @@ class MainActivity : SampleActivityBase() {
      * Prepare the Screen's standard options menu to be displayed. We initialize [MenuItem] variable
      * `val logToggle` by finding the item in our [Menu] parameter [menu] with id `R.id.menu_toggle_log`
      * and if the view with id `R.id.sample_output` is an instance of [ViewAnimator] we set it to
-     * visible. If our [Boolean] flag field [mLogShown] is `true` we set the title of `logToggle` to
-     * the string with resource id `R.string.sample_hide_log` ("Hide Log") otherwise we set it to the
-     * string with resource id `R.string.sample_show_log` ("Show Log"). Finally we return the value
-     * returned by our super's implementation of `onPrepareOptionsMenu` to the caller.
+     * visible (on devices 720dp or wider it is a `LinearLayout`). If our [Boolean] flag field
+     * [mLogShown] is `true` we set the title of `logToggle` to the string with resource id
+     * `R.string.sample_hide_log` ("Hide Log") otherwise we set it to the string with resource id
+     * `R.string.sample_show_log` ("Show Log"). Finally we return the value returned by our super's
+     * implementation of `onPrepareOptionsMenu` to the caller.
      *
      * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu]
      * @return You must return `true` for the menu to be displayed;

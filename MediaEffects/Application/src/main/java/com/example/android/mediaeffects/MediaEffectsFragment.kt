@@ -50,7 +50,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * Generated texture names we use: `mTextures[0]` for the original bitmap, `mTextures[1]`
      * for the result of calling the [applyEffect] method.
      */
-    private val mTextures = IntArray(2)
+    private val mTextures = IntArray(size = 2)
 
     /**
      * keeps all necessary state information to run Effects within a single Open GL ES 2.0 context.
@@ -123,7 +123,11 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_media_effects, container, false)
+        return inflater.inflate(
+            /* resource = */ R.layout.fragment_media_effects,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
     }
 
     /**
@@ -132,7 +136,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * the view in our [View] parameter [view] with id `R.id.effects_view`, then we set the
      * `EGLContext` client version it is to use to 2 in order to use OpenGL ES 2.0, set its renderer
      * to this, and set its rendermode to [GLSurfaceView.RENDERMODE_WHEN_DIRTY]. If our [Bundle]
-     * parameter [savedInstanceState] is not null we call our [setCurrentEffect] method to set our
+     * parameter [savedInstanceState] is not `null` we call our [setCurrentEffect] method to set our
      * [Int] field [mCurrentEffect] to the [Int] stored in [savedInstanceState] under the key
      * [STATE_CURRENT_EFFECT] ("current_effect"), otherwise we call [setCurrentEffect] with
      * `R.id.none`.
@@ -143,13 +147,13 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mEffectView = view.findViewById(R.id.effects_view)
-        mEffectView!!.setEGLContextClientVersion(2)
-        mEffectView!!.setRenderer(this)
+        mEffectView!!.setEGLContextClientVersion(/* version = */ 2)
+        mEffectView!!.setRenderer(/* renderer = */ this)
         mEffectView!!.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
         if (null != savedInstanceState && savedInstanceState.containsKey(STATE_CURRENT_EFFECT)) {
-            setCurrentEffect(savedInstanceState.getInt(STATE_CURRENT_EFFECT))
+            setCurrentEffect(effect = savedInstanceState.getInt(STATE_CURRENT_EFFECT))
         } else {
-            setCurrentEffect(R.id.none)
+            setCurrentEffect(effect = R.id.none)
         }
     }
 
@@ -161,7 +165,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * @param menu The options menu in which you place your items.
      * @param inflater a [MenuInflater] you can use to inflate xml menu layout files.
      */
-    @Deprecated("Deprecated in Java", ReplaceWith("inflater.inflate(R.menu.media_effects, menu)")) // TODO: Use MenuProvider
+    @Deprecated("Use MenuProvider") // TODO: Use MenuProvider
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.media_effects, menu)
     }
@@ -176,7 +180,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * @param item The menu item that was selected.
      * @return We return `true` to consume the event here.
      */
-    @Deprecated("Deprecated in Java") // TODO: Use MenuProvider
+    @Deprecated("Use MenuProvider") // TODO: Use MenuProvider
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         setCurrentEffect(item.itemId)
         mEffectView!!.requestRender()
@@ -217,19 +221,19 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * @param height new height
      */
     override fun onSurfaceChanged(gl: GL10, width: Int, height: Int) {
-        mTexRenderer.updateViewSize(width, height)
+        mTexRenderer.updateViewSize(viewWidth = width, viewHeight = height)
     }
 
     /**
      * Called to draw the current frame. If our [Boolean] field [mInitialized] is `false`, this is
      * the first time we have been called so we have to initialize our [EffectContext] field
      * [mEffectContext] with a context within the current GL context created by the method
-     * [EffectContext.createWithCurrentGlContext]. We then call the [TextureRenderer.initialize] method of
-     * our [TextureRenderer] field [mTexRenderer] to initialize the OpenGL graphics engine to draw
-     * for us. Then we call our method [loadTextures] to allocate two texture names for our [IntArray]
-     * field [mTextures], load our image file `R.drawable.puppy` (drawable-nodpi/puppy.jpg) into the
-     * texture named by `mTextures[0]` and do some other initialization necessary to use it as a
-     * texture. We then set our [Boolean] field [mInitialized] to `true` so we do not do this
+     * [EffectContext.createWithCurrentGlContext]. We then call the [TextureRenderer.initialize]
+     * method of our [TextureRenderer] field [mTexRenderer] to initialize the OpenGL graphics engine
+     * to draw for us. Then we call our method [loadTextures] to allocate two texture names for our
+     * [IntArray] field [mTextures], load our image file `R.drawable.puppy` (drawable-nodpi/puppy.jpg)
+     * into the texture named by `mTextures[0]` and do some other initialization necessary to use it
+     * as a texture. We then set our [Boolean] field [mInitialized] to `true` so we do not do this
      * initialization the next time we are called. Whether it is the first or a subsequent call,
      * if our [Int] field [mCurrentEffect] is not `R.id.none`, we call our [initEffect] method to
      * initialize the chosen effect, and then call our [applyEffect] method to apply the effect
@@ -270,7 +274,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      * parameters. First we call the [GLES20.glGenTextures] method to generate 2 texture names for
      * our [IntArray] field [mTextures]. We initialize [Bitmap] variable `val bitmap` by decoding
      * the jpg with resource id `R.drawable.puppy`, set our [Int] field [mImageWidth] to the width
-     * of `bitmap` and [Int] fiedl [mImageHeight] to the height of `bitmap`, then call the
+     * of `bitmap` and [Int] field [mImageHeight] to the height of `bitmap`, then call the
      * [TextureRenderer.updateTextureSize] method of [TextureRenderer] field [mTexRenderer] to
      * update it with the new size. We call the [GLES20.glBindTexture] method to bind the texture
      * named `mTextures[0]` to [GLES20.GL_TEXTURE_2D] (texture targets become aliases for the
@@ -280,17 +284,28 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      */
     private fun loadTextures() {
         // Generate textures
-        GLES20.glGenTextures(2, mTextures, 0)
+        GLES20.glGenTextures(/* n = */ 2, /* textures = */ mTextures, /* offset = */ 0)
 
         // Load input bitmap
-        val bitmap: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.puppy)
+        val bitmap: Bitmap = BitmapFactory.decodeResource(
+            /* res = */ resources,
+            /* id = */ R.drawable.puppy
+        )
         mImageWidth = bitmap.width
         mImageHeight = bitmap.height
-        mTexRenderer.updateTextureSize(mImageWidth, mImageHeight)
+        mTexRenderer.updateTextureSize(
+            texWidth = mImageWidth,
+            texHeight = mImageHeight
+        )
 
         // Upload to texture
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures[0])
-        GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0)
+        GLES20.glBindTexture(/* target = */ GLES20.GL_TEXTURE_2D, /* texture = */ mTextures[0])
+        GLUtils.texImage2D(
+            /* target = */ GLES20.GL_TEXTURE_2D,
+            /* level = */ 0,
+            /* bitmap = */ bitmap,
+            /* border = */ 0
+        )
 
         // Set texture parameters
         GLToolbox.initTexParams()
@@ -331,7 +346,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
      *  * `R.id.crossprocess` ("Cross Process"): we set our [Effect] field [mEffect] to the effect
      *  produced by `effectFactory` for [EffectFactory.EFFECT_CROSSPROCESS] (Applies a cross process
      *  effect on image, in which the red and green channels are enhanced while the blue channel is
-     *  restricted)..
+     *  restricted).
      *
      *  * `R.id.documentary` ("Documentary"): we set our [Effect] field [mEffect] to the effect
      *  produced by `effectFactory` for [EffectFactory.EFFECT_DOCUMENTARY] (Applies black and white
@@ -426,96 +441,118 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
         when (mCurrentEffect) {
             R.id.none -> {}
             R.id.auto_fix -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_AUTOFIX)
-                mEffect!!.setParameter("scale", 0.5f)
+                mEffect =
+                    effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_AUTOFIX)
+                mEffect!!.setParameter(/* parameterKey = */ "scale", /* value = */ 0.5f)
             }
 
             R.id.bw -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_BLACKWHITE)
-                mEffect!!.setParameter("black", .1f)
-                mEffect!!.setParameter("white", .7f)
+                mEffect =
+                    effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_BLACKWHITE)
+                mEffect!!.setParameter(/* parameterKey = */ "black", /* value = */ .1f)
+                mEffect!!.setParameter(/* parameterKey = */ "white", /* value = */ .7f)
             }
 
             R.id.brightness -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_BRIGHTNESS)
-                mEffect!!.setParameter("brightness", 2.0f)
+                mEffect =
+                    effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_BRIGHTNESS)
+                mEffect!!.setParameter(/* parameterKey = */ "brightness", /* value = */ 2.0f)
             }
 
             R.id.contrast -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_CONTRAST)
-                mEffect!!.setParameter("contrast", 1.4f)
+                mEffect =
+                    effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_CONTRAST)
+                mEffect!!.setParameter(/* parameterKey = */ "contrast", /* value = */ 1.4f)
             }
 
-            R.id.crossprocess -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_CROSSPROCESS)
+            R.id.crossprocess -> mEffect =
+                effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_CROSSPROCESS)
 
-            R.id.documentary -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_DOCUMENTARY)
+            R.id.documentary -> mEffect =
+                effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_DOCUMENTARY)
 
             R.id.duotone -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_DUOTONE)
-                mEffect!!.setParameter("first_color", Color.YELLOW)
-                mEffect!!.setParameter("second_color", Color.DKGRAY)
+                mEffect =
+                    effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_DUOTONE)
+                mEffect!!.setParameter(/* parameterKey = */ "first_color", /* value = */
+                    Color.YELLOW
+                )
+                mEffect!!.setParameter(/* parameterKey = */ "second_color", /* value = */
+                    Color.DKGRAY
+                )
             }
 
             R.id.filllight -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_FILLLIGHT)
-                mEffect!!.setParameter("strength", .8f)
+                mEffect =
+                    effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_FILLLIGHT)
+                mEffect!!.setParameter(/* parameterKey = */ "strength", /* value = */ .8f)
             }
 
             R.id.fisheye -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_FISHEYE)
-                mEffect!!.setParameter("scale", .5f)
+                mEffect =
+                    effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_FISHEYE)
+                mEffect!!.setParameter(/* parameterKey = */ "scale", /* value = */ .5f)
             }
 
             R.id.flipvert -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_FLIP)
-                mEffect!!.setParameter("vertical", true)
+                mEffect = effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_FLIP)
+                mEffect!!.setParameter(/* parameterKey = */ "vertical", /* value = */ true)
             }
 
             R.id.fliphor -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_FLIP)
-                mEffect!!.setParameter("horizontal", true)
+                mEffect = effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_FLIP)
+                mEffect!!.setParameter(/* parameterKey = */ "horizontal", /* value = */ true)
             }
 
             R.id.grain -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_GRAIN)
-                mEffect!!.setParameter("strength", 1.0f)
+                mEffect = effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_GRAIN)
+                mEffect!!.setParameter(/* parameterKey = */ "strength", /* value = */ 1.0f)
             }
 
-            R.id.grayscale -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_GRAYSCALE)
+            R.id.grayscale -> mEffect =
+                effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_GRAYSCALE)
 
-            R.id.lomoish -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_LOMOISH)
+            R.id.lomoish -> mEffect =
+                effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_LOMOISH)
 
-            R.id.negative -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_NEGATIVE)
+            R.id.negative -> mEffect =
+                effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_NEGATIVE)
 
-            R.id.posterize -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_POSTERIZE)
+            R.id.posterize -> mEffect =
+                effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_POSTERIZE)
 
             R.id.rotate -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_ROTATE)
-                mEffect!!.setParameter("angle", 180)
+                mEffect = effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_ROTATE)
+                mEffect!!.setParameter(/* parameterKey = */ "angle", /* value = */ 180)
             }
 
             R.id.saturate -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_SATURATE)
-                mEffect!!.setParameter("scale", .5f)
+                mEffect =
+                    effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_SATURATE)
+                mEffect!!.setParameter(/* parameterKey = */ "scale", /* value = */ .5f)
             }
 
-            R.id.sepia -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_SEPIA)
+            R.id.sepia -> mEffect =
+                effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_SEPIA)
 
-            R.id.sharpen -> mEffect = effectFactory.createEffect(EffectFactory.EFFECT_SHARPEN)
+            R.id.sharpen -> mEffect =
+                effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_SHARPEN)
 
             R.id.temperature -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_TEMPERATURE)
-                mEffect!!.setParameter("scale", .9f)
+                mEffect =
+                    effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_TEMPERATURE)
+                mEffect!!.setParameter(/* parameterKey = */ "scale", /* value = */ .9f)
             }
 
             R.id.tint -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_TINT)
-                mEffect!!.setParameter("tint", Color.MAGENTA)
+                mEffect = effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_TINT)
+                mEffect!!.setParameter(/* parameterKey = */ "tint", /* value = */ Color.MAGENTA)
             }
 
             R.id.vignette -> {
-                mEffect = effectFactory.createEffect(EffectFactory.EFFECT_VIGNETTE)
-                mEffect!!.setParameter("scale", .5f)
+                mEffect =
+                    effectFactory.createEffect(/* effectName = */ EffectFactory.EFFECT_VIGNETTE)
+                mEffect!!.setParameter(/* parameterKey = */ "scale", /* value = */ .5f)
             }
 
             else -> {}
@@ -523,6 +560,7 @@ class MediaEffectsFragment : Fragment(), GLSurfaceView.Renderer {
     }
 
     /**
+     * TODO: Continue here.
      * Applies the [Effect] contained in our [Effect] field [mEffect] to the texture whose name is
      * in `mTextures[0]` saving the output in the texture whose name is in `mTextures[1]`, using
      * [Int] field [mImageWidth] as the input texture width and [Int] field [mImageHeight] as the
