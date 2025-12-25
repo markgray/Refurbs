@@ -74,7 +74,6 @@ class MainActivity : FragmentActivity() {
      * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
      * will not keep passing down to descendant views).
      *
-     * TODO: Continue here.
      * We initialize our [NotificationManager] field [mNM] by using the [getSystemService]
      * method to get a handle to the system-level service with the name
      * [Context.NOTIFICATION_SERVICE] ("notification"). We initialize our [NotificationChannel]
@@ -125,11 +124,14 @@ class MainActivity : FragmentActivity() {
         )
         chan1.lightColor = Color.GREEN
         chan1.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-        mNM!!.createNotificationChannel(chan1)
+        mNM!!.createNotificationChannel(/* channel = */ chan1)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .add(R.id.container, MessagingFragment(), "MessagingFragment")
-                .commit()
+                .add(
+                    /* containerViewId = */ R.id.container,
+                    /* fragment = */ MessagingFragment(),
+                    /* tag = */ "MessagingFragment"
+                ).commit()
         } else {
             Log.i(TAG, "we have been this way before")
         }

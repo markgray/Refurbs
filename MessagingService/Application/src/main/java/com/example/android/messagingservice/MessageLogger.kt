@@ -78,7 +78,10 @@ internal object MessageLogger {
      * @return The [SharedPreferences] instance for the preference file [PREF_MESSAGE]
      */
     fun getPrefs(context: Context): SharedPreferences {
-        return context.getSharedPreferences(PREF_MESSAGE, Context.MODE_PRIVATE)
+        return context.getSharedPreferences(
+            /* name = */ PREF_MESSAGE,
+            /* mode = */ Context.MODE_PRIVATE
+        )
     }
 
     /**
@@ -89,7 +92,7 @@ internal object MessageLogger {
      * @return [String] value stored under [LOG_KEY] in our shared preferences file PREF_MESSAGE
      */
     fun getAllMessages(context: Context): String? {
-        return getPrefs(context).getString(LOG_KEY, "")
+        return getPrefs(context).getString(/* key = */ LOG_KEY, /* defValue = */ "")
     }
 
     /**

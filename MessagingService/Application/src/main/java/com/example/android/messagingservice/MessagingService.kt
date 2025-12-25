@@ -13,26 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress(
+    "JoinDeclarationAndAssignment",
+    "ReplaceNotNullAssertionWithElvisReturn"
+)
 
 package com.example.android.messagingservice
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper.getMainLooper
 import android.os.Message
 import android.os.Messenger
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
+import androidx.core.content.ContextCompat
+import com.example.android.messagingservice.MessagingFragment.Companion.POST_NOTIFICATIONS
+import com.example.android.messagingservice.MessagingService.Companion.CONVERSATION_ID
+import com.example.android.messagingservice.MessagingService.Companion.EXTRA_REMOTE_REPLY
+import com.example.android.messagingservice.MessagingService.Companion.MSG_SEND_NOTIFICATION
+import com.example.android.messagingservice.MessagingService.Companion.READ_ACTION
+import com.example.android.messagingservice.MessagingService.Companion.REPLY_ACTION
 import com.example.android.messagingservice.R.string
 import java.lang.ref.WeakReference
 
@@ -41,7 +52,7 @@ import java.lang.ref.WeakReference
  */
 class MessagingService : Service() {
     /**
-     * [NotificationManagerCompat] instance for the Application [Context] created in [onCreate].
+     * [NotificationManagerCompat] instance for the Application [Context]. Created in [onCreate].
      */
     private var mNotificationManager: NotificationManagerCompat? = null
 
@@ -128,15 +139,17 @@ class MessagingService : Service() {
      */
     private fun sendNotification(howManyConversations: Int, messagesPerConversation: Int) {
         val conversations: Array<Conversation> = Conversations.getUnreadConversations(
-            howManyConversations, messagesPerConversation)
+            howManyConversations, messagesPerConversation
+        )
         for (conv in conversations) {
-            sendNotificationForConversation(conv)
+            sendNotificationForConversation(conversation = conv)
         }
     }
 
     /**
      * This method builds a remote notification for its [Conversation] parameter [conversation]
-     * and sends it. First we create a broadcast [Intent] to initialize [PendingIntent] variable
+     * and sends it. First we check to make sure we have permission to post notifications.
+     * When we create a broadcast [Intent] to initialize [PendingIntent] variable
      * `val readPendingIntent` which will be dispatched to [MessageReadReceiver] when the
      * notification is read. We build a [RemoteInput] variable `val remoteInput` to receive voice
      * input from the remote device with the reply to be contained in the [Bundle] under the key
@@ -174,12 +187,18 @@ class MessagingService : Service() {
      * [Conversation.conversationId], [String] field [Conversation.participantName], one or more
      * [List] of [String] field [Conversation.messages] and a [Long] field [Conversation.timestamp].
      */
-    @SuppressLint("MissingPermission", "LaunchActivityFromNotification") // TODO: Fix by adding permission request.
     private fun sendNotificationForConversation(conversation: Conversation) {
+        if (ContextCompat.checkSelfPermission(applicationContext, POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.d(TAG, "We do not have permission to post Notifications")
+            throw IllegalStateException("We do not have permission to post Notifications")
+        }
         // A pending Intent for reads
         val readPendingIntent: PendingIntent
         readPendingIntent = if (Build.VERSION.SDK_INT >= 34) {
-            PendingIntent.getBroadcast(applicationContext,
+            PendingIntent.getBroadcast(
+                applicationContext,
                 conversation.conversationId,
                 getMessageReadIntent(conversation.conversationId),
                 PendingIntent.FLAG_UPDATE_CURRENT
@@ -187,7 +206,8 @@ class MessagingService : Service() {
                     or PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT
             )
         } else {
-            PendingIntent.getBroadcast(applicationContext,
+            PendingIntent.getBroadcast(
+                applicationContext,
                 conversation.conversationId,
                 getMessageReadIntent(conversation.conversationId),
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
@@ -202,33 +222,36 @@ class MessagingService : Service() {
 
         // Building a Pending Intent for the reply action to trigger
         val replyIntent = if (Build.VERSION.SDK_INT >= 34) {
-            PendingIntent.getBroadcast(applicationContext,
-                conversation.conversationId,
-                getMessageReplyIntent(conversation.conversationId),
-                PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.getBroadcast(
+                /* context = */ applicationContext,
+                /* requestCode = */ conversation.conversationId,
+                /* intent = */ getMessageReplyIntent(conversation.conversationId),
+                /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT
                     or PendingIntent.FLAG_MUTABLE
                     or PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT
             )
         } else {
-            PendingIntent.getBroadcast(applicationContext,
-                conversation.conversationId,
-                getMessageReplyIntent(conversation.conversationId),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            PendingIntent.getBroadcast(
+                /* context = */ applicationContext,
+                /* requestCode = */ conversation.conversationId,
+                /* intent = */ getMessageReplyIntent(conversation.conversationId),
+                /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         }
 
         // Build an Android N compatible Remote Input enabled action.
         val actionReplyByRemoteInput = NotificationCompat.Action.Builder(
-            R.drawable.notification_icon, getString(string.reply), replyIntent)
-            .addRemoteInput(remoteInput)
-            .build()
+            R.drawable.notification_icon, getString(string.reply), replyIntent
+        ).addRemoteInput(remoteInput).build()
 
         // Create the UnreadConversation and populate it with the participant name,
         // read and reply intents.
-        val unreadConvBuilder = NotificationCompat.CarExtender.UnreadConversation.Builder(conversation.participantName)
-            .setLatestTimestamp(conversation.timestamp)
-            .setReadPendingIntent(readPendingIntent)
-            .setReplyAction(replyIntent, remoteInput)
+        @Suppress("DEPRECATION") // TODO: Use NotificationCompat.MessagingStyle
+        val unreadConvBuilder =
+            NotificationCompat.CarExtender.UnreadConversation.Builder(conversation.participantName)
+                .setLatestTimestamp(conversation.timestamp)
+                .setReadPendingIntent(readPendingIntent)
+                .setReplyAction(replyIntent, remoteInput)
 
         // Note: Add messages from oldest to newest to the UnreadConversation.Builder
         val messageForNotification = StringBuilder()
@@ -241,20 +264,28 @@ class MessagingService : Service() {
                 messageForNotification.append(EOL)
             }
         }
+        @Suppress("DEPRECATION") // TODO: Use NotificationCompat.MessagingStyle
         val builder = NotificationCompat.Builder(applicationContext, "default")
             .setSmallIcon(R.drawable.notification_icon)
-            .setLargeIcon(BitmapFactory.decodeResource(
-                applicationContext.resources, R.drawable.android_contact))
+            .setLargeIcon(
+                BitmapFactory.decodeResource(
+                    applicationContext.resources, R.drawable.android_contact
+                )
+            )
             .setContentText(messageForNotification.toString())
             .setWhen(conversation.timestamp)
             .setContentTitle(conversation.participantName)
             .setContentIntent(readPendingIntent)
-            .extend(NotificationCompat.CarExtender()
-                .setUnreadConversation(unreadConvBuilder.build())
-                .setColor(applicationContext.getColor(R.color.default_color_light)))
+            .extend(
+                NotificationCompat.CarExtender()
+                    .setUnreadConversation(unreadConvBuilder.build())
+                    .setColor(applicationContext.getColor(R.color.default_color_light))
+            )
             .addAction(actionReplyByRemoteInput)
-        MessageLogger.logMessage(applicationContext, "Sending notification "
-            + conversation.conversationId + " conversation: " + conversation)
+        MessageLogger.logMessage(
+            applicationContext, "Sending notification "
+                + conversation.conversationId + " conversation: " + conversation
+        )
         mNotificationManager!!.notify(conversation.conversationId, builder.build())
     }
 
@@ -266,14 +297,14 @@ class MessagingService : Service() {
      * @param service The instance of [MessagingService] we will be Handling (called using
      * `this` in the initialization of its [Messenger] field [mMessenger]
      */
-    private class IncomingHandler(service: MessagingService) : Handler() {
+    private class IncomingHandler(service: MessagingService) : Handler(getMainLooper()) {
         /**
          * Weak reference to our [MessagingService] class
          */
         private val mReference: WeakReference<MessagingService>
 
         init {
-            mReference = WeakReference(service)
+            mReference = WeakReference(/* referent = */ service)
         }
 
         /**

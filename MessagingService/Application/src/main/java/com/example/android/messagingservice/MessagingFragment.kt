@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "UNUSED_ANONYMOUS_PARAMETER",
+@file:Suppress(
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "UNUSED_ANONYMOUS_PARAMETER",
     "UnusedImport"
 )
 
@@ -111,7 +113,7 @@ class MessagingFragment : Fragment(), View.OnClickListener {
          * make calls on.
          */
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            mService = Messenger(service)
+            mService = Messenger(/* target = */ service)
             mBound = true
             setButtonsState(true)
         }
@@ -149,13 +151,15 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     }
 
     /**
-     * Called to have the fragment instantiate its user interface view. First we use our [LayoutInflater]
-     * parameter [inflater] to inflate our layout file `R.layout.fragment_message_me` into our [View]
-     * variable `val rootView`. Then we locate the [Button] with ID `R.id.send_1_conversation` to
-     * initialize our [Button] field [mSendSingleConversation] and set its [View.OnClickListener] to
-     * "this", we locate the [Button] with ID `R.id.send_2_conversations` to initialize our [Button]
-     * field [mSendTwoConversations] and set its [View.OnClickListener] to "this", and locate the
-     * [Button] with ID `R.id.send_1_conversation_3_messages` to initialize our [Button] field
+     * Called to have the fragment instantiate its user interface view. First we call our method
+     * [requestNotificationPermission] to check if we have permission to post notifications, and
+     * request permission if we do not. Then we use our [LayoutInflater] parameter [inflater] to
+     * inflate our layout file `R.layout.fragment_message_me` into our [View] variable `val rootView`.
+     * We locate the [Button] with ID `R.id.send_1_conversation` to initialize our [Button] field
+     * [mSendSingleConversation] and set its [View.OnClickListener] to "this", we locate the [Button]
+     * with ID `R.id.send_2_conversations` to initialize our [Button] field [mSendTwoConversations]
+     * and set its [View.OnClickListener] to "this", and locate the [Button] with ID
+     * `R.id.send_1_conversation_3_messages` to initialize our [Button] field
      * [mSendConversationWithThreeMessages] and set its [View.OnClickListener] to "this". We
      * initialize our [TextView] field [mDataPortView] by locating the [TextView] with ID
      * `R.id.data_port` and set its movement method to a new instance of [ScrollingMovementMethod]
@@ -176,12 +180,17 @@ class MessagingFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         requestNotificationPermission()
-        val rootView = inflater.inflate(R.layout.fragment_message_me, container, false)
+        val rootView = inflater.inflate(
+            /* resource = */ R.layout.fragment_message_me,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
         mSendSingleConversation = rootView.findViewById(R.id.send_1_conversation)
         mSendSingleConversation!!.setOnClickListener(this)
         mSendTwoConversations = rootView.findViewById(R.id.send_2_conversations)
         mSendTwoConversations!!.setOnClickListener(this)
-        mSendConversationWithThreeMessages = rootView.findViewById(R.id.send_1_conversation_3_messages)
+        mSendConversationWithThreeMessages =
+            rootView.findViewById(R.id.send_1_conversation_3_messages)
         mSendConversationWithThreeMessages!!.setOnClickListener(this)
         mDataPortView = rootView.findViewById(R.id.data_port)
         mDataPortView!!.movementMethod = ScrollingMovementMethod()
@@ -198,8 +207,10 @@ class MessagingFragment : Fragment(), View.OnClickListener {
      * [actionRequestPermission] to request the permission.
      */
     private fun requestNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(requireContext(), POST_NOTIFICATIONS)
-            != PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(
+                /* context = */ requireContext(),
+                /* permission = */ POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
             actionRequestPermission.launch(arrayOf(POST_NOTIFICATIONS))
             return
@@ -224,24 +235,27 @@ class MessagingFragment : Fragment(), View.OnClickListener {
      *
      *  * [mSendSingleConversation] we send 1 conversation with 1 message
      *  * [mSendTwoConversations] we send 2 conversations with 1 message each
-     *  * [mSendConversationWithThreeMessage[mSendConversationWithThreeMessages] we send 1
-     *  conversation with 3 messages
+     *  * [mSendConversationWithThreeMessages] we send 1 conversation with 3 messages
      *  * [mClearLogButton] we clear our log from our shared preference file and set the
      *  text of our [TextView] field [mDataPortView] to the cleared value returned to us
-     *
      *
      * @param view The view that was clicked.
      */
     override fun onClick(view: View) {
-        if (view === mSendSingleConversation) {
-            sendMsg(1, 1)
-        } else if (view === mSendTwoConversations) {
-            sendMsg(2, 1)
-        } else if (view === mSendConversationWithThreeMessages) {
-            sendMsg(1, 3)
-        } else if (view === mClearLogButton) {
-            MessageLogger.clear(activity as Context)
-            mDataPortView!!.text = MessageLogger.getAllMessages(activity as Context)
+        when(view) {
+            mSendSingleConversation -> {
+                sendMsg(howManyConversations = 1, messagesPerConversation = 1)
+            }
+            mSendTwoConversations -> {
+                sendMsg(howManyConversations = 2, messagesPerConversation = 1)
+            }
+            mSendConversationWithThreeMessages -> {
+                sendMsg(howManyConversations = 1, messagesPerConversation = 3)
+            }
+            mClearLogButton -> {
+                MessageLogger.clear(activity as Context)
+                mDataPortView!!.text = MessageLogger.getAllMessages(activity as Context)
+            }
         }
     }
 
@@ -259,9 +273,9 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     override fun onStart() {
         super.onStart()
         requireActivity().bindService(
-            Intent(activity, MessagingService::class.java),
-            mConnection,
-            Context.BIND_AUTO_CREATE
+            /* service = */ Intent(activity, MessagingService::class.java),
+            /* conn = */ mConnection,
+            /* flags = */ Context.BIND_AUTO_CREATE
         )
     }
 
@@ -272,7 +286,8 @@ class MessagingFragment : Fragment(), View.OnClickListener {
      */
     override fun onPause() {
         super.onPause()
-        MessageLogger.getPrefs(activity as Context).unregisterOnSharedPreferenceChangeListener(listener)
+        MessageLogger.getPrefs(activity as Context)
+            .unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     /**
@@ -283,7 +298,8 @@ class MessagingFragment : Fragment(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
         mDataPortView!!.text = MessageLogger.getAllMessages(activity as Context)
-        MessageLogger.getPrefs(activity as Context).registerOnSharedPreferenceChangeListener(listener)
+        MessageLogger.getPrefs(activity as Context)
+            .registerOnSharedPreferenceChangeListener(listener)
     }
 
     /**
@@ -324,7 +340,10 @@ class MessagingFragment : Fragment(), View.OnClickListener {
                 mService!!.send(msg)
             } catch (e: RemoteException) {
                 Log.e(TAG, "Error sending a message", e)
-                MessageLogger.logMessage(activity as Context, "Error occurred while sending a message.")
+                MessageLogger.logMessage(
+                    activity as Context,
+                    "Error occurred while sending a message."
+                )
             }
         }
     }
@@ -346,6 +365,7 @@ class MessagingFragment : Fragment(), View.OnClickListener {
          * TAG for logging
          */
         private val TAG = MessagingFragment::class.java.simpleName
+
         /**
          * [String] used to request the "POST_NOTIFICATIONS" permission.
          */
