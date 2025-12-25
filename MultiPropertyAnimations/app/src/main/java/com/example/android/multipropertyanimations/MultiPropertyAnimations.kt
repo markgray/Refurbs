@@ -47,19 +47,17 @@ class MultiPropertyAnimations : ComponentActivity() {
      *
      * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.root_view`
      * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
-     * window insets to `rootView`, with the `listener`argument a lambda that accepts the
-     * [View] passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * window insets to `rootView`, with the `listener`argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use.
      */
@@ -114,7 +112,7 @@ class MultiPropertyAnimations : ComponentActivity() {
              *
              * Parameter: animator The animation which was repeated.
              */
-            val fraction = animator.animatedFraction
+            val fraction: Float = animator.animatedFraction
             view.translationX = TX_START + fraction * (TX_END - TX_START)
             view.translationY = TY_START + fraction * (TY_END - TY_START)
         }
