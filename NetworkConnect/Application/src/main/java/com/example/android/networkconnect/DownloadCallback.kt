@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "UnusedImport")
+@file:Suppress("UnusedImport", "DEPRECATION") // TODO: Replace with ConnectivityManager.NetworkCallback
 
 package com.example.android.networkconnect
 

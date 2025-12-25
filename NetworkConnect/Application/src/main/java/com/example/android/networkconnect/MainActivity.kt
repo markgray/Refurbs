@@ -44,7 +44,8 @@ import androidx.fragment.app.Fragment
  */
 class MainActivity : AppCompatActivity(), DownloadCallback {
     /**
-     * Reference to the [TextView] showing fetched data, so we can clear it with a button as necessary.
+     * Reference to the [TextView] showing fetched data, so we can clear it with a button
+     * as necessary.
      */
     private var mDataText: TextView? = null
 
@@ -61,26 +62,24 @@ class MainActivity : AppCompatActivity(), DownloadCallback {
     private var mDownloading = false
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.sample_main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.sample_main`.
      *
-     * We initialize our [LinearLayout] variable `rootView` to the view with ID
-     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to
-     * take over the policy for applying window insets to `rootView`, with the
-     * `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).     *
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars] as
+     * the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
+     *
      * We initialize our [TextView] field  [mDataText] by finding the view with id
      * `R.id.data_text`, and initialize our [NetworkFragment] field [mNetworkFragment]
      * with a handle to an instance constructed to retrieve the url
@@ -120,7 +119,7 @@ class MainActivity : AppCompatActivity(), DownloadCallback {
      * Initialize the contents of the Activity's standard options menu. We fetch a [MenuInflater]
      * for this context and use it to inflate our menu layout file `R.menu.main` into our [Menu]
      * parameter [menu], then return `true` to the caller so the menu will be displayed.
-     *
+     * TODO: Continue here.
      * @param menu The options menu in which you place your items.
      * @return You must return `true` for the menu to be displayed;
      * if you return `false` it will not be shown.
