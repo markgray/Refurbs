@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity(), DownloadCallback {
      * Initialize the contents of the Activity's standard options menu. We fetch a [MenuInflater]
      * for this context and use it to inflate our menu layout file `R.menu.main` into our [Menu]
      * parameter [menu], then return `true` to the caller so the menu will be displayed.
-     * TODO: Continue here.
+     *
      * @param menu The options menu in which you place your items.
      * @return You must return `true` for the menu to be displayed;
      * if you return `false` it will not be shown.
@@ -130,8 +130,8 @@ class MainActivity : AppCompatActivity(), DownloadCallback {
     }
 
     /**
-     * This hook is called whenever an item in your options menu is selected. We switch on to item
-     * id of our [MenuItem] parameter [item]:
+     * This hook is called whenever an item in your options menu is selected. We switch on the
+     * [MenuItem.getItemId] of our [MenuItem] parameter [item]:
      *
      *  * `R.id.fetch_action`: ("FETCH") we call our method [startDownload] to start a background
      *  download and return `true` to the caller to consume the event here.

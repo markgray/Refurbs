@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UNNECESSARY_NOT_NULL_ASSERTION", "DEPRECATION", "SameParameterValue", "SENSELESS_COMPARISON", "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog", "LiftReturnOrAssignment", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "UNNECESSARY_NOT_NULL_ASSERTION",
+    "DEPRECATION",
+    "SameParameterValue",
+    "SENSELESS_COMPARISON",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "LiftReturnOrAssignment",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.networkconnect
 
@@ -36,6 +45,7 @@ import javax.net.ssl.HttpsURLConnection
  */
 class NetworkFragment : Fragment() {
     /**
+     * TODO: Continue here.
      * [DownloadCallback] we use to report progress and post results, set from the context passed to
      * our [onAttach] override ([MainActivity] in our case).
      */
@@ -189,7 +199,8 @@ class NetworkFragment : Fragment() {
                 val networkInfo: NetworkInfo = mCallback!!.getActiveNetworkInfo()
                 if (networkInfo == null || !networkInfo.isConnected ||
                     (networkInfo.type != ConnectivityManager.TYPE_WIFI
-                        && networkInfo.type != ConnectivityManager.TYPE_MOBILE)) {
+                        && networkInfo.type != ConnectivityManager.TYPE_MOBILE)
+                ) {
                     // If no connectivity, cancel task and update Callback with null data.
                     mCallback!!.updateFromDownload(null)
                     cancel(true)
@@ -289,7 +300,8 @@ class NetworkFragment : Fragment() {
          * @param result The result, if any, computed in `doInBackground(Object[])`, can be null
          */
         @Deprecated("Deprecated in Java")
-        override fun onCancelled(result: Result?) {}
+        override fun onCancelled(result: Result?) {
+        }
 
         /**
          * Given a URL, sets up a connection and gets the HTTP response body from the server. If the
