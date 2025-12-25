@@ -55,22 +55,19 @@ class MainActivity : ComponentActivity(), AdapterView.OnItemClickListener {
      * to edge display, then we call our super's implementation of `onCreate`, and set our
      * content view to our layout file `R.layout.activity_main`.
      *
-     * We initialize our [LinearLayout] variable `rootView` to the view with ID
-     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to
-     * take over the policy for applying window insets to `rootView`, with the
-     * `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize [Array] of [Sample] field [mSamples] with a new instance containing one
      * [Sample] which is constructed to display the string with resource id
@@ -81,7 +78,7 @@ class MainActivity : ComponentActivity(), AdapterView.OnItemClickListener {
      * ID [android.R.id.list], set its adapter to a new instance of [SampleAdapter], and set its
      * [AdapterView.OnItemClickListener] to this.
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -106,8 +103,12 @@ class MainActivity : ComponentActivity(), AdapterView.OnItemClickListener {
 
         // Prepare list of samples in this dashboard.
         mSamples = arrayOf(
-            Sample(R.string.navigationdraweractivity_title, R.string.navigationdraweractivity_description,
-                NavigationDrawerActivity::class.java))
+            Sample(
+                titleResId = R.string.navigationdraweractivity_title,
+                descriptionResId = R.string.navigationdraweractivity_description,
+                activityClass = NavigationDrawerActivity::class.java
+            )
+        )
 
         // Prepare the GridView
         mGridView = findViewById(android.R.id.list)
@@ -167,24 +168,26 @@ class MainActivity : ComponentActivity(), AdapterView.OnItemClickListener {
         }
 
         /**
-         * Get a View that displays the data at the specified position in the data set. If our [View]
-         * parameter [convertView] is `null`, we set it to the view that the [LayoutInflater] instance
+         * Get a View that displays the data at the specified position in the data set. We start by
+         * initializing our [View] variable `convertViewLocal` to our [View] parameter [convertView].
+         * If `convertViewLocal` is `null`, we set it to the view that the [LayoutInflater] instance
          * for our context inflates from the layout file `R.layout.sample_dashboard_item` using our
          * [ViewGroup] parameter [container] for the layout params without attaching to it. We find
          * the view in [convertView] with id [android.R.id.text1] and set its text to the [String]
          * whose resource id is found in the [Sample.titleResId] field of the entry in position
-         * [position] in our [Array] of [Sample] field [mSamples], and we find the view in [convertView]
-         * with resource id [android.R.id.text2] and set its text to the [String] whose resource id
-         * is found in the [Sample.descriptionResId] field of the entry in position [position] of
-         * our [Array] of [Sample] field [mSamples]. Finally we return [convertView] to the caller.
+         * [position] in our [Array] of [Sample] field [mSamples], and we find the view in
+         * `convertViewLocal` with resource id [android.R.id.text2] and set its text to the [String]
+         * whose resource id is found in the [Sample.descriptionResId] field of the entry in position
+         * [position] of our [Array] of [Sample] field [mSamples]. Finally we return `convertViewLocal`
+         * to the caller.
          *
          * @param position The position of the item within the adapter's data set whose view we want.
          * @param convertView The old view to reuse, if possible.
          * @param container The parent that this view will eventually be attached to
-         * @return A View corresponding to the data at the specified position.
+         * @return A [View] corresponding to the data at the specified position.
          */
         override fun getView(position: Int, convertView: View?, container: ViewGroup): View {
-            var convertViewLocal = convertView
+            var convertViewLocal: View? = convertView
             if (convertViewLocal == null) {
                 convertViewLocal = layoutInflater.inflate(
                     R.layout.sample_dashboard_item,
@@ -226,7 +229,8 @@ class MainActivity : ComponentActivity(), AdapterView.OnItemClickListener {
         /**
          * `Intent` that can be used to launch the activity of this [Sample]
          */
-        var intent: Intent) {
+        var intent: Intent
+    ) {
         /**
          * This constructor creates an intent for the specific component specified by its
          * [activityClass] parameter and then calls our other constructor using that [Intent]
@@ -240,6 +244,10 @@ class MainActivity : ComponentActivity(), AdapterView.OnItemClickListener {
             titleResId: Int,
             descriptionResId: Int,
             activityClass: Class<out Activity>
-        ) : this(titleResId, descriptionResId, Intent(this@MainActivity, activityClass))
+        ) : this(
+            titleResId = titleResId,
+            descriptionResId = descriptionResId,
+            intent = Intent(this@MainActivity, activityClass)
+        )
     }
 }
