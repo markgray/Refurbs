@@ -33,7 +33,7 @@ class UnresizableActivity : LoggingActivity() {
      * method to set the description text in the view with id `R.id.description` to the string with
      * resource ID `R.string.activity_description_unresizable`
      *
-     * @param savedInstanceState we do not override `onSaveInstanceState` so do not use
+     * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
