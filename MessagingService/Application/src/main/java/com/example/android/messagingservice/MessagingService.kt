@@ -1,27 +1,11 @@
-/*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-@file:Suppress(
-    "JoinDeclarationAndAssignment",
-    "ReplaceNotNullAssertionWithElvisReturn"
-)
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment")
 
 package com.example.android.messagingservice
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.PendingIntent
 import android.app.Service
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -34,11 +18,11 @@ import android.os.Looper.getMainLooper
 import android.os.Message
 import android.os.Messenger
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.Person
 import androidx.core.app.RemoteInput
-import androidx.core.content.ContextCompat
-import com.example.android.messagingservice.MessagingFragment.Companion.POST_NOTIFICATIONS
 import com.example.android.messagingservice.MessagingService.Companion.CONVERSATION_ID
 import com.example.android.messagingservice.MessagingService.Companion.EXTRA_REMOTE_REPLY
 import com.example.android.messagingservice.MessagingService.Companion.MSG_SEND_NOTIFICATION
@@ -49,6 +33,12 @@ import java.lang.ref.WeakReference
 
 /**
  * [Service] defined in AndroidManifest.xml used to create and send remote notifications.
+ *
+ * It receives its instructions on what to do when its [IncomingHandler.handleMessage] override
+ * is called with a [Message] whose [Message.what] field is [MSG_SEND_NOTIFICATION]. The number
+ * of conversations to send and the number of messages in each conversation are encoded in the
+ * [Message.arg1] and [Message.arg2] fields of the [Message]. The work is done in the method
+ * [sendNotification] which calls [sendNotificationForConversation] for each conversation.
  */
 class MessagingService : Service() {
     /**
@@ -61,80 +51,103 @@ class MessagingService : Service() {
      * forwards incoming messages from clients. Any Message objects sent through this [Messenger]
      * will appear in the [IncomingHandler] as if [Handler.sendMessage] had been called directly.
      */
-    private val mMessenger = Messenger(IncomingHandler(this))
+    private val mMessenger = Messenger( /* target = */ IncomingHandler( /* service = */this))
 
     /**
-     * Called by the system when the service is first created. We just initialize our
-     * [NotificationManagerCompat] field [mNotificationManager] with a new instance of
-     * [NotificationManagerCompat] using  the [Context] of the single, global Application
-     * object of the current process (This generally should only be used if you need a [Context]
-     * whose lifecycle is separate from the current context, that is tied to the lifetime of
-     * the process rather than the current component.)
+     * Called by the system when the service is first created. It is used to perform one-time
+     * setup procedures. We just call our super's implementation of `onCreate` then initialize
+     * our [NotificationManagerCompat] field [mNotificationManager] with an instance for our
+     * application's package.
      */
     override fun onCreate() {
-        Log.d(TAG, "onCreate")
+        super.onCreate()
         mNotificationManager = NotificationManagerCompat.from(applicationContext)
     }
 
     /**
-     * Return the communication channel to the service. We simply return the [IBinder] that our
-     * [Messenger] field [mMessenger] is using to communicate with its associated [Handler] (which
-     * is an instance of our [IncomingHandler] class in our case).
+     * Called by the system every time a client starts the service by calling `startService`.
+     * We just log the fact that we were started. The system calls this method on the main thread
+     * of the application. The Intent supplied to `startService(Intent)` is passed to this method.
+     * May be called pending the delivery of the previous `onStartCommand()` call to this service,
+     * so be careful when using global state in your implementation. Other applications that you
+     * interact with that are associated with your overall application may begin starting up now.
+     * For started services, there are two additional major modes of operation they can decide to
+     * run in, controlled by the return value of this function. One is represented by
+     * `START_STICKY` and the other is represented by `START_NOT_STICKY`.
      *
-     * @param intent The [Intent] that was used to bind to this service,
+     * We just log the fact that we were called then return `START_STICKY` to the caller (tells the
+     * system to create a fresh copy of the service, when sufficient memory is available, after it
+     * is killed and that we want to continue running until we are explicitly stopped, so we should
+     * receive a call to `onStartCommand` again with a `null` `Intent` object).
+     *
+     * @param intent The [Intent] supplied to `startService(Intent)`.
+     * @param flags Additional data about this start request.
+     * @param startId A unique integer representing this specific request to start.
+     * @return The return value indicates what semantics the system should use for the service's
+     * current started state. It may be one of the constants associated with the
+     * `START_CONTINUATION_MASK` bits. We return `START_STICKY`.
+     */
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        Log.d(TAG, "onStartCommand")
+        return START_STICKY_COMPATIBILITY
+    }
+
+    /**
+     * This is the ancient on-demand binding mechanism. It was simplified in HONEYCOMB to just
+     * return a Binder object from onBind() that the client can use to directly access the service.
+     * When binding to the service, we return an interface to our messenger for sending messages
+     * to the service. We return the [IBinder] that our [Messenger] field [mMessenger] uses to
+     * communicate with its [Handler].
+     *
+     * @param intent The [Intent] that was used to bind to this service, as given to
+     * `bindService`. Note that any extras that were included with the Intent at that point will
+     * not be seen here.
      * @return Return an [IBinder] through which clients can call on to the service.
      */
-    override fun onBind(intent: Intent): IBinder? {
-        Log.d(TAG, "onBind")
-        return mMessenger.binder
-    }
+    override fun onBind(intent: Intent): IBinder = mMessenger.binder
 
     /**
-     * Creates an [Intent] that will be triggered when a message is marked as read. This method is a
-     * convenience method to produce the [Intent] which will be received by the broadcast receiver
-     * [MessageReadReceiver]. We simply return the result of creating a new instance of [Intent]
-     * which we modify by chaining to it a call to [Intent.addFlags] to add the flag
-     * [Intent.FLAG_INCLUDE_STOPPED_PACKAGES], followed by a chain call to [Intent.setAction]
-     * to set the action to [READ_ACTION], and finishing up with a call to [Intent.putExtra] which
-     * stores our [Int] parameter [id] as an extra under the key [CONVERSATION_ID].
+     * Creates an [Intent] for reading a conversation. We create an [Intent] with the action
+     * [READ_ACTION], add an extra to it under the key [CONVERSATION_ID] whose value is our
+     * [Int] parameter [conversationId], and set its component to a new [ComponentName] for our
+     * application context and the class [MessageReadReceiver]. Finally we return the [Intent]
+     * to the caller.
      *
-     * @param id Conversation ID of message in question
-     * @return READ_ACTION [Intent] with our Conversation ID parameter [id] as an [Int] extra.
+     * @param conversationId ID of the conversation to be read.
+     * @return an [Intent] that can be used to launch our [MessageReadReceiver] broadcast receiver.
      */
-    private fun getMessageReadIntent(id: Int): Intent {
+    private fun getMessageReadIntent(conversationId: Int): Intent {
         return Intent()
-            .addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
             .setAction(READ_ACTION)
-            .putExtra(CONVERSATION_ID, id)
+            .putExtra(CONVERSATION_ID, conversationId)
+            .setComponent(ComponentName(applicationContext, MessageReadReceiver::class.java))
     }
 
     /**
-     * Creates an [Intent] that will be triggered when a voice reply is received. This method is a
-     * convenience method to produce the [Intent] which will be received by the broadcast
-     * receiver [MessageReplyReceiver]. We simply return the result of creating a new instance
-     * of [Intent] which we modify by chaining to it a call to [Intent.addFlags] for the flag
-     * [Intent.FLAG_INCLUDE_STOPPED_PACKAGES], followed by a chained call to [Intent.setAction] to
-     * set the action to [REPLY_ACTION], and finishing up with a chained call to [Intent.putExtra]
-     * which stores our [Int] parameter [conversationId] as an extra under the key [CONVERSATION_ID].
+     * Creates an [Intent] for replying to a conversation. We create an [Intent] with the action
+     * [REPLY_ACTION], add an extra to it under the key [CONVERSATION_ID] whose value is our
+     * [Int] parameter [conversationId], and set its component to a new [ComponentName] for our
+     * application context and the class [MessageReplyReceiver]. Finally we return the [Intent]
+     * to the caller.
      *
-     * @param conversationId Conversation ID of message in question
-     * @return [REPLY_ACTION] action [Intent] with our parameter [conversationId] as an [Int] extra.
+     * @param conversationId ID of the conversation to be replied to.
+     * @return an [Intent] that can be used to launch our [MessageReplyReceiver] broadcast receiver.
      */
     private fun getMessageReplyIntent(conversationId: Int): Intent {
         return Intent()
-            .addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
             .setAction(REPLY_ACTION)
             .putExtra(CONVERSATION_ID, conversationId)
+            .setComponent(ComponentName(applicationContext, MessageReplyReceiver::class.java))
     }
 
     /**
-     * Creates and sends notifications for requested number of conversations and messages. First we
-     * use the method [Conversations.getUnreadConversations] to create an array of the number
-     * of conversations and messages requested to initialize [Array] of [Conversation] variable
-     * `val conversations`. Then for each [Conversation] variable `var conv` in that [Array] we call
-     * our method [sendNotificationForConversation].
+     * Sends a notification with a variable number of conversations and messages per conversation.
+     * First we call the [Conversations.getUnreadConversations] method to generate the fake messages
+     * we will be displaying and save the [Array] of [Conversation] objects it returns in our variable
+     * `val conversations`. Then we loop through all the [Conversation] objects `conv` in `conversations`
+     * calling our method [sendNotificationForConversation] for each of them.
      *
-     * @param howManyConversations    how many conversations to create and notify about
+     * @param howManyConversations how many conversations to create and notify about
      * @param messagesPerConversation how many messages in each conversation
      */
     private fun sendNotification(howManyConversations: Int, messagesPerConversation: Int) {
@@ -162,55 +175,41 @@ class MessagingService : Service() {
      * replace its extra data with what is in this new [Intent].) We next build a Remote Input
      * enabled action which includes `R.drawable.notification_icon` as its icon, the String with
      * ID [string.reply] ("Reply") as its label, and our `replyIntent` then add `remoteInput`
-     * as the input to be collected from the user when this action is sent. We next create an
-     * [NotificationCompat.CarExtender.UnreadConversation.Builder] to initiaizle variable
-     * `val unreadConvBuilder`, set the timestamp of the most recent message to the timestamp of our
-     * [Conversation] parameter [conversation], set its Read Pending Intent to `readPendingIntent`
-     * and its Reply Action to the pending intent and remote input which will convey the reply to
-     * this notification: `replyIntent`, and `remoteInput`. We create [StringBuilder] variable
-     * `val messageForNotification`, then proceed to iterate over all of the messages in
-     * [Conversation] parameter [conversation] adding them to the Builder `unreadConvBuilder` and
-     * appending them to `messageForNotification`. Next we create [NotificationCompat.Builder]
-     * variable `val builder`, set its small icon to `R.drawable.notification_icon`, set its large
-     * icon to `R.drawable.android_contact`, set its content text to the [String] returned by the
-     * [toString] method of [StringBuilder] variable `messageForNotification`, set the time the
-     * event occurred to the [Conversation.timestamp] field of [conversation], set its content title
-     * to the [Conversation.participantName] of the [conversation], set its content [Intent] to
-     * `readPendingIntent`, extend it with a [NotificationCompat.CarExtender] whose unread
-     * conversation is set to `unreadConvBuilder.build`, whose color is set to `R.color.default_color_light`,
-     * and lastly add the action `actionReplyByRemoteInput` to [NotificationCompat.Builder] `builder`.
-     * We log that we are sending the notification, then use [NotificationManagerCompat] field
-     * [mNotificationManager] to post the notification using the [Conversation.conversationId] of
-     * the [conversation] as the notification ID and `builder.build()` as the `Notification`.
+     * as the input to be collected from the user when this action is sent. We create a [Person]
+     * for the sender and one for the user. We create a [NotificationCompat.MessagingStyle] for
+     * the current user, then iterate through all the messages in the [Conversation] parameter
+     * [conversation], adding them to the `messagingStyle`. We then create a
+     * [NotificationCompat.Builder], set its style to `messagingStyle`, small icon, large icon,
+     * content intent, and reply action. Finally, we use the [NotificationManagerCompat] field
+     * [mNotificationManager] to post the notification.
      *
      * @param conversation Class containing a conversation consisting of [Int] field
      * [Conversation.conversationId], [String] field [Conversation.participantName], one or more
      * [List] of [String] field [Conversation.messages] and a [Long] field [Conversation.timestamp].
      */
     private fun sendNotificationForConversation(conversation: Conversation) {
-        if (ContextCompat.checkSelfPermission(applicationContext, POST_NOTIFICATIONS)
+        if (ActivityCompat.checkSelfPermission(applicationContext, POST_NOTIFICATIONS)
             != PackageManager.PERMISSION_GRANTED
         ) {
             Log.d(TAG, "We do not have permission to post Notifications")
             throw IllegalStateException("We do not have permission to post Notifications")
         }
         // A pending Intent for reads
-        val readPendingIntent: PendingIntent
-        readPendingIntent = if (Build.VERSION.SDK_INT >= 34) {
+        val readPendingIntent: PendingIntent = if (Build.VERSION.SDK_INT >= 34) {
             PendingIntent.getBroadcast(
-                applicationContext,
-                conversation.conversationId,
-                getMessageReadIntent(conversation.conversationId),
-                PendingIntent.FLAG_UPDATE_CURRENT
+                /* context = */ applicationContext,
+                /* requestCode = */ conversation.conversationId,
+                /* intent = */ getMessageReadIntent(conversation.conversationId),
+                /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT
                     or PendingIntent.FLAG_MUTABLE
                     or PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT
             )
         } else {
             PendingIntent.getBroadcast(
-                applicationContext,
-                conversation.conversationId,
-                getMessageReadIntent(conversation.conversationId),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                /* context = */ applicationContext,
+                /* requestCode = */ conversation.conversationId,
+                /* intent = */ getMessageReadIntent(conversation.conversationId),
+                /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
             )
         }
 
@@ -221,7 +220,7 @@ class MessagingService : Service() {
             .build()
 
         // Building a Pending Intent for the reply action to trigger
-        val replyIntent = if (Build.VERSION.SDK_INT >= 34) {
+        val replyIntent: PendingIntent = if (Build.VERSION.SDK_INT >= 34) {
             PendingIntent.getBroadcast(
                 /* context = */ applicationContext,
                 /* requestCode = */ conversation.conversationId,
@@ -244,50 +243,45 @@ class MessagingService : Service() {
             R.drawable.notification_icon, getString(string.reply), replyIntent
         ).addRemoteInput(remoteInput).build()
 
-        // Create the UnreadConversation and populate it with the participant name,
-        // read and reply intents.
-        @Suppress("DEPRECATION") // TODO: Use NotificationCompat.MessagingStyle
-        val unreadConvBuilder =
-            NotificationCompat.CarExtender.UnreadConversation.Builder(conversation.participantName)
-                .setLatestTimestamp(conversation.timestamp)
-                .setReadPendingIntent(readPendingIntent)
-                .setReplyAction(replyIntent, remoteInput)
+        val sender = Person.Builder()
+            .setName(conversation.participantName)
+            .build()
 
-        // Note: Add messages from oldest to newest to the UnreadConversation.Builder
-        val messageForNotification = StringBuilder()
-        val messages: Iterator<String> = conversation.messages.iterator()
-        while (messages.hasNext()) {
-            val message = messages.next()
-            unreadConvBuilder.addMessage(message)
-            messageForNotification.append(message)
-            if (messages.hasNext()) {
-                messageForNotification.append(EOL)
-            }
+        val user = Person.Builder()
+            .setName("Me")
+            .setKey("user")
+            .build()
+
+        val messagingStyle = NotificationCompat.MessagingStyle(user)
+
+        for (message in conversation.messages) {
+            messagingStyle.addMessage(
+                NotificationCompat.MessagingStyle.Message(
+                    /* text = */ message,
+                    /* timestamp = */ conversation.timestamp,
+                    /* person = */ sender
+                )
+            )
         }
-        @Suppress("DEPRECATION") // TODO: Use NotificationCompat.MessagingStyle
+
         val builder = NotificationCompat.Builder(applicationContext, "default")
+            .setStyle(messagingStyle)
             .setSmallIcon(R.drawable.notification_icon)
             .setLargeIcon(
                 BitmapFactory.decodeResource(
                     applicationContext.resources, R.drawable.android_contact
                 )
             )
-            .setContentText(messageForNotification.toString())
-            .setWhen(conversation.timestamp)
-            .setContentTitle(conversation.participantName)
             .setContentIntent(readPendingIntent)
-            .extend(
-                NotificationCompat.CarExtender()
-                    .setUnreadConversation(unreadConvBuilder.build())
-                    .setColor(applicationContext.getColor(R.color.default_color_light))
-            )
             .addAction(actionReplyByRemoteInput)
+
         MessageLogger.logMessage(
             applicationContext, "Sending notification "
                 + conversation.conversationId + " conversation: " + conversation
         )
         mNotificationManager!!.notify(conversation.conversationId, builder.build())
     }
+
 
     /**
      * Constructor for our [Handler] for incoming messages from clients.
@@ -304,7 +298,7 @@ class MessagingService : Service() {
         private val mReference: WeakReference<MessagingService>
 
         init {
-            mReference = WeakReference(/* referent = */ service)
+            mReference = WeakReference( /* referent = */service)
         }
 
         /**
@@ -344,6 +338,7 @@ class MessagingService : Service() {
         /**
          * Constant for end of line character
          */
+        @Suppress("unused")
         private const val EOL = "\n"
 
         /**
