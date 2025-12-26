@@ -670,7 +670,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
      * must match the input selection criteria specified by [String] parameter [where] and [Array]
      * of [String] parameter [whereArgs]. If rows were updated, then listeners are notified of the
      * change.
-     * TODO: Continue here.
+     *
      * First we initialize [SQLiteDatabase] variable `val db` to the writeable database returned by
      * the [DatabaseHelper.getWritableDatabase] method (kotlin `writableDatabase` property) of
      * [DatabaseHelper] field [openHelperForTest]. We declare [Int] variable `val count` and
@@ -807,7 +807,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
         private val READ_NOTE_PROJECTION = arrayOf(
             BaseColumns._ID,  // Projection position 0, the note's id
             NotePad.Notes.COLUMN_NAME_NOTE,  // Projection position 1, the note's content
-            NotePad.Notes.COLUMN_NAME_TITLE
+            NotePad.Notes.COLUMN_NAME_TITLE  // Projection position 2, the note's title
         )
 
         /**
@@ -834,7 +834,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
         private const val NOTE_ID = 2
 
         /**
-         * A UriMatcher instance, initialized in a static block
+         * A UriMatcher instance, initialized in `init` block
          */
         private var sUriMatcher: UriMatcher? = null
 

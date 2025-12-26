@@ -13,8 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "ReplaceJavaStaticMethodWithKotlinAnalog", "JoinDeclarationAndAssignment", "ReplaceNotNullAssertionWithElvisReturn",
-    "UnusedImport")
+@file:Suppress(
+    "DEPRECATION",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "JoinDeclarationAndAssignment",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "UnusedImport"
+)
 
 package com.example.android.notepad
 
@@ -72,22 +77,21 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
      * started this Activity, and if there is no data that this intent is targeting we set the data
      * this intent is operating on to our default [NotePad.Notes.CONTENT_URI]
      * ("content://com.google.provider.NotePad/notes"). We retrieve our [ListView] widget and set
-     * its [View.OnCreateContextMenuListener] to `this`
-     * (this causes our [onCreateContextMenu] override to be called when a note in our [ListView]
-     * is long-clicked). We initialize [Array] of [String] variable `val dataColumns` to the names
-     * of the cursor columns to display in the item views (in our case just the title column
-     * [NotePad.Notes.COLUMN_NAME_TITLE] "title") and [IntArray] variable `val viewIDs` to the view
-     * id that will display the cursor column ([android.R.id.text1] "text1"). Then we initialize our
-     * [SimpleCursorAdapter] field [mAdapter] with an instance which will use the layout file
-     * `R.layout.notes_list_item`, a `null` cursor (the cursor will be set by [CursorLoader] when
-     * loaded), `dataColumns` for the list of column names to use, `viewIDs` for the list of view
-     * id's to display each column in, and the flag [CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER]
-     * to have the adapter register a content observer on the cursor and call [onContentChanged]
-     * when a notification comes in. We then set the adapter of our [ListView] to [mAdapter],
-     * and fetch the [LoaderManager] for this activity (creating it if needed) and call its
-     * [LoaderManager.initLoader] method to initialize it for loader id [LOADER_ID] (0) specifying
-     * 'this' as the [LoaderCallbacks] (our [onCreateLoader], [onLoadFinished], and [onLoaderReset]
-     * overrides will be called).
+     * its [View.OnCreateContextMenuListener] to `this` (this causes our [onCreateContextMenu]
+     * override to be called when a note in our [ListView] is long-clicked). We initialize [Array]
+     * of [String] variable `val dataColumns` to the names of the cursor columns to display in the
+     * item views (in our case just the title column [NotePad.Notes.COLUMN_NAME_TITLE] "title") and
+     * [IntArray] variable `val viewIDs` to the view id that will display the cursor column
+     * ([android.R.id.text1] "text1"). Then we initialize our [SimpleCursorAdapter] field [mAdapter]
+     * with an instance which will use the layout file `R.layout.notes_list_item`, a `null` cursor
+     * (the cursor will be set by [CursorLoader] when loaded), `dataColumns` for the list of column
+     * names to use, `viewIDs` for the list of view id's to display each column in, and the flag
+     * [CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER] to have the adapter register a content observer
+     * on the cursor and call [onContentChanged] when a notification comes in. We then set the adapter
+     * of our [ListView] to [mAdapter], and fetch the [LoaderManager] for this activity (creating it
+     * if needed) and call its [LoaderManager.initLoader] method to initialize it for loader id
+     * [LOADER_ID] (0) specifying 'this' as the [LoaderCallbacks] (our [onCreateLoader],
+     * [onLoadFinished], and [onLoaderReset] overrides will be called).
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
@@ -160,9 +164,9 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
      *
      * We initialize [MenuInflater] variable `val inflater` with a [MenuInflater] for this context
      * and use it to inflate our menu layout file `R.menu.list_options_menu` into our [Menu]
-     * parameter []. We initialize [Intent] variable `val intent` with a new instance with a `null`
-     * action and a data uri consisting of the data contained in the [Intent.getData] (kotlin `data`
-     * property) data uri of the intent that started this activity. We then add the category
+     * parameter [menu]. We initialize [Intent] variable `val intent` with a new instance with a
+     * `null` action and a data uri consisting of the data contained in the [Intent.getData] (kotlin
+     * `data` property) data uri of the intent that started this activity. We then add the category
      * [Intent.CATEGORY_ALTERNATIVE] to `intent` (the activity should be considered as an alternative
      * action to the data the user is currently viewing). Then we add to [Menu] parameter [menu] a
      * group of menu items corresponding to actions that can be performed with a group identifier of
@@ -452,12 +456,12 @@ class NotesList : ListActivity(), LoaderCallbacks<Cursor> {
      * "COPY". Anything else is an alternative option, for which default handling should be done.
      *
      * First we declare [AdapterContextMenuInfo] variable `val info`, then wrapped in try block
-     * intended to catch and log [ClassCastException] we cast our [ContextMenuInfo] parameter the
+     * intended to catch log [ClassCastException] and return `false`, we cast the [ContextMenuInfo]
      * value returned by the [MenuItem.getMenuInfo] method (kotlin `menuInfo` property) of our
-     * [MenuItem] parameter [item] to set `info`. We initialize [Uri] variable `val noteUri` by
-     * appending the [AdapterContextMenuInfo.id] field of `info` (row id of the item for which the
-     * context menu is being displayed) to the data URI that launched this activity. We then when
-     * switch on the item id of our [MenuItem] parameter [item]:
+     * [MenuItem] parameter [item] to [AdapterContextMenuInfo] to set `info`. We initialize [Uri]
+     * variable `val noteUri` by appending the [AdapterContextMenuInfo.id] field of `info` (row id
+     * of the item for which the context menu is being displayed) to the data URI that launched this
+     * activity. We then `when` switch on the item id of our [MenuItem] parameter [item]:
      *
      *  * `R.id.context_open` "Open": We start an activity with an [Intent] that has the action
      *  [Intent.ACTION_EDIT] and whose data URI is `noteUri` (launches an activity to view/edit the
