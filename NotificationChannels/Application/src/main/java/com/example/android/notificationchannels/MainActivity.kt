@@ -59,26 +59,23 @@ class MainActivity : ComponentActivity() {
     private var noti: NotificationHelper? = null
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.activity_main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_main`.
      *
-     * We initialize our [RelativeLayout] variable `rootView` to the view with ID
-     * `R.id.activity_main` then call [ViewCompat.setOnApplyWindowInsetsListener]
-     * to take over the policy for applying window insets to `rootView`, with the
-     * `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [RelativeLayout] variable `rootView` to the view with ID `R.id.activity_main`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [NotificationHelper] field [noti] with a new instance, and initialize our
      * [MainUi] field [ui] by passing our [RelativeLayout] variable `rootView` (the view with ID
@@ -117,6 +114,7 @@ class MainActivity : ComponentActivity() {
      * and post the notification requested when the user clicks one of the four "Send" buttons in
      * our UI. We initialize [Notification.Builder] variable `val nb` to the value of a `when`
      * expression that switches on the value of our [Int] parameter [id]:
+     * TODO: Continue here
      *
      *  * [NOTI_PRIMARY1] - we set `nb` to the [Notification.Builder] returned by the
      *  [NotificationHelper.getNotification1] method of our [NotificationHelper] field [noti] using
