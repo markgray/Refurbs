@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("RedundantNullableReturnType", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "RedundantNullableReturnType",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "JoinDeclarationAndAssignment",
+    "MemberVisibilityCanBePrivate"
+)
 
 package com.example.android.notepad
 
@@ -56,11 +61,6 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
      * so it can insert test data into the database. The test case class is responsible for
      * instantiating the provider in a test context; `android.test.ProviderTestCase2` does
      * this during the call to setUp()
-     *
-     * @return a handle to the database helper object for the provider's data.
-     */
-    /**
-     * Handle to a new DatabaseHelper.
      */
     var openHelperForTest: DatabaseHelper? = null
         private set
@@ -83,22 +83,25 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
          * execute the SQL statement:
          * CREATE TABLE notes (_id INTEGER PRIMARY KEY,title TEXT,note TEXT,created INTEGER,modified INTEGER);
          *
-         * This creates a table with the name [NotePad.Notes.TABLE_NAME] ("notes"), with [BaseColumns._ID]
-         * ("_id") as an INTEGER column to be used as the "PRIMARY KEY", [NotePad.Notes.COLUMN_NAME_TITLE]
-         * ("title") as a TEXT column, [NotePad.Notes.COLUMN_NAME_NOTE] ("note") as a TEXT column,
+         * This creates a table with the name [NotePad.Notes.TABLE_NAME] ("notes"), with
+         * [BaseColumns._ID] ("_id") as an INTEGER column to be used as the "PRIMARY KEY",
+         * [NotePad.Notes.COLUMN_NAME_TITLE] ("title") as a TEXT column,
+         * [NotePad.Notes.COLUMN_NAME_NOTE] ("note") as a TEXT column,
          * [NotePad.Notes.COLUMN_NAME_CREATE_DATE] ("created") as an INTEGER column, and
          * [NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE] ("modified") as an INTEGER column.
          *
          * @param db The database.
          */
         override fun onCreate(db: SQLiteDatabase) {
-            db.execSQL("CREATE TABLE " + NotePad.Notes.TABLE_NAME + " ("
-                + BaseColumns._ID + " INTEGER PRIMARY KEY,"
-                + NotePad.Notes.COLUMN_NAME_TITLE + " TEXT,"
-                + NotePad.Notes.COLUMN_NAME_NOTE + " TEXT,"
-                + NotePad.Notes.COLUMN_NAME_CREATE_DATE + " INTEGER,"
-                + NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE + " INTEGER"
-                + ");")
+            db.execSQL(
+                "CREATE TABLE " + NotePad.Notes.TABLE_NAME + " ("
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY,"
+                    + NotePad.Notes.COLUMN_NAME_TITLE + " TEXT,"
+                    + NotePad.Notes.COLUMN_NAME_NOTE + " TEXT,"
+                    + NotePad.Notes.COLUMN_NAME_CREATE_DATE + " INTEGER,"
+                    + NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE + " INTEGER"
+                    + ");"
+            )
         }
 
         /**
@@ -117,8 +120,10 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
         override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
 
             // Logs that the database is being upgraded
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                + newVersion + ", which will destroy all old data")
+            Log.w(
+                TAG, "Upgrading database from version " + oldVersion + " to "
+                    + newVersion + ", which will destroy all old data"
+            )
 
             // Kills the table and existing data
             db.execSQL("DROP TABLE IF EXISTS notes")
@@ -226,7 +231,8 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
                 qb.appendWhere(
                     BaseColumns._ID +  // the name of the ID column
                         "=" +  // the position of the note ID itself in the incoming URI
-                        uri.pathSegments[NotePad.Notes.NOTE_ID_PATH_POSITION])
+                        uri.pathSegments[NotePad.Notes.NOTE_ID_PATH_POSITION]
+                )
             }
 
             else -> throw IllegalArgumentException("Unknown URI $uri")
@@ -264,7 +270,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
     }
 
     /**
-     * This is called when a client calls [android.content.ContentResolver.getType]. Returns the
+     * This is called when a client calls [ContentResolver.getType]. Returns the
      * MIME data type of the URI given in [Uri] parameter [uri]. We `when` switch on the value
      * returned by the [UriMatcher.match] method of [UriMatcher] field [sUriMatcher] when matching
      * its patterns against our [Uri] parameter [uri]:
@@ -362,7 +368,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
     ): AssetFileDescriptor? {
 
         // Checks to see if the MIME type filter matches a supported MIME type.
-        val mimeTypes = getStreamTypes(uri, mimeTypeFilter)
+        val mimeTypes: Array<String>? = getStreamTypes(uri, mimeTypeFilter)
 
         // If the MIME type is supported
         if (mimeTypes != null) {
@@ -453,7 +459,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
             pw?.flush()
             try {
                 fout.close()
-            } catch (e: IOException) {
+            } catch (_: IOException) {
                 Log.w(TAG, "IOException closing FileOutputStream")
             }
         }
@@ -516,7 +522,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
             ContentValues()
 
         // Gets the current system time in milliseconds
-        val now = System.currentTimeMillis()
+        val now: Long = System.currentTimeMillis()
 
         // If the values map doesn't contain the creation date, sets the value to the current time.
         if (!values.containsKey(NotePad.Notes.COLUMN_NAME_CREATE_DATE)) {
@@ -623,7 +629,8 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
                 /*
                  * Starts a final WHERE clause by restricting it to the
                  * desired note ID.
-                 */finalWhere = BaseColumns._ID +  // The ID column name
+                 */
+                finalWhere = BaseColumns._ID +  // The ID column name
                     " = " +  // test for equality
                     uri.pathSegments[NotePad.Notes.NOTE_ID_PATH_POSITION]
 
@@ -647,7 +654,8 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
         /* Gets a handle to the content resolver object for the current context, and notifies it
          * that the incoming URI changed. The object passes this along to the resolver framework,
          * and observers that have registered themselves for the provider are notified.
-         */context!!.contentResolver.notifyChange(uri, null)
+         */
+        context!!.contentResolver.notifyChange(uri, null)
 
         // Returns the number of rows deleted.
         return count
@@ -662,7 +670,7 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
      * must match the input selection criteria specified by [String] parameter [where] and [Array]
      * of [String] parameter [whereArgs]. If rows were updated, then listeners are notified of the
      * change.
-     *
+     * TODO: Continue here.
      * First we initialize [SQLiteDatabase] variable `val db` to the writeable database returned by
      * the [DatabaseHelper.getWritableDatabase] method (kotlin `writableDatabase` property) of
      * [DatabaseHelper] field [openHelperForTest]. We declare [Int] variable `val count` and
@@ -857,10 +865,12 @@ class NotePadProvider : ContentProvider(), PipeDataWriter<Cursor> {
             sNotesProjectionMap!![NotePad.Notes.COLUMN_NAME_NOTE] = NotePad.Notes.COLUMN_NAME_NOTE
 
             // Maps "created" to "created"
-            sNotesProjectionMap!![NotePad.Notes.COLUMN_NAME_CREATE_DATE] = NotePad.Notes.COLUMN_NAME_CREATE_DATE
+            sNotesProjectionMap!![NotePad.Notes.COLUMN_NAME_CREATE_DATE] =
+                NotePad.Notes.COLUMN_NAME_CREATE_DATE
 
             // Maps "modified" to "modified"
-            sNotesProjectionMap!![NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE] = NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
+            sNotesProjectionMap!![NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE] =
+                NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE
         }
 
         /**

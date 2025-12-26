@@ -111,7 +111,7 @@ object NotePad {
         const val CONTENT_ITEM_TYPE: String = "vnd.android.cursor.item/vnd.google.note"
 
         /**
-         * The default sort order for this table, descending on the "modified"
+         * The default sort order for this table, descending on the "modified" column
          */
         const val DEFAULT_SORT_ORDER: String = "modified DESC"
         /*
@@ -119,25 +119,25 @@ object NotePad {
          */
         /**
          * Column name for the title of the note
-         * <P>Type: TEXT</P>
+         * **Type: TEXT**
          */
         const val COLUMN_NAME_TITLE: String = "title"
 
         /**
          * Column name of the note content
-         * <P>Type: TEXT</P>
+         * **Type: TEXT**
          */
         const val COLUMN_NAME_NOTE: String = "note"
 
         /**
          * Column name for the creation timestamp
-         * <P>Type: INTEGER (long from System.currentTimeMillis())</P>
+         * **Type: INTEGER (long from System.currentTimeMillis())**
          */
         const val COLUMN_NAME_CREATE_DATE: String = "created"
 
         /**
          * Column name for the modification timestamp
-         * <P>Type: INTEGER (long from System.currentTimeMillis())</P>
+         * **Type: INTEGER (long from System.currentTimeMillis())**
          */
         const val COLUMN_NAME_MODIFICATION_DATE: String = "modified"
     }

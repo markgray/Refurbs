@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "RedundantIf",
+@file:Suppress(
+    "DEPRECATION",
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "JoinDeclarationAndAssignment",
+    "RedundantIf",
     "RedundantSuppression"
 )
 
@@ -89,26 +94,28 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
 
     /**
      * Defines a custom [EditText] View that draws lines between each line of text that is displayed.
+     * Perform inflation from XML, used by LayoutInflater. First we call our super's constructor,
+     * then in out `init` blcok we initialize our [Rect] field [mRect] with a new instance, and
+     * initialize our [Paint] field `mPaint` with a new instance, set its style to STROKE, and set
+     * its color to Blue with an alpha of 0x80.
+     *
+     * @param context The [Context] the view is running in, through which it can access the current
+     * theme, resources, etc.
+     * @param attrs The attributes of the XML tag that is inflating the view.
      */
     class LinedEditText(context: Context?, attrs: AttributeSet?) : EditText(context, attrs) {
         /**
-         * Uninitialized [Rect] constructed in our [onCreate] override so that our
+         * Uninitialized [Rect] constructed in our `init` block so that our
          * [onDraw] override does not need to allocate one.
          */
         private val mRect: Rect
 
         /**
-         * [Paint] constructed and initialized in our [onCreate] override so that our
+         * [Paint] constructed and initialized in our `init` block override so that our
          * [onDraw] override does not need to allocate one.
          */
         private val mPaint: Paint
 
-        /**
-         * Perform inflation from XML, used by LayoutInflater. First we call our super's constructor,
-         * then we initialize our `Rect` field `mRect` with a new instance, and initialize our
-         * `Paint` field `mPaint` with a new instance, set its style to STROKE, and set its color
-         * to Blue with an alpha of 0x80.
-         */
         init {
             // Creates a Rect and a Paint object, and sets the style and color of the Paint object.
             mRect = Rect()
@@ -144,10 +151,11 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
 
             /*
              * Draws one line in the rectangle for every line of text in the EditText
-             */for (i in 0 until count) {
+             */
+            for (i in 0 until count) {
 
                 // Gets the baseline coordinates for the current line of text
-                val baseline = getLineBounds(i, r)
+                val baseline = getLineBounds(/* line = */ i, /* bounds = */ r)
 
                 /*
                  * Draws a line in the background from the left of the rectangle to the right,
@@ -155,9 +163,9 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
                  * for details.
                  */
                 canvas.drawLine(
-                    r.left.toFloat(), (baseline + 1).toFloat(),
-                    r.right.toFloat(), (baseline + 1).toFloat(),
-                    paint
+                    /* startX = */ r.left.toFloat(), /* startY = */ (baseline + 1).toFloat(),
+                    /* stopX = */ r.right.toFloat(), /* stopY = */ (baseline + 1).toFloat(),
+                    /* paint = */ paint
                 )
             }
 
@@ -182,7 +190,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      *  * [Intent.ACTION_INSERT] or [Intent.ACTION_PASTE]: We set our [Int] state field [mState] to
      *  [STATE_INSERT], set our activities title to the string with resource id `R.string.title_create`
      *  ("New note"), and set [Uri] field [mUri] to the URL returned when we have a [ContentResolver]
-     *  instance for our application's package insert an entry into the table addressed by the
+     *  instance for our application's package inserts an entry into the table addressed by the
      *  data URI of the [Intent] `intent` that launched our activity. If [mUri] is `null` we log the
      *  error, finish the activity and return. Otherwise we call [setResult] with the result code
      *  [Activity.RESULT_OK] and an [Intent] instance whose action is the string value of [mUri].
@@ -199,23 +207,20 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      * field [mState] to [STATE_EDIT]. We set our content view to our layout file
      * `R.layout.note_editor`.
      *
-     * We initialize our [EditText] variable `rootView` to the view with ID `R.id.note` then call
+     * Next we set our content view to our layout file `R.layout.note_editor` (a [LinedEditText]).
+     * We initialize our [EditText] field [mText] to the view with ID `R.id.note` then call
      * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying window
-     * insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
-     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
-     *
-     * Finally we set our [EditText] field [mText] to `rootView` (the view with ID `R.id.note`).
+     * insets to `rootView`, with the `listener` argument a lambda that accepts the [View] passed
+     * the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
      * down then this Bundle contains the data it most recently supplied in [onSaveInstanceState].
@@ -228,63 +233,63 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
         if (savedInstanceState != null) {
             mOriginalContent = savedInstanceState.getString(ORIGINAL_CONTENT)
         }
-
         /*
-         * Creates an Intent to use when the Activity object's result is sent back to the
+         * Create an Intent to use when the Activity object's result is sent back to the
          * caller.
          */
         val intent = intent
 
         /*
-         *  Sets up for the edit, based on the action specified for the incoming Intent.
+         *  Set up for the edit, based on the action specified by the incoming Intent.
          */
 
         // Gets the action that triggered the intent filter for this Activity
         val action = intent.action
 
-        // For an edit action:
-        if (Intent.ACTION_EDIT == action) {
+        when {
+            Intent.ACTION_EDIT == action -> {
+                // For an edit action:
+                // Sets the Activity state to EDIT, and gets the URI for the data to be edited.
+                mState = STATE_EDIT
+                mUri = intent.data
+            }
 
-            // Sets the Activity state to EDIT, and gets the URI for the data to be edited.
-            mState = STATE_EDIT
-            mUri = intent.data
+            Intent.ACTION_INSERT == action || Intent.ACTION_PASTE == action -> {
+                // For an insert or paste action:
+                // Sets the Activity state to INSERT, gets the general note URI, and inserts an
+                // empty record in the provider
+                mState = STATE_INSERT
+                title = getText(R.string.title_create)
+                mUri = contentResolver.insert(intent.data!!, null)
 
-            // For an insert or paste action:
-        } else if (Intent.ACTION_INSERT == action || Intent.ACTION_PASTE == action) {
+                /*
+                 * If the attempt to insert the new note fails, shuts down this Activity. The
+                 * originating Activity receives back RESULT_CANCELED if it requested a result.
+                 * Logs that the insert failed.
+                */
+                if (mUri == null) {
 
-            // Sets the Activity state to INSERT, gets the general note URI, and inserts an
-            // empty record in the provider
-            mState = STATE_INSERT
-            title = getText(R.string.title_create)
-            mUri = contentResolver.insert(intent.data!!, null)
+                    // Writes the log identifier, a message, and the URI that failed.
+                    Log.e(TAG, "Failed to insert new note into " + getIntent().data)
 
-            /*
-             * If the attempt to insert the new note fails, shuts down this Activity. The
-             * originating Activity receives back RESULT_CANCELED if it requested a result.
-             * Logs that the insert failed.
-             */
-            if (mUri == null) {
+                    // Closes the activity.
+                    finish()
+                    return
+                }
 
-                // Writes the log identifier, a message, and the URI that failed.
-                Log.e(TAG, "Failed to insert new note into " + getIntent().data)
+                // Since the new entry was created, this sets the result to be returned
+                // set the result to be returned.
+                setResult(RESULT_OK, Intent().setAction(mUri.toString()))
+            }
 
-                // Closes the activity.
+            else -> {
+                // If the action was other than EDIT or INSERT:
+                // Logs an error that the action was not understood, finishes the Activity, and
+                // returns RESULT_CANCELED to an originating Activity.
+                Log.e(TAG, "Unknown action, exiting")
                 finish()
                 return
             }
-
-            // Since the new entry was created, this sets the result to be returned
-            // set the result to be returned.
-            setResult(RESULT_OK, Intent().setAction(mUri.toString()))
-
-            // If the action was other than EDIT or INSERT:
-        } else {
-
-            // Logs an error that the action was not understood, finishes the Activity, and
-            // returns RESULT_CANCELED to an originating Activity.
-            Log.e(TAG, "Unknown action, exiting")
-            finish()
-            return
         }
 
         // Initialize the LoaderManager and start the query
@@ -300,8 +305,9 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
 
         // Sets the layout for this Activity. See res/layout/note_editor.xml
         setContentView(R.layout.note_editor)
-        val rootView = findViewById<EditText>(R.id.note)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+        // Gets a handle to the EditText in the the layout.
+        val mText = findViewById<EditText>(R.id.note)
+        ViewCompat.setOnApplyWindowInsetsListener(mText) { v: View, windowInsets: WindowInsetsCompat ->
             val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
 
@@ -316,9 +322,6 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
             // down to descendant views.
             WindowInsetsCompat.CONSUMED
         }
-
-        // Gets a handle to the EditText in the the layout.
-        mText = rootView
     }
 
     /**
@@ -348,8 +351,8 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      * that we are not saving any state in [onPause], but have moved app state saving to [onStop]
      * callback.
      *
-     * In earlier versions of this app and popular literature it had been shown that onPause is a
-     * good place to persist any unsaved work, however, this is not really a good practice because
+     * In earlier versions of this app and in popular literature it had been shown that `onPause` is
+     * a good place to persist any unsaved work, however, this is not really a good practice because
      * of how application and process lifecycle behave.
      *
      * As a general guideline apps should have a way of saving their business logic that does not
@@ -523,7 +526,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      *  contained in our [EditText] field [mText], then call our [updateNote] method to store `text`
      *  in the `COLUMN_NAME_NOTE` column of the note whose URI is [Uri] field [mUri], and passing
      *  `null` as the title so that the [updateNote] method will construct and store a new title
-     *  derived from `text`.
+     *  derived from `text`. Then we call [finish] to end this activity.
      *
      *  * `R.id.menu_delete`: ("Delete") We call our method [deleteNote] to delete the note whose
      *  URI is our [Uri] field [mUri] from our database, and call [finish] to end this activity.
@@ -619,7 +622,8 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
                 if (orig != null) {
                     if (orig.moveToFirst()) {
                         val colNoteIndex: Int = orig.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE)
-                        val colTitleIndex: Int = orig.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE)
+                        val colTitleIndex: Int =
+                            orig.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE)
                         text = orig.getString(colNoteIndex)
                         title = orig.getString(colTitleIndex)
                     }
@@ -660,7 +664,7 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      *
      * We then store [text] in `values` under the key [NotePad.Notes.COLUMN_NAME_NOTE] ("note"). We
      * then request a [ContentResolver] instance for our application's package to update the record
-     * with the address in [Uri] field [mUri]] in our database with the contents of `values` using
+     * with the address in [Uri] field [mUri] in our database with the contents of `values` using
      * `null` for both the selection and selection arguments.
      *
      * @param text The new note contents to use.
@@ -784,11 +788,16 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
     override fun onCreateLoader(i: Int, bundle: Bundle?): Loader<Cursor?> {
         return CursorLoader(
             /* context = */ this,
-            /* uri = */ mUri,  // The URI for the note that is to be retrieved.
-            /* projection = */ PROJECTION,  // The columns to retrieve
-            /* selection = */ null,  // No selection criteria are used, so no where columns are needed.
-            /* selectionArgs = */ null,  // No where columns are used, so no where values are needed.
-            /* sortOrder = */ null // No sort order is needed.
+            /* uri = */
+            mUri,  // The URI for the note that is to be retrieved.
+            /* projection = */
+            PROJECTION,  // The columns to retrieve
+            /* selection = */
+            null,  // No selection criteria are used, so no where columns are needed.
+            /* selectionArgs = */
+            null,  // No where columns are used, so no where values are needed.
+            /* sortOrder = */
+            null // No sort order is needed.
         )
     }
 
@@ -844,11 +853,12 @@ class NoteEditor : ComponentActivity(), LoaderCallbacks<Cursor?> {
      * @param cursorLoader The [Loader] that is being reset.
      */
     @Deprecated("Deprecated in Java")
-    override fun onLoaderReset(cursorLoader: Loader<Cursor?>) {}
+    override fun onLoaderReset(cursorLoader: Loader<Cursor?>) {
+    }
 
     companion object {
         /**
-         * For logging and debugging purposes
+         * TAG used for logging and debugging purposes
          */
         private const val TAG = "NoteEditor"
 
