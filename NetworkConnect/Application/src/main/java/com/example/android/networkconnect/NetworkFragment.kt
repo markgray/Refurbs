@@ -45,7 +45,6 @@ import javax.net.ssl.HttpsURLConnection
  */
 class NetworkFragment : Fragment() {
     /**
-     * TODO: Continue here.
      * [DownloadCallback] we use to report progress and post results, set from the context passed to
      * our [onAttach] override ([MainActivity] in our case).
      */
@@ -328,6 +327,8 @@ class NetworkFragment : Fragment() {
          * and release any system resources associated with it, and if `connection` is not `null`
          * we call its [HttpsURLConnection.disconnect] method to indicate that other requests to the
          * server are unlikely in the near future.
+         *
+         * When done, successful or not, we return `result` to our caller.
          *
          * @param url http URL we are to down load
          * @return string read from the [InputStream] of the [HttpsURLConnection] we open
