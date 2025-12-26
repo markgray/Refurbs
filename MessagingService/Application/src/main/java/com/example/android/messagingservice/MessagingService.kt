@@ -151,9 +151,11 @@ class MessagingService : Service() {
      * @param messagesPerConversation how many messages in each conversation
      */
     private fun sendNotification(howManyConversations: Int, messagesPerConversation: Int) {
-        val conversations: Array<Conversation> = Conversations.getUnreadConversations(
-            howManyConversations, messagesPerConversation
-        )
+        val conversations: Array<Conversation> =
+            Conversations.getUnreadConversations(
+                howManyConversations = howManyConversations,
+                messagesPerConversation = messagesPerConversation
+            )
         for (conv in conversations) {
             sendNotificationForConversation(conversation = conv)
         }
@@ -161,10 +163,13 @@ class MessagingService : Service() {
 
     /**
      * This method builds a remote notification for its [Conversation] parameter [conversation]
-     * and sends it. First we check to make sure we have permission to post notifications.
-     * When we create a broadcast [Intent] to initialize [PendingIntent] variable
+     * and sends it. First we check to make sure we have permission to post notifications, throwing
+     * [IllegalStateException] if we do not.
+     *
+     * Then we create a broadcast [Intent] to initialize [PendingIntent] variable
      * `val readPendingIntent` which will be dispatched to [MessageReadReceiver] when the
-     * notification is read. We build a [RemoteInput] variable `val remoteInput` to receive voice
+     * notification is read, adding the additional flag [PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT]
+     * for SDK 34 or newer. We build a [RemoteInput] variable `val remoteInput` to receive voice
      * input from the remote device with the reply to be contained in the [Bundle] under the key
      * [EXTRA_REMOTE_REPLY] ("extra_remote_reply"), and the label on the remote device set to the
      * [String] with ID [string.reply] ("Reply"). We create a Broadcast intent to initialize
@@ -172,8 +177,9 @@ class MessagingService : Service() {
      * of [Conversation] parameter [conversation] as the requestCode, a message reply [Intent]
      * created by our method [getMessageReplyIntent], and the flag [PendingIntent.FLAG_UPDATE_CURRENT]
      * (Flag indicating that if the described [PendingIntent] already exists, then keep it but
-     * replace its extra data with what is in this new [Intent].) We next build a Remote Input
-     * enabled action which includes `R.drawable.notification_icon` as its icon, the String with
+     * replace its extra data with what is in this new [Intent]) adding the additional flag
+     * [PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT] for SDK 34 or newer. We next build a Remote
+     * Input enabled action which includes `R.drawable.notification_icon` as its icon, the String with
      * ID [string.reply] ("Reply") as its label, and our `replyIntent` then add `remoteInput`
      * as the input to be collected from the user when this action is sent. We create a [Person]
      * for the sender and one for the user. We create a [NotificationCompat.MessagingStyle] for
