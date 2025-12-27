@@ -27,6 +27,23 @@ import android.graphics.Color
 
 /**
  * Helper class to manage notification channels, and create notifications.
+ * In the `init` block for our constructor we register two notification channels, which can be used
+ * later by individual notifications. To do this we first create [NotificationChannel] variable
+ * `val chan1` with the id [PRIMARY_CHANNEL] ("default"), the user visible name given by
+ * `R.string.noti_channel_default` ("Primary Channel") and importance of the channel set to
+ * `IMPORTANCE_DEFAULT` (shows everywhere, allowed to make noise, but does not visually intrude).
+ * We set the notification light color for notifications posted to this channel to GREEN, and set
+ * its lock screen visibility to VISIBILITY_PRIVATE (Show this notification on all lock-screens,
+ * but conceal sensitive or private information on secure lock-screens). Then we instruct the
+ * [NotificationManager] returned by our property [manager] to create notification channel `chan1`.
+ *
+ * Next we create [NotificationChannel] variable `val chan2` with the id [SECONDARY_CHANNEL]
+ * ("second"), the user visible name given by `R.string.noti_channel_second` ("Secondary Channel")
+ * and importance of the channel set to `IMPORTANCE_HIGH` (shows everywhere, allowed to make
+ * noise and peek). We set the notification light color for notifications posted to this channel
+ * to BLUE, and set its lock screen visibility to `VISIBILITY_PUBLIC` (Show this notification in
+ * its entirety on all lock-screens). Finally we instruct the [NotificationManager] returned by
+ * our property [manager] to create notification channel `chan2`.
  *
  * @param ctx the application [Context].
  */
@@ -49,26 +66,6 @@ internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
             return field
         }
 
-    /**
-     * The `init` block for our constructor. First we call our super's constructor, then we register
-     * two notification channels, which can be used later by individual notifications. To do this we
-     * first create `NotificationChannel` variable `val chan1` with the id `PRIMARY_CHANNEL`
-     * ("default"), the user visible name given by `R.string.noti_channel_default` ("Primary Channel")
-     * and importance of the channel set to `IMPORTANCE_DEFAULT` (shows everywhere, allowed to make
-     * noise, but does not visually intrude). We set the notification light color for notifications
-     * posted to this channel to GREEN, and set its lock screen visibility to VISIBILITY_PRIVATE
-     * (Show this notification on all lock-screens, but conceal sensitive or private information on
-     * secure lock-screens). Then we instruct the `NotificationManager` returned by our property
-     * `manager` to create notification channel `chan1`.
-     *
-     * Next we create `NotificationChannel` variable `val chan2` with the id `SECONDARY_CHANNEL`
-     * ("second"), the user visible name given by `R.string.noti_channel_second` ("Secondary Channel")
-     * and importance of the channel set to `IMPORTANCE_HIGH` (shows everywhere, allowed to make
-     * noise and peek). We set the notification light color for notifications posted to this channel
-     * to BLUE, and set its lock screen visibility to VISIBILITY_PUBLIC (Show this notification in
-     * its entirety on all lock-screens). Finally we instruct the `NotificationManager` returned by
-     * our property `manager` to create notification channel `chan2`.
-     */
     init {
         val chan1 = NotificationChannel(PRIMARY_CHANNEL,
             getString(R.string.noti_channel_default), NotificationManager.IMPORTANCE_DEFAULT)
@@ -83,8 +80,8 @@ internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
     }
 
     /**
-     * Get a [Notification.Builder] for type 1 notification. Provides a builder rather than the
-     * notification itself so as to allow easier notification changes. First we create a
+     * Get a [Notification.Builder] for primary notification channel. Provides a builder rather than
+     * the notification itself so as to allow easier notification changes. First we create a
      * [Notification.Builder] for notification channel [PRIMARY_CHANNEL] ("default"), set its
      * title to our [String] parameter [title], its second line of text to our [String] parameter
      * [body], its small icon to the small icon for our app as returned by our property [smallIcon],
@@ -105,8 +102,8 @@ internal class NotificationHelper(ctx: Context?) : ContextWrapper(ctx) {
     }
 
     /**
-     * Get a notification builder for secondary notification channel. Provides a builder rather than
-     * the notification itself so as to allow easier notification changes. First we create a
+     * Get a [Notification.Builder] for secondary notification channel. Provides a builder rather
+     * than the notification itself so as to allow easier notification changes. First we create a
      * [Notification.Builder] for notification channel [SECONDARY_CHANNEL] ("second"), set its
      * title to our [String] parameter [title], its second line of text to our [String] parameter
      * [body], its small icon to the small icon for our app as returned by our property [smallIcon],

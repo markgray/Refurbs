@@ -44,6 +44,7 @@ import androidx.core.view.updateLayoutParams
 /**
  * Display main screen for sample. Displays controls for sending test notifications.
  */
+@SuppressLint("ObsoleteSdkInt")
 @RequiresApi(api = Build.VERSION_CODES.O)
 class MainActivity : ComponentActivity() {
     /**
@@ -114,7 +115,6 @@ class MainActivity : ComponentActivity() {
      * and post the notification requested when the user clicks one of the four "Send" buttons in
      * our UI. We initialize [Notification.Builder] variable `val nb` to the value of a `when`
      * expression that switches on the value of our [Int] parameter [id]:
-     * TODO: Continue here
      *
      *  * [NOTI_PRIMARY1] - we set `nb` to the [Notification.Builder] returned by the
      *  [NotificationHelper.getNotification1] method of our [NotificationHelper] field [noti] using
@@ -141,7 +141,7 @@ class MainActivity : ComponentActivity() {
      *  * `else` - we set `nb` to `null`.
      *
      * If `nb` is not `null`, we call the [NotificationHelper.notify] method of [noti] with the
-     * notification id `id`, and the notification builder `nb`.
+     * notification id [id], and the notification builder `nb`.
      *
      * @param id    The ID of the notification to create
      * @param title The title of the notification
@@ -169,7 +169,8 @@ class MainActivity : ComponentActivity() {
      */
     @RequiresApi(Build.VERSION_CODES.O)
     fun goToNotificationSettings() {
-        @SuppressLint("InlinedApi") val i = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+        @SuppressLint("InlinedApi")
+        val i = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
         i.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
         startActivity(i)
     }
@@ -195,6 +196,23 @@ class MainActivity : ComponentActivity() {
 
     /**
      * View model for interacting with Activity UI elements. (Keeps core logic for sample separate.)
+     * In our `init` block we initialize our [TextView] field [titlePrimary] by finding the view
+     * in [root] with the id `R.id.main_primary_title`. We find the buttons with the ids
+     * `R.id.main_primary_send1` ("Send 1" in the primary channel section), `R.id.main_primary_send2`
+     * ("Send 2" in the primary channel section), and `R.id.main_primary_config` (contains the
+     * system settings icon) and set their `OnClickListener` to "this".
+     *
+     * We initialize our [TextView] field [titleSecondary] by finding the view in [root]
+     * with the id `R.id.main_secondary_title`. We find the buttons with the ids
+     * `R.id.main_secondary_send1` ("Send 1" in the secondary channel section),
+     * `R.id.main_secondary_send2` ("Send 2" in the secondary channel section), and
+     * `R.id.main_secondary_config` (contains the system settings icon) and set their
+     * `OnClickListener` to "this".
+     *
+     * Finally we find the view in [root] with the id `R.id.btnA` ("Go to Settings") and set
+     * its `OnClickListener` to this.
+     *
+     * @param root View group holding our UI.
      */
     internal inner class MainUi(root: View) : OnClickListener {
         /**
@@ -210,25 +228,6 @@ class MainActivity : ComponentActivity() {
          */
         val titleSecondary: TextView
 
-        /**
-         * Our constructor. We initialize our `TextView` field `titlePrimary` by finding the view
-         * in `root` with the id `R.id.main_primary_title`. We find the buttons with the ids
-         * `R.id.main_primary_send1` ("Send 1" in the primary channel section), `R.id.main_primary_send2`
-         * ("Send 2" in the primary channel section), and `R.id.main_primary_config` (contains the
-         * system settings icon) and set their `OnClickListener` to "this".
-         *
-         * We initialize our `TextView` field `titleSecondary` by finding the view in `root`
-         * with the id `R.id.main_secondary_title`. We find the buttons with the ids
-         * `R.id.main_secondary_send1` ("Send 1" in the secondary channel section),
-         * `R.id.main_secondary_send2` ("Send 2" in the secondary channel section), and
-         * `R.id.main_secondary_config` (contains the system settings icon) and set their
-         * `OnClickListener` to "this".
-         *
-         * Finally we find the view in `root` with the id `R.id.btnA` ("Go to Settings") and set
-         * its `OnClickListener` to this.
-         *
-         * param root View group holding our UI.
-         */
         init {
             titlePrimary = root.findViewById<View>(R.id.main_primary_title) as TextView
             (root.findViewById<View>(R.id.main_primary_send1) as Button).setOnClickListener(this)
@@ -269,7 +268,7 @@ class MainActivity : ComponentActivity() {
          *  [sendNotification] with the notification id [NOTI_PRIMARY1], and the title returned by
          *  our property [titlePrimaryText].
          *
-         *  * `R.id.main_primary_send2` ("Send 1" in primary channel section) - we call our method
+         *  * `R.id.main_primary_send2` ("Send 2" in primary channel section) - we call our method
          *  [sendNotification] with the notification id [NOTI_PRIMARY2], and the title returned by
          *  our property [titlePrimaryText].
          *
