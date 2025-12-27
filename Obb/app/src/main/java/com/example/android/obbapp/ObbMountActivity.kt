@@ -60,26 +60,23 @@ class ObbMountActivity : ComponentActivity() {
     private var mSM: StorageManager? = null
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.obb_mount_activity`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.obb_mount_activity`.
      *
-     * We initialize our [RelativeLayout] variable `rootView` to the view with ID
-     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to
-     * take over the policy for applying window insets to `rootView`, with the
-     * `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [RelativeLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * Next we set the [View.OnClickListener] of the [View] with id `R.id.mount` ("Mount" [Button])
      * to our field [mMountListener] and the [View.OnClickListener] of the view with id
@@ -202,7 +199,7 @@ class ObbMountActivity : ComponentActivity() {
     /**
      * A call-back for when the user presses the "Unmount" button. Wrapped in a try block intended
      * to catch and log [IllegalArgumentException] we call the [StorageManager.unmountObb] method of
-     * our [StorageManager] field [mSM] to try to unmount the OBB whose filed system path is given
+     * our [StorageManager] field [mSM] to try to unmount the OBB whose file system path is given
      * by our [String] field [mObbPath] and whose [OnObbStateChangeListener] is the
      * [OnObbStateChangeListener] field [mEventListener]. If the method returns `true` (the unmount
      * call was successfully queued) we set the text of [TextView] field [mStatus] to the string
@@ -247,25 +244,24 @@ class ObbMountActivity : ComponentActivity() {
      * Class used to save our state in our [onRetainNonConfigurationInstance] override and
      * restore it after a configuration change by calling the [getLastNonConfigurationInstance]
      * method in our `onCreate` override.
-     */
-    private class ObbState
-    /**
+     *
      * Our constructor, it just saves its parameters in the fields intended for them.
      *
      * @param storageManager [StorageManager] to save in our [storageManager] field.
      * @param status [CharSequence] to save in our [status] field
      * @param path [CharSequence] to save in our [path] field
-     */(
+     */
+    private class ObbState(
         /**
-         * Place to store the `StorageManager storageManager` passed to our constructor.
+         * Place to store the [StorageManager] we were using
          */
         var storageManager: StorageManager?,
         /**
-         * Place to store the `CharSequence status` passed to our constructor.
+         * Place to store the last status.
          */
         var status: CharSequence,
         /**
-         * Place to store the `StorageManager path` passed to our constructor.
+         * Place to store the path.
          */
         var path: CharSequence)
 
