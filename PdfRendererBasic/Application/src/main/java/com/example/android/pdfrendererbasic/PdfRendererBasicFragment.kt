@@ -101,7 +101,11 @@ class PdfRendererBasicFragment
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_pdf_renderer_basic, container, false)
+        return inflater.inflate(
+            /* resource = */ R.layout.fragment_pdf_renderer_basic,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
     }
 
     /**
