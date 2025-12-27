@@ -43,7 +43,11 @@ import com.example.android.permissionrequest.MessageDialogFragment.Companion.new
 /**
  * This fragment shows a [WebView] and loads a web app from the [SimpleWebServer].
  */
-class PermissionRequestFragment : Fragment(), ConfirmationDialogFragment.Listener, MessageDialogFragment.Listener {
+class PermissionRequestFragment : Fragment(),
+    ConfirmationDialogFragment.Listener,
+    MessageDialogFragment.Listener
+{
+
     /**
      * We use this web server to serve HTML files in the assets folder. This is because we cannot
      * use the JavaScript method "getUserMedia" from "file:///android_assets/..." URLs.
@@ -86,7 +90,11 @@ class PermissionRequestFragment : Fragment(), ConfirmationDialogFragment.Listene
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_permission_request, container, false)
+        return inflater.inflate(
+            /* resource = */ R.layout.fragment_permission_request,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
     }
 
     /**

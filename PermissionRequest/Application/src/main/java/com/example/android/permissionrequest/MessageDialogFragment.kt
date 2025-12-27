@@ -70,7 +70,7 @@ class MessageDialogFragment : DialogFragment() {
         /**
          * Factory method that creates and configures a new instance. First we initialize our
          * [MessageDialogFragment] variable `val fragment`, and [Bundle] variable `val args` with
-         * new instances. Then we add our parameter `message` to `args` under the key
+         * new instances. Then we add our parameter [message] to `args` under the key
          * [ARG_MESSAGE_RES_ID] ("message_res_id") and set the arguments of `fragment` to `args`.
          * Finally we return `fragment` to the caller.
          *

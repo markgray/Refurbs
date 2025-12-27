@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "unused")
 
 package com.example.android.permissionrequest
 
@@ -34,14 +34,14 @@ import java.net.SocketException
 /**
  * Implementation of a very basic HTTP server. The contents are loaded from the assets folder. This
  * server handles one request at a time. It only supports GET method.
- */
-class SimpleWebServer
-/**
+ *
  * WebServer constructor. We save our parameters in their respective fields.
  *
  * @param port port we are to listen to.
- * @param mAssets `AssetManager` to use to access assets
- */(
+ * @param mAssets [AssetManager] to use to access assets
+ *
+ */
+class SimpleWebServer(
     /**
      * The port number we listen to
      */
@@ -115,6 +115,7 @@ class SimpleWebServer
     }
 
     /**
+     * TODO: Continue here.
      * Respond to a request from a client. We initialize our [BufferedReader] variable `var reader`
      * and [PrintStream] variable `var output` to `null`. Then wrapped in a try block whose finally
      * block closes these two if they are not `null`, we initialize [String] variable `var route`

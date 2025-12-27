@@ -33,7 +33,6 @@ import androidx.fragment.app.DialogFragment
  */
 class ConfirmationDialogFragment : DialogFragment() {
     /**
-     * TODO: Continue here.
      * Override to build your own custom Dialog container. We initialize [Array] of [String] variable
      * `val resources` by fetching from our arguments the string array stored under key [ARG_RESOURCES]
      * ("resources") then we return a new instance of [AlertDialog] we build by setting its message
