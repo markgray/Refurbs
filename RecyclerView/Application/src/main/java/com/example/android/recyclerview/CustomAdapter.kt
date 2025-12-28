@@ -39,11 +39,11 @@ class CustomAdapter(
 
     /**
      * Provide a reference to the type of views that you are using (custom [ViewHolder]).
-     * Our constructor. First we call our super's constructor, then we set the [View.OnClickListener]
-     *  of our [View] parameter `v` to an anonymous class whose [View.OnClickListener.onClick]
-     *  override logs the position in the adapter of the view that was clicked, and toasts the same
-     *  message. Finally we initialize our [TextView] field [textView] by finding the view with id
-     *  `R.id.textView` in `v`.
+     * Our constructor. First we call our super's constructor, then in our `init` block we  set the
+     * [View.OnClickListener] of our [View] parameter [v] to an anonymous class whose
+     * [View.OnClickListener.onClick] override logs the position in the adapter of the view that
+     * was clicked, and toasts the same message. Finally we initialize our [TextView] field
+     * [textView] by finding the view with id `R.id.textView` in [v].
      *
      * @param v the [View] we are to "hold"
      */
@@ -58,10 +58,10 @@ class CustomAdapter(
             v.setOnClickListener { viewClicked: View ->
 
                 /**
-                 * Called when our `View v` is clicked. We initialize `String msg` with
-                 * a string formed by concatenating the string "Element " followed by the Adapter
-                 * position of the item represented by this ViewHolder, followed by the string
-                 * " clicked.". We then log `msg` and toast it to the user as well.
+                 * Called when our [View] parameter [v] is clicked. We initialize [String] variable
+                 * `msg` with a string formed by concatenating the string "Element " followed by the
+                 * Adapter position of the item represented by this ViewHolder, followed by the
+                 * string " clicked.". We then log `msg` and toast it to the user as well.
                  *
                  * param `viewClicked` View that was clicked.
                  */
@@ -75,7 +75,11 @@ class CustomAdapter(
 
     /**
      * Called when [RecyclerView] needs a new [RecyclerView.ViewHolder] of the given type to
-     * represent an item. Create new views (invoked by the layout manager).
+     * represent an item. Create new views (invoked by the layout manager). We initialize our
+     * [View] variable `v` to the [View] that the [LayoutInflater] from the [ViewGroup.getContext]
+     * of our [ViewGroup] parameter [viewGroup] inflates from our layout file `R.layout.text_row_item`
+     * using [viewGroup] for the layout parameters without attaching to it. Then we return a
+     * [ViewHolder] instance constructed to hold `v` to the caller.
      *
      * @param viewGroup The [ViewGroup] into which the new [View] will be added after it is bound to
      * an adapter position.
@@ -84,9 +88,13 @@ class CustomAdapter(
      */
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view.
-        val v = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.text_row_item, viewGroup, false)
-        return ViewHolder(v)
+        val v: View = LayoutInflater.from(viewGroup.context)
+            .inflate(
+                /* resource = */ R.layout.text_row_item,
+                /* root = */ viewGroup,
+                /* attachToRoot = */ false
+            )
+        return ViewHolder(v = v)
     }
 
     /**

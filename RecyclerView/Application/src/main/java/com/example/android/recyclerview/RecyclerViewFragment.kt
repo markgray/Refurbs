@@ -13,7 +13,12 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "UNUSED_ANONYMOUS_PARAMETER", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "UNUSED_ANONYMOUS_PARAMETER",
+    "MemberVisibilityCanBePrivate",
+    "unused"
+)
 
 package com.example.android.recyclerview
 
@@ -35,7 +40,7 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager
  */
 class RecyclerViewFragment : Fragment() {
     /**
-     * `LayoutManager` types that can be used for our [RecyclerView], used in our
+     * [LayoutManager] types that can be used for our [RecyclerView], used in our
      * [setRecyclerViewLayoutManager] in a switch to choose between [GridLayoutManager]
      * and [LinearLayoutManager].
      */
@@ -116,21 +121,23 @@ class RecyclerViewFragment : Fragment() {
      * [mCurrentLayoutManagerType] to [LayoutManagerType.LINEAR_LAYOUT_MANAGER].
      *
      * If our [Bundle] parameter [savedInstanceState] is not `null`, we set [mCurrentLayoutManagerType]
-     * to the [LayoutManagerType] stored in it under the key [KEY_LAYOUT_MANAGER]. We then call our
-     * method [setRecyclerViewLayoutManager] to set the [RecyclerView.LayoutManager] of our [RecyclerView]
-     * to the type now specified by [mCurrentLayoutManagerType] (note that the [LinearLayoutManager]
-     * created before we call this method is forgotten). Next we initialize [CustomAdapter] field
-     * [mAdapter] with a new instance constructed to use our [Array] of [String] dataset field
-     * [mDataset] as its dataset. We then set the adapter of [RecyclerView] field [mRecyclerView] to
-     * [mAdapter]. We initialize [RadioButton] field [mLinearLayoutRadioButton] by finding the view
-     * with id `R.id.linear_layout_rb`, and set its [View.OnClickListener] to an anonymous class
-     * whose [View.OnClickListener.onClick] override calls our method [setRecyclerViewLayoutManager]
-     * to set the [LayoutManagerType] of our [RecyclerView] to [LayoutManagerType.LINEAR_LAYOUT_MANAGER].
-     * We initialize [RadioButton] field [mGridLayoutRadioButton] by finding the view with id
-     * `R.id.grid_layout_rb`, and set its [View.OnClickListener] to an anonymous class whose
-     * [View.OnClickListener.onClick] override calls our method [setRecyclerViewLayoutManager] to
-     * set the [LayoutManagerType] of our [RecyclerView] to [LayoutManagerType.GRID_LAYOUT_MANAGER].
-     * Finally we return `rootView` to the caller.
+     * to the [LayoutManagerType] stored in it under the key [KEY_LAYOUT_MANAGER] (using the overload
+     * of [Bundle.getSerializable] that includes a `clazz` parameter on `TIRAMISU` and newer SDK's).
+     * We then call our method [setRecyclerViewLayoutManager] to set the [RecyclerView.LayoutManager]
+     * of our [RecyclerView] to the type now specified by [mCurrentLayoutManagerType] (note that the
+     * [LinearLayoutManager] created before we call this method is forgotten). Next we initialize
+     * [CustomAdapter] field [mAdapter] with a new instance constructed to use our [Array] of [String]
+     * dataset field [mDataset] as its dataset. We then set the adapter of [RecyclerView] field
+     * [mRecyclerView] to [mAdapter]. We initialize [RadioButton] field [mLinearLayoutRadioButton] by
+     * finding the view with id `R.id.linear_layout_rb`, and set its [View.OnClickListener] to an
+     * anonymous class whose [View.OnClickListener.onClick] override calls our method
+     * [setRecyclerViewLayoutManager] to set the [LayoutManagerType] of our [RecyclerView] to
+     * [LayoutManagerType.LINEAR_LAYOUT_MANAGER]. We initialize [RadioButton] field
+     * [mGridLayoutRadioButton] by finding the view with id `R.id.grid_layout_rb`, and set its
+     * [View.OnClickListener] to an anonymous class whose [View.OnClickListener.onClick] override
+     * calls our method [setRecyclerViewLayoutManager] to set the [LayoutManagerType] of our
+     * [RecyclerView] to [LayoutManagerType.GRID_LAYOUT_MANAGER]. Finally we return `rootView` to
+     * the caller.
      *
      * @param inflater The [LayoutInflater] object that can be used to inflate
      * any views in the fragment,
@@ -146,10 +153,13 @@ class RecyclerViewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.recycler_view_frag, container, false)
+        val rootView = inflater.inflate(
+            /* resource = */ R.layout.recycler_view_frag,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
         rootView.tag = TAG
 
-        // BEGIN_INCLUDE(initializeRecyclerView)
         mRecyclerView = rootView.findViewById(R.id.recyclerView)
 
         // LinearLayoutManager is used here, this will layout the elements in a similar fashion
@@ -185,14 +195,15 @@ class RecyclerViewFragment : Fragment() {
     }
 
     /**
-     * Set [RecyclerView]'s LayoutManager to the one given. First we initialize [Int] variable
-     * `var scrollPosition` to 0. If the [LayoutManager] currently responsible for layout policy
-     * for the [RecyclerView] field [mRecyclerView] is not `null`, we retrieve the adapter position
-     * of the first fully visible view from it to set `scrollPosition`. Then if the value of our
-     * [LayoutManagerType] parameter [layoutManagerType] is:
+     * Set [RecyclerView]'s LayoutManager to the one specified by [LayoutManagerType] parameter
+     * [layoutManagerType]. First we initialize [Int] variable `var scrollPosition` to 0. If the
+     * [LayoutManager] currently responsible for layout policy for the [RecyclerView] field
+     * [mRecyclerView] is not `null`, we retrieve the adapter position of the first fully visible
+     * view from it to set `scrollPosition`. Then if the value of our [LayoutManagerType] parameter
+     * [layoutManagerType] is:
      *
      *  * [LayoutManagerType.GRID_LAYOUT_MANAGER]: we set our [LayoutManager] field [mLayoutManager]
-     *  to a new instance of [GridLayoutManager] constructed to have [SPAN_COUNT] columns in its
+     *  to a new instance of [GridLayoutManager] constructed to have [SPAN_COUNT] (2) columns in its
      *  grid, and set our [LayoutManagerType] field [mCurrentLayoutManagerType] to
      *  [LayoutManagerType.GRID_LAYOUT_MANAGER]
      *
@@ -256,12 +267,12 @@ class RecyclerViewFragment : Fragment() {
 
     companion object {
         /**
-         * TAG we set on the root view of our [Fragment] for some reason?
+         * TAG we set on the root view of our [Fragment] (for some reason?)
          */
         private const val TAG = "RecyclerViewFragment"
 
         /**
-         * Key for saving the serializable [LayoutManagerType] fiedl [mCurrentLayoutManagerType] in
+         * Key for saving the serializable [LayoutManagerType] field [mCurrentLayoutManagerType] in
          * the bundle passed to our [onSaveInstanceState] override in order to restore it when our
          * [onCreateView] override is called.
          */
