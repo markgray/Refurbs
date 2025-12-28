@@ -52,26 +52,23 @@ class PropertyAnimations : ComponentActivity() {
     var mCheckBox: CheckBox? = null
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.activity_property_animations`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_property_animations`.
      *
-     * We initialize our [LinearLayout] variable `rootView` to the view with ID
-     * `R.id.container` then call [ViewCompat.setOnApplyWindowInsetsListener] to
-     * take over the policy for applying window insets to `rootView`, with the
-     * `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [LinearLayout] variable `rootView` to the view with ID `R.id.container`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [CheckBox] field [mCheckBox] by finding the view with id `R.id.checkbox`
      * ("Use Animation Resources"), then initialize [Button] variable `val alphaButton` by finding
@@ -145,37 +142,72 @@ class PropertyAnimations : ComponentActivity() {
         val setButton: Button = findViewById(R.id.setButton)
 
         // Fade the button out and back in
-        val alphaAnimation = ObjectAnimator.ofFloat(alphaButton, View.ALPHA, 0f)
+        val alphaAnimation = ObjectAnimator.ofFloat(
+            /* target = */ alphaButton,
+            /* property = */ View.ALPHA,
+            /* ...values = */ 0f
+        )
         alphaAnimation.repeatCount = 1
         alphaAnimation.repeatMode = ValueAnimator.REVERSE
 
         // Move the button over to the right and then back
-        val translateAnimation = ObjectAnimator.ofFloat(translateButton, View.TRANSLATION_X, 800f)
+        val translateAnimation = ObjectAnimator.ofFloat(
+            /* target = */ translateButton,
+            /* property = */ View.TRANSLATION_X,
+            /* ...values = */ 800f
+        )
         translateAnimation.repeatCount = 1
         translateAnimation.repeatMode = ValueAnimator.REVERSE
 
         // Spin the button around in a full circle
-        val rotateAnimation = ObjectAnimator.ofFloat(rotateButton, View.ROTATION, 360f)
+        val rotateAnimation = ObjectAnimator.ofFloat(
+            /* target = */ rotateButton,
+            /* property = */ View.ROTATION,
+            /* ...values = */ 360f
+        )
         rotateAnimation.repeatCount = 1
         rotateAnimation.repeatMode = ValueAnimator.REVERSE
 
         // Scale the button in X and Y. Note the use of PropertyValuesHolder to animate
         // multiple properties on the same object in parallel.
-        val pvhX = PropertyValuesHolder.ofFloat(View.SCALE_X, 2f)
-        val pvhY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 2f)
-        val scaleAnimation = ObjectAnimator.ofPropertyValuesHolder(scaleButton, pvhX, pvhY)
+        val pvhX = PropertyValuesHolder.ofFloat(/* property = */ View.SCALE_X, /* ...values = */ 2f)
+        val pvhY = PropertyValuesHolder.ofFloat(/* property = */ View.SCALE_Y, /* ...values = */ 2f)
+        val scaleAnimation = ObjectAnimator.ofPropertyValuesHolder(
+            /* target = */ scaleButton,
+            /* ...values = */ pvhX, pvhY
+        )
         scaleAnimation.repeatCount = 1
         scaleAnimation.repeatMode = ValueAnimator.REVERSE
 
         // Run the animations above in sequence
         val setAnimation = AnimatorSet()
-        setAnimation.play(translateAnimation).after(alphaAnimation).before(rotateAnimation)
-        setAnimation.play(rotateAnimation).before(scaleAnimation)
-        setupAnimation(alphaButton, alphaAnimation, R.animator.fade)
-        setupAnimation(translateButton, translateAnimation, R.animator.move)
-        setupAnimation(rotateButton, rotateAnimation, R.animator.spin)
-        setupAnimation(scaleButton, scaleAnimation, R.animator.scale)
-        setupAnimation(setButton, setAnimation, R.animator.combo)
+        setAnimation.play(/* anim = */ translateAnimation)
+            .after(/* anim = */ alphaAnimation)
+            .before(/* anim = */ rotateAnimation)
+        setAnimation.play(/* anim = */ rotateAnimation)
+            .before(/* anim = */ scaleAnimation)
+
+        setupAnimation(
+            view = alphaButton,
+            animation = alphaAnimation,
+            animationID = R.animator.fade
+        )
+        setupAnimation(
+            view = translateButton,
+            animation = translateAnimation,
+            animationID = R.animator.move
+        )
+        setupAnimation(
+            view = rotateButton,
+            animation = rotateAnimation,
+            animationID = R.animator.spin
+        )
+        setupAnimation(
+            view = scaleButton,
+            animation = scaleAnimation,
+            animationID = R.animator.scale
+        )
+        setupAnimation(view = setButton, animation = setAnimation, animationID = R.animator.combo)
     }
 
     /**
@@ -183,7 +215,7 @@ class PropertyAnimations : ComponentActivity() {
      * runs the animation in [Animator] parameter [animation] if [CheckBox] field [mCheckBox] is
      * unchecked, or runs the xml [Animator] whose resource id is [Int] parameter [animationID] on
      * the [View] paraemter [view] if [CheckBox] field [mCheckBox] is checked.
-     *
+     * TODO: Continue here.
      * @param view the [View] we are to add an [View.OnClickListener] to.
      * @param animation the [Animator] to run if [CheckBox] field [mCheckBox] is unchecked
      * @param animationID Resource id of an xml [Animator] to run if [CheckBox] field [mCheckBox]
