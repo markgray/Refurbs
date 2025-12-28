@@ -115,12 +115,11 @@ class SimpleWebServer(
     }
 
     /**
-     * TODO: Continue here.
      * Respond to a request from a client. We initialize our [BufferedReader] variable `var reader`
      * and [PrintStream] variable `var output` to `null`. Then wrapped in a try block whose finally
      * block closes these two if they are not `null`, we initialize [String] variable `var route`
      * to `null`, then create a new [BufferedReader] for `reader` to read from an [InputStreamReader]
-     * created from the input stream for reading bytes from [Socket] paramete [socket]. We declare
+     * created from the input stream for reading bytes from [Socket] parameter [socket]. We declare
      * [String] variable `var line` and loop while setting `line` to the next line of text read from
      * `reader` if it is not an empty string. If `line` starts with the string "GET /" we set [Int]
      * variable `val start` to 1 past the location of the '/' character, and [Int] variable `val end`
