@@ -43,7 +43,11 @@ class MyLayout : LinearLayout {
      * reference to a style resource that supplies default values for
      * the view. Can be 0 to not look for defaults.
      */
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
+    constructor(
+        context: Context?,
+        attrs: AttributeSet?,
+        defStyle: Int
+    ) : super(context, attrs, defStyle)
 
     /**
      * Perform inflation from XML. We just call our super's constructor.
@@ -111,7 +115,10 @@ class MyLayout : LinearLayout {
     @SuppressLint("SetTextI18n")
     private fun addButton() {
         val button = Button(context)
-        button.layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        button.layoutParams = LayoutParams(
+            /* width = */ LayoutParams.WRAP_CONTENT,
+            /* height = */ LayoutParams.WRAP_CONTENT
+        )
         button.text = "Button " + numButtons++
         addView(button)
     }

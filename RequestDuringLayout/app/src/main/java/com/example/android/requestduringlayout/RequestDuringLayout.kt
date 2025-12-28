@@ -37,26 +37,23 @@ import androidx.core.view.updateLayoutParams
  */
 class RequestDuringLayout : ComponentActivity() {
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.activity_request_during_layout`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_request_during_layout`.
      *
-     * We initialize our [MyLayout] variable `myLayout` to the view with ID `R.id.container`
-     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for
-     * applying window insets to `myLayout`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [MyLayout] variable `myLayout` to the view with ID `R.id.container` then
+     * call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying window
+     * insets to `myLayout`, with the `listener` argument a lambda that accepts the [View] passed
+     * the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize [Button] variable `val addViewButton` by finding the view with id
      * `R.id.addView` ("Add"), initialize [Button] variable `val removeViewButton` by finding
@@ -64,11 +61,11 @@ class RequestDuringLayout : ComponentActivity() {
      * `val forceLayoutButton` by finding the view with id `R.id.forceLayout` ("Layout").
      * We set the [View.OnClickListener] of `addViewButton` to an anonymous class which sets the
      * [MyLayout.mAddRequestPending] field of `myLayout` to `true`, then calls its
-     * `MyLayout.requestLayout` method, and we set the [View.OnClickListener] of `removeViewButton`
+     * [MyLayout.requestLayout] method, and we set the [View.OnClickListener] of `removeViewButton`
      * to an anonymous class which sets the [MyLayout.mRemoveRequestPending] field of `myLayout` to
      * `true`, then calls its [MyLayout.requestLayout] method. Finally we set the
      * [View.OnClickListener] of `forceLayoutButton` to an anonymous class which calls the
-     *[ MyLayout.requestLayout] method of `myLayout`.
+     * [MyLayout.requestLayout] method of `myLayout`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
