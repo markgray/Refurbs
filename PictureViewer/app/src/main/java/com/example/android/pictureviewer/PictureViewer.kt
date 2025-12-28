@@ -61,34 +61,30 @@ class PictureViewer : ComponentActivity() {
     )
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge]
-     * to enable edge to edge display, then we call our super's implementation
-     * of `onCreate`, and set our content view to our layout file
-     * `R.layout.activity_picture_viewer` (this is a [FrameLayout] containing two
-     * [ImageView] widgets occupying the same space).
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_picture_viewer` (this is a [FrameLayout]
+     * containing two [ImageView] widgets occupying the same space).
      *
-     * We initialize our [FrameLayout] variable `rootView` to the view with ID
-     * `R.id.root_view` then call [ViewCompat.setOnApplyWindowInsetsListener] to
-     * take over the policy for applying window insets to `rootView`, with the
-     * `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [FrameLayout] variable `rootView` to the view with ID `R.id.root_view`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize [ImageView] variable `val prevImageView` by finding the view with id
      * `R.id.prevImageView`, and [ImageView] variable `val nextImageView` by finding the view
      * with id `R.id.nextImageView`, and set the background color of both to [Color.TRANSPARENT].
      * We also set the duration of both view's [ViewPropertyAnimator] to 1000ms. We initialize the
-     * [BitmapDrawable] variable `val drawables` array with an instance which will hold as many
+     * variable `val drawables` to an [Array] of [BitmapDrawable] which will hold as many
      * [BitmapDrawable] objects as there are entries in our [IntArray] field [drawableIDs]. We then
      * loop over [Int] variable `var i` for these entries creating [Bitmap] variable `val bitmap`
      * by decoding the jpg whose resource id is at index `i` in [drawableIDs] and setting the
