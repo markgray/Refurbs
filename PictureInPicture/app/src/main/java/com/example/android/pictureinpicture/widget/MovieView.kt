@@ -41,7 +41,8 @@ import androidx.core.graphics.drawable.toDrawable
 
 /**
  * A [RelativeLayout] that displays a video. Used by both `MainActivity` and
- * `MediaSessionPlaybackActivity`.
+ * `MediaSessionPlaybackActivity`. See our `init` block for the details of the
+ * initialization of the class.
  *
  * @param context The [Context] the view is running in, through which it can
  *        access the current theme, resources, etc.
@@ -85,7 +86,7 @@ class MovieView @JvmOverloads constructor(
     /**
      * Play/Pause button with id `R.id.toggle`, its image is toggled in the [adjustToggleState]
      * method between `R.drawable.ic_pause_64dp`, and `R.drawable.ic_play_arrow_64dp` depending on
-     * whether the movie is paused or playing.
+     * whether the movie is playing or paused.
      */
     val mToggle: ImageButton
 
@@ -158,16 +159,18 @@ class MovieView @JvmOverloads constructor(
          * other events that happen in the same Looper message queue iteration.
          *
          * First we call our [adjustToggleState] method to update the toggle button image of the
-         * play/pause button [mToggle]. Then we call [setKeepScreenOn] with our [Boolean] parameter
-         * [isPlaying] to keep the screen on if it is `true` or allow it to turn off if it is `false`.
-         * If our [TimeoutHandler] property [mTimeoutHandler] is `null` and [isPlaying] is `true` we
-         * set it to a new instance of [TimeoutHandler]. Then we call the [TimeoutHandler.removeMessages]
+         * play/pause button [mToggle]. Then we call [setKeepScreenOn] (aka setter method of the
+         * kotlin property `keepScreenOn`) with our [Boolean] parameter [isPlaying] to keep the
+         * screen on if it is `true` or allow it to turn off if it is `false`. If our
+         * [TimeoutHandler] property [mTimeoutHandler] is `null` and [isPlaying] is `true` we set it
+         * to a new instance of [TimeoutHandler]. Then we call the [TimeoutHandler.removeMessages]
          * method with the [TimeoutHandler.MESSAGE_HIDE_CONTROLS] constant to remove any messages
-         * that are queued. If [isPlaying] is `true` we call the [MovieListener.onMovieStarted] callback
-         * of our [MovieListener] property [mMovieListener] and call the [TimeoutHandler.sendEmptyMessageDelayed]
-         * method of [mTimeoutHandler] with the [TimeoutHandler.MESSAGE_HIDE_CONTROLS] constant and
-         * [TIMEOUT_CONTROLS] as the delay in milliseconds. If [isPlaying] is `false` we call the
-         * [MovieListener.onMovieStopped] callback of our [MovieListener] property [mMovieListener].
+         * that are queued. If [Boolean] parameter [isPlaying] is `true` we call the
+         * [MovieListener.onMovieStarted] callback of our [MovieListener] property [mMovieListener]
+         * and call the [TimeoutHandler.sendEmptyMessageDelayed] method of [mTimeoutHandler] with
+         * the [TimeoutHandler.MESSAGE_HIDE_CONTROLS] constant and [TIMEOUT_CONTROLS] as the delay
+         * in milliseconds. If [isPlaying] is `false` we call the [MovieListener.onMovieStopped]
+         * callback of our [MovieListener] property [mMovieListener].
          *
          * @param isPlaying Whether the player is playing.
          */
@@ -193,11 +196,12 @@ class MovieView @JvmOverloads constructor(
          *
          * First we call our [adjustToggleState] method to update the toggle button image of the
          * play/pause button [mToggle]. If our [Int] parameter [playbackState] is equal to
-         * [Player.STATE_ENDED] we call the [setKeepScreenOn] method with `false` to allow the
-         * screen to turn off. Then we call the [MovieListener.onMovieStopped] callback of our
-         * [MovieListener] property [mMovieListener] and call the [TimeoutHandler.removeMessages]
-         * method of our [TimeoutHandler] property [mTimeoutHandler] with the
-         * [TimeoutHandler.MESSAGE_HIDE_CONTROLS] constant to remove any messages that are queued.
+         * [Player.STATE_ENDED] we call the [setKeepScreenOn] method (aka setter method of the
+         * kotlin property `keepScreenOn`) with `false` to allow the screen to turn off. Then we
+         * call the [MovieListener.onMovieStopped] callback of our [MovieListener] property
+         * [mMovieListener] and call the [TimeoutHandler.removeMessages] method of our
+         * [TimeoutHandler] property [mTimeoutHandler] with the [TimeoutHandler.MESSAGE_HIDE_CONTROLS]
+         * constant to remove any messages that are queued.
          *
          * @param playbackState The new playback `Player.State`.
          */
@@ -246,11 +250,13 @@ class MovieView @JvmOverloads constructor(
      *  (a style that sets the attribute `android:src` to `null`, and `android:adjustViewBounds` to
      *  `false`.
      *
-     * In the lambda we set our [Int] property [mVideoResourceId] to the resource value in the
-     * [TypedArray] whose index is `R.styleable.MovieView_android_src`. We set our [Boolean] property
-     * [mAdjustViewBounds] to the boolean value in the [TypedArray] whose index is
-     * `R.styleable.MovieView_android_adjustViewBounds`. We set our [String] property [title] to the
-     * string value in the [TypedArray] whose index is `R.styleable.MovieView_android_title`.
+     * In the `block` lambda argument of [Context.withStyledAttributes] we set our [Int] property
+     * [mVideoResourceId] to the resource value in the [TypedArray] whose index is
+     * `R.styleable.MovieView_android_src`. We call [setAdjustViewBounds] to have it set our [Boolean]
+     * property [mAdjustViewBounds] to the boolean value in the [TypedArray] whose index is
+     * `R.styleable.MovieView_android_adjustViewBounds` and to set our background color appropriately.
+     * We set our [String] property [title] to the string value in the [TypedArray] whose index is
+     * `R.styleable.MovieView_android_title`.
      *
      * Next we initialize our [View.OnClickListener] variable `listener` with a lambda that switches
      * on the [View.id] of the view that was clicked:
@@ -272,7 +278,7 @@ class MovieView @JvmOverloads constructor(
      * [mSurfaceView], [toggle], [mFastForward], [mFastRewind], and [mMinimize] to `listener`.
      * We then call the [SurfaceHolder.addCallback] method of the [SurfaceHolder] property of
      * our [SurfaceView] property [mSurfaceView] with an object that implements the
-     * [SurfaceHolder.Callback] interface. (See the object declaration for more details.)
+     * [SurfaceHolder.Callback] interface. (See the object declaration below for more details.)
      * Finally we call the [adjustToggleState] method to update the toggle button image of the
      * play/pause button [mToggle].
      */
@@ -419,15 +425,15 @@ class MovieView @JvmOverloads constructor(
                         /* widthMeasureSpec = */ widthMeasureSpec,
                         /* heightMeasureSpec = */ MeasureSpec
                             .makeMeasureSpec(
-                                (width * aspectRatio).toInt(),
-                                MeasureSpec.EXACTLY
+                                /* size = */ (width * aspectRatio).toInt(),
+                                /* mode = */ MeasureSpec.EXACTLY
                             )
                     )
                 } else if (widthMode != MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY) {
                     super.onMeasure(
                         /* widthMeasureSpec = */ MeasureSpec.makeMeasureSpec(
-                            (height / aspectRatio).toInt(),
-                            MeasureSpec.EXACTLY
+                            /* size = */ (height / aspectRatio).toInt(),
+                            /* mode = */ MeasureSpec.EXACTLY
                         ),
                         /* heightMeasureSpec = */ heightMeasureSpec
                     )
@@ -435,8 +441,8 @@ class MovieView @JvmOverloads constructor(
                     super.onMeasure(
                         /* widthMeasureSpec = */ widthMeasureSpec,
                         /* heightMeasureSpec = */ MeasureSpec.makeMeasureSpec(
-                            (width * aspectRatio).toInt(),
-                            MeasureSpec.EXACTLY
+                            /* size = */ (width * aspectRatio).toInt(),
+                            /* mode = */ MeasureSpec.EXACTLY
                         )
                     )
                 }
@@ -444,10 +450,20 @@ class MovieView @JvmOverloads constructor(
                 val viewRatio: Float = height.toFloat() / width
                 if (aspectRatio > viewRatio) {
                     val padding: Int = ((width - height / aspectRatio) / 2).toInt()
-                    setPadding(padding, 0, padding, 0)
+                    setPadding(
+                        /* left = */ padding,
+                        /* top = */ 0,
+                        /* right = */ padding,
+                        /* bottom = */ 0
+                    )
                 } else {
                     val padding: Int = ((height - width * aspectRatio) / 2).toInt()
-                    setPadding(0, padding, 0, padding)
+                    setPadding(
+                        /* left = */ 0,
+                        /* top = */ padding,
+                        /* right = */ 0,
+                        /* bottom = */ padding
+                    )
                 }
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             }
@@ -508,7 +524,7 @@ class MovieView @JvmOverloads constructor(
      * Shows the playback controls.
      *
      * This function makes the playback controls (play/pause, fast forward, fast rewind, minimize)
-     * and a background shade visible. It uses a `TransitionManager` to animate the appearance
+     * and a background shade visible. It uses a [TransitionManager] to animate the appearance
      * of these controls with a fade-in effect.
      */
     fun showControls() {
@@ -524,7 +540,7 @@ class MovieView @JvmOverloads constructor(
      * Hides the playback controls.
      *
      * This function makes the playback controls (play/pause, fast forward, fast rewind, minimize)
-     * and the background shade invisible. It uses a `TransitionManager` to animate the disappearance
+     * and the background shade invisible. It uses a [TransitionManager] to animate the disappearance
      * of these controls with a fade-out effect.
      */
     fun hideControls() {

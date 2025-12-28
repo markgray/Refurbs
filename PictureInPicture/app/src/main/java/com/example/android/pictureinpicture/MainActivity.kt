@@ -165,8 +165,8 @@ class MainActivity : AppCompatActivity() {
      *  [Int] parameter [controlType] under the key [EXTRA_CONTROL_TYPE].
      *  - `flags`: [PendingIntent.FLAG_IMMUTABLE]
      *
-     * The we initialize our [Icon] variable `val icon` by calling [Icon.createWithResource] with the
-     * `context` argument this@MainActivity and the `resid` argument our [Int] parameter [iconId].
+     * Then we initialize our [Icon] variable `val icon` by calling [Icon.createWithResource] with
+     * the `context` argument this@MainActivity and the `resid` argument our [Int] parameter [iconId].
      * We add a [RemoteAction] to our [ArrayList] variable `actions` constructed using the following
      * arguments:
      *  - `icon`: the [Icon] we just created, variable `icon`.
@@ -247,25 +247,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge-to-edge
-     * display then we call super's implementation of `onCreate`. We set our content view to our
-     * layout file `R.layout.activity_main`. We intialize our [LinearLayout] variable `rootView`
-     * by finding the [LinearLayout] with resource id `R.id.activity_main` then call
-     * [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy
-     * for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display then we call super's implementation of `onCreate` and set our content view
+     * to our layout file `R.layout.activity_main`.
+     *
+     * We intialize our [LinearLayout] variable `rootView` by finding the [LinearLayout] with
+     * resource id `R.id.activity_main` then call [ViewCompat.setOnApplyWindowInsetsListener] to
+     * take over the policy for applying window insets to `rootView`, with the `listener` argument
+     * a lambda that accepts the [View] passed the lambda in variable `v` and the
+     * [WindowInsetsCompat] passed the lambda in variable `windowInsets`. It initializes its
+     * [Insets] variable `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the IME
+     * (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of
+     * `v` to be a [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`,
+     * the right margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the
+     * bottom margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * Next we initialize our [String] property `mPlay` to the string with resource id `R.string.play`
      * ("Play") and our [String] property `mPause` to the string with resource id `R.string.pause`
@@ -412,8 +410,8 @@ class MainActivity : AppCompatActivity() {
      * `onResume()`.
      *
      * We first call our super's implementation of `onRestart`. If the activity is not in
-     * Picture-in-Picture mode, we then call the `showControls()` method of `mMovieView` to
-     * make sure the video controls are visible. The video player itself will be re-initialized
+     * Picture-in-Picture mode, we then call the [MovieView.showControls] method of `mMovieView`
+     * to make sure the video controls are visible. The video player itself will be re-initialized
      * in `onStart()` if it was released in `onStop()`.
      */
     override fun onRestart() {
@@ -441,7 +439,7 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Called when the current [Window] of the activity gains or loses focus. First we call our
-     * super's implementation of `onWindowFocusChanged`, then we check if the `hasFocus` parameter
+     * super's implementation of `onWindowFocusChanged`, then we check if the [hasFocus] parameter
      * is `true`. If it is, we call our method [adjustFullScreen] to adjust our UI for the
      * [Configuration] of the [Resources] instance for the application's package returned by
      * [getResources].
@@ -460,14 +458,14 @@ class MainActivity : AppCompatActivity() {
      * if our [isInPictureInPictureMode] parameter is `true`. If it is, we:
      *  - Initialize our [BroadcastReceiver] property [mReceiver] to a new instance of
      *  [BroadcastReceiver] whose `onReceive` override checks if its [Intent] parameter `intent`
-     *  is `null` and if its [Intent.getAction] returns [ACTION_MEDIA_CONTROL] returning to its
-     *  caller if the test fails.
-     *  Otherwise it initializes its [Int] variable `controlType` to the value stored as an
-     *  extra in the [Intent] parameter `intent` under the key [EXTRA_CONTROL_TYPE]. It then
-     *  branches on the value of `controlType` with [CONTROL_TYPE_PLAY] calling [MovieView.play]
-     *  and [CONTROL_TYPE_PAUSE] calling [MovieView.pause].
-     *  - Register our [BroadcastReceiver] property [mReceiver] with the [IntentFilter] action
-     *  [ACTION_MEDIA_CONTROL], and the `flags` [Context.RECEIVER_NOT_EXPORTED].
+     *  is `null` and if its [Intent.getAction] returns [ACTION_MEDIA_CONTROL], returning to its
+     *  caller if the test fails. Otherwise it initializes its [Int] variable `controlType` to the
+     *  value stored as an extra in the [Intent] parameter `intent` under the key [EXTRA_CONTROL_TYPE].
+     *  It then branches on the value of `controlType` with [CONTROL_TYPE_PLAY] calling
+     *  [MovieView.play] and [CONTROL_TYPE_PAUSE] calling [MovieView.pause].
+     *  - Call [Context.registerReceiver] to register our [BroadcastReceiver] property [mReceiver]
+     *  with the [IntentFilter] action [ACTION_MEDIA_CONTROL], and the `flags`
+     *  [Context.RECEIVER_NOT_EXPORTED].
      *
      * If `isInPictureInPictureMode` is `false`, we:
      *  - Unregister our [BroadcastReceiver] property [mReceiver].
@@ -488,20 +486,20 @@ class MainActivity : AppCompatActivity() {
             mReceiver = object : BroadcastReceiver() {
                 /**
                  * This method is called when the BroadcastReceiver is receiving an Intent
-                 * broadcast.  During this time you can use the other methods on
-                 * BroadcastReceiver to view/modify the current result values.  This method
-                 * is always called within the main thread of its process, unless you
-                 * explicitly asked for it to be scheduled on a different thread using. When it
-                 * runs on the main thread you should never perform long-running operations in
-                 * it (there is a timeout of 10 seconds that the system allows before considering
-                 * the receiver to be blocked and a candidate to be killed). You cannot launch a
-                 * popup dialog in your implementation of `onReceive`.
+                 * broadcast.  During this time you can use the other methods on BroadcastReceiver
+                 * to view/modify the current result values.  This method is always called within
+                 * the main thread of its process, unless you explicitly asked for it to be scheduled
+                 * on a different thread using the [Context.registerReceiver] overload that includes
+                 * a [android.os.Handler] argument. When it runs on the main thread you should never
+                 * perform long-running operations in it (there is a timeout of 10 seconds that the
+                 * system allows before considering the receiver to be blocked and a candidate to be
+                 * killed). You cannot launch a popup dialog in your implementation of `onReceive`.
                  *
                  * First we check if our [Intent] parameter [intent] is `null` and if its
                  * [Intent.getAction] returns [ACTION_MEDIA_CONTROL], returning to our caller if
                  * the test fails. Otherwise we initialize our [Int] variable `controlType` to the
                  * value stored as an extra in the [Intent] parameter `intent` under the key
-                 * [EXTRA_CONTROL_TYPE]. WE then branche on the value of `controlType` with
+                 * [EXTRA_CONTROL_TYPE]. We then branche on the value of `controlType` with
                  * [CONTROL_TYPE_PLAY] calling [MovieView.play] and [CONTROL_TYPE_PAUSE] calling
                  * [MovieView.pause].
                 *
@@ -601,7 +599,8 @@ class MainActivity : AppCompatActivity() {
      * other UI elements to be visible on the screen.
      *
      * We initialize our [View] variable `decorView` to the [Window.getDecorView] of the current
-     * [Window] of the activity. We then branch on the value of the [Configuration.orientation]:
+     * [Window] of the activity. We then branch on the value of the [Configuration.orientation] of
+     * [Configuration] parameter [config]:
      *  - If it is [Configuration.ORIENTATION_LANDSCAPE], we set the `systemUiVisibility` of
      *  `decorView` to the result of or'ing the flags [View.SYSTEM_UI_FLAG_LAYOUT_STABLE],
      *  [View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION], [View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN],
