@@ -61,13 +61,17 @@ class RevealEffectBasicFragment : Fragment() {
      * @return Return the [View] for the fragment's UI, or `null`.
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.reveal_effect_basic, container, false)
+        return inflater.inflate(
+            /* resource = */ R.layout.reveal_effect_basic,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
     }
 
     /**
      * Called immediately after [onCreateView] has returned, but before any saved state has been
      * restored in to the view. We initialize our [View] variable ` shape` by finding the view in
-     * our [View] parameter [view] with resource ID R.id.circle, and our [Button] variable
+     * our [View] parameter [view] with resource ID `R.id.circle`, and our [Button] variable
      * `val button` by finding the view with id `R.id.button` ("Reveal"). We then set the
      * [View.OnClickListener] of `button` to a lambda whose [View.OnClickListener.onClick] override
      * creates and runs an [Animator] which animates a clipping circle which obscures [View] `shape`
