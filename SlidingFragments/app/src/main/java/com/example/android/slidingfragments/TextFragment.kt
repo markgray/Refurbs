@@ -39,29 +39,37 @@ class TextFragment : Fragment() {
     /**
      * [OnTextFragmentAnimationEndListener] whose [OnTextFragmentAnimationEndListener.onAnimationEnd]
      * override we should call when our enter animation ends.
-     * TODO: Continue here.
      */
     var mListener: OnTextFragmentAnimationEndListener? = null
 
     /**
-     * Called to have the fragment instantiate its user interface view. We initialize `View view`
-     * by using our parameter `LayoutInflater inflater` to inflate our layout file R.layout.text_fragment
-     * into it using our parameter `ViewGroup container` for layout params without attaching to it.
-     * Then we set our `OnClickListener` to our field `clickListener` and return `view` to the caller.
+     * Called to have the fragment instantiate its user interface view. We initialize [View] variable
+     * `view` by using our [LayoutInflater] parameter [inflater] to inflate the layout file with the
+     * ID `R.layout.text_fragment` into it using our [ViewGroup] parameter [container] for layout
+     * params without attaching to it. Then we set its [View.OnClickListener] to our field
+     * [mClickListener] and return `view` to the caller.
      *
      * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment.
      * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
      * @param savedInstanceState If non-null, this fragment is being re-constructed, we ignore.
      * @return Return the View for the fragment's UI, or null.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.text_fragment, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(
+            /* resource = */ R.layout.text_fragment,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
         view.setOnClickListener(mClickListener)
         return view
     }
 
     /**
-     * Setter for our field `OnClickListener clickListener`.
+     * Setter for our [View.OnClickListener] field [mClickListener].
      *
      * @param clickListener `OnClickListener` we should use for our view
      */
@@ -70,13 +78,14 @@ class TextFragment : Fragment() {
     }
 
     /**
-     * Called when a fragment loads an animation. We initialize `int id` to the animator xml
-     * file R.animator.slide_fragment_in if our parameter `enter` is true or to the file
-     * R.animator.slide_fragment_out if it is false. We initialize `Animator anim` by loading
-     * the `Animator` from the resource file `id`. If `enter` is true we add an
-     * anonymous `AnimatorListenerAdapter` listener to it whose `onAnimationEnd` override
-     * calls the `onAnimationEnd` method of our field `OnTextFragmentAnimationEndListener mListener`.
-     * Finally we return `anim` to the caller.
+     * Called when a fragment loads an animation. We initialize [Int] variable `id` to the animator
+     * xml file with resource ID `R.animator.slide_fragment_in` if our [Boolean] parameter
+     * [enter] is `true` or to the xml file with resource ID `R.animator.slide_fragment_out` if it
+     * is `false`. We initialize [Animator] variable `anim` by loading the [Animator] from the file
+     * with resource ID `id`. If [enter] is `true` we add an anonymous [AnimatorListenerAdapter]
+     * listener to it whose [AnimatorListenerAdapter.onAnimationEnd] override calls the
+     * [OnTextFragmentAnimationEndListener.onAnimationEnd] method of our
+     * [OnTextFragmentAnimationEndListener] field [mListener]. Finally we return `anim` to the caller.
      *
      * @param transit  transition type, always 0 in our case - we ignore.
      * @param enter    true if 'entering,' false otherwise
@@ -97,10 +106,10 @@ class TextFragment : Fragment() {
     }
 
     /**
-     * Setter for our field `OnTextFragmentAnimationEndListener mListener`.
+     * Setter for our [OnTextFragmentAnimationEndListener] field [mListener].
      *
-     * @param listener the `OnTextFragmentAnimationEndListener` we should set our field
-     * `mListener` to
+     * @param listener the [OnTextFragmentAnimationEndListener] we should set our field
+     * [mListener] to
      */
     fun setOnTextFragmentAnimationEnd(listener: OnTextFragmentAnimationEndListener?) {
         mListener = listener
