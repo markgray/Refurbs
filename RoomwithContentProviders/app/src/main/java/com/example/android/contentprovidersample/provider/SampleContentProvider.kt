@@ -137,13 +137,13 @@ class SampleContentProvider : ContentProvider() {
      *
      *  * [CODE_CHEESE_DIR] - we initialize [Context] variable `val context` with the [Context] this
      *  provider is running in and if it is `null` we return `null` to the caller. If it is not
-     *  `null` we get our instance of [SampleDatabase] and use it to get th [CheeseDao] for the
+     *  `null` we get our instance of [SampleDatabase] and use it to get the [CheeseDao] for the
      *  Cheese table so we can use its [CheeseDao.insert] method to insert a [Cheese] object created
-     *  from our [ContentValues] parameter [values], saving the ID returned by `insert` in our
-     *  [Long] variable `val id`. We then fetch a [ContentResolver] instance for our application's
-     *  package and call its [ContentResolver.notifyChange] method to Notify registered observers
-     *  that a row in [uri] was updated and attempt to sync changes to the network. Finally we
-     *  append `id` to the end of the path of [uri] and return it to the caller.
+     *  from our [ContentValues] parameter [values] by the [Cheese.fromContentValues] method, saving
+     *  the ID returned by `insert` in our  [Long] variable `val id`. We then fetch a [ContentResolver]
+     *  instance for our application's package and call its [ContentResolver.notifyChange] method to
+     *  Notify registered observers that a row in [uri] was updated and attempt to sync changes to the
+     *  network. Finally we append `id` to the end of the path of [uri] and return it to the caller.
      *
      *  * [CODE_CHEESE_ITEM] - We throw an [IllegalArgumentException]
      *
@@ -158,10 +158,10 @@ class SampleContentProvider : ContentProvider() {
         return when (MATCHER.match(uri)) {
             CODE_CHEESE_DIR -> {
                 val context: Context = context ?: return null
-                val id: Long = SampleDatabase.getInstance(context).cheese()
-                    .insert(Cheese.fromContentValues(values))
+                val id: Long = SampleDatabase.getInstance(context = context).cheese()
+                    .insert(Cheese.fromContentValues(values = values))
                 context.contentResolver.notifyChange(uri, null)
-                ContentUris.withAppendedId(uri, id)
+                ContentUris.withAppendedId(/* contentUri = */ uri, /* id = */ id)
             }
 
             CODE_CHEESE_ITEM -> throw IllegalArgumentException("Invalid URI, cannot insert with ID: $uri")
@@ -203,10 +203,10 @@ class SampleContentProvider : ContentProvider() {
                 throw IllegalArgumentException("Invalid URI, cannot update without ID$uri")
             }
             CODE_CHEESE_ITEM -> {
-                val context = context ?: return 0
+                val context: Context = context ?: return 0
                 val count: Int = SampleDatabase.getInstance(context).cheese()
-                    .deleteById(ContentUris.parseId(uri))
-                context.contentResolver.notifyChange(uri, null)
+                    .deleteById(id = ContentUris.parseId(/* contentUri = */ uri))
+                context.contentResolver.notifyChange(/* uri = */ uri, /* observer = */ null)
                 count
             }
 
@@ -254,11 +254,11 @@ class SampleContentProvider : ContentProvider() {
             }
             CODE_CHEESE_ITEM -> {
                 val context: Context = context ?: return 0
-                val cheese: Cheese = Cheese.fromContentValues(values)
-                cheese.id = ContentUris.parseId(uri)
-                val count: Int = SampleDatabase.getInstance(context).cheese()
-                    .update(cheese)
-                context.contentResolver.notifyChange(uri, null)
+                val cheese: Cheese = Cheese.fromContentValues(values = values)
+                cheese.id = ContentUris.parseId(/* contentUri = */ uri)
+                val count: Int = SampleDatabase.getInstance(context = context).cheese()
+                    .update(cheese = cheese)
+                context.contentResolver.notifyChange(/* uri = */ uri, /* observer = */ null)
                 count
             }
 
@@ -285,22 +285,22 @@ class SampleContentProvider : ContentProvider() {
     ): Array<ContentProviderResult> {
         val context: Context? = context
         val database: SampleDatabase = SampleDatabase.getInstance(context!!)
-        @Suppress("DEPRECATION")
+        @Suppress("DEPRECATION") // TODO: Replace With runInTransaction(Runnable)
         database.beginTransaction()
         return try {
             val result: Array<ContentProviderResult> = super.applyBatch(operations)
-            @Suppress("DEPRECATION")
+            @Suppress("DEPRECATION") // TODO: Replace With runInTransaction(Runnable)
             database.setTransactionSuccessful()
             result
         } finally {
-            @Suppress("DEPRECATION")
+            @Suppress("DEPRECATION") // TODO: Replace With runInTransaction(Runnable)
             database.endTransaction()
         }
     }
 
     /**
-     * Override this to handle requests to insert a set of new rows. We switch on the code returned
-     * when our [UriMatcher] field [MATCHER] matches our [Uri] parameter [uri]:
+     * Override this to handle requests to insert an [Array] of new rows. We switch on the code
+     * returned when our [UriMatcher] field [MATCHER] matches our [Uri] parameter [uri]:
      *
      *  * [CODE_CHEESE_DIR] - We initialize our [Context] variable `val context` with the context
      *  this provider is running in, and if that is `null` we return 0 to the caller. We initialize
@@ -325,12 +325,12 @@ class SampleContentProvider : ContentProvider() {
         return when (MATCHER.match(uri)) {
             CODE_CHEESE_DIR -> {
                 val context: Context = context ?: return 0
-                val database: SampleDatabase = SampleDatabase.getInstance(context)
+                val database: SampleDatabase = SampleDatabase.getInstance(context = context)
                 val cheeseList: MutableList<Cheese> = ArrayList()
                 for (i in valuesArray.indices) {
-                    cheeseList.add(Cheese.fromContentValues(valuesArray[i]))
+                    cheeseList.add(element = Cheese.fromContentValues(values = valuesArray[i]))
                 }
-                database.cheese().insertAll(cheeseList.toTypedArray()).size
+                database.cheese().insertAll(cheeses = cheeseList.toTypedArray()).size
             }
 
             CODE_CHEESE_ITEM -> {

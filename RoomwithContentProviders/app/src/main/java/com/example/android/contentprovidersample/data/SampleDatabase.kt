@@ -46,17 +46,17 @@ abstract class SampleDatabase : RoomDatabase() {
     private fun populateInitialData() {
         if (cheese().count() == 0) {
             val cheese = Cheese()
-            @Suppress("DEPRECATION")
+            @Suppress("DEPRECATION") // TODO: Replace With runInTransaction(Runnable)
             beginTransaction()
             try {
                 for (i in Cheese.CHEESES.indices) {
                     cheese.name = Cheese.CHEESES[i]
                     cheese().insert(cheese)
                 }
-                @Suppress("DEPRECATION")
+                @Suppress("DEPRECATION") // TODO: Replace With runInTransaction(Runnable)
                 setTransactionSuccessful()
             } finally {
-                @Suppress("DEPRECATION")
+                @Suppress("DEPRECATION") // TODO: Replace With runInTransaction(Runnable)
                 endTransaction()
             }
         }
@@ -72,7 +72,7 @@ abstract class SampleDatabase : RoomDatabase() {
          * Gets the singleton instance of SampleDatabase. This synchronized method first checks to
          * see if our [SampleDatabase] field [sInstance] is `null`, and if it is, it creates a
          * [RoomDatabase.Builder] using the [SampleDatabase] class as the class annotated with
-         * @Database, "ex" as the file, and builds it to initialize [sInstance]. It then calls the
+         * @[Database], "ex" as the file, and builds it to initialize [sInstance]. It then calls the
          * [populateInitialData] method of [sInstance] to insert the dummy data into the database
          * if it is currently empty. Now that [sInstance] is known to exist we return it to the
          * caller.

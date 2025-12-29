@@ -51,33 +51,30 @@ class MainActivity : AppCompatActivity() {
     private var mCheeseAdapter: CheeseAdapter? = null
 
     /**
-     * Called when the [AppCompatActivity] is starting. First we call [enableEdgeToEdge] to
-     * enable edge to edge display, then we call our super's implementation of `onCreate`,
-     * and set our content view to our layout file `R.layout.main_activity` (it consists of
-     * a single [RecyclerView]).
+     * Called when the [AppCompatActivity] is starting. First we call [enableEdgeToEdge] to enable
+     * edge to edge display, then we call our super's implementation of `onCreate`, and set our
+     * content view to our layout file `R.layout.main_activity` (it consists of a single
+     * [RecyclerView]).
      *
-     * We initialize our [RecyclerView] variable `rootView` to the view with ID `R.id.list`
-     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for
-     * applying window insets to `rootView`, with the `listener` argument a lambda
-     * that accepts the [View] passed the lambda in variable `v` and the
-     * [WindowInsetsCompat] passed the lambda in variable `windowInsets`.
-     * It initializes its [Insets] variable* `systemBars` to the [WindowInsetsCompat.getInsets]
-     * of `windowInsets` with [WindowInsetsCompat.Type.systemBars] as the argument.
-     * It then gets the insets for the IME (keyboard) using [WindowInsetsCompat.Type.ime].
-     * It then updates the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * We initialize our [RecyclerView] variable `list` to the view with ID `R.id.list` then
+     * call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying window
+     * insets to `list`, with the `listener` argument a lambda that accepts the [View] passed
+     * the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable* `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
-     * We initialize [RecyclerView] variable `val list` to `rootView` (the view with ID `R.id.list`
-     * recall), and set its layout manager to a new instance of [LinearLayoutManager] created to
-     * use the context of `list`. We initialize our [CheeseAdapter] field [mCheeseAdapter] with a
-     * new instance and set the adapter of `list` to it. Finally we call the
-     * [LoaderManager.initLoader] method of the activity's [LoaderManager] to initialize (or reuse)
-     * a loader with id [LOADER_CHEESES] using our [LoaderManager.LoaderCallbacks] field
+     * We set the layout manager of [RecyclerView] variable `list` to a new instance of
+     * [LinearLayoutManager] created to use the context of `list`. We initialize our [CheeseAdapter]
+     * field [mCheeseAdapter] with a new instance and set the adapter of `list` to it. Finally we
+     * call the [LoaderManager.initLoader] method of the activity's [LoaderManager] to initialize
+     * (or reuse) a loader with id [LOADER_CHEESES] using our [LoaderManager.LoaderCallbacks] field
      * [mLoaderCallbacks] as the interface for the the [LoaderManager] to use to report changes in
      * the state of the loader.
      *
@@ -87,8 +84,8 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        val rootView = findViewById<RecyclerView>(R.id.list)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+        val list = findViewById<RecyclerView>(R.id.list)
+        ViewCompat.setOnApplyWindowInsetsListener(list) { v: View, windowInsets: WindowInsetsCompat ->
             val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
 
@@ -103,7 +100,6 @@ class MainActivity : AppCompatActivity() {
             // down to descendant views.
             WindowInsetsCompat.CONSUMED
         }
-        val list: RecyclerView = rootView
         list.layoutManager = LinearLayoutManager(list.context)
         mCheeseAdapter = CheeseAdapter()
         list.adapter = mCheeseAdapter
@@ -129,9 +125,14 @@ class MainActivity : AppCompatActivity() {
         override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
             if (id == LOADER_CHEESES) {
                 val uriCheese: Uri = SampleContentProvider.URI_CHEESE
-                return CursorLoader(applicationContext,
-                    uriCheese, arrayOf(Cheese.COLUMN_NAME),
-                    null, null, null)
+                return CursorLoader(
+                    /* context = */ applicationContext,
+                    /* uri = */ uriCheese,
+                    /* projection = */ arrayOf(Cheese.COLUMN_NAME),
+                    /* selection = */ null,
+                    /* selectionArgs = */ null,
+                    /* sortOrder = */ null
+                )
             }
             throw IllegalArgumentException()
         }
@@ -181,13 +182,13 @@ class MainActivity : AppCompatActivity() {
          * Called when [RecyclerView] needs a new [ViewHolder] of the given type to represent an
          * item. We simply return a new instance of our class [ViewHolder].
          *
-         * @param parent The [ViewGroup] into which the new [View] will be added after it is bound to
-         * an adapter position.
+         * @param parent The [ViewGroup] into which the new [View] will be added after it is bound
+         * to an adapter position.
          * @param viewType The view type of the new [View]. UNUSED
          * @return A new [ViewHolder] that holds a [View] of the given view type.
          */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(parent)
+            return ViewHolder(parent = parent)
         }
 
         /**
