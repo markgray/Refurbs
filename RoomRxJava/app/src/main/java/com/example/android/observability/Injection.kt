@@ -19,6 +19,7 @@ package com.example.android.observability
 
 import android.content.Context
 import com.example.android.observability.persistence.LocalUserDataSource
+import com.example.android.observability.persistence.UserDao
 import com.example.android.observability.persistence.UsersDatabase
 import com.example.android.observability.ui.ViewModelFactory
 
@@ -29,15 +30,16 @@ object Injection {
     /**
      * Creates a new [LocalUserDataSource]. First we get the singleton instance of our database
      * to initialize [UsersDatabase] variable `val database`, then we return a new instance of
-     * [LocalUserDataSource] constructed using the DAO of `database`
+     * [LocalUserDataSource] constructed using the DAO of `database`.
      *
      * @param context Context to use for the database.
-     * @return new instance of `LocalUserDataSource` which uses an instance of `UserDoa`
-     * as the DAO of our database table "users"
+     * @return new instance of [LocalUserDataSource] which uses the instance of [UserDao] returned
+     * by the [UsersDatabase.userDao] property of the singleton [UsersDatabase] as the DAO of our
+     * database table "users"
      */
     fun provideUserDataSource(context: Context): UserDataSource {
-        val database = UsersDatabase.getInstance(context)
-        return LocalUserDataSource(database.userDao)
+        val database = UsersDatabase.getInstance(context = context)
+        return LocalUserDataSource(mUserDao = database.userDao)
     }
 
     /**
@@ -48,7 +50,7 @@ object Injection {
      * @return an instance of [ViewModelFactory] constructed to use our [LocalUserDataSource].
      */
     fun provideViewModelFactory(context: Context): ViewModelFactory {
-        val dataSource = provideUserDataSource(context)
-        return ViewModelFactory(dataSource)
+        val dataSource = provideUserDataSource(context = context)
+        return ViewModelFactory(mDataSource = dataSource)
     }
 }

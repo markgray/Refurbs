@@ -25,7 +25,7 @@ import com.example.android.observability.persistence.User
  * Factory for [UserViewModel]s. Our constructor just saves its [UserDataSource] parameter as its
  * [UserDataSource] field [mDataSource].
  *
- * @param mDataSource the [UserDataSource] managing our [User] database
+ * @property mDataSource the [UserDataSource] managing our [User] database
  */
 class ViewModelFactory(
     /**
@@ -36,7 +36,7 @@ class ViewModelFactory(
     /**
      * Factory method for [UserViewModel] called by the [ViewModelProvider] to create an instance of
      * [UserViewModel]. We check to make sure that our [Class] parameter [modelClass] is a type we
-     * can cast to [UserViewModel] before constructing a new instance using our our [UserDataSource]
+     * can cast to [UserViewModel] before constructing a new instance using our [UserDataSource]
      * field [mDataSource] as the database for that [UserViewModel] and returning it to the caller.
      * If it is not a proper class we throw [IllegalArgumentException]
      *

@@ -41,8 +41,8 @@ abstract class UsersDatabase : RoomDatabase() {
         private var INSTANCE: UsersDatabase? = null
 
         /**
-         * Accessor for our singleton instance. If [INSTANCE] is `null` this is the first time we
-         * are called so in a synchronized block if it is still `null` we create a [RoomDatabase.Builder]
+         * Accessor for our singleton instance. If [INSTANCE] is `null` this is the first time we are
+         * called so in a synchronized block if it is still `null` we create a [RoomDatabase.Builder]
          * for a persistent database for our @Database annotated [UsersDatabase] class with the
          * file name "Sample.db", and build it to initialize [INSTANCE]. In any case we then return
          * [INSTANCE] to the caller.

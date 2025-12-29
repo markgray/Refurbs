@@ -23,23 +23,17 @@ import io.reactivex.Flowable
 /**
  * Using the Room database as a data source. [UserDataSource] extends [RoomDatabase] and
  * is annotated with: Database(entities = {User.class}, version = 1)
- */
-class LocalUserDataSource
-/**
- * Our constructor, called from the `provideUserDataSource` method of the [Injection]
- * class. We simply save our parameter `UserDao userDao` in our field `UserDao mUserDao`.
  *
- * @param mUserDao the DAO we should use to access our database
- */(
-    /**
-     * The DAO instance we use, it is set by our constructor.
-     */
-    private val mUserDao: UserDao) : UserDataSource {
+ * Our constructor is called from the `provideUserDataSource` method of the [Injection] class.
+ *
+ * @property mUserDao the DAO we should use to access our database
+ */
+class LocalUserDataSource(private val mUserDao: UserDao) : UserDataSource {
     /**
      * Uses our [UserDao] field [mUserDao] to retrieve the [User] object from the database wrapped
      * in a [Flowable] that will emit every time the user name has been updated
      *
-     * @return [User] returned by the DAO field [mUserDao] wrapped in a flowable that will
+     * @return the [User] returned by the DAO field [mUserDao] wrapped in a flowable that will
      * emit every time the user name has been updated.
      */
     override fun getUser(): Flowable<User> {

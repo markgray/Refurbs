@@ -26,21 +26,15 @@ import io.reactivex.Flowable
 import java.util.UUID
 
 /**
- * View Model for the [UserActivity]
- */
-class UserViewModel
-/**
- * Our constructor, called from the [ViewModelFactory.create] method of [ViewModelFactory]. We just
- * save our [UserDataSource] parameter in our [UserDataSource] field [mDataSource]
+ * View Model for the [UserActivity] that it uses to observe [UserDataSource.getUser] property or
+ * to call [UserDataSource.insertOrUpdateUser] with a new [User].
  *
- * @param mDataSource the [UserDataSource] we are to use for our data
+ * Our constructor is called from the [ViewModelFactory.create] method of [ViewModelFactory] with
+ * the [UserDataSource] that initializes our [UserDataSource] field [mDataSource]
+ *
+ * @property mDataSource the [UserDataSource] we are to use for our data
  */
-(
-    /**
-     * `UserDataSource` we are constructed to use
-     */
-    private val mDataSource: UserDataSource
-) : ViewModel() {
+class UserViewModel(private val mDataSource: UserDataSource) : ViewModel() {
     /**
      * [User] we are observing and displaying
      */
