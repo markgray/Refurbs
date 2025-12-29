@@ -46,6 +46,7 @@ import com.example.android.common.logger.MessageOnlyLogFilter
  * [Fragment] which can display a view. For devices with displays with a width of 720dp or greater,
  * the sample log is always visible, on other devices it's visibility is controlled by an item on
  * the Action Bar.
+ * TODO: Continue here.
  */
 class MainActivity : SampleActivityBase() {
     /**

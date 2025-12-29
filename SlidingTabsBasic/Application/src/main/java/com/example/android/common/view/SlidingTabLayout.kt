@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "MemberVisibilityCanBePrivate",
+@file:Suppress(
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "MemberVisibilityCanBePrivate",
     "UnusedImport"
 )
 
@@ -152,7 +154,7 @@ constructor(
     /**
      * Sets the colors to be used for indicating the selected tab. These colors are treated as a
      * circular array. Providing one color will mean that all tabs are indicated with the same color.
-     * We just call the [SlidingTabStrip.setSelectedIndicatorColors]  method of our [SlidingTabStrip]
+     * We just call the [SlidingTabStrip.setSelectedIndicatorColors] method of our [SlidingTabStrip]
      * field [mTabStrip].
      *
      * @param colors array (or  Varargs) of colors
@@ -227,7 +229,7 @@ constructor(
      * [TypedValue.COMPLEX_UNIT_SP] units, and set its type face to [Typeface.DEFAULT_BOLD]. We
      * initialize [TypedValue] variable `val outValue` with a new instance, retrieve the attribute
      * value for [android.R.attr.selectableItemBackground] from the Theme object associated with our
-     * [Context] into it walking the resource references, and then set the background of `textView`
+     * [Context] into it, walking the resource references, and then set the background of `textView`
      * to the resource whose id is now stored in the [TypedValue.resourceId] field of `outValue`.
      * If the SDK version of our device is greater than or equal to `ICE_CREAM_SANDWICH` we set
      * `textView` to transform input to ALL CAPS. We calculate [Int] variable `val padding` by
