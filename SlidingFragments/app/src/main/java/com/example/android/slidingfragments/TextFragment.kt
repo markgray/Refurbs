@@ -37,8 +37,9 @@ class TextFragment : Fragment() {
     private var mClickListener: View.OnClickListener? = null
 
     /**
-     * `OnTextFragmentAnimationEndListener` whose `onAnimationEnd` override we should call
-     * when our enter animation ends.
+     * [OnTextFragmentAnimationEndListener] whose [OnTextFragmentAnimationEndListener.onAnimationEnd]
+     * override we should call when our enter animation ends.
+     * TODO: Continue here.
      */
     var mListener: OnTextFragmentAnimationEndListener? = null
 

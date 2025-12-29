@@ -56,7 +56,10 @@ import androidx.fragment.app.FragmentTransaction
  * more, the text fragment slides back down and the image fragment regains
  * focus. See [...](https://www.youtube.com/watch?v=xbl5cxfA1n4)
  */
-class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener, OnBackStackChangedListener {
+class SlidingFragments : AppCompatActivity(),
+    OnTextFragmentAnimationEndListener,
+    OnBackStackChangedListener
+{
     /**
      * [ImageFragment] with id `R.id.move_fragment`, it displays an [ImageView] of the jpg with ID
      * `R.drawable.golden_gate` (drawable-hdpi/golden_gate.jpg)
@@ -93,26 +96,23 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
     var mIsAnimating: Boolean = false
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.sliding_fragments_layout`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.sliding_fragments_layout`.
      *
      * We initialize our [FrameLayout] variable `rootView` to the view with ID
-     * `R.id.move_to_back_container` then call [ViewCompat.setOnApplyWindowInsetsListener]
-     * to take over the policy for applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * `R.id.move_to_back_container` then call [ViewCompat.setOnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to `rootView`, with the `listener` argument a
+     * lambda that accepts the [View] passed the lambda in variable `v` and the
+     * [WindowInsetsCompat] passed the lambda in variable `windowInsets`. It initializes its
+     * [Insets] variable `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
+     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the IME
+     * (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of
+     * `v` to be a [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`,
+     * the right margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the
+     * bottom margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize [View] field [mDarkHoverView] by finding the view with id `R.id.dark_hover_view`
      * and set its alpha to 0. We initialize [ImageFragment] field [mImageFragment] by using the
@@ -152,7 +152,8 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
         }
         mDarkHoverView = findViewById(R.id.dark_hover_view)
         mDarkHoverView!!.alpha = 0f
-        mImageFragment = supportFragmentManager.findFragmentById(R.id.move_fragment) as ImageFragment?
+        mImageFragment = supportFragmentManager
+            .findFragmentById(R.id.move_fragment) as ImageFragment?
         mTextFragment = TextFragment()
         supportFragmentManager.addOnBackStackChangedListener(this)
         mImageFragment!!.setClickListener(mClickListener)
@@ -177,13 +178,15 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
      * the animation logic in this way is because the translucent dark hover view must fade in at
      * the same time as the image fragment animates into the background, which would be difficult
      * to time properly given that the [FragmentTransaction.setCustomAnimations] method can only
-     * modify the two fragments in the transaction. If our [Boolean] flag field [mIsAnimating] is
-     * `true` we return having done nothing (the animations started by a previous call to this
-     * method are still in progress). Otherwise we set [mIsAnimating] to `true` and branch on the
-     * value of our [Boolean] flag field [mDidSlideOut]:
+     * modify the two fragments in the transaction.
+     *
+     * If our [Boolean] flag field [mIsAnimating] is `true` we return having done nothing (the
+     * animations started by a previous call to this method are still in progress). Otherwise we
+     * set [mIsAnimating] to `true` and branch on the value of our [Boolean] flag field
+     * [mDidSlideOut]:
      *
      *  * `true`: (we have previously animated the image fragment into the background and want to
-     *  restore it) We set [mDidSlideOut] to `false` and call the [FragmentManager.popBackStack]
+     *  restore it). We set [mDidSlideOut] to `false` and call the [FragmentManager.popBackStack]
      *  method of the [FragmentManager] for interacting with fragments associated with this activity
      *  to Pop the top state off the back stack.
      *
@@ -235,8 +238,11 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
                         /* popEnter = */ 0,
                         /* popExit = */ R.animator.slide_fragment_out
                     )
-                    transaction.add(R.id.move_to_back_container, mTextFragment!!)
-                    transaction.addToBackStack(null)
+                    transaction.add(
+                        /* containerViewId = */ R.id.move_to_back_container,
+                        /* fragment = */ mTextFragment!!
+                    )
+                    transaction.addToBackStack(/* name = */ null)
                     transaction.commit()
                 }
             }
@@ -248,9 +254,9 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
      * Called whenever the contents of the back stack change. If our [Boolean] flag field
      * [mDidSlideOut] is `false` we call our method [slideForward] with `null` as the
      * [AnimatorListener] argument (it animates the image fragment into the foreground by both
-     * scaling and rotating the fragment's view, while also removing the previously added translucent
-     * dark hover view. Upon the completion of this animation, the image fragment regains focus
-     * since this method is called from the [onBackStackChanged] method).
+     * scaling and rotating the fragment's view, while also removing the previously added
+     * translucent dark hover view. Upon the completion of this animation, the image fragment
+     * regains focus since this method is called from the [onBackStackChanged] method).
      */
     override fun onBackStackChanged() {
         if (!mDidSlideOut) {
@@ -285,12 +291,27 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
         val rotateX = PropertyValuesHolder.ofFloat("rotationX", 40f)
         val scaleX = PropertyValuesHolder.ofFloat("scaleX", 0.8f)
         val scaleY = PropertyValuesHolder.ofFloat("scaleY", 0.8f)
-        val movingFragmentAnimator = ObjectAnimator.ofPropertyValuesHolder(movingFragmentView, rotateX, scaleX, scaleY)
-        val darkHoverViewAnimator = ObjectAnimator.ofFloat(mDarkHoverView, "alpha", 0.0f, 0.5f)
-        val movingFragmentRotator = ObjectAnimator.ofFloat(movingFragmentView, "rotationX", 0f)
+        val movingFragmentAnimator = ObjectAnimator.ofPropertyValuesHolder(
+            /* target = */ movingFragmentView,
+            /* ...values = */ rotateX, scaleX, scaleY
+        )
+        val darkHoverViewAnimator = ObjectAnimator.ofFloat(
+            /* target = */ mDarkHoverView,
+            /* propertyName = */ "alpha",
+            /* ...values = */ 0.0f, 0.5f
+        )
+        val movingFragmentRotator = ObjectAnimator.ofFloat(
+            /* target = */ movingFragmentView,
+            /* propertyName = */ "rotationX",
+            /* ...values = */ 0f
+        )
         movingFragmentRotator.startDelay = resources.getInteger(R.integer.half_slide_up_down_duration).toLong()
         val s = AnimatorSet()
-        s.playTogether(movingFragmentAnimator, darkHoverViewAnimator, movingFragmentRotator)
+        s.playTogether(
+            /* ...items = */ movingFragmentAnimator,
+            darkHoverViewAnimator,
+            movingFragmentRotator
+        )
         s.addListener(listener)
         s.start()
     }
@@ -299,25 +320,26 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
      * This method animates the image fragment into the foreground by both scaling and rotating the
      * fragment's view, while also removing the previously added translucent dark hover view. Upon
      * the completion of this animation, the image fragment regains focus since this method is
-     * called from the [onBackStackChanged] method. We initialize [View] variable
-     * `val movingFragmentView` with the root view for the layout of [ImageFragment] field
-     * [mImageFragment]. We initialize [PropertyValuesHolder] variable `val rotateX` with an
-     * instance which will animate the "rotationX" property to 40f, [PropertyValuesHolder] variable
-     * `val scaleX` to an instance which will animate the "scaleX" property to 1.0f, and
-     * [PropertyValuesHolder] variable `val scaleY` to an instance which will animate the "scaleY"
-     * property to 1.0f, then initialize [ObjectAnimator] variable `val movingFragmentAnimator` with
-     * an instance which will apply these three to `movingFragmentView`. We initialize
-     * [ObjectAnimator] variable `val darkHoverViewAnimator` to an instance which will animate the
-     * "alpha" property of [View] field [mDarkHoverView] from 0.5f to 0.0f, then initialize
-     * [ObjectAnimator] variable `val movingFragmentRotator` to an instance which will animate the
-     * "rotationX" property of `movingFragmentView` to 0, and set its start delay to the integer
-     * stored as a resource under the id `R.integer.half_slide_up_down_duration` (150ms). Now we
-     * initialize [AnimatorSet] variable `val s` with a new instance, set it to play together
-     * `movingFragmentAnimator`, `movingFragmentRotator`, and `darkHoverViewAnimator`, set its start
-     * delay to the integer stored as a resource under the id `R.integer.half_slide_up_down_duration`
-     * (150ms), and add an anonymous [AnimatorListenerAdapter] whose
-     * [AnimatorListenerAdapter.onAnimationEnd] override sets our [Boolean] flag field [mIsAnimating]
-     * to `false`. Finally we start `s` running.
+     * called from the [onBackStackChanged] method.
+     *
+     * We initialize [View] variable `val movingFragmentView` with the root view for the layout of
+     * [ImageFragment] field [mImageFragment]. We initialize [PropertyValuesHolder] variable
+     * `val rotateX` with an instance which will animate the "rotationX" property to 40f,
+     * [PropertyValuesHolder] variable `val scaleX` to an instance which will animate the "scaleX"
+     * property to 1.0f, and [PropertyValuesHolder] variable `val scaleY` to an instance which will
+     * animate the "scaleY" property to 1.0f, then initialize [ObjectAnimator] variable
+     * `val movingFragmentAnimator` with an instance which will apply these three to
+     * `movingFragmentView`. We initialize [ObjectAnimator] variable `val darkHoverViewAnimator`
+     * to an instance which will animate the "alpha" property of [View] field [mDarkHoverView] from
+     * 0.5f to 0.0f, then initialize [ObjectAnimator] variable `val movingFragmentRotator` to an
+     * instance which will animate the "rotationX" property of `movingFragmentView` to 0, and set
+     * its start delay to the integer stored as a resource under the id
+     * `R.integer.half_slide_up_down_duration` (150ms). Now we initialize [AnimatorSet] variable
+     * `val s` with a new instance, set it to play together `movingFragmentAnimator`,
+     * `movingFragmentRotator`, and `darkHoverViewAnimator`, set its start delay to the integer
+     * stored as a resource under the id `R.integer.half_slide_up_down_duration` (150ms), and add an
+     * anonymous [AnimatorListenerAdapter] whose [AnimatorListenerAdapter.onAnimationEnd] override
+     * sets our [Boolean] flag field [mIsAnimating] to `false`. Finally we start `s` running.
      *
      * @param listener an unused [AnimatorListener] always null
      */
@@ -327,12 +349,27 @@ class SlidingFragments : AppCompatActivity(), OnTextFragmentAnimationEndListener
         val rotateX = PropertyValuesHolder.ofFloat("rotationX", 40f)
         val scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.0f)
         val scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.0f)
-        val movingFragmentAnimator = ObjectAnimator.ofPropertyValuesHolder(movingFragmentView, rotateX, scaleX, scaleY)
-        val darkHoverViewAnimator = ObjectAnimator.ofFloat(mDarkHoverView, "alpha", 0.5f, 0.0f)
-        val movingFragmentRotator = ObjectAnimator.ofFloat(movingFragmentView, "rotationX", 0f)
+        val movingFragmentAnimator = ObjectAnimator.ofPropertyValuesHolder(
+            /* target = */ movingFragmentView,
+            /* ...values = */ rotateX, scaleX, scaleY
+        )
+        val darkHoverViewAnimator = ObjectAnimator.ofFloat(
+            /* target = */ mDarkHoverView,
+            /* propertyName = */ "alpha",
+            /* ...values = */ 0.5f, 0.0f
+        )
+        val movingFragmentRotator = ObjectAnimator.ofFloat(
+            /* target = */ movingFragmentView,
+            /* propertyName = */ "rotationX",
+            /* ...values = */ 0f
+        )
         movingFragmentRotator.startDelay = resources.getInteger(R.integer.half_slide_up_down_duration).toLong()
         val s = AnimatorSet()
-        s.playTogether(movingFragmentAnimator, movingFragmentRotator, darkHoverViewAnimator)
+        s.playTogether(
+            /* ...items = */ movingFragmentAnimator,
+            movingFragmentRotator,
+            darkHoverViewAnimator
+        )
         s.startDelay = resources.getInteger(R.integer.slide_up_down_duration).toLong()
         s.addListener(object : AnimatorListenerAdapter() {
             /**
