@@ -61,12 +61,16 @@ class SlidingTabsBasicFragment : Fragment() {
      * @return Return the [View] for the fragment's UI
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_sample, container, false)
+        return inflater.inflate(
+            /* resource = */ R.layout.fragment_sample,
+            /* root = */ container,
+            /* attachToRoot = */ false
+        )
     }
 
     /**
-     * This is called after the [onCreateView] has finished. Here we can pick out the [View]s we
-     * need to configure from the content view. We set the [ViewPager]'s adapter to be an instance
+     * This is called after the [onCreateView] method has finished. Here we can pick out the [View]s
+     * we need to configure from the content view. We set the [ViewPager]'s adapter to be an instance
      * of [SamplePagerAdapter]. The [SlidingTabLayout] is then given the [ViewPager] so that it can
      * populate itself.
      *
@@ -103,11 +107,12 @@ class SlidingTabsBasicFragment : Fragment() {
         /**
          * Determines whether a page View is associated with a specific key object as returned by
          * [instantiateItem]. This method is required for a [PagerAdapter] to function properly.
-         * We return true if our [Any] parameter [o] is equal to our [View] parameter [view].
+         * We return `true` if our [Any] parameter [o] points to same object as our [View] parameter
+         * [view].
          *
-         * @param view Page View to check for association with `object`
-         * @param o Object to check for association with `view`
-         * @return true if the value returned from [.instantiateItem] is the
+         * @param view Page [View] to check for association with [o]
+         * @param o Object to check for association with [view]
+         * @return `true` if the value returned from [instantiateItem] is the
          * same object as the [View] added to the [ViewPager].
          */
         override fun isViewFromObject(view: View, o: Any): Boolean {
@@ -145,7 +150,7 @@ class SlidingTabsBasicFragment : Fragment() {
          * @param container The containing View in which the page will be shown.
          * @param position The page position to be instantiated.
          * @return Returns an Object representing the new page. This does not
-         * need to be a View, but can be some other container of the page.
+         * need to be a [View], but can be some other container of the page.
          */
         @SuppressLint("SetTextI18n")
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
