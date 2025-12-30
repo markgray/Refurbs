@@ -45,26 +45,23 @@ class Snake : ComponentActivity() {
     private lateinit var mSnakeView: SnakeView
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.snake_layout`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.snake_layout`.
      *
      * We initialize our [FrameLayout] variable `rootView` to the view with ID `R.id.root_view`
-     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for
-     * applying window insets to `rootView`, with the `listener`
-     * argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to `rootView`, with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * We initialize our [SnakeView] field  [mSnakeView] by finding the view with id `R.id.snake`,
      * then call its method [SnakeView.setDependentViews] to have it set its [TextView] field
@@ -108,20 +105,20 @@ class Snake : ComponentActivity() {
         }
         mSnakeView = findViewById(R.id.snake)
         mSnakeView.setDependentViews(
-                findViewById(R.id.text),  // view to use for its field {@code TextView mStatusText}
-                findViewById(R.id.arrowContainer),  // view to use for its field {@code View mArrowsView}
-                findViewById(R.id.background) // view to use for its field {@code View mBackgroundView}.
+            msgView = findViewById(R.id.text),  // view to use for its TextView field mStatusText}
+            arrowView = findViewById(R.id.arrowContainer),  // view to use for its View field mArrowsView}
+            backgroundView = findViewById(R.id.background) // view to use for its View field mBackgroundView}.
         )
         if (savedInstanceState == null) {
             // We were just launched -- set up a new game
-            mSnakeView.setMode(SnakeView.READY)
+            mSnakeView.setMode(newMode = SnakeView.READY)
         } else {
             // We are being restored
             val map = savedInstanceState.getBundle(ICICLE_KEY)
             if (map != null) {
-                mSnakeView.restoreState(map)
+                mSnakeView.restoreState(icicle = map)
             } else {
-                mSnakeView.setMode(SnakeView.PAUSE)
+                mSnakeView.setMode(newMode = SnakeView.PAUSE)
             }
         }
         mSnakeView.setOnTouchListener { v: View, event: MotionEvent ->
@@ -132,13 +129,14 @@ class Snake : ComponentActivity() {
              * location of the [MotionEvent] parameter `event` divided by the width of the [View]
              * parameter `v` and [Float] variable `val y` to the Y location of the of the [MotionEvent]
              * parameter `event` divided by the height of the [View] parameter `v`. Then we declare
-             * [Int] variable `var direction` and set it to the quadrant of the touch from [0,1,2,3]
+             * [Int] variable `var direction` and set it to the quadrant of the touch from `[0,1,2,3]`
              * by setting the lower bit if `x` is greater than `y` and setting the upper bit if `x`
              * is greater than 1 minus `y`. We then call the [SnakeView.moveSnake] method of [mSnakeView]
              * to set the direction it is moving in to `direction` (ie. the direction is same as the
              * quadrant which was touched). If the game state of [mSnakeView] was not already `RUNNING`,
              * we start it running by calling its [SnakeView.moveSnake] method to have it start moving
-             * in the `MOVE_UP` direction.
+             * in the `MOVE_UP` direction. Finally we return `false` to signal that we have not
+             * consumed the event.
              *
              * @param v The [View] the touch event has been dispatched to.
              * @param event The [MotionEvent] object containing full information about the event.
@@ -146,8 +144,8 @@ class Snake : ComponentActivity() {
              */
             if (mSnakeView.gameState == SnakeView.RUNNING) {
                 // Normalize x,y between 0 and 1
-                val x = event.x / v.width
-                val y = event.y / v.height
+                val x: Float = event.x / v.width
+                val y: Float = event.y / v.height
 
                 // Direction will be [0,1,2,3] depending on quadrant
                 var direction: Int = if (x > y) 1 else 0
@@ -194,6 +192,7 @@ class Snake : ComponentActivity() {
      * Called when a key was pressed down and not handled by any of the views inside of the activity.
      * Handles key events in the game by updating the direction our snake is traveling based on the
      * `DPAD` key pressed. We switch on the value of our [Int] parameter [keyCode]:
+     *
      *  * [KeyEvent.KEYCODE_DPAD_UP]: we call the [SnakeView.moveSnake] method of our field
      *  [mSnakeView] to have it start to move in the [MOVE_UP] direction then break.
      *
@@ -214,10 +213,10 @@ class Snake : ComponentActivity() {
      */
     override fun onKeyDown(keyCode: Int, msg: KeyEvent): Boolean {
         when (keyCode) {
-            KeyEvent.KEYCODE_DPAD_UP -> mSnakeView.moveSnake(MOVE_UP)
-            KeyEvent.KEYCODE_DPAD_RIGHT -> mSnakeView.moveSnake(MOVE_RIGHT)
-            KeyEvent.KEYCODE_DPAD_DOWN -> mSnakeView.moveSnake(MOVE_DOWN)
-            KeyEvent.KEYCODE_DPAD_LEFT -> mSnakeView.moveSnake(MOVE_LEFT)
+            KeyEvent.KEYCODE_DPAD_UP -> mSnakeView.moveSnake(direction = MOVE_UP)
+            KeyEvent.KEYCODE_DPAD_RIGHT -> mSnakeView.moveSnake(direction = MOVE_RIGHT)
+            KeyEvent.KEYCODE_DPAD_DOWN -> mSnakeView.moveSnake(direction = MOVE_DOWN)
+            KeyEvent.KEYCODE_DPAD_LEFT -> mSnakeView.moveSnake(direction = MOVE_LEFT)
         }
         return super.onKeyDown(keyCode, msg)
     }
@@ -249,9 +248,9 @@ class Snake : ComponentActivity() {
         var MOVE_RIGHT: Int = 3
 
         /**
-         * Key under which we store the `Bundle` containing the state of the game in the `Bundle`
-         * that we are passed in our `onSaveInstanceState` override and later restore from the
-         * `Bundle` passed our `onCreate` override when we are recreated.
+         * Key under which we store the [Bundle] containing the state of the game in the [Bundle]
+         * that we are passed in our [onSaveInstanceState] override and later restore from the
+         * [Bundle] passed our [onCreate] override when we are recreated.
          */
         private const val ICICLE_KEY = "snake-view"
     }

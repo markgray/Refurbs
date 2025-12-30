@@ -16,6 +16,7 @@
 package com.example.android.snake
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -27,13 +28,24 @@ import androidx.core.content.withStyledAttributes
 /**
  * Background View: Draw 4 full-screen RGBY triangles. This is drawn when the layout file
  * snake_layout.xml is inflated.
- * TODO: Continue here
+ *
+ * In our `init` block we first call [setFocusable] with `true` (kotlin `isFocusable` property)
+ * to enable our [View] to receive focus. Then we initialize the four colors in our [IntArray]
+ * property [mColors] by using the [Context.withStyledAttributes] extension function to execute a
+ * [TypedArray] lambda `block` that uses the the [TypedArray.getColor] method to retrieve the
+ * values from our [AttributeSet] parameter [attrs] for the `R.styleable` attributes
+ * BackgroundView_colorSegmentOne, BackgroundView_colorSegmentTwo, BackgroundView_colorSegmentThree,
+ * and BackgroundView_colorSegmentFour.
+ *
+ * @param context The [Context] the view is running in, through which it can access the current
+ * theme, resources, etc.
+ * @param attrs The attributes of the XML tag that is inflating the view.
  */
 class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     /**
      * The four colors defined by the attributes BackgroundView_colorSegmentOne,
      * BackgroundView_colorSegmentTwo, BackgroundView_colorSegmentThree, and
-     * BackgroundView_colorSegmentFour
+     * BackgroundView_colorSegmentFour respectively.
      */
     private val mColors = IntArray(size = 4)
 
@@ -73,7 +85,8 @@ class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, att
      * We implement this to do our drawing. After asserting that [mVertexPoints] has been initialized
      * by our [onSizeChanged] override, we loop over our [Int] variable `var triangle` for all the
      * colors in the [mColors] array of [Int]:
-     *  * We set the color in `mFillColors` for all vertex points to current triangle color
+     *
+     *  * We set the color in [mFillColors] for all vertex points to current triangle color
      *
      *  * We then call the [Canvas.drawVertices] method of our parameter [canvas] to draw the
      *  current triangle and loop around for the next one.

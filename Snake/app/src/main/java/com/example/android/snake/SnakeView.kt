@@ -18,6 +18,7 @@ package com.example.android.snake
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -63,34 +64,33 @@ class SnakeView : TileView {
 
     /**
      * Tracks the absolute time when the snake last moved, and is used to determine if a
-     * move should be made based on mMoveDelay.
+     * move should be made based on [mMoveDelay].
      */
     private var mLastMove: Long = 0
 
     /**
-     * mStatusText: Text shows to the user in some run states
+     * [mStatusText]: [TextView] that shows status to the user in some run states
      */
     private var mStatusText: TextView? = null
 
     /**
-     * mArrowsView: View which shows 4 arrows to signify 4 directions in which the snake can move
+     * [mArrowsView]: [View] which shows 4 arrows to signify 4 directions in which the snake can move
      */
     private var mArrowsView: View? = null
 
     /**
-     * mBackgroundView: Background View which shows 4 different colored triangles pressing which
-     * moves the snake
+     * [mBackgroundView]: Background [View] which shows 4 different colored triangles which the user
+     * can click to change the direction the snake is moving.
      */
     private var mBackgroundView: View? = null
 
     /**
-     * mSnakeTrail: A list of Coordinates that make up the snake's body mAppleList: The secret
-     * location of the juicy apples the snake craves.
+     * [mSnakeTrail]: A list of [Coordinate] that make up the snake's body.
      */
     private var mSnakeTrail = ArrayList<Coordinate?>()
 
     /**
-     * A list of Coordinates that have an apple in them.
+     * The list of [Coordinate] that have an apple in them.
      */
     private var mAppleList = ArrayList<Coordinate?>()
 
@@ -107,11 +107,11 @@ class SnakeView : TileView {
     @SuppressLint("HandlerLeak") // TODO: Determine if a leak is possible (I doubt it)
     internal inner class RefreshHandler : Handler(Looper.getMainLooper()) {
         /**
-         * Subclasses must implement this to receive messages. We call the `update` method of
-         * this instance of `SnakeView` to update the snake's location if necessary, then call
-         * its `invalidate` method to schedule a call to its `onDraw` method.
+         * Subclasses must implement this to receive messages. We call the [update] method of
+         * this instance of [SnakeView] to update the snake's location if necessary, then call
+         * its [invalidate] method to schedule a call to its [onDraw] method.
          *
-         * @param msg A [Message][android.os.Message] object
+         * @param msg A [Message][Message] object
          */
         override fun handleMessage(msg: Message) {
             update()
@@ -126,8 +126,8 @@ class SnakeView : TileView {
          * @param delayMillis how long to wait to send a message to ourselves in milliseconds.
          */
         fun sleep(delayMillis: Long) {
-            this.removeMessages(0)
-            sendMessageDelayed(obtainMessage(0), delayMillis)
+            this.removeMessages(/* what = */ 0)
+            sendMessageDelayed(/* msg = */ obtainMessage(0), /* delayMillis = */ delayMillis)
         }
     }
 
@@ -140,12 +140,12 @@ class SnakeView : TileView {
      * @param attrs The attributes of the XML tag that is inflating the view.
      */
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initSnakeView(context)
+        initSnakeView(context = context)
     }
 
     /**
      * Perform inflation from XML and apply a class-specific base style from a theme attribute. First
-     * we call our super's constructor, then we call our method `initSnakeView` to initialize
+     * we call our super's constructor, then we call our method [initSnakeView] to initialize
      * our view.
      *
      * @param context  The Context the view is running in, through which it can
@@ -160,39 +160,40 @@ class SnakeView : TileView {
     }
 
     /**
-     * Initializes this view. First we enable our view to receive focus, then we initialize our variable
-     * `Resources r` with a `Resources` instance for the application's package. We call our
-     * method `resetTiles` to allocate 4 entries for our field `Bitmap[] mTileArray`, then
-     * call our method `loadTile` three times to load the drawable with resource id R.drawable.redstar
-     * into the RED_STAR (1) index of `mTileArray`, the drawable with resource id R.drawable.yellowstar
-     * into the YELLOW_STAR (2) index of `mTileArray`, and the drawable with resource id R.drawable.greenstar
-     * into the GREEN_STAR (3) index of `mTileArray`.
+     * Initializes this view. First we enable our view to receive focus, then we initialize our
+     * [Resources] variable ` r` with a `Resources` instance for the application's package. We call
+     * our method [resetTiles] to allocate 4 entries for our [Array] of [Bitmap] field [mTileArray],
+     * then call our method [loadTile] three times to load the drawable with resource id
+     * `R.drawable.redstar` into the [RED_STAR] (1) index of [mTileArray], the drawable with resource
+     * id `R.drawable.yellowstar` into the [YELLOW_STAR] (2) index of [mTileArray], and the drawable
+     * with resource id `R.drawable.greenstar` into the [GREEN_STAR] (3) index of [mTileArray] (note
+     * that we use the overload of [Resources.getDrawable] that includes a `theme` argument for
+     * devices running `LOLLIPOP` or newer).
      *
      * @param context The Context the view is running in, through which it can access
      * the current theme, resources, etc.
      */
-    // parameter unused
     private fun initSnakeView(context: Context) {
         isFocusable = true
-        val r = context.resources
-        resetTiles(4)
+        val r: Resources = context.resources
+        resetTiles(tileCount = 4)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            loadTile(RED_STAR, r.getDrawable(R.drawable.redstar, null))
+            loadTile(key = RED_STAR, tile = r.getDrawable(R.drawable.redstar, null))
         } else {
             @Suppress("DEPRECATION") // Needed for pre-LOLLIPOP
-            loadTile(RED_STAR, r.getDrawable(R.drawable.redstar))
+            loadTile(key = RED_STAR, tile = r.getDrawable(R.drawable.redstar))
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            loadTile(YELLOW_STAR, r.getDrawable(R.drawable.yellowstar, null))
+            loadTile(key = YELLOW_STAR, tile = r.getDrawable(R.drawable.yellowstar, null))
         } else {
             @Suppress("DEPRECATION") // Needed for pre-LOLLIPOP
-            loadTile(YELLOW_STAR, r.getDrawable(R.drawable.yellowstar))
+            loadTile(key = YELLOW_STAR, tile = r.getDrawable(R.drawable.yellowstar))
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            loadTile(GREEN_STAR, r.getDrawable(R.drawable.greenstar, null))
+            loadTile(key = GREEN_STAR, tile = r.getDrawable(R.drawable.greenstar, null))
         } else {
             @Suppress("DEPRECATION") // Needed for pre-LOLLIPOP
-            loadTile(GREEN_STAR, r.getDrawable(R.drawable.greenstar))
+            loadTile(key = GREEN_STAR, tile = r.getDrawable(R.drawable.greenstar))
         }
     }
 
@@ -231,9 +232,9 @@ class SnakeView : TileView {
      * `val rawArray` with an array that will hold twice as many [Int]'s as there are [Coordinate]
      * objects in our [ArrayList] of [Coordinate] parameter [cVec], and initialize [Int] variable
      * `var i` to 0. We then loop over all of the `c` [Coordinate] in [cVec] assigning the [Coordinate.x]
-     * field of `c` to the `i`'th entry of `rawArray`, post incrementing `i` and then the [Coordinate.y]
-     * field of `c` to this `i`'th entry of `rawArray` also post incrementing `i`. When done filling
-     * `rawArray` with the values from [cVec] we return `rawArray` to the caller.
+     * field of `c` to the `i`'th entry of `rawArray`, post incrementing `i` and then assigning the
+     * [Coordinate.y] field of `c` to this `i`'th entry of `rawArray` also post incrementing `i`.
+     * When done filling `rawArray` with the values from [cVec] we return `rawArray` to the caller.
      *
      * @param cVec a [ArrayList] of Coordinate objects
      * @return : a simple array containing the x/y values of the coordinates as
@@ -250,6 +251,7 @@ class SnakeView : TileView {
     }
 
     /**
+     * TODO: Continue here.
      * Save game state so that the user does not lose anything if the game process is killed while
      * we are in the background. First we allocate a new instance for our [Bundle] variable `val map`.
      * Then we add the [Int] array created from our [ArrayList] of [Coordinate] field [mAppleList]
