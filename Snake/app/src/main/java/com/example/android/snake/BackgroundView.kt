@@ -27,6 +27,7 @@ import androidx.core.content.withStyledAttributes
 /**
  * Background View: Draw 4 full-screen RGBY triangles. This is drawn when the layout file
  * snake_layout.xml is inflated.
+ * TODO: Continue here
  */
 class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     /**
