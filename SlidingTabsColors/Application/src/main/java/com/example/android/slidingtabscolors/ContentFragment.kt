@@ -43,7 +43,11 @@ class ContentFragment : Fragment() {
      * from a previous saved state as given here.
      * @return Return the [View] for the fragment's UI, or null.
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(
             /* resource = */ R.layout.pager_item,
             /* root = */ container,

@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceJavaStaticMethodWithKotlinAnalog", "ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress(
+    "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "ReplaceNotNullAssertionWithElvisReturn"
+)
 
 package com.example.android.common.view
 
@@ -41,7 +44,7 @@ internal class SlidingTabStrip
  * override will be called. We initialize [Float] variable `val density` with the logical density
  * of the display in order to use it to scale DIPS to pixels. We initialize [TypedValue] variable
  * `val outValue` with a new instance then store the value that the [Resources.Theme.resolveAttribute]
- * method of the [Resources.Theme] object associated with [Context] parameter `context` resolves
+ * method of the [Resources.Theme] object associated with [Context] parameter [context] resolves
  * for the attribute [android.R.attr.colorForeground] in it. We then initialize [Int] variable
  * `val themeForegroundColor` with the [TypedValue.data] field of `outValue`. We initialize our
  * [Int] field [mDefaultBottomBorderColor] by calling our method [setColorAlpha] to create a new
@@ -165,7 +168,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
      * Set the array of colors that our [SimpleTabColorizer] field [mDefaultTabColorizer] will use
      * to draw the tabs. First we set our [TabColorizer] field [mCustomTabColorizer] to `null` so
      * that it will no longer be used, then we call the [SimpleTabColorizer.setIndicatorColors]
-     * method of our [SimpleTabColorizer] field [mDefaultTabColorizer]` to set its indicator colors
+     * method of our [SimpleTabColorizer] field [mDefaultTabColorizer] to set its indicator colors
      * to our [Int] parameter [colors]. Finally we call the [invalidate] method to invalidate the
      * whole view so that our [onDraw] method will be called.
      *
@@ -202,8 +205,8 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
      * to invalidate the whole view so that our [onDraw] method will be called.
      *
      * @param position Position index of the first page currently being displayed. Page position+1
-     * will be visible if [positionOffset] is nonzero.
-     * @param positionOffset Value from [0, 1) indicating the offset from the page at [position].
+     * will be partially visible if [positionOffset] is nonzero.
+     * @param positionOffset Value from `[0, 1)` indicating the offset from the page at [position].
      */
     fun onViewPagerPageChanged(position: Int, positionOffset: Float) {
         mSelectedPosition = position
@@ -222,14 +225,14 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
      *
      * If `childCount` is greater than 0, we initialize [View] variable `val selectedTitle` with our
      * child [View] at [Int] field [mSelectedPosition], [Int] variable `var left` with the left edge
-     * of this [View], in pixels and [Int] variable `var right` with the right edge of this [View]
+     * of this [View] in pixels and [Int] variable `var right` with the right edge of this [View]
      * in pixels. We initialize [Int] variable `var color` with the color returned by the
      * [TabColorizer.getIndicatorColor] method of `tabColorizer` for [Int] field [mSelectedPosition].
      * If [Float] field [mSelectionOffset] is greater than 0 (page is partially off the screen) and
      * [Int] field [mSelectedPosition] is less than the last of our children tabs, we initialize
      * [Int] variable `val nextColor` with the color that the [TabColorizer.getIndicatorColor]
      * method of `tabColorizer` returns for the next tab and if `color` is not equal to `nextColor`
-     * we set color to the color that our [blendColors] method calculates when it blends `nextColor`
+     * we set `color` to the color that our [blendColors] method calculates when it blends `nextColor`
      * and `color` at the ratio given by [Float] field [mSelectionOffset]. We then initialize [View]
      * variable `val nextTitle` with the view for the next tab after [mSelectedPosition], and
      * recalculate `left` and `right` so that they accurately portray the fact that the page is
@@ -238,10 +241,12 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
      * Now we set the color of [Paint] field [mSelectedIndicatorPaint] to `color` and then we use
      * it to draw a rectangle on our [Canvas] parameter [canvas] whose top left corner is at
      * (`left`, `height-mSelectedIndicatorThickness`) and whose bottom right corner is at
-     * (`right`,`height`) (our indicator for the selected page). We then draw a thin underline
-     * along the entire bottom edge of [Canvas] parameter [canvas], a rectangle whose top left
-     * corner is at (0,`height-mBottomBorderThickness`), whose right bottom corner is at
-     * (`right`,`height`) and whose [Paint] is [Paint] field [mBottomBorderPaint].
+     * (`right`,`height`) (our indicator for the selected page).
+     *
+     * Having drawn the tab we then draw a thin underline along the entire bottom edge of [Canvas]
+     * parameter [canvas], a rectangle whose top left corner is at (0,`height-mBottomBorderThickness`),
+     * whose right bottom corner is at (`right`,`height`) and whose [Paint] is [Paint] field
+     * [mBottomBorderPaint].
      *
      * We initialize [Int] variable `val separatorTop` to the quantity one half of the difference
      * between `height` and `dividerHeightPx`. We then loop over [Int] variable `var i` for all of
@@ -283,8 +288,13 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
                     (1.0f - mSelectionOffset) * right).toInt()
             }
             mSelectedIndicatorPaint.color = color
-            canvas.drawRect(left.toFloat(), (height - mSelectedIndicatorThickness).toFloat(),
-                right.toFloat(), height.toFloat(), mSelectedIndicatorPaint)
+            canvas.drawRect(
+                /* left = */ left.toFloat(),
+                /* top = */ (height - mSelectedIndicatorThickness).toFloat(),
+                /* right = */ right.toFloat(),
+                /* bottom = */ height.toFloat(),
+                /* paint = */ mSelectedIndicatorPaint
+            )
         }
 
         // Thin underline along the entire bottom edge
@@ -374,7 +384,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
         /**
          * Color used to indicate which tab is selected (a shade of blue)
          */
-        private const val DEFAULT_SELECTED_INDICATOR_COLOR = -0xcc4a1b
+        private const val DEFAULT_SELECTED_INDICATOR_COLOR: Int = 0xFF33B5E5.toInt()
 
         /**
          * Stroke width of the divider line between tabs, in DIPS
@@ -401,7 +411,12 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
          * @return a `Color` whose alpha value is `alpha` and whose RGB values are those of `color`
          */
         private fun setColorAlpha(color: Int, alpha: Byte): Int {
-            return Color.argb(alpha.toInt(), Color.red(color), Color.green(color), Color.blue(color))
+            return Color.argb(
+                /* alpha = */ alpha.toInt(),
+                /* red = */ Color.red(color),
+                /* green = */ Color.green(color),
+                /* blue = */ Color.blue(color)
+            )
         }
 
         /**
@@ -419,7 +434,7 @@ constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(contex
             val r = Color.red(color1) * ratio + Color.red(color2) * inverseRation
             val g = Color.green(color1) * ratio + Color.green(color2) * inverseRation
             val b = Color.blue(color1) * ratio + Color.blue(color2) * inverseRation
-            return Color.rgb(r.toInt(), g.toInt(), b.toInt())
+            return Color.rgb(/* red = */ r.toInt(), /* green = */ g.toInt(), /* blue = */ b.toInt())
         }
     }
 }

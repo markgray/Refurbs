@@ -40,7 +40,7 @@ import com.example.android.common.view.SlidingTabLayout.Companion.TITLE_OFFSET_D
 import com.example.android.common.view.SlidingTabLayout.TabColorizer
 
 /**
- * To be used with [ViewPager] to provide a tab indicator component which give constant feedback as
+ * To be used with [ViewPager] to provide a tab indicator component which gives constant feedback as
  * to the user's scroll progress.
  *
  * To use the component, simply add it to your view hierarchy. Then in your [android.app.Activity]
@@ -135,7 +135,6 @@ constructor(
     private val mTabStrip: SlidingTabStrip
 
     init {
-
         // Disable the Scroll Bar
         isHorizontalScrollBarEnabled = false
         // Make sure that the Tab Strips fills this View
@@ -214,7 +213,7 @@ constructor(
      * [ViewPager] field [mViewPager]. If [viewPager] is not `null`, we add a new instance of
      * [InternalViewPagerListener] as the [OnPageChangeListener] of `viewPager`, then call our
      * method [populateTabStrip] to populate our [SlidingTabStrip] field [mTabStrip] with tab views
-     * whose text is set the the title of the pages in the [ViewPager] field [mViewPager] as
+     * whose text is set to the title of the pages in the [ViewPager] field [mViewPager] as
      * determined by calling the [PagerAdapter.getPageTitle] method of the adapter for each page it
      * contains.
      *
@@ -335,7 +334,7 @@ constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         if (mViewPager != null) {
-            scrollToTab(mViewPager!!.currentItem, 0)
+            scrollToTab(tabIndex = mViewPager!!.currentItem, positionOffset = 0)
         }
     }
 
@@ -343,9 +342,9 @@ constructor(
      * Scrolls our sliding tab to represent the position of the currently displayed page of our
      * [ViewPager] field [mViewPager]. First we initialize [Int] variable `val tabStripChildCount`
      * with the number of children in our [SlidingTabStrip] field [mTabStrip]. If `tabStripChildCount`
-     * is 0, or our parameter `tabIndex` is less than 0 or greater than `tabStripChildCount` we
+     * is 0, or our parameter [tabIndex] is less than 0 or greater than `tabStripChildCount` we
      * return having done nothing. Otherwise we initialize [View] variable `val selectedChild` by
-     * retrieving the child of our [SlidingTabStrip] field [mTabStrip] at position `tabIndex`. If
+     * retrieving the child of our [SlidingTabStrip] field [mTabStrip] at position [tabIndex]. If
      * `selectedChild` is not `null` we calculate [Int] variable `var targetScrollX` by adding our
      * parameter `positionOffset` to the Left position of `selectedChild` relative to its parent.
      * If `tabIndex` is greater than 0, or `positionOffset` is greater than 0 we subtract [Int]
@@ -368,7 +367,7 @@ constructor(
                 // If we're not at the first child and are mid-scroll, make sure we obey the offset
                 targetScrollX -= mTitleOffset
             }
-            scrollTo(targetScrollX, 0)
+            scrollTo(/* x = */ targetScrollX, /* y = */ 0)
         }
     }
 
@@ -393,9 +392,9 @@ constructor(
          * method of our [SlidingTabStrip] field [mTabStrip] to inform it of the the new
          * `position` and `positionOffset` of the [ViewPager]. We initialize [View] variable
          * `val selectedTitle` by retrieving the child of [mTabStrip] at position `position`.
-         * We calculate [Int] variable `val extraOffset` by multiplying `positionOffset` by
+         * We calculate [Int] variable `val extraOffset` by multiplying [positionOffset] by
          * the width of `selectedTitle` (or set it to 0 if `selectedTitle` is `null`) and call
-         * our method [scrollToTab] to scroll to the tab in position `position` offset by
+         * our method [scrollToTab] to scroll to the tab in position [position] offset by
          * `extraOffset`. If our [OnPageChangeListener] field [mViewPagerPageChangeListener]
          * is not `null` we call its [OnPageChangeListener.onPageScrolled] method to pass on
          * the new info.
@@ -415,7 +414,7 @@ constructor(
             val extraOffset: Int = if (selectedTitle != null) {
                 (positionOffset * selectedTitle.width).toInt()
             } else 0
-            scrollToTab(position, extraOffset)
+            scrollToTab(tabIndex = position, positionOffset = extraOffset)
             if (mViewPagerPageChangeListener != null) {
                 mViewPagerPageChangeListener!!.onPageScrolled(position, positionOffset, positionOffsetPixels)
             }
@@ -444,17 +443,17 @@ constructor(
          * necessarily complete. If our [Int] field [mScrollState] is equal to
          * [ViewPager.SCROLL_STATE_IDLE], we call the [SlidingTabStrip.onViewPagerPageChanged]
          * method of our [SlidingTabStrip] field [mTabStrip] to report the new position of the
-         * [ViewPager`, then call our method [scrollToTab] to scroll our [SlidingTabLayout] custom
-         * [HorizontalScrollView] to tab `position`. If our [OnPageChangeListener] field
+         * [ViewPager], then call our method [scrollToTab] to scroll our [SlidingTabLayout] custom
+         * [HorizontalScrollView] to tab [position]. If our [OnPageChangeListener] field
          * [mViewPagerPageChangeListener] is not null we call its [OnPageChangeListener.onPageSelected]
-         * method to pass on the new `position`.
+         * method to pass on the new [position].
          *
          * @param position Position index of the new selected page.
          */
         override fun onPageSelected(position: Int) {
             if (mScrollState == ViewPager.SCROLL_STATE_IDLE) {
                 mTabStrip.onViewPagerPageChanged(position, 0f)
-                scrollToTab(position, 0)
+                scrollToTab(tabIndex = position, positionOffset = 0)
             }
             if (mViewPagerPageChangeListener != null) {
                 mViewPagerPageChangeListener!!.onPageSelected(position)
