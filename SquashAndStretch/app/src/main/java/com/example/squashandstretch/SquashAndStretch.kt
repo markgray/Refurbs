@@ -19,6 +19,7 @@ package com.example.squashandstretch
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.ObjectAnimator.ofPropertyValuesHolder
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.os.Bundle
@@ -62,30 +63,23 @@ class SquashAndStretch : ComponentActivity() {
     private var sAnimatorScale: Long = 1
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.main`.
      *
-     * We initialize our [LinearLayout] variable `rootView` to the view with ID
-     * `R.id.container` then call [ViewCompat.setOnApplyWindowInsetsListener] to
-     * take over the policy for applying window insets to `rootView`, with the
-     * `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
-     * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
-     *
-     * Finally we initialize
-     * our [ViewGroup] field [mContainer] to our [LinearLayout] variable `rootView` (the view with
-     * id `R.id.container` recall).
+     * We initialize our [LinearLayout] property [mContainer] to the view with ID `R.id.container`
+     * then call [ViewCompat.setOnApplyWindowInsetsListener] to take over the policy for applying
+     * window insets to [mContainer], with the `listener` argument a lambda that accepts the [View]
+     * passed the lambda in variable `v` and the [WindowInsetsCompat] passed the lambda in variable
+     * `windowInsets`. It initializes its [Insets] variable `systemBars` to the
+     * [WindowInsetsCompat.getInsets] of `windowInsets` with [WindowInsetsCompat.Type.systemBars]
+     * as the argument. It then gets the insets for the IME (keyboard) using
+     * [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v` to be a
+     * [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the right
+     * margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the bottom
+     * margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
      */
@@ -93,8 +87,8 @@ class SquashAndStretch : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
-        val rootView = findViewById<LinearLayout>(R.id.container)
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v: View, windowInsets: WindowInsetsCompat ->
+        mContainer = findViewById<LinearLayout>(R.id.container)
+        ViewCompat.setOnApplyWindowInsetsListener(mContainer!!) { v: View, windowInsets: WindowInsetsCompat ->
             val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
 
@@ -109,7 +103,6 @@ class SquashAndStretch : ComponentActivity() {
             // down to descendant views.
             WindowInsetsCompat.CONSUMED
         }
-        mContainer = rootView
     }
 
     /**
@@ -184,7 +177,7 @@ class SquashAndStretch : ComponentActivity() {
      * @param view the [View] that was clicked.
      */
     fun onButtonClick(view: View) {
-        val animationDuration = BASE_DURATION * sAnimatorScale
+        val animationDuration: Long = BASE_DURATION * sAnimatorScale
 
         // Scale around bottom/middle to simplify squash against the window bottom
         view.pivotX = view.width / 2f
@@ -195,30 +188,60 @@ class SquashAndStretch : ComponentActivity() {
             /* property = */ View.TRANSLATION_Y,
             /* ...values = */ (mContainer!!.height - view.height).toFloat()
         )
-        var pvhSX = PropertyValuesHolder.ofFloat(View.SCALE_X, .7f)
-        var pvhSY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1.2f)
-        val downAnim = ObjectAnimator.ofPropertyValuesHolder(view, pvhTY, pvhSX, pvhSY)
+        var pvhSX = PropertyValuesHolder.ofFloat(
+            /* property = */ View.SCALE_X,
+            /* ...values = */ .7f
+        )
+        var pvhSY = PropertyValuesHolder.ofFloat(
+            /* property = */ View.SCALE_Y,
+            /* ...values = */ 1.2f
+        )
+        val downAnim = ofPropertyValuesHolder(
+            /* target = */ view,
+            /* ...values = */ pvhTY, pvhSX, pvhSY
+        )
         downAnim.interpolator = sAccelerator
         downAnim.duration = animationDuration * 2
 
         // Stretch in X, squash in Y, then reverse
-        pvhSX = PropertyValuesHolder.ofFloat(View.SCALE_X, 2f)
-        pvhSY = PropertyValuesHolder.ofFloat(View.SCALE_Y, .5f)
-        val stretchAnim = ObjectAnimator.ofPropertyValuesHolder(view, pvhSX, pvhSY)
+        pvhSX = PropertyValuesHolder.ofFloat(
+            /* property = */ View.SCALE_X,
+            /* ...values = */ 2f
+        )
+        pvhSY = PropertyValuesHolder.ofFloat(
+            /* property = */ View.SCALE_Y,
+            /* ...values = */ .5f
+        )
+        val stretchAnim = ofPropertyValuesHolder(
+            /* target = */ view,
+            /* ...values = */ pvhSX, pvhSY
+        )
         stretchAnim.repeatCount = 1
         stretchAnim.repeatMode = ValueAnimator.REVERSE
         stretchAnim.interpolator = sDecelerator
         stretchAnim.duration = animationDuration
 
         // Animate back to the start
-        pvhTY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f)
-        pvhSX = PropertyValuesHolder.ofFloat(View.SCALE_X, 1f)
-        pvhSY = PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f)
-        val upAnim = ObjectAnimator.ofPropertyValuesHolder(view, pvhTY, pvhSX, pvhSY)
+        pvhTY = PropertyValuesHolder.ofFloat(
+            /* property = */ View.TRANSLATION_Y,
+            /* ...values = */ 0f
+        )
+        pvhSX = PropertyValuesHolder.ofFloat(
+            /* property = */ View.SCALE_X,
+            /* ...values = */ 1f
+        )
+        pvhSY = PropertyValuesHolder.ofFloat(
+            /* property = */ View.SCALE_Y,
+            /* ...values = */ 1f
+        )
+        val upAnim = ofPropertyValuesHolder(
+            view,
+            pvhTY, pvhSX, pvhSY
+        )
         upAnim.duration = animationDuration * 2
         upAnim.interpolator = sDecelerator
         val set = AnimatorSet()
-        set.playSequentially(downAnim, stretchAnim, upAnim)
+        set.playSequentially(/* ...items = */ downAnim, stretchAnim, upAnim)
         set.start()
     }
 
