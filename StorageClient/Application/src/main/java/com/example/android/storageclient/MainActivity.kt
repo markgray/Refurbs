@@ -25,6 +25,7 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
@@ -103,13 +104,13 @@ class MainActivity : SampleActivityBase() {
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater] for
      * this context to inflate our menu layout file `R.menu.main` into our [Menu] parameter [menu]
      * and return `true` so the menu will be displayed.
-     * TODO: Continue here.
+     *
      * @param menu The options menu in which you place your items.
      * @return You must return `true` for the menu to be displayed;
      * if you return `false` it will not be shown.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(/* menuRes = */ R.menu.main, /* menu = */ menu)
         return true
     }
 
@@ -122,8 +123,9 @@ class MainActivity : SampleActivityBase() {
      * associated with this activity to find the fragment whose container has the id
      * `R.id.log_fragment`, and set its [LogView] to be the [LogNode] that `msgFilter` will send
      * data to. We then set the text appearance of the [LogView] of `logFragment` to be that
-     * indicated by the style file `R.style.Log`, and set its background color to [Color.WHITE].
-     * Finally we log the message "Ready".
+     * indicated by the style file `R.style.Log` (using the 1 argument overload of
+     * [TextView.setTextAppearance] for sdk's `M` and newer), and set its background color to
+     * [Color.WHITE]. Finally we log the message "Ready".
      */
     override fun initializeLogging() {
         // Wraps Android's native log framework.

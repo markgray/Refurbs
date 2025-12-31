@@ -1,4 +1,9 @@
-@file:Suppress("DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn", "JoinDeclarationAndAssignment", "MemberVisibilityCanBePrivate")
+@file:Suppress(
+    "DEPRECATION",
+    "ReplaceNotNullAssertionWithElvisReturn",
+    "JoinDeclarationAndAssignment",
+    "MemberVisibilityCanBePrivate"
+)
 /*
 * Copyright (C) 2012 The Android Open Source Project
 *
@@ -82,25 +87,23 @@ class StorageClientFragment : Fragment() {
      * (Allow the user to select and return one or more existing documents). Then we add the
      * category [Intent.CATEGORY_OPENABLE] (indicates that the intent only wants URIs that can be
      * opened with [ContentResolver.openFileDescriptor]). We then set the MIME data type to "image/ *"
-     * and then start the intent for its result using the request code [READ_REQUEST_CODE].
+     * and start the intent for its result using the request code [READ_REQUEST_CODE].
      */
     fun performFileSearch() {
 
-        // BEGIN_INCLUDE (use_open_document_intent)
         // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file browser.
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        val intent = Intent(/* action = */ Intent.ACTION_OPEN_DOCUMENT)
 
         // Filter to only show results that can be "opened", such as a file (as opposed to a list
         // of contacts or timezones)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.addCategory(/* category = */ Intent.CATEGORY_OPENABLE)
 
         // Filter to show only images, using the image MIME data type.
         // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
         // To search for all documents available via installed storage providers, it would be
         // "*/*".
         intent.type = "image/*"
-        startActivityForResult(intent, READ_REQUEST_CODE)
-        // END_INCLUDE (use_open_document_intent)
+        startActivityForResult(/* intent = */ intent, /* requestCode = */ READ_REQUEST_CODE)
     }
 
     /**
@@ -121,7 +124,6 @@ class StorageClientFragment : Fragment() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         Log.i(TAG, "Received an \"Activity Result\"")
-        // BEGIN_INCLUDE (parse_open_document_response)
         // The ACTION_OPEN_DOCUMENT intent was sent with the request code READ_REQUEST_CODE.
         // If the request code seen here doesn't match, it's the response to some other intent,
         // and the below code shouldn't run at all.
@@ -135,7 +137,6 @@ class StorageClientFragment : Fragment() {
                 Log.i(TAG, "Uri: $uri")
                 showImage(uri)
             }
-            // END_INCLUDE (parse_open_document_response)
         }
     }
 
@@ -153,18 +154,16 @@ class StorageClientFragment : Fragment() {
      * @param uri the [Uri] of the image to display.
      */
     fun showImage(uri: Uri?) {
-        // BEGIN_INCLUDE (create_show_image_dialog)
         if (uri != null) {
             // Since the URI is to an image, create and show a DialogFragment to display the
             // image to the user.
             val fm: FragmentManager = requireActivity().supportFragmentManager
             val imageDialog = ImageDialogFragment()
             val fragmentArguments = Bundle()
-            fragmentArguments.putParcelable("URI", uri)
+            fragmentArguments.putParcelable(/* key = */ "URI", /* value = */ uri)
             imageDialog.arguments = fragmentArguments
-            imageDialog.show(fm, "image_dialog")
+            imageDialog.show(/* manager = */ fm, /* tag = */ "image_dialog")
         }
-        // END_INCLUDE (create_show_image_dialog)
     }
 
     /**
@@ -191,7 +190,7 @@ class StorageClientFragment : Fragment() {
          */
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            mUri = requireArguments().getParcelable("URI")
+            mUri = requireArguments().getParcelable(/* key = */ "URI")
         }
 
         /**
@@ -237,7 +236,7 @@ class StorageClientFragment : Fragment() {
          * request the feature [Window.FEATURE_NO_TITLE], initialize [ImageView] variable
          * `val imageView` with a new instance and set it to be the content view of [mDialog].
          * We next construct a new [AsyncTask] variable `val imageLoadAsyncTask` whose
-         * `doInBackground` override calls our `dumpImageMetaData` method will dump the filename
+         * `doInBackground` override calls our `dumpImageMetaData` method to dump the filename
          * and size of the [Uri] in its zeroth parameter to the log, then returns the [Bitmap]
          * produced by our [getBitmapFromUri] method by reading the file pointed to by that [Uri].
          * Its `onPostExecute` override then sets the image of `imageView` to the bitmap returned
@@ -257,7 +256,6 @@ class StorageClientFragment : Fragment() {
             val imageView = ImageView(activity)
             mDialog!!.setContentView(imageView)
 
-            // BEGIN_INCLUDE (show_image)
             // Loading the image is going to require some sort of I/O, which must occur off the UI
             // thread.  Changing the ImageView to display the image must occur ON the UI thread.
             // The easiest way to divide up this labor is with an AsyncTask.  The doInBackground
@@ -270,12 +268,13 @@ class StorageClientFragment : Fragment() {
                  * Override this method to perform a computation on a background thread. The specified
                  * parameters are the parameters passed to [execute] by the caller of this task.
                  * We call our [dumpImageMetaData] method to dump the filename and size of
-                 * `Uri uris[0]` to the log, then return the `Bitmap` produced by our
-                 * `getBitmapFromUri` method by reading the file pointed to by that `Uri`.
+                 * [Uri] argument `uris[0]` to the log, then return the [Bitmap] produced by our
+                 * [getBitmapFromUri] method by reading the file pointed to by that [Uri].
                  *
                  * @param uris The parameters of the task.
                  * @return A result, defined by the subclass of this task.
                  */
+                @Suppress("OVERRIDE_DEPRECATION")
                 @Deprecated("Deprecated in Java")
                 protected override fun doInBackground(vararg uris: Uri): Bitmap? {
                     dumpImageMetaData(uris[0])
@@ -283,19 +282,19 @@ class StorageClientFragment : Fragment() {
                 }
 
                 /**
-                 * Runs on the UI thread after [.doInBackground]. The parameter is the value
-                 * returned by [.doInBackground]. We set the image of `ImageView imageView`
-                 * to the bitmap returned by `doInBackground` as our parameter.
+                 * Runs on the UI thread after [doInBackground]. The parameter is the value
+                 * returned by [doInBackground]. We set the image of [ImageView] variable
+                 * `imageView` to the [bitmap] returned by [doInBackground] as our parameter.
                  *
                  * @param bitmap The result of the operation computed by [.doInBackground].
                  */
+                @Suppress("OVERRIDE_DEPRECATION")
                 @Deprecated("Deprecated in Java", ReplaceWith("imageView.setImageBitmap(bitmap)"))
                 override fun onPostExecute(bitmap: Bitmap?) {
                     imageView.setImageBitmap(bitmap)
                 }
             }
             imageLoadAsyncTask.execute(mUri)
-            // END_INCLUDE (show_image)
             return mDialog!!
         }
 
@@ -328,7 +327,6 @@ class StorageClientFragment : Fragment() {
          * @param uri The [Uri] for the document whose metadata should be printed.
          */
         fun dumpImageMetaData(uri: Uri?) {
-            // BEGIN_INCLUDE (dump_metadata)
 
             // The query, since it only applies to a single document, will only return one row.
             // no need to filter, sort, or select fields, since we want all fields for one
@@ -373,7 +371,6 @@ class StorageClientFragment : Fragment() {
             } finally {
                 cursor?.close()
             }
-            // END_INCLUDE (dump_metadata)
         }
     }
 
