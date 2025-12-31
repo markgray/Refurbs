@@ -45,31 +45,28 @@ import com.example.android.common.logger.MessageOnlyLogFilter
  */
 class MainActivity : SampleActivityBase() {
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.activity_main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_main`.
      *
      * We initialize our [LinearLayout] variable `rootView` to the view with ID
-     * `R.id.sample_main_layout` then call [ViewCompat.setOnApplyWindowInsetsListener]
-     * to take over the policy for applying window insets to `rootView`, with the
-     * `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `R.id.sample_main_layout` then call [ViewCompat.setOnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to `rootView`, with the `listener` argument a
+     * lambda that accepts the [View] passed the lambda in variable `v` and the [WindowInsetsCompat]
+     * passed the lambda in variable `windowInsets`. It initializes its [Insets] variable
      * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the IME
+     * (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of `v`
+     * to be a [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`, the
+     * right margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the
+     * bottom margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * If the [FragmentManager] for interacting with fragments associated with this activity is
      * unable to find a fragment with the tag [FRAGTAG] ("StorageClientFragment"), we initialize
      * [FragmentTransaction] `val transaction` by using the [FragmentManager] to begin it, create
-     * a new instance for [StorageClientFragment] variable `val fragment`, add `fragment` to
+     * a new instance for [StorageClientFragment] for variable `val fragment`, add `fragment` to
      * `transaction` with the tag [FRAGTAG] and commit `transaction`.
      *
      * @param savedInstanceState we do not override [onSaveInstanceState] so do not use
@@ -106,7 +103,7 @@ class MainActivity : SampleActivityBase() {
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater] for
      * this context to inflate our menu layout file `R.menu.main` into our [Menu] parameter [menu]
      * and return `true` so the menu will be displayed.
-     *
+     * TODO: Continue here.
      * @param menu The options menu in which you place your items.
      * @return You must return `true` for the menu to be displayed;
      * if you return `false` it will not be shown.
