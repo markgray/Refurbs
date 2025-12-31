@@ -45,18 +45,22 @@ open class TileView : View {
     private lateinit var mTileArray: Array<Bitmap?>
 
     /**
-     * A two-dimensional array of integers in which the number represents the index of the tile that
-     * should be drawn at that locations
+     * Two-dimensional array of integers representing the game board, with the outer array addressing
+     * the `x` coordinate, the inner array addressing the `y` coordinate, and the content of the inner
+     * array holding the index of the [Bitmap] in [Array] of [Bitmap] field [mTileArray] that should
+     * be drawn at that location.
      */
     private lateinit var mTileGrid: Array<IntArray>
 
     /**
      * Constructor that is called when inflating a view from XML. First we call our super's constructor,
-     * then we initialize [TypedArray] variable `val a` with the styled attribute information for the
-     * attribute with the id `R.styleable.TileView` as specified in the [AttributeSet] parameter
-     * [attrs] attributes of the XML tag that is inflating the view. We then initialize our field
-     * [mTileSize] with the attribute for `R.styleable.TileView_tileSize` converting the 24dp value
-     * given in our layout file to pixels and defaulting to 12. We then recycle [TypedArray] `a`.
+     * then we use the [Context.withStyledAttributes] extension function to fill a [TypedArray] with
+     * the attribute values that are listed in our [AttributeSet] parameter [attrs] that are
+     * defined in the style file `R.styleable.TileView`. That [TypedArray] is then the receiver of
+     * a lambda block that uses the [TypedArray.getDimensionPixelSize] method to retrieve the value
+     * for the attribute `R.styleable.TileView_tileSize` (defaulting to 12) which its uses to
+     * initialize [Int] field [mTileSize] ([Context.withStyledAttributes] will recycle the
+     * [TypedArray] when the lambda returns).
      *
      * @param context The Context the view is running in, through which it can
      * access the current theme, resources, etc.
@@ -70,12 +74,13 @@ open class TileView : View {
 
     /**
      * Perform inflation from XML and apply a class-specific base style from a theme attribute. First
-     * we call our super's constructor, then we initialize [TypedArray] variable `val a` with the
-     * styled attribute information for the attribute with the id `R.styleable.TileView` as specified
-     * in the [AttributeSet] parameter [attrs] attributes of the XML tag that is inflating the view.
-     * We then initialize our field [mTileSize] with the attribute for `R.styleable.TileView_tileSize`
-     * converting the 24dp value given in our layout file to pixels and defaulting to 12. We then
-     * recycle [TypedArray] `a`.
+     * we call our super's constructor, then we use the [Context.withStyledAttributes] extension
+     * function to fill a [TypedArray] with the attribute values that are listed in our [AttributeSet]
+     * parameter [attrs] that are defined in the style file `R.styleable.TileView`. That [TypedArray]
+     * is then the receiver of a lambda block that uses the [TypedArray.getDimensionPixelSize] method
+     * to retrieve the value for the attribute `R.styleable.TileView_tileSize` (defaulting to 12) which
+     * its uses to initialize [Int] field [mTileSize] ([Context.withStyledAttributes] will recycle the
+     * [TypedArray] when the lambda returns).
      *
      * @param context  The [Context] the view is running in, through which it can access the current
      * theme, resources, etc.
@@ -97,14 +102,14 @@ open class TileView : View {
     /**
      * Resets all tiles to 0 (empty). We loop over [Int] variable `x` for all the tiles in the X
      * direction specified by our field [mXTileCount], and in an inner loop we loop over [Int]
-     * variable `y` for all the tiles in the Y direction pecified by our field [mYTileCount] calling
+     * variable `y` for all the tiles in the Y direction specified by our field [mYTileCount] calling
      * our method [setTile] to set the index for the [Bitmap] in our array of [Bitmap] field
      * [mTileArray] used for the tile at `(x,y)` to 0.
      */
     fun clearTiles() {
         for (x: Int in 0 until mXTileCount) {
             for (y: Int in 0 until mYTileCount) {
-                setTile(0, x, y)
+                setTile(tileIndex = 0, x = x, y = y)
             }
         }
     }
@@ -124,7 +129,12 @@ open class TileView : View {
     fun loadTile(key: Int, tile: Drawable) {
         val bitmap = createBitmap(width = mTileSize, height = mTileSize)
         val canvas = Canvas(bitmap)
-        tile.setBounds(0, 0, mTileSize, mTileSize)
+        tile.setBounds(
+            /* left = */ 0,
+            /* top = */ 0,
+            /* right = */ mTileSize,
+            /* bottom = */ mTileSize
+        )
         tile.draw(canvas)
         mTileArray[key] = bitmap
     }
@@ -149,10 +159,10 @@ open class TileView : View {
             while (y < mYTileCount) {
                 if (mTileGrid[x][y] > 0) {
                     canvas.drawBitmap(
-                        mTileArray[mTileGrid[x][y]]!!,
-                        (mXOffset + x * mTileSize).toFloat(),
-                        (mYOffset + y * mTileSize).toFloat(),
-                        mPaint
+                        /* bitmap = */ mTileArray[mTileGrid[x][y]]!!,
+                        /* left = */ (mXOffset + x * mTileSize).toFloat(),
+                        /* top = */ (mYOffset + y * mTileSize).toFloat(),
+                        /* paint = */ mPaint
                     )
                 }
                 y += 1
@@ -162,14 +172,14 @@ open class TileView : View {
     }
 
     /**
-     * Rests the internal array of [Bitmap]'s used for drawing tiles, and sets the maximum index of
+     * Resets the internal array of [Bitmap]'s used for drawing tiles, and sets the maximum index of
      * tiles to be inserted. We just allocate our [Int] parameter [tileCount] entries for the array
      * array of [Bitmap] field [mTileArray].
      *
      * @param tileCount number of tiles to use for our internal array of Bitmap
      */
     fun resetTiles(tileCount: Int) {
-        mTileArray = arrayOfNulls(tileCount)
+        mTileArray = arrayOfNulls(size = tileCount)
     }
 
     /**
@@ -206,7 +216,7 @@ open class TileView : View {
         mYTileCount = Math.floor((h.toDouble() / mTileSize.toDouble())).toInt()
         mXOffset = (w - mTileSize * mXTileCount) / 2
         mYOffset = (h - mTileSize * mYTileCount) / 2
-        mTileGrid = Array(mXTileCount) { IntArray(mYTileCount) }
+        mTileGrid = Array(size = mXTileCount) { IntArray(size = mYTileCount) }
         clearTiles()
     }
 

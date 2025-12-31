@@ -31,11 +31,16 @@ import androidx.core.content.withStyledAttributes
  *
  * In our `init` block we first call [setFocusable] with `true` (kotlin `isFocusable` property)
  * to enable our [View] to receive focus. Then we initialize the four colors in our [IntArray]
- * property [mColors] by using the [Context.withStyledAttributes] extension function to execute a
- * [TypedArray] lambda `block` that uses the the [TypedArray.getColor] method to retrieve the
- * values from our [AttributeSet] parameter [attrs] for the `R.styleable` attributes
+ * property [mColors] by using the [Context.withStyledAttributes] extension function with its `set`
+ * argument our [AttributeSet] parameter [attrs] and its `attrs` the argument the style file
+ * `R.styleable.BackgroundView` which produces a [TypedArray] that holds the attribute values in
+ * the [AttributeSet] that are defined in the style file, which is then used as the [TypedArray]
+ * receiver of a lambda `block` that uses the the [TypedArray.getColor] method to retrieve the values
+ * from our [AttributeSet] parameter [attrs] for the `R.styleable.*` attributes
  * BackgroundView_colorSegmentOne, BackgroundView_colorSegmentTwo, BackgroundView_colorSegmentThree,
- * and BackgroundView_colorSegmentFour.
+ * and BackgroundView_colorSegmentFour, with the default [Color] if they are not in the `set`:
+ * [Color.RED] [Color.YELLOW], [Color.BLUE], and [Color.GREEN] ([Context.withStyledAttributes] will
+ * recycle the [TypedArray] when the lambda returns).
  *
  * @param context The [Context] the view is running in, through which it can access the current
  * theme, resources, etc.
@@ -101,18 +106,30 @@ class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, att
 
             // Draw one triangle
             canvas.drawVertices(
-                    Canvas.VertexMode.TRIANGLES,  // How to interpret the array of vertices: as TRIANGLES
-                    (mVertexPoints ?: return).size,  // The number of values in the vertices and colors arrays
-                    mVertexPoints ?: return,  // Array of vertices for the mesh
-                    0,  // Number of values in the verts to skip before drawing.
-                    null,  // No Textures
-                    0,  // No Textures
-                    mFillColors,  // color for each vertex
-                    0,  // Number of values in colors to skip before drawing.
-                    mIndices,  // array of indices to reference into the vertex and color arrays
-                    triangle * 2,  // number of entries in the indices array to skip
-                    3,  // Use 3 vertices via Index Array with offset 2
-                    mPaint // Paint to use to draw
+                /* mode = */ Canvas.VertexMode.TRIANGLES,  // How to interpret the array of vertices: as TRIANGLES
+                /* vertexCount = */
+                (mVertexPoints
+                    ?: return).size,  // The number of values in the vertices and colors arrays
+                /* verts = */
+                mVertexPoints ?: return,  // Array of vertices for the mesh
+                /* vertOffset = */
+                0,  // Number of values in the verts to skip before drawing.
+                /* texs = */
+                null,  // No Textures
+                /* texOffset = */
+                0,  // No Textures
+                /* colors = */
+                mFillColors,  // color for each vertex
+                /* colorOffset = */
+                0,  // Number of values in colors to skip before drawing.
+                /* indices = */
+                mIndices,  // array of indices to reference into the vertex and color arrays
+                /* indexOffset = */
+                triangle * 2,  // number of entries in the indices array to skip
+                /* indexCount = */
+                3,  // Use 3 vertices via Index Array with offset 2
+                /* paint = */
+                mPaint // Paint to use to draw
             )
         }
     }
@@ -141,8 +158,7 @@ class BackgroundView(context: Context, attrs: AttributeSet?) : View(context, att
             0f,
             w.toFloat(),
             0f,
-            w.toFloat()
-            , h.toFloat(),
+            w.toFloat(), h.toFloat(),
             0f,
             h.toFloat()
         )

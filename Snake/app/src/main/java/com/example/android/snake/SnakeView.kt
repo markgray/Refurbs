@@ -173,6 +173,7 @@ class SnakeView : TileView {
      * @param context The Context the view is running in, through which it can access
      * the current theme, resources, etc.
      */
+    @SuppressLint("ObsoleteSdkInt")
     private fun initSnakeView(context: Context) {
         isFocusable = true
         val r: Resources = context.resources
@@ -251,7 +252,6 @@ class SnakeView : TileView {
     }
 
     /**
-     * TODO: Continue here.
      * Save game state so that the user does not lose anything if the game process is killed while
      * we are in the background. First we allocate a new instance for our [Bundle] variable `val map`.
      * Then we add the [Int] array created from our [ArrayList] of [Coordinate] field [mAppleList]
@@ -266,12 +266,12 @@ class SnakeView : TileView {
      */
     fun saveState(): Bundle {
         val map = Bundle()
-        map.putIntArray("mAppleList", coordArrayListToArray(mAppleList))
+        map.putIntArray("mAppleList", coordArrayListToArray(cVec = mAppleList))
         map.putInt("mDirection", mDirection)
         map.putInt("mNextDirection", mNextDirection)
         map.putLong("mMoveDelay", mMoveDelay)
         map.putLong("mScore", mScore)
-        map.putIntArray("mSnakeTrail", coordArrayListToArray(mSnakeTrail))
+        map.putIntArray("mSnakeTrail", coordArrayListToArray(cVec = mSnakeTrail))
         return map
     }
 
@@ -290,10 +290,10 @@ class SnakeView : TileView {
      */
     private fun coordArrayToArrayList(rawArray: IntArray?): ArrayList<Coordinate?> {
         val coordArrayList = ArrayList<Coordinate?>()
-        val coordCount = rawArray!!.size
+        val coordCount: Int = rawArray!!.size
         var index = 0
         while (index < coordCount) {
-            val c = Coordinate(rawArray[index], rawArray[index + 1])
+            val c = Coordinate(x = rawArray[index], y = rawArray[index + 1])
             coordArrayList.add(c)
             index += 2
         }
@@ -302,13 +302,13 @@ class SnakeView : TileView {
 
     /**
      * Restore game state if our process is being relaunched. First we call our method [setMode]
-     * to set the game mode to [PAUSE]. Then we initialize our [ArrayList] of [Coordinate] field
+     * to set the game mode to [PAUSE]. Then we set our [ArrayList] of [Coordinate] field
      * [mAppleList] to the list created by our method [coordArrayToArrayList] from the [IntArray]
-     * stored in our [Bundle] parameter [icicle] under the key "mAppleList", initialize our field
-     * [mDirection] to the [Int] stored under the key "mDirection", initialize our field [mNextDirection]
-     * to the [Int] stored under the key "mNextDirection", initialize our field [mMoveDelay] to the
-     * [Long] stored under the key "mMoveDelay", initialize our field [mScore] to the [Long] stored
-     * under the key "mScore", and initialize our [ArrayList] of [Coordinate] field [mSnakeTrail] to
+     * stored in our [Bundle] parameter [icicle] under the key "mAppleList", set our field
+     * [mDirection] to the [Int] stored under the key "mDirection", set our field [mNextDirection]
+     * to the [Int] stored under the key "mNextDirection", set our field [mMoveDelay] to the
+     * [Long] stored under the key "mMoveDelay", set our field [mScore] to the [Long] stored
+     * under the key "mScore", and set our [ArrayList] of [Coordinate] field [mSnakeTrail] to
      * the list created by our method [coordArrayToArrayList] from the [IntArray] stored in [icicle]
      * under the key "mSnakeTrail".
      *
@@ -316,18 +316,19 @@ class SnakeView : TileView {
      */
     fun restoreState(icicle: Bundle) {
         setMode(PAUSE)
-        mAppleList = coordArrayToArrayList(icicle.getIntArray("mAppleList"))
+        mAppleList = coordArrayToArrayList(rawArray = icicle.getIntArray("mAppleList"))
         mDirection = icicle.getInt("mDirection")
         mNextDirection = icicle.getInt("mNextDirection")
         mMoveDelay = icicle.getLong("mMoveDelay")
         mScore = icicle.getLong("mScore")
-        mSnakeTrail = coordArrayToArrayList(icicle.getIntArray("mSnakeTrail"))
+        mSnakeTrail = coordArrayToArrayList(rawArray = icicle.getIntArray("mSnakeTrail"))
     }
 
     /**
      * Handles snake movement triggers from Snake Activity and moves the snake accordingly. Ignore
      * events that would cause the snake to immediately turn back on itself. We branch on the value
      * of our parameter `int direction`:
+     *
      *  * [Snake.MOVE_UP]: If our game mode [gameState] is [READY] or [LOSE] we want to start a new
      *  game if the UP key is clicked so we call our [initNewGame] method to initialize us to a
      *  new game status, set our mode to [RUNNING], call our method [update] to update the snake's
@@ -468,8 +469,9 @@ class SnakeView : TileView {
      * Selects a random location within the garden that is not currently covered by the snake.
      * Currently _could_ go into an infinite loop if the snake currently fills the garden, but we'll
      * leave discovery of this prize to a truly excellent snake-player. We initialize our [Coordinate]
-     * variable `var newCoord` to null, and our [Boolean] variable `var found` to `false`. Then
+     * variable `var newCoord` to `null`, and our [Boolean] variable `var found` to `false`. Then
      * we loop while `found` is false:
+     *
      *  * We set [Int] `val newX` to a random X coordinate in the garden and [Int] `val newY` to
      *  a random Y coordinate in the garden and set `newCoord` to an instance constructed
      *  from them.
@@ -494,9 +496,9 @@ class SnakeView : TileView {
         var found = false
         while (!found) {
             // Choose a new location for our apple
-            val newX: Int = 1 + RNG.nextInt(mXTileCount - 2)
-            val newY: Int = 1 + RNG.nextInt(mYTileCount - 2)
-            newCoord = Coordinate(newX, newY)
+            val newX: Int = 1 + RNG.nextInt(/* bound = */ mXTileCount - 2)
+            val newY: Int = 1 + RNG.nextInt(/* bound = */ mYTileCount - 2)
+            newCoord = Coordinate(x = newX, y = newY)
 
             // Make sure it's not already under the snake
             var collision = false
@@ -545,7 +547,7 @@ class SnakeView : TileView {
                 updateApples()
                 mLastMove = now
             }
-            mRedrawHandler.sleep(mMoveDelay)
+            mRedrawHandler.sleep(delayMillis = mMoveDelay)
         }
     }
 
@@ -558,12 +560,12 @@ class SnakeView : TileView {
      */
     private fun updateWalls() {
         for (x: Int in 0 until mXTileCount) {
-            setTile(GREEN_STAR, x, 0)
-            setTile(GREEN_STAR, x, mYTileCount - 1)
+            setTile(tileIndex = GREEN_STAR, x = x, y = 0)
+            setTile(tileIndex = GREEN_STAR, x = x, y = mYTileCount - 1)
         }
         for (y: Int in 1 until mYTileCount - 1) {
-            setTile(GREEN_STAR, 0, y)
-            setTile(GREEN_STAR, mXTileCount - 1, y)
+            setTile(tileIndex = GREEN_STAR, x = 0, y = y)
+            setTile(tileIndex = GREEN_STAR, x = mXTileCount - 1, y = y)
         }
     }
 
@@ -574,7 +576,7 @@ class SnakeView : TileView {
      */
     private fun updateApples() {
         for (c: Coordinate? in mAppleList) {
-            setTile(YELLOW_STAR, (c ?: return).x, c.y)
+            setTile(tileIndex = YELLOW_STAR, x = (c ?: return).x, y = c.y)
         }
     }
 
@@ -586,19 +588,20 @@ class SnakeView : TileView {
      * First we initialize [Boolean] variable `var growSnake` to `false`. We initialize [Coordinate]
      * variable `val head` with the [Coordinate] at index 0 in the [ArrayList] of [Coordinate]
      * field [mSnakeTrail], and initialize [Coordinate] variable `var newHead` with an instance
-     * located at (1,1). We then set our [mDirection] field to our [mNextDirection] field and
+     * located at (1,1). We then set our [mDirection] field to our [mNextDirection] field and `when`
      * switch on the value of [mDirection]:
+     *
      *  * [EAST]: we set `newHead` to a new instance of [Coordinate] located at
-     *  (`head.x+1`,`head.y`) and break.
+     *  (`head.x+1`,`head.y`).
      *
      *  * [WEST]: we set `newHead` to a new instance of [Coordinate] located at
-     *  (`head.x-1`,`head.y`) and break.
+     *  (`head.x-1`,`head.y`).
      *
      *  * [NORTH]: we set `newHead` to a new instance of [Coordinate] located at
-     *  (`head.x`,`head.y-1`) and break.
+     *  (`head.x`,`head.y-1`).
      *
      *  * [SOUTH]: we set `newHead` to a new instance of [Coordinate] located at
-     *  (`head.x`,`head.y+1`) and break.
+     *  (`head.x`,`head.y+1`).
      *
      * Now we check to see if we collided into a wall by checking whether the `x` field of
      * `newHead` is less 1, or the `y` field is less than 1, or the `x` field is greater than
@@ -619,7 +622,7 @@ class SnakeView : TileView {
      * score [mScore], multiply [mMoveDelay] by 0.9 and set `growSnake` to true.
      *
      * When done checking the apples we add `newHead` to [mSnakeTrail] and if `growSnake` is `false`
-     * we remove the [Coordinate] at the end of [mSnakeTrail] (if it is true the snake grows larger
+     * we remove the [Coordinate] at the end of [mSnakeTrail] (if it is `true` the snake grows larger
      * by keeping the last segment).
      *
      * Now we need to set the tile bitmaps representing [mSnakeTrail] to the correct colored one,
@@ -627,6 +630,7 @@ class SnakeView : TileView {
      * to the index of the [Coordinate] in [mSnakeTrail] and our [Coordinate] variable `c` to the
      * [Coordinate] at that index in [mSnakeTrail] and looping over all the [Coordinate]'s in
      * [mSnakeTrail]:
+     *
      *  * if `index` is 0 we call our [setTile] method to set the head located at the [Coordinate.x]
      *  and [Coordinate.y] field of `c` to the [YELLOW_STAR] bitmap.
      *
@@ -643,10 +647,10 @@ class SnakeView : TileView {
         var newHead = Coordinate(x = 1, y = 1)
         mDirection = mNextDirection
         when (mDirection) {
-            EAST -> newHead = Coordinate((head ?: return).x + 1, head.y)
-            WEST -> newHead = Coordinate((head ?: return).x - 1, head.y)
-            NORTH -> newHead = Coordinate((head ?: return).x, head.y - 1)
-            SOUTH -> newHead = Coordinate((head ?: return).x, head.y + 1)
+            EAST -> newHead = Coordinate(x = (head ?: return).x + 1, y = head.y)
+            WEST -> newHead = Coordinate(x = (head ?: return).x - 1, y = head.y)
+            NORTH -> newHead = Coordinate(x = (head ?: return).x, y = head.y - 1)
+            SOUTH -> newHead = Coordinate(x = (head ?: return).x, y = head.y + 1)
         }
 
         // Collision detection
@@ -657,7 +661,7 @@ class SnakeView : TileView {
         }
 
         // Look for collisions with itself
-        val snakeLength = mSnakeTrail.size
+        val snakeLength: Int = mSnakeTrail.size
         for (snakeIndex: Int in 0 until snakeLength) {
             val c: Coordinate? = mSnakeTrail[snakeIndex]
             if ((c ?: return).equals(newHead)) {
@@ -667,7 +671,7 @@ class SnakeView : TileView {
         }
 
         // Look for apples
-        val appleCount = mAppleList.size
+        val appleCount: Int = mAppleList.size
         for (appleIndex: Int in 0 until appleCount) {
             val c: Coordinate? = mAppleList[appleIndex]
             if ((c ?: return).equals(newHead)) {
@@ -680,16 +684,16 @@ class SnakeView : TileView {
         }
 
         // push a new head onto the ArrayList and pull off the tail
-        mSnakeTrail.add(0, newHead)
+        mSnakeTrail.add(/* index = */ 0, /* element = */ newHead)
         // except if we want the snake to grow
         if (!growSnake) {
-            mSnakeTrail.removeAt(mSnakeTrail.size - 1)
+            mSnakeTrail.removeAt(/* index = */ mSnakeTrail.size - 1)
         }
         for ((index: Int, c: Coordinate?) in mSnakeTrail.withIndex()) {
             if (index == 0) {
-                setTile(YELLOW_STAR, (c ?: return).x, c.y)
+                setTile(tileIndex = YELLOW_STAR, x = (c ?: return).x, y = c.y)
             } else {
-                setTile(RED_STAR, (c ?: return).x, c.y)
+                setTile(tileIndex = RED_STAR, x = (c ?: return).x, y = c.y)
             }
         }
     }
@@ -697,15 +701,11 @@ class SnakeView : TileView {
     /**
      * Simple class containing two integer values and a comparison function. There's probably
      * something I should use instead, but this was quick and easy to build.
-     */
-    private class Coordinate
-    /**
-     * Our constructor.
      *
      *  @param x X coordinate of the [Coordinate]
      *  @param y Y coordinate of the [Coordinate]
      */
-    (
+    private class Coordinate(
         var x: Int,
         var y: Int
     ) {
