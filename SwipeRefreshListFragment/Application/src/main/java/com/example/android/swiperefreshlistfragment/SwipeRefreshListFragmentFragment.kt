@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "DEPRECATION")
 
 package com.example.android.swiperefreshlistfragment
 
@@ -59,6 +59,7 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
         super.onCreate(savedInstanceState)
 
         // Notify the system to allow an options menu for this fragment.
+        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
         setHasOptionsMenu(true)
     }
 
@@ -88,20 +89,19 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
          * uses the system-defined simple_list_item_1 layout that contains one TextView.
          */
         val adapter: ListAdapter = ArrayAdapter(
-            /* context = */ requireActivity(),
-            /* resource = */ android.R.layout.simple_list_item_1,
-            /* textViewResourceId = */ android.R.id.text1,
-            /* objects = */ Cheeses.randomList(LIST_ITEM_COUNT)
+            /*context=*/ requireActivity(),
+            /*resource=*/ android.R.layout.simple_list_item_1,
+            /*textViewResourceId=*/ android.R.id.text1,
+            /*objects=*/ Cheeses.randomList(LIST_ITEM_COUNT)
         )
 
         // Set the adapter between the ListView and its backing data.
         listAdapter = adapter
 
         /*
-         * Implement {@link SwipeRefreshLayout.OnRefreshListener}. When users do the "swipe to
-         * refresh" gesture, SwipeRefreshLayout invokes
-         * {@link SwipeRefreshLayout.OnRefreshListener#onRefresh onRefresh()}. In
-         * {@link SwipeRefreshLayout.OnRefreshListener#onRefresh onRefresh()}, call a method that
+         * Implement SwipeRefreshLayout.OnRefreshListener. When users do the "swipe to refresh"
+         *  gesture, SwipeRefreshLayout invokes SwipeRefreshLayout.OnRefreshListener.onRefresh().
+         * In SwipeRefreshLayout.OnRefreshListener#onRefresh.onRefresh(), call a method that
          * refreshes the content. Call the same method in response to the Refresh action from the
          * action bar.
          */
@@ -121,7 +121,7 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
      */
     @Deprecated("Deprecated in Java", ReplaceWith("inflater.inflate(R.menu.main_menu, menu)")) // TODO: Use MenuProvider
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main_menu, menu)
+        inflater.inflate(/*menuRes=*/ R.menu.main_menu, /*menu=*/ menu)
     }
 
     /**
@@ -181,8 +181,12 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
 
                 // Change the colors displayed by the SwipeRefreshLayout by providing it with 4
                 // color resource ids
-                setColorScheme(R.color.color_scheme_1_1, R.color.color_scheme_1_2,
-                    R.color.color_scheme_1_3, R.color.color_scheme_1_4)
+                setColorScheme(
+                    colorRes1 = R.color.color_scheme_1_1,
+                    colorRes2 = R.color.color_scheme_1_2,
+                    colorRes3 = R.color.color_scheme_1_3,
+                    colorRes4 = R.color.color_scheme_1_4
+                )
                 return true
             }
 
@@ -192,8 +196,12 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
 
                 // Change the colors displayed by the SwipeRefreshLayout by providing it with 4
                 // color resource ids
-                setColorScheme(R.color.color_scheme_2_1, R.color.color_scheme_2_2,
-                    R.color.color_scheme_2_3, R.color.color_scheme_2_4)
+                setColorScheme(
+                    colorRes1 = R.color.color_scheme_2_1,
+                    colorRes2 = R.color.color_scheme_2_2,
+                    colorRes3 = R.color.color_scheme_2_3,
+                    colorRes4 = R.color.color_scheme_2_4
+                )
                 return true
             }
 
@@ -203,11 +211,16 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
 
                 // Change the colors displayed by the SwipeRefreshLayout by providing it with 4
                 // color resource ids
-                setColorScheme(R.color.color_scheme_3_1, R.color.color_scheme_3_2,
-                    R.color.color_scheme_3_3, R.color.color_scheme_3_4)
+                setColorScheme(
+                    colorRes1 = R.color.color_scheme_3_1,
+                    colorRes2 = R.color.color_scheme_3_2,
+                    colorRes3 = R.color.color_scheme_3_3,
+                    colorRes4 = R.color.color_scheme_3_4
+                )
                 return true
             }
         }
+        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
         return super.onOptionsItemSelected(item)
     }
 
@@ -228,6 +241,7 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
     }
 
     /**
+     * TODO: Continue here.
      * When the [AsyncTask] finishes, it calls [onRefreshComplete], which updates the data in the
      * [ListAdapter] and turns off the progress bar. First we log the fact that we were called. We
      * initialize our [ArrayAdapter] of [String] variable `val adapter` with a reference to the
@@ -274,7 +288,6 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
         override fun doInBackground(vararg params: Void?): List<String?>? {
             // Sleep for a small amount of time to simulate a background-task
             try {
-                @Suppress("RemoveRedundantQualifierName")
                 Thread.sleep(TASK_DURATION.toLong())
             } catch (e: InterruptedException) {
                 e.printStackTrace()

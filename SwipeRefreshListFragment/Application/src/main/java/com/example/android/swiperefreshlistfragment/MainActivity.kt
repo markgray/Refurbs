@@ -54,26 +54,23 @@ class MainActivity : SampleActivityBase() {
     private var mLogShown = false
 
     /**
-     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
-     * edge to edge display, then we call our super's implementation of `onCreate`, and
-     * set our content view to our layout file `R.layout.activity_main`.
+     * Called when the activity is starting. First we call [enableEdgeToEdge] to enable edge to
+     * edge display, then we call our super's implementation of `onCreate`, and set our content
+     * view to our layout file `R.layout.activity_main`.
      *
      * We initialize our [LinearLayout] variable `rootView` to the view with ID
-     * `R.id.sample_main_layout` then call [ViewCompat.setOnApplyWindowInsetsListener]
-     * to take over the policy for applying window insets to `rootView`, with the
-     * `listener` argument a lambda that accepts the [View] passed the lambda
-     * in variable `v` and the [WindowInsetsCompat] passed the lambda
-     * in variable `windowInsets`. It initializes its [Insets] variable
+     * `R.id.sample_main_layout` then call [ViewCompat.setOnApplyWindowInsetsListener] to take
+     * over the policy for applying window insets to `rootView`, with the `listener` argument a
+     * lambda that accepts the [View] passed the lambda in variable `v` and the [WindowInsetsCompat]
+     * passed the lambda in variable `windowInsets`. It initializes its [Insets] variable
      * `systemBars` to the [WindowInsetsCompat.getInsets] of `windowInsets` with
-     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the
-     * IME (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates
-     * the layout parameters of `v` to be a [ViewGroup.MarginLayoutParams]
-     * with the left margin set to `systemBars.left`, the right margin set to
-     * `systemBars.right`, the top margin set to `systemBars.top`, and the bottom margin
-     * set to the maximum of the system bars bottom inset and the IME bottom inset.
-     * Finally it returns [WindowInsetsCompat.CONSUMED]
-     * to the caller (so that the window insets will not keep passing down to
-     * descendant views).
+     * [WindowInsetsCompat.Type.systemBars] as the argument. It then gets the insets for the IME
+     * (keyboard) using [WindowInsetsCompat.Type.ime]. It then updates the layout parameters of
+     * `v` to be a [ViewGroup.MarginLayoutParams] with the left margin set to `systemBars.left`,
+     * the right margin set to `systemBars.right`, the top margin set to `systemBars.top`, and the
+     * bottom margin set to the maximum of the system bars bottom inset and the IME bottom inset.
+     * Finally it returns [WindowInsetsCompat.CONSUMED] to the caller (so that the window insets
+     * will not keep passing down to descendant views).
      *
      * If our [Bundle] parameter [savedInstanceState] is `null`, this is the first time we were
      * called so we use the [FragmentManager] for interacting with fragments associated with this
@@ -124,7 +121,7 @@ class MainActivity : SampleActivityBase() {
      * if you return `false` it will not be shown.
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(/*menuRes=*/ R.menu.main, /*menu=*/ menu)
         return true
     }
 
@@ -132,18 +129,19 @@ class MainActivity : SampleActivityBase() {
      * Prepare the Screen's standard options menu to be displayed. We initialize [MenuItem]
      * variable `val logToggle` by finding the menu item in our [Menu] parameter [menu] with id
      * `R.id.menu_toggle_log`, set it to visible only if the view in our layout with id
-     * `R.id.sample_output` is an instance of [ViewAnimator], and set its title to
-     * `R.string.sample_hide_log` ("Hide Log") if our [Boolean] flag field [mLogShown] is `true`
-     * or to `R.string.sample_show_log` ("Show Log") if it is `false`. Finally we return the value
-     * returned by our super's implementation of `onPrepareOptionsMenu` to the caller.
+     * `R.id.sample_output` is an instance of [ViewAnimator] (the device is narrower than 720dp),
+     * and set its title to `R.string.sample_hide_log` ("Hide Log") if our [Boolean] flag field
+     * [mLogShown] is `true` or to `R.string.sample_show_log` ("Show Log") if it is `false`.
+     * Finally we return the value returned by our super's implementation of `onPrepareOptionsMenu`
+     * to the caller.
      *
      * @param menu The options menu as last shown or first initialized by [onCreateOptionsMenu].
      * @return You must return `true` for the menu to be displayed;
      * if you return `false` it will not be shown.
      */
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        val logToggle: MenuItem = menu.findItem(R.id.menu_toggle_log)
-        logToggle.isVisible = findViewById<View>(R.id.sample_output) is ViewAnimator
+        val logToggle: MenuItem = menu.findItem(/*id=*/ R.id.menu_toggle_log)
+        logToggle.isVisible = findViewById<View>(/*id=*/ R.id.sample_output) is ViewAnimator
         logToggle.setTitle(if (mLogShown) R.string.sample_hide_log else R.string.sample_show_log)
         return super.onPrepareOptionsMenu(menu)
     }
@@ -166,7 +164,7 @@ class MainActivity : SampleActivityBase() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_toggle_log) {
             mLogShown = !mLogShown
-            val output: ViewAnimator = findViewById(R.id.sample_output)
+            val output: ViewAnimator = findViewById(/*id=*/ R.id.sample_output)
             if (mLogShown) {
                 output.displayedChild = 1
             } else {
@@ -200,7 +198,7 @@ class MainActivity : SampleActivityBase() {
 
         // On screen logging via a fragment with a TextView.
         val logFragment = supportFragmentManager
-            .findFragmentById(R.id.log_fragment) as LogFragment?
+            .findFragmentById(/*id=*/ R.id.log_fragment) as LogFragment?
         msgFilter.next = logFragment!!.logView
         Log.i(TAG, "Ready")
     }

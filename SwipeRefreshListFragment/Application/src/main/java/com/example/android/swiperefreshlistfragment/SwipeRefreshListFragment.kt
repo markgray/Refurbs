@@ -75,15 +75,15 @@ open class SwipeRefreshListFragment : ListFragment() {
         // Add the list fragment's content view to the SwipeRefreshLayout, making sure that it fills
         // the SwipeRefreshLayout
         swipeRefreshLayout!!.addView(
-            listFragmentView,
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+            /*child=*/ listFragmentView,
+            /*width=*/ ViewGroup.LayoutParams.MATCH_PARENT,
+            /*height=*/ ViewGroup.LayoutParams.MATCH_PARENT
         )
 
         // Make sure that the SwipeRefreshLayout will fill the fragment
         swipeRefreshLayout!!.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+            /*width=*/ ViewGroup.LayoutParams.MATCH_PARENT,
+            /*height=*/ ViewGroup.LayoutParams.MATCH_PARENT
         )
 
         // Now return the SwipeRefreshLayout as this fragment's content view
@@ -97,7 +97,7 @@ open class SwipeRefreshListFragment : ListFragment() {
      * @param listener `OnRefreshListener` to use when a refresh gesture is detected.
      */
     fun setOnRefreshListener(listener: OnRefreshListener?) {
-        swipeRefreshLayout!!.setOnRefreshListener(listener)
+        swipeRefreshLayout!!.setOnRefreshListener(/*listener=*/ listener)
     }
 
     /**
@@ -162,7 +162,7 @@ open class SwipeRefreshListFragment : ListFragment() {
          */
         override fun canChildScrollUp(): Boolean {
             val listView = listView
-            return listView.isVisible && canListViewScrollUp(listView)
+            return listView.isVisible && canListViewScrollUp(listView = listView)
         }
     }
 
@@ -176,7 +176,7 @@ open class SwipeRefreshListFragment : ListFragment() {
          * @return true is our parameter `ListView listView` can scroll up
          */
         private fun canListViewScrollUp(listView: ListView): Boolean {
-            return listView.canScrollVertically(/* direction = */ -1)
+            return listView.canScrollVertically(/*direction=*/ -1)
         }
     }
 }
