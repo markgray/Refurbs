@@ -55,6 +55,7 @@ class MainActivity : ComponentActivity() {
     private var mCounter = 0
 
     /**
+     * TODO: Continue here.
      * Called when the activity is starting. First we call [enableEdgeToEdge] to enable
      * edge to edge display, then we call our super's implementation of `onCreate`, and
      * set our content view to our layout file `R.layout.sample_main`.
