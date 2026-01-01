@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog")
+@file:Suppress(
+    "ReplaceNotNullAssertionWithElvisReturn", "ReplaceJavaStaticMethodWithKotlinAnalog",
+    "unused"
+)
 
 package com.example.android.storageprovider
 
@@ -125,7 +128,7 @@ class MyCloudProvider : DocumentsProvider() {
         // Create a cursor with either the requested fields, or the default projection.  This
         // cursor is returned to the Android system picker UI and used to display all roots from
         // this provider.
-        val result = MatrixCursor(resolveRootProjection(projection = projection))
+        val result = MatrixCursor(/* columnNames = */ resolveRootProjection(projection = projection))
 
         // If user is not logged in, return an empty root cursor.  This removes our provider from
         // the list entirely.
@@ -137,29 +140,35 @@ class MyCloudProvider : DocumentsProvider() {
         // just add multiple cursor rows.
         // Construct one row for a root called "MyCloud".
         val row: MatrixCursor.RowBuilder = result.newRow()
-        row.add(Root.COLUMN_ROOT_ID, ROOT)
-        row.add(Root.COLUMN_SUMMARY, context!!.getString(R.string.root_summary))
+        row.add(/* columnName = */ Root.COLUMN_ROOT_ID, /* value = */ ROOT)
+        row.add(/* columnName = */ Root.COLUMN_SUMMARY, /* value = */ context!!.getString(R.string.root_summary))
 
         // FLAG_SUPPORTS_CREATE means at least one directory under the root supports creating
         // documents.  FLAG_SUPPORTS_RECENTS means your application's most recently used
         // documents will show up in the "Recents" category.  FLAG_SUPPORTS_SEARCH allows users
         // to search all documents the application shares.
-        row.add(Root.COLUMN_FLAGS, Root.FLAG_SUPPORTS_CREATE or
-            Root.FLAG_SUPPORTS_RECENTS or
-            Root.FLAG_SUPPORTS_SEARCH)
+        row.add(
+            /* columnName = */ Root.COLUMN_FLAGS,
+            /* value = */ Root.FLAG_SUPPORTS_CREATE or
+                Root.FLAG_SUPPORTS_RECENTS or
+                Root.FLAG_SUPPORTS_SEARCH
+        )
 
         // COLUMN_TITLE is the root title (e.g. what will be displayed to identify your provider).
-        row.add(Root.COLUMN_TITLE, context!!.getString(R.string.app_name))
+        row.add(/* columnName = */ Root.COLUMN_TITLE, /* value = */ context!!.getString(R.string.app_name))
 
         // This document id must be unique within this provider and consistent across time.  The
         // system picker UI may save it and refer to it later.
-        row.add(Root.COLUMN_DOCUMENT_ID, getDocIdForFile(mBaseDir))
+        row.add(
+            /* columnName = */ Root.COLUMN_DOCUMENT_ID,
+            /* value = */ getDocIdForFile(file = mBaseDir)
+        )
 
         // The child MIME types are used to filter the roots and only present to the user roots
         // that contain the desired type somewhere in their file hierarchy.
-        row.add(Root.COLUMN_MIME_TYPES, childMimeTypes)
-        row.add(Root.COLUMN_AVAILABLE_BYTES, mBaseDir!!.freeSpace)
-        row.add(Root.COLUMN_ICON, R.drawable.ic_launcher)
+        row.add(/* columnName = */ Root.COLUMN_MIME_TYPES, /* value = */ childMimeTypes)
+        row.add(/* columnName = */ Root.COLUMN_AVAILABLE_BYTES, /* value = */ mBaseDir!!.freeSpace)
+        row.add(/* columnName = */ Root.COLUMN_ICON, /* value = */ R.drawable.ic_launcher)
         return result
     }
 
@@ -168,12 +177,12 @@ class MyCloudProvider : DocumentsProvider() {
      * were called. Then we initialize [MatrixCursor] variable `val result` with a new instance
      * using the [Array] of [String] returned by our method [resolveDocumentProjection] given
      * [Array] of [String] parameter [projection] for the column names (returns [projection] if it
-     * is not `null` or [DEFAULT_DOCUMENT_PROJECTION] if it is null). We next initialize [File]
+     * is not `null` or [DEFAULT_DOCUMENT_PROJECTION] if it is `null`). We next initialize [File]
      * variable `val parent` with the [File] that our method [getFileForDocId] locates when given
      * our [String] parameter [rootId] for the document ID representing the desired file. We create
      * [PriorityQueue] of [File] variable `val lastModifiedFiles` with an initial capacity of 5 and
      * an anonymous class as its [Comparator] whose `compare` override orders the files by last
-     * modified time.
+     * modified time using the [Long.compareTo] method.
      *
      * We initialize [LinkedList] of [File] variable `val pending` with a new instance, and add
      * `parent` to it. Then we loop while `pending` is not empty initializing [File] variable
@@ -205,11 +214,11 @@ class MyCloudProvider : DocumentsProvider() {
 
         // Create a cursor with the requested projection, or the default projection.
         val result = MatrixCursor(resolveDocumentProjection(projection = projection))
-        val parent: File? = getFileForDocId(rootId)
+        val parent: File? = getFileForDocId(docId = rootId)
 
         // Create a queue to store the most recent documents, which orders by last modified.
-        val lastModifiedFiles = PriorityQueue(5) { i: File, j: File ->
-            java.lang.Long.compare(i.lastModified(), j.lastModified())
+        val lastModifiedFiles = PriorityQueue(/* initialCapacity = */ 5) { i: File, j: File ->
+            i.lastModified().compareTo(j.lastModified())
         }
 
         // Iterate through all files and directories in the file structure under the root.  If
@@ -226,7 +235,7 @@ class MyCloudProvider : DocumentsProvider() {
             val file: File? = pending.removeFirst()
             if (file!!.isDirectory) {
                 // If it's a directory, add all its children to the unprocessed list
-                Collections.addAll(pending, *file.listFiles()!!)
+                Collections.addAll(/* c = */ pending, /* ...elements = */ *file.listFiles()!!)
             } else {
                 // If it's a file, add it to the ordered queue.
                 lastModifiedFiles.add(file)
@@ -236,7 +245,7 @@ class MyCloudProvider : DocumentsProvider() {
         // Add the most recent files to the cursor, not exceeding the max number of results.
         for (i in 0 until Math.min(MAX_LAST_MODIFIED + 1, lastModifiedFiles.size)) {
             val file: File? = lastModifiedFiles.remove()
-            includeFile(result, null, file)
+            includeFile(result = result, docId = null, file = file)
         }
         return result
     }
@@ -276,8 +285,8 @@ class MyCloudProvider : DocumentsProvider() {
         Log.v(TAG, "querySearchDocuments")
 
         // Create a cursor with the requested projection, or the default projection.
-        val result = MatrixCursor(resolveDocumentProjection(projection))
-        val parent = getFileForDocId(rootId)
+        val result = MatrixCursor(resolveDocumentProjection(projection = projection))
+        val parent = getFileForDocId(docId = rootId)
 
         // This example implementation searches file names for the query and doesn't rank search
         // results, so we can stop as soon as we find a sufficient number of matches.  Other
@@ -330,7 +339,7 @@ class MyCloudProvider : DocumentsProvider() {
         signal: CancellationSignal
     ): AssetFileDescriptor {
         Log.v(TAG, "openDocumentThumbnail")
-        val file: File? = getFileForDocId(documentId)
+        val file: File? = getFileForDocId(docId = documentId)
         val pfd: ParcelFileDescriptor = ParcelFileDescriptor.open(
             /* file = */ file,
             /* mode = */ ParcelFileDescriptor.MODE_READ_ONLY
@@ -376,9 +385,9 @@ class MyCloudProvider : DocumentsProvider() {
      * First we log the fact that we were called. We initialize [MatrixCursor] variable `val result`
      * with a new instance using our [resolveDocumentProjection] method to decide to use [Array] of
      * [String] parameter [projection] for the column names if it is not `null` or
-     * [DEFAULT_DOCUMENT_PROJECTION] if it is `null`. We initialize `File parent` by using our
-     * [getFileForDocId] method to find the directory with document id [String] parameter
-     * [parentDocumentId]. We loop through all the [File] variable `val file` in the array returned
+     * [DEFAULT_DOCUMENT_PROJECTION] if it is `null`. We initialize [File] variable `parent` by
+     * using our [getFileForDocId] method to find the directory with document id [String] parameter
+     * [parentDocumentId]. We loop through all the [File] variable `file` in the array returned
      * by the [File.listFiles] method of `parent` calling our [includeFile] method for each to add
      * it to `result`. Finally we return `result` to the caller.
      *
@@ -399,13 +408,12 @@ class MyCloudProvider : DocumentsProvider() {
         projection: Array<String>?,
         sortOrder: String
     ): Cursor {
-        Log.v(TAG, "queryChildDocuments, parentDocumentId: " +
-            parentDocumentId +
-            " sortOrder: " +
-            sortOrder
+        Log.v(
+            TAG,
+            "queryChildDocuments, parentDocumentId: $parentDocumentId sortOrder: $sortOrder"
         )
-        val result = MatrixCursor(resolveDocumentProjection(projection))
-        val parent: File? = getFileForDocId(parentDocumentId)
+        val result = MatrixCursor(resolveDocumentProjection(projection = projection))
+        val parent: File? = getFileForDocId(docId = parentDocumentId)
         for (file in parent!!.listFiles()!!) {
             includeFile(result = result, docId = null, file = file)
         }
@@ -450,21 +458,26 @@ class MyCloudProvider : DocumentsProvider() {
         // periodically check the CancellationSignal.  If you have an extremely large file to
         // transfer from the network, a better solution may be pipes or sockets
         // (see ParcelFileDescriptor for helper methods).
-        val file: File? = getFileForDocId(documentId)
+        val file: File? = getFileForDocId(docId = documentId)
         val accessMode: Int = ParcelFileDescriptor.parseMode(mode)
-        val isWrite: Boolean = mode.indexOf('w') != -1
+        val isWrite: Boolean = mode.indexOf(char = 'w') != -1
         return if (isWrite) {
             // Attach a close listener if the document is opened in write mode.
             try {
                 val handler = Handler(context!!.mainLooper)
-                ParcelFileDescriptor.open(file, accessMode, handler
+                ParcelFileDescriptor.open(
+                    file, accessMode, handler
                 ) { // Update the file with the cloud server.  The client is done writing.
-                    Log.i(TAG, "A file with id " + documentId + " has been closed!  Time to " +
-                        "update the server.")
+                    Log.i(
+                        TAG, "A file with id " + documentId + " has been closed!  Time to " +
+                            "update the server."
+                    )
                 }
             } catch (e: IOException) {
-                throw FileNotFoundException("Failed to open document with id " + documentId +
-                    " and mode " + mode)
+                throw FileNotFoundException(
+                    "Failed to open document with id " + documentId +
+                        " and mode " + mode
+                )
             }
         } else {
             ParcelFileDescriptor.open(file, accessMode)
@@ -501,17 +514,19 @@ class MyCloudProvider : DocumentsProvider() {
         displayName: String
     ): String {
         Log.v(TAG, "createDocument")
-        val parent: File? = getFileForDocId(documentId)
-        val file = File(parent!!.path, displayName)
+        val parent: File? = getFileForDocId(docId = documentId)
+        val file = File(/* parent = */ parent!!.path, /* child = */ displayName)
         try {
             file.createNewFile()
             file.setWritable(true)
             file.setReadable(true)
         } catch (e: IOException) {
-            throw FileNotFoundException("Failed to create document with name " +
-                displayName + " and documentId " + documentId)
+            throw FileNotFoundException(
+                "Failed to create document with name " +
+                    displayName + " and documentId " + documentId
+            )
         }
-        return getDocIdForFile(file)
+        return getDocIdForFile(file = file)
     }
 
     /**
@@ -527,7 +542,7 @@ class MyCloudProvider : DocumentsProvider() {
     @Throws(FileNotFoundException::class)
     override fun deleteDocument(documentId: String) {
         Log.v(TAG, "deleteDocument")
-        val file: File? = getFileForDocId(documentId)
+        val file: File? = getFileForDocId(docId = documentId)
         if (file!!.delete()) {
             Log.i(TAG, "Deleted file with id $documentId")
         } else {
@@ -547,8 +562,8 @@ class MyCloudProvider : DocumentsProvider() {
      */
     @Throws(FileNotFoundException::class)
     override fun getDocumentType(documentId: String): String {
-        val file = getFileForDocId(documentId)
-        return getTypeForFile(file)
+        val file = getFileForDocId(docId = documentId)
+        return getTypeForFile(file = file)
     }
 
     // Flatten the list into a string and insert newlines between the MIME type strings.
@@ -610,10 +625,10 @@ class MyCloudProvider : DocumentsProvider() {
         val rootPath: String = mBaseDir!!.path
         path = if (rootPath == path) {
             ""
-        } else if (rootPath.endsWith("/")) {
-            path.substring(rootPath.length)
+        } else if (rootPath.endsWith(suffix = "/")) {
+            path.substring(startIndex = rootPath.length)
         } else {
-            path.substring(rootPath.length + 1)
+            path.substring(startIndex = rootPath.length + 1)
         }
         return "root:$path"
     }
@@ -637,7 +652,7 @@ class MyCloudProvider : DocumentsProvider() {
      * method [getTypeForFile] guesses for `fileLocal`. If `mimeType` starts with the string
      * "image/" we set the [DocumentsContract.Document.FLAG_SUPPORTS_THUMBNAIL] flag of `flags`.
      *
-     * WE initialize [MatrixCursor.RowBuilder] variable `val row` with a new row added to
+     * We initialize [MatrixCursor.RowBuilder] variable `val row` with a new row added to
      * [MatrixCursor] parameter [result]. We add to it `docIdLocal` in the column
      * [DocumentsContract.Document.COLUMN_DOCUMENT_ID], `displayName` in the column
      * [DocumentsContract.Document.COLUMN_DISPLAY_NAME], the length of `fileLocal` in column
@@ -657,9 +672,9 @@ class MyCloudProvider : DocumentsProvider() {
         var docIdLocal: String? = docId
         var fileLocal: File? = file
         if (docIdLocal == null) {
-            docIdLocal = getDocIdForFile(fileLocal)
+            docIdLocal = getDocIdForFile(file = fileLocal)
         } else {
-            fileLocal = getFileForDocId(docIdLocal)
+            fileLocal = getFileForDocId(docId = docIdLocal)
         }
         var flags = 0
         if (fileLocal!!.isDirectory) {
@@ -680,8 +695,8 @@ class MyCloudProvider : DocumentsProvider() {
             flags = flags or DocumentsContract.Document.FLAG_SUPPORTS_DELETE
         }
         val displayName: String = fileLocal.name
-        val mimeType: String = getTypeForFile(fileLocal)
-        if (mimeType.startsWith("image/")) {
+        val mimeType: String = getTypeForFile(file = fileLocal)
+        if (mimeType.startsWith(prefix = "image/")) {
             // Allow the image to be represented by a thumbnail rather than an icon
             flags = flags or DocumentsContract.Document.FLAG_SUPPORTS_THUMBNAIL
         }
@@ -718,12 +733,12 @@ class MyCloudProvider : DocumentsProvider() {
         if (docId == ROOT) {
             return target
         }
-        val splitIndex: Int = docId.indexOf(':', 1)
+        val splitIndex: Int = docId.indexOf(char = ':', startIndex = 1)
         return if (splitIndex < 0) {
             throw FileNotFoundException("Missing root for $docId")
         } else {
-            val path: String = docId.substring(splitIndex + 1)
-            target = File(target, path)
+            val path: String = docId.substring(startIndex = splitIndex + 1)
+            target = File(/* parent = */ target, /* child = */ path)
             if (!target.exists()) {
                 throw FileNotFoundException("Missing file for $docId at $target")
             }
@@ -760,17 +775,17 @@ class MyCloudProvider : DocumentsProvider() {
         if (mBaseDir!!.list()!!.isNotEmpty()) {
             return
         }
-        val imageResIds: IntArray = getResourceIdArray(R.array.image_res_ids)
+        val imageResIds: IntArray = getResourceIdArray(arrayResId = R.array.image_res_ids)
         for (resId in imageResIds) {
-            writeFileToInternalStorage(resId, ".jpeg")
+            writeFileToInternalStorage(resId = resId, extension = ".jpeg")
         }
-        val textResIds: IntArray = getResourceIdArray(R.array.text_res_ids)
+        val textResIds: IntArray = getResourceIdArray(arrayResId = R.array.text_res_ids)
         for (resId in textResIds) {
-            writeFileToInternalStorage(resId, ".txt")
+            writeFileToInternalStorage(resId = resId, extension = ".txt")
         }
-        val docxResIds: IntArray = getResourceIdArray(R.array.docx_res_ids)
+        val docxResIds: IntArray = getResourceIdArray(arrayResId = R.array.docx_res_ids)
         for (resId in docxResIds) {
-            writeFileToInternalStorage(resId, ".docx")
+            writeFileToInternalStorage(resId = resId, extension = ".docx")
         }
     }
 
@@ -796,10 +811,10 @@ class MyCloudProvider : DocumentsProvider() {
         val ins: InputStream = context!!.resources.openRawResource(resId)
         val outputStream = ByteArrayOutputStream()
         var size: Int
-        var buffer = ByteArray(1024)
+        var buffer = ByteArray(size = 1024)
         try {
-            while (ins.read(buffer, 0, 1024).also { size = it } >= 0) {
-                outputStream.write(buffer, 0, size)
+            while (ins.read(/*b=*/ buffer, /*off=*/ 0, /*len=*/ 1024).also { size = it } >= 0) {
+                outputStream.write(/*b=*/ buffer, /*off=*/ 0, /*len=*/ size)
             }
             ins.close()
             buffer = outputStream.toByteArray()
@@ -827,9 +842,9 @@ class MyCloudProvider : DocumentsProvider() {
     private fun getResourceIdArray(arrayResId: Int): IntArray {
         val ar: TypedArray = context!!.resources.obtainTypedArray(arrayResId)
         val len: Int = ar.length()
-        val resIds = IntArray(len)
+        val resIds = IntArray(size = len)
         for (i in 0 until len) {
-            resIds[i] = ar.getResourceId(i, 0)
+            resIds[i] = ar.getResourceId(/*index=*/ i, /*defValue=*/ 0)
         }
         ar.recycle()
         return resIds
@@ -846,10 +861,10 @@ class MyCloudProvider : DocumentsProvider() {
     private val isUserLoggedIn: Boolean
         get() {
             val sharedPreferences: SharedPreferences = context!!.getSharedPreferences(
-                context!!.getString(R.string.app_name),
-                Context.MODE_PRIVATE
+                /*name=*/ context!!.getString(R.string.app_name),
+                /*mode=*/ Context.MODE_PRIVATE
             )
-            return sharedPreferences.getBoolean(context!!.getString(R.string.key_logged_in), false)
+            return sharedPreferences.getBoolean(context!!.getString(R.string.key_logged_in), /*defValue=*/ false)
         }
 
     companion object {
@@ -939,7 +954,7 @@ class MyCloudProvider : DocumentsProvider() {
             return if (file!!.isDirectory) {
                 DocumentsContract.Document.MIME_TYPE_DIR
             } else {
-                getTypeForName(file.name)
+                getTypeForName(name = file.name)
             }
         }
 

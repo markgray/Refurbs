@@ -75,7 +75,7 @@ class StorageProviderFragment : Fragment() {
      * [MenuItem] parameter [item] is `R.id.sample_action`, we call our method [toggleLogin] to
      * toggle whether we are logged in or not, and if our [Boolean] flag field [mLoggedIn] is now
      * `true` we set the title of [item] to the string with id `R.string.log_out` ("Log out")
-     * otherwise we set it to thestring with id `R.string.log_in` ("Log in"). We then retrieve a
+     * otherwise we set it to the string with id `R.string.log_in` ("Log in"). We then retrieve a
      * [ContentResolver] instance for our application's package and call its [ContentResolver.notifyChange]
      * method to notify registered observers that a row was updated in the URI representing the
      * roots of our document provider [AUTHORITY] ("com.example.android.storageprovider.documents").
@@ -91,7 +91,6 @@ class StorageProviderFragment : Fragment() {
             toggleLogin()
             item.setTitle(if (mLoggedIn) R.string.log_out else R.string.log_in)
 
-            // BEGIN_INCLUDE(notify_change)
             // Notify the system that the status of our roots has changed.  This will trigger
             // a call to MyCloudProvider.queryRoots() and force a refresh of the system
             // picker UI.  It's important to call this or stale results may persist.
@@ -99,11 +98,10 @@ class StorageProviderFragment : Fragment() {
             requireActivity()
                 .contentResolver
                 .notifyChange(
-                    DocumentsContract.buildRootsUri(AUTHORITY),
-                    null,
-                    false
+                    /*uri=*/ DocumentsContract.buildRootsUri(/*authority=*/ AUTHORITY),
+                    /*observer=*/ null,
+                    /*syncToNetwork=*/ false
                 )
-            // END_INCLUDE(notify_change)
         }
         return true
     }
@@ -117,7 +115,7 @@ class StorageProviderFragment : Fragment() {
         // Replace this with your standard method of authentication to determine if your app
         // should make the user's documents available.
         mLoggedIn = !mLoggedIn
-        writeLoginValue(mLoggedIn)
+        writeLoginValue(loggedIn = mLoggedIn)
         Log.i(
             TAG,
             getString(
@@ -140,8 +138,8 @@ class StorageProviderFragment : Fragment() {
      */
     private fun writeLoginValue(loggedIn: Boolean) {
         val sharedPreferences: SharedPreferences = requireActivity().getSharedPreferences(
-            /* name = */ getString(R.string.app_name),
-            /* mode = */ Context.MODE_PRIVATE
+            /*name=*/ getString(R.string.app_name),
+            /*mode=*/ Context.MODE_PRIVATE
         )
         sharedPreferences.edit { putBoolean(getString(R.string.key_logged_in), loggedIn) }
     }

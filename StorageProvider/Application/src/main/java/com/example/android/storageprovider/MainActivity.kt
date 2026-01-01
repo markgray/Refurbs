@@ -17,6 +17,7 @@
 
 package com.example.android.storageprovider
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -25,6 +26,7 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
@@ -106,7 +108,6 @@ class MainActivity : SampleActivityBase() {
      * Initialize the contents of the Activity's standard options menu. We use a [MenuInflater] for
      * this context to inflate our menu layout file `R.menu.main` into our [Menu] parameter [menu]
      * and return `true` so the menu will be displayed.
-     * TODO: Continue here.
      *
      * @param menu The options menu in which you place your items.
      * @return You must return `true` for the menu to be displayed;
@@ -126,8 +127,10 @@ class MainActivity : SampleActivityBase() {
      * associated with this activity to find the fragment whose container has the id
      * `R.id.log_fragment`, and set its [LogView] to be the [LogNode] that `msgFilter` will send
      * data to. We then set the text appearance of the [LogView] of `logFragment` to be that
-     * indicated by the style file `R.style.Log`, and set its background color to [Color.WHITE].
-     * Finally we log the message "Ready".
+     * indicated by the style file `R.style.Log` (using the one argument overload of
+     * [TextView.setTextAppearance] for SDK's starting with `M` and the two argument overload
+     * for older SDK's). We then set the background color of the [LogView] to [Color.WHITE] and
+     * log the message "Ready".
      */
     override fun initializeLogging() {
         // Wraps Android's native log framework.
@@ -142,6 +145,7 @@ class MainActivity : SampleActivityBase() {
         // On screen logging via a fragment with a TextView.
         val logFragment = supportFragmentManager.findFragmentById(R.id.log_fragment) as LogFragment?
         msgFilter.next = logFragment!!.logView
+        @SuppressLint("ObsoleteSdkInt")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             logFragment.logView!!.setTextAppearance(R.style.Log)
         } else {
