@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "DEPRECATION")
 
 package com.example.android.swiperefreshlayoutbasic
 
@@ -73,11 +73,12 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // Notify the system to allow an options menu for this fragment.
+        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
         setHasOptionsMenu(true)
     }
 
     /**
-     * Inflates the [View] which will be displayed by this [Fragment], from the app's resources.
+     * Inflates the [View] which will be displayed by this [Fragment] from the app's resources.
      * We initialize [View] variable `val view` with the [View] inflated by our [LayoutInflater]
      * parameter [inflater] from our layout file `R.layout.fragment_sample` using our [ViewGroup]
      * parameter [container] for the LayoutParams without attaching to it. We initialize our
@@ -102,10 +103,14 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view: View = inflater.inflate(R.layout.fragment_sample, container, false)
+        val view: View = inflater.inflate(
+            /*resource=*/ R.layout.fragment_sample,
+            /*root=*/ container,
+            /*attachToRoot=*/ false
+        )
 
         // Retrieve the SwipeRefreshLayout and ListView instances
-        mSwipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
+        mSwipeRefreshLayout = view.findViewById(/*id=*/ R.id.swipe_refresh)
 
         // Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
         mSwipeRefreshLayout!!.setColorSchemeResources(
@@ -113,7 +118,7 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
             R.color.swipe_color_3, R.color.swipe_color_4)
 
         // Retrieve the ListView
-        mListView = view.findViewById(android.R.id.list)
+        mListView = view.findViewById(/*id=*/ android.R.id.list)
         return view
     }
 
@@ -132,8 +137,8 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
      * our method [initiateRefresh] method to replace the dataset of [mListAdapter] with a new list
      * of [LIST_ITEM_COUNT] (20) random cheeses.
      *
-     * @param view View created in [.onCreateView]
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * @param view View created in [onCreateView]
+     * @param savedInstanceState If non-`null`, this fragment is being re-constructed
      * from a previous saved state as given here.
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -144,10 +149,10 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
          * uses the system-defined simple_list_item_1 layout that contains one TextView.
          */
         mListAdapter = ArrayAdapter(
-            requireActivity(),
-            android.R.layout.simple_list_item_1,
-            android.R.id.text1,
-            Cheeses.randomList(LIST_ITEM_COUNT) as List<String?>)
+            /*context=*/ requireActivity(),
+            /*resource=*/ android.R.layout.simple_list_item_1,
+            /*textViewResourceId=*/ android.R.id.text1,
+            /*objects=*/ Cheeses.randomList(LIST_ITEM_COUNT) as List<String?>)
 
         // Set the adapter between the ListView and its backing data.
         mListView!!.adapter = mListAdapter
@@ -171,7 +176,7 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
      * @param menu     The options menu in which you place our items.
      * @param inflater [MenuInflater] to use to instantiate menu XML files into Menu objects
      */
-    @Deprecated("Deprecated in Java", ReplaceWith("inflater.inflate(R.menu.main_menu, menu)")) // TODO: Use MenuProvider
+    @Deprecated("Deprecated in Java") // TODO: Use MenuProvider
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
     }
@@ -183,7 +188,7 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
      * `R.id.menu_refresh`, we log the fact it was selected, and if our [SwipeRefreshLayout] field
      * [mSwipeRefreshLayout] is not currently refreshing we set it to be refreshing, call our method
      * [initiateRefresh] which launches a delaying task which when finished returns a new list of
-     * [LIST_ITEM_COUNT] (20) random cheese names to [onRefreshComplete] which it uses to to replace
+     * [LIST_ITEM_COUNT] (20) random cheese names to [onRefreshComplete] which it uses to replace
      * the dataset of [ArrayAdapter] of [String] field [mListAdapter]. Having started the refresh
      * we return `true` to the caller to consume the event here.
      *
@@ -208,6 +213,7 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
             initiateRefresh()
             return true
         }
+        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
         return super.onOptionsItemSelected(item)
     }
 
@@ -261,7 +267,7 @@ class SwipeRefreshLayoutBasicFragment : Fragment() {
          * block intended to catch and log [InterruptedException] we sleep for [TASK_DURATION] (3000)
          * milliseconds in order to simulate a background-task, then we return the list of
          * [LIST_ITEM_COUNT] (20) random cheeses returned by the [Cheeses.randomList] method of
-         * [Cheeses] to the caller. (This list will be passed to our [onPostExecute] method which
+         * [Cheeses] to the caller. (This list will be passed to our [onPostExecute] override which
          * will execute on the UI thread).
          *
          * @param params The parameters of the task, [Void] because we use none.
