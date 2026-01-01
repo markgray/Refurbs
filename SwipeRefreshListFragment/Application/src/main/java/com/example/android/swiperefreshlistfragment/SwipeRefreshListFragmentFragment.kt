@@ -241,7 +241,6 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
     }
 
     /**
-     * TODO: Continue here.
      * When the [AsyncTask] finishes, it calls [onRefreshComplete], which updates the data in the
      * [ListAdapter] and turns off the progress bar. First we log the fact that we were called. We
      * initialize our [ArrayAdapter] of [String] variable `val adapter` with a reference to the
@@ -261,7 +260,7 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
         val adapter = listAdapter as ArrayAdapter<String>?
         adapter!!.clear()
         for (cheese in result!!) {
-            adapter.add(cheese)
+            adapter.add(/*object=*/ cheese)
         }
 
         // Stop the refreshing indicator
@@ -288,13 +287,13 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
         override fun doInBackground(vararg params: Void?): List<String?>? {
             // Sleep for a small amount of time to simulate a background-task
             try {
-                Thread.sleep(TASK_DURATION.toLong())
+                Thread.sleep(/*millis=*/ TASK_DURATION.toLong())
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
 
             // Return a new random list of cheeses
-            return Cheeses.randomList(LIST_ITEM_COUNT)
+            return Cheeses.randomList(count = LIST_ITEM_COUNT)
         }
 
         /**
@@ -307,10 +306,10 @@ class SwipeRefreshListFragmentFragment : SwipeRefreshListFragment() {
          */
         @Deprecated("Deprecated in Java")
         override fun onPostExecute(result: List<String?>?) {
-            super.onPostExecute(result)
+            super.onPostExecute(/*result=*/ result)
 
             // Tell the Fragment that the refresh has completed
-            onRefreshComplete(result)
+            onRefreshComplete(result = result)
         }
     }
 
