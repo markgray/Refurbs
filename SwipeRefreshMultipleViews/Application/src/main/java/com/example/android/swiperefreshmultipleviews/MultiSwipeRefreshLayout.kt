@@ -90,7 +90,7 @@ class MultiSwipeRefreshLayout : SwipeRefreshLayout {
             // Iterate through the scrollable children and check if any of them can not scroll up
             @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
             for (view in mSwipeableChildren!!) {
-                if (view != null && view.isShown && !canViewScrollUp(view)) {
+                if (view != null && view.isShown && !canViewScrollUp(view = view)) {
                     // If the view is shown, and can not scroll upwards, return false and start the
                     // gesture.
                     return false
@@ -110,7 +110,7 @@ class MultiSwipeRefreshLayout : SwipeRefreshLayout {
          */
         private fun canViewScrollUp(view: View): Boolean {
             // For ICS and above we can call canScrollVertically() to determine this
-            return view.canScrollVertically(-1)
+            return view.canScrollVertically(/*direction=*/ -1)
         }
     }
 }

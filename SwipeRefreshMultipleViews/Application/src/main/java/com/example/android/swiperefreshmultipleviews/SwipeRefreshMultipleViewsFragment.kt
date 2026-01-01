@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("DEPRECATION", "ReplaceNotNullAssertionWithElvisReturn")
+@file:Suppress("ReplaceNotNullAssertionWithElvisReturn", "DEPRECATION")
 
 package com.example.android.swiperefreshmultipleviews
 
@@ -77,6 +77,7 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // Notify the system to allow an options menu for this fragment.
+        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
         setHasOptionsMenu(true)
     }
 
@@ -108,15 +109,22 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view: View = inflater.inflate(R.layout.fragment_sample, container, false)
-        mSwipeRefreshLayout = view.findViewById(R.id.swiperefresh)
+        val view: View = inflater.inflate(
+            /*resource=*/ R.layout.fragment_sample,
+            /*root=*/ container,
+            /*attachToRoot=*/ false
+        )
+        mSwipeRefreshLayout = view.findViewById(/*id=*/ R.id.swiperefresh)
 
         // Set the color scheme of the SwipeRefreshLayout by providing 4 color resource ids
         mSwipeRefreshLayout!!.setColorSchemeResources(
-            R.color.swipe_color_1, R.color.swipe_color_2,
-            R.color.swipe_color_3, R.color.swipe_color_4)
-        mGridView = view.findViewById(android.R.id.list)
-        mEmptyView = view.findViewById(android.R.id.empty)
+            /* ...colorResIds = */ R.color.swipe_color_1,
+            R.color.swipe_color_2,
+            R.color.swipe_color_3,
+            R.color.swipe_color_4
+        )
+        mGridView = view.findViewById(/*id=*/ android.R.id.list)
+        mEmptyView = view.findViewById(/*id=*/ android.R.id.empty)
         return view
     }
 
@@ -149,9 +157,9 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
          * uses the system-defined simple_list_item_1 layout that contains one TextView. Initially
          */
         mListAdapter = ArrayAdapter(
-            requireActivity(),
-            android.R.layout.simple_list_item_1,
-            android.R.id.text1
+            /*context=*/ requireActivity(),
+            /*resource=*/ android.R.layout.simple_list_item_1,
+            /*textViewResourceId=*/ android.R.id.text1
         )
 
         // Set the adapter between the GridView and its backing data.
@@ -185,9 +193,10 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
      * @param menu     The options menu in which you place our items.
      * @param inflater [MenuInflater] to use to instantiate menu XML files into Menu objects
      */
-    @Deprecated("Deprecated in Java", ReplaceWith("inflater.inflate(R.menu.main_menu, menu)")) // TODO: Use MenuProvider
+    @Deprecated("Deprecated in Java")
+    @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main_menu, menu)
+        inflater.inflate(/*menuRes=*/ R.menu.main_menu, /*menu=*/ menu)
     }
 
     /**
@@ -234,6 +243,7 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
                 return true
             }
         }
+        @Suppress("DEPRECATION") // TODO: Replace with MenuProvider
         return super.onOptionsItemSelected(item)
     }
 
@@ -270,7 +280,7 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
         // Remove all items from the ListAdapter, and then replace them with the new items
         mListAdapter!!.clear()
         for (cheese in result!!) {
-            mListAdapter!!.add(cheese)
+            mListAdapter!!.add(/*object=*/ cheese)
         }
 
         // Stop the refreshing indicator
@@ -297,13 +307,13 @@ class SwipeRefreshMultipleViewsFragment : Fragment() {
         override fun doInBackground(vararg params: Void?): List<String?> {
             // Sleep for a small amount of time to simulate a background-task
             try {
-                Thread.sleep(TASK_DURATION.toLong())
+                Thread.sleep(/*millis=*/ TASK_DURATION.toLong())
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
 
             // Return a new random list of cheeses
-            return Cheeses.randomList(LIST_ITEM_COUNT)
+            return Cheeses.randomList(count = LIST_ITEM_COUNT)
         }
 
         /**
